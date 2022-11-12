@@ -1,0 +1,14 @@
+{
+  "name": "asnity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/boostcampwm-2022/web24-Asnity.git",
+  "author": "Cola <bcad1591@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "common"
+  ]
+}
