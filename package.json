@@ -10,5 +10,9 @@
     "client",
     "server",
     "common"
-  ]
+  ],
+  "scripts": {
+    "api-dev" : "yarn workspace server api-dev",
+    "socket-dev" : "yarn workspace server socket-dev"
+  }
 }
