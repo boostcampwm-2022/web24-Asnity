@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["DOM", "esnext"],
+    "jsx": "react-jsx",
+    "module": "commonjs",
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "outDir": "./build",
+    "paths": {
+
+    }
+  },
+  "include": ["src", "config"],
+  "exclude": ["node_modules", "build", "dist"]
+}

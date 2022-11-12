@@ -12,6 +12,7 @@
     "common"
   ],
   "scripts": {
+    "client": "yarn workspace client",
     "api-dev" : "yarn workspace server api-dev",
     "socket-dev" : "yarn workspace server socket-dev"
   }
