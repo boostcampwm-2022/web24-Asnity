@@ -1,5 +1,4 @@
 {
-  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "es2021": true,
@@ -7,22 +6,11 @@
     "commonjs": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:import/recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "naver",
-    "plugin:prettier/recommended"
+    "plugin:react-hooks/recommended"
   ],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
   "rules": {
     "react/prop-types": "off",
-    "no-unused-vars": "off",
-    "no-console": "off",
     "no-param-reassign": "off",
     "import/prefer-default-export": "off",
     "import/order": [
@@ -38,10 +26,6 @@
     ],
     "@typescript-eslint/no-var-requires": "off",
     "react/no-unknown-property": "off",
-    "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "consistent-return":"off",
-    "no-shadow": "off",
     "no-duplicate-imports": "off"
   }
 }
