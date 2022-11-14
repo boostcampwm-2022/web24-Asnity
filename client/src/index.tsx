@@ -1,3 +1,5 @@
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -12,12 +14,16 @@ if (process.env.NODE_ENV === 'development') {
   worker.start();
 }
 
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
 root.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <QueryClientProvider client={queryClient}>
+    <ReactQueryDevtools />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </QueryClientProvider>,
 );
