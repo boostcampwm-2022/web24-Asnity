@@ -7,6 +7,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UserController {
   constructor(private usersService: UserService) {}
 
+  @Get()
+  getUsers() {
+    const createUserDto: CreateUserDto = { id: 'ny', pw: 'nypw' };
+    this.usersService.createUser(createUserDto);
+    return 'hello user';
+  }
   // @Get('followers/:id')
   // getFollowers(@Param('id') id: string): User[] {
   //   return this.usersService.getAllFollowers();

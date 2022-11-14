@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { ChannelModule } from './channel/channel.module';
 import { CommunityModule } from './community/community.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CommunityModule } from './community/community.module';
       envFilePath: `config/${process.env.NODE_ENV}.env`,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL),
+    UserModule,
     ChannelModule,
     CommunityModule,
   ],
