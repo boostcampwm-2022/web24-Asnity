@@ -18,7 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@schemas/*": ["schemas/*"],
+      "@schemas/*": ["dao/schemas/*"],
+      "@repository/*": ["dao/repository/*"],
+      "@user/*": ["apps/api/src/user/*"],
     }
   }
 }
