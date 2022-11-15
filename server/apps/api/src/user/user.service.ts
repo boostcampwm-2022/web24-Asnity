@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { followerDto } from '@user/dto/follower.dto';
-import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UserRepository } from '@repository/user.repository';
 
 @Injectable()
@@ -21,8 +20,15 @@ export class UserService {
     } else if (otherUser.followers.includes(addFollowingDto.myId)) {
       throw new ConflictException('상대방의 팔로워 목록에 이미 있습니다.');
     }
-    this.userRepository.appendFollowing(addFollowingDto);
-    this.userRepository.appendFollower(addFollowingDto);
+
+    this.userRepository.appendElementAtArr(
+      { _id: addFollowingDto.myId },
+      { followings: addFollowingDto.followId },
+    );
+    this.userRepository.appendElementAtArr(
+      { _id: addFollowingDto.followId },
+      { followers: addFollowingDto.myId },
+    );
   }
 
   async unFollowing(unFollowingDto: followerDto) {
