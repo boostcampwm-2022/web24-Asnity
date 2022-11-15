@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { UserRepository } from '@repository/user.repository';
-import { responseForm } from '@utils/responseForm';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +16,10 @@ export class AuthService {
       // 아이디 중복시 에러 처리
       if (error.name === 'MongoServerError' && error.code === 11000)
         throw new ForbiddenException('아이디가 중복되었습니다.');
-      throw error;
+      return error.response;
     }
     // 회원가입 성공 응답
-    return responseForm(200, '회원가입 성공!');
+    return '회원가입 성공!';
   }
 
   async signIn(signInDto: SignInDto) {
@@ -34,6 +33,6 @@ export class AuthService {
     }
     // 로그인 성공 응답
     // To-do : accessToken, refreshToken 발행 필요
-    return responseForm(200, '로그인 성공!');
+    return '로그인 성공!';
   }
 }
