@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
-import mongoose, { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
 import { SignUpDto } from '@api/src/auth/dto';
 
@@ -14,8 +14,12 @@ export class UserRepository {
     return null;
   }
 
-  async findById(id: string) {
-    return await this.userModel.findById(id);
+  async findOne(condition: any) {
+    return await this.userModel.findOne(condition);
+  }
+  수;
+  async findById(_id: string) {
+    return await this.userModel.findById(_id);
   }
 
   appendFollowing(addFollowingDto: AddFollowingDto) {
