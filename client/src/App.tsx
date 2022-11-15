@@ -23,7 +23,7 @@ const App = () => (
       <Route path=":roomId" element={<DMRoom />} />
     </Route>
     <Route
-      path="/communities/:communityId/channels/roomId"
+      path="/communities/:communityId/channels/:roomId"
       element={<Community />}
     />
     <Route path="*" element={<NotFound />} />
