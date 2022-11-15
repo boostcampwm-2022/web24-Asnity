@@ -14,11 +14,11 @@ module.exports = {
     colors: {
       titleActive: '#14142B',
       body: '#4E4B66',
-      label: '#A0A3BD',
+      label: '#6E7191',
       placeholder: '#D9DBE9',
-      line: '#EFF0F6',
+      line: '#D9DBE9',
       inputBackground: '#EFF0F6',
-      background: '#F7F7FC',
+      background: '#F7F7FC;',
       offWhite: '#FEFEFE',
       indigo: '#1D1D50',
       primary: {
@@ -43,9 +43,9 @@ module.exports = {
       },
     },
     fontFamily: {
-      logo: ['Montserrat', 'sans-serif'],
-      body: ['Noto Sans KR', 'sans-serif'],
-      community: ['IBM Plex Sans KR', 'sans-serif'],
+      mont: ['Montserrat', 'sans-serif'],
+      sans: ['Noto Sans KR', 'sans-serif'],
+      ipSans: ['IBM Plex Sans KR', 'sans-serif'],
     },
   },
   plugins: [],
