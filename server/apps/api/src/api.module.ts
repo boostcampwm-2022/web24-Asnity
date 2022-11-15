@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ChannelModule } from './channel/channel.module';
 import { CommunityModule } from './community/community.module';
 import { UserModule } from './user/user.module';
+import * as winston from 'winston';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -15,6 +17,19 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: `config/${process.env.NODE_ENV}.env`,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL),
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console({
+          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+          format: winston.format.combine(
+            winston.format.colorize({ all: true }),
+            winston.format.simple(),
+            winston.format.timestamp(),
+            nestWinstonModuleUtilities.format.nestLike('Asnity', { prettyPrint: true }),
+          ),
+        }),
+      ],
+    }),
     UserModule,
     ChannelModule,
     CommunityModule,
