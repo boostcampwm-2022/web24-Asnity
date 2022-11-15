@@ -18,30 +18,11 @@ export class UserRepository {
     return await this.userModel.findById(id);
   }
 
-  appendFollowing(addFollowingDto: followerDto) {
-    // TODO : 하위 append follower와 합치도록 추상화하기
-    this.userModel.updateOne(
-      { _id: addFollowingDto.myId },
-      { $push: { followings: addFollowingDto.followId } },
-      (err, res) => {
-        if (err) throw err;
-      },
-    );
+  async appendElementAtArr(filter, appendElement) {
+    await this.userModel.updateOne(filter, { $push: appendElement });
   }
 
-  appendFollower(addFollowingDto: followerDto) {
-    this.userModel.updateOne(
-      { _id: addFollowingDto.followId },
-      {
-        $push: { followers: addFollowingDto.myId },
-      },
-      (err, res) => {
-        if (err) throw err;
-      },
-    );
-  }
-
-  async deleteElementAtArr(condition, removeElement) {
-    await this.userModel.updateOne(condition, { $pullAll: removeElement });
+  async deleteElementAtArr(filter, removeElement) {
+    await this.userModel.updateOne(filter, { $pullAll: removeElement });
   }
 }
