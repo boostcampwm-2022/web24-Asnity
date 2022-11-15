@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { CHANNEL_TYPE } from './type';
-import { IsBoolean, IsIn, IsNotEmpty, IsString} from 'class-validator';
+import { CHANNEL_TYPE } from '@utils/def';
+import { IsBoolean, IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export type ChannelDocument = Channel & Document;
 

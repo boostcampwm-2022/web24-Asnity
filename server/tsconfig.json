@@ -20,6 +20,7 @@
     "paths": {
       "@schemas/*": ["dao/schemas/*"],
       "@repository/*": ["dao/repository/*"],
+      "@utils/*": ["utils/*"],
       "@user/*": ["apps/api/src/user/*"],
     }
   }
