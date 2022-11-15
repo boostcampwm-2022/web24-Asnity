@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class AddFollowingDto {
+export class followerDto {
   @IsString()
   myId: string;
 
