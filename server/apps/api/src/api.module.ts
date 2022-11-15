@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ChannelModule } from './channel/channel.module';
 import { CommunityModule } from './community/community.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     ChannelModule,
     CommunityModule,
+    AuthModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],
