@@ -19,7 +19,7 @@ export class User {
 
   @Prop()
   @IsString()
-  pw: string;
+  password: string;
 
   @Prop()
   @IsString()
