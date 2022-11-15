@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersRepository } from '@repository/user.repository';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { UserRepository } from '@repository/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UsersRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   // getAllFollowers() {}
 

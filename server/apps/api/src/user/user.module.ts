@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { UserController } from '@user/user.controller';
+import { UserService } from '@user/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../../../../dao/schemas/user.schema';
-import { AuthModule } from './auth/auth.module';
-import { UsersRepository } from '@repository/user.repository';
+import { User, UserSchema } from '@schemas/user.schema';
+import { AuthModule } from '@user/auth/auth.module';
+import { UserRepository } from '@repository/user.repository';
 
 @Module({
   imports: [
@@ -12,6 +12,6 @@ import { UsersRepository } from '@repository/user.repository';
     AuthModule,
   ],
   controllers: [UserController],
-  providers: [UserService, UsersRepository],
+  providers: [UserService, UserRepository],
 })
 export class UserModule {}
