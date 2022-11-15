@@ -6,7 +6,12 @@
     "baseUrl": ".",
     "outDir": "./build",
     "paths": {
-
+      "@pages/*": ["src/pages/*"],
+      "@layouts/*": ["src/common/layouts/*"],
+      "@components/*": ["src/common/components/*"],
+      "@features/*": ["src/features/*"],
+      "@mocks/*": ["src/mocks/*"],
+      "@stores/*": ["src/stores/*"]
     }
   },
   "include": ["src", "config"],

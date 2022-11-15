@@ -9,7 +9,7 @@
   "workspaces": [
     "client",
     "server",
-    "common"
+    "shared"
   ],
   "scripts": {
     "client": "yarn workspace client",
