@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
-import { Model } from 'mongoose';
-import { AddFollowingDto } from '@user/dto/add-following.dto';
+import mongoose, { Model, Schema, Types } from 'mongoose';
+import { followerDto } from '@user/dto/follower.dto';
 import { SignUpDto } from '@api/src/auth/dto';
 
 @Injectable()
@@ -22,7 +22,8 @@ export class UserRepository {
     return await this.userModel.findById(_id);
   }
 
-  appendFollowing(addFollowingDto: AddFollowingDto) {
+  appendFollowing(addFollowingDto: followerDto) {
+    // TODO : 하위 append follower와 합치도록 추상화하기
     this.userModel.updateOne(
       { _id: addFollowingDto.myId },
       { $push: { followings: addFollowingDto.followId } },
@@ -32,7 +33,7 @@ export class UserRepository {
     );
   }
 
-  appendFollwer(addFollowingDto: AddFollowingDto) {
+  appendFollower(addFollowingDto: followerDto) {
     this.userModel.updateOne(
       { _id: addFollowingDto.followId },
       {
@@ -42,5 +43,9 @@ export class UserRepository {
         if (err) throw err;
       },
     );
+  }
+
+  async deleteElementAtArr(condition, removeElement) {
+    await this.userModel.updateOne(condition, { $pullAll: removeElement });
   }
 }
