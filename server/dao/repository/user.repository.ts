@@ -9,9 +9,7 @@ export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto) {
-    const createdUser = new this.userModel(createUserDto);
-    await createdUser.save();
-    console.log(this.userModel.find());
+    await this.userModel.create(createUserDto);
     return null;
   }
 }

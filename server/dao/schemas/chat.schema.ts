@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { CHAT_TYPE } from './type';
+import { CHAT_TYPE } from '@utils/def';
 import { IsIn, IsString } from 'class-validator';
 
 export type UserDocument = Chat & Document;

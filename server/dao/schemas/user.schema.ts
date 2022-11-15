@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsIn, IsString } from 'class-validator';
 import mongoose, { Document } from 'mongoose';
-import { STATUS } from './type';
+import { STATUS } from '@utils/def';
 
 export type UserDocument = User & Document;
 
@@ -43,7 +43,7 @@ export class User {
 
   @Prop({ default: 'ONLINE' })
   @IsString()
-  @IsIn(Object.keys(STATUS))
+  @IsIn(STATUS)
   status: string;
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
