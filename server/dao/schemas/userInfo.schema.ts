@@ -16,13 +16,5 @@ export class UserInfo {
   @IsString()
   @IsNotEmpty()
   id: string;
-
-  @Prop()
-  @IsString()
-  pw: string;
-
-  @Prop()
-  @IsString()
-  refreshToken: string;
 }
 export const UserInfoSchema = SchemaFactory.createForClass(UserInfo);
