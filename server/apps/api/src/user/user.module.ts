@@ -4,14 +4,12 @@ import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../../../dao/schemas/user.schema';
 import { AuthModule } from './auth/auth.module';
-import { UsersRepository } from '@repository/user.repository';
+import { UserRepository } from '@repository/user.repository';
+import { WinstonModule } from 'nest-winston';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    AuthModule,
-  ],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), AuthModule],
   controllers: [UserController],
-  providers: [UserService, UsersRepository],
+  providers: [UserService, UserRepository],
 })
 export class UserModule {}

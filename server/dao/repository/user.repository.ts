@@ -6,7 +6,7 @@ import { CreateUserDto } from '@user/dto/create-user.dto';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
 
 @Injectable()
-export class UsersRepository {
+export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -21,9 +21,7 @@ export class UsersRepository {
   appendFollowing(addFollowingDto: AddFollowingDto) {
     this.userModel.updateOne(
       { _id: addFollowingDto.myId },
-      {
-        $push: { followings: addFollowingDto.followId },
-      },
+      { $push: { followings: addFollowingDto.followId } },
       (err, res) => {
         if (err) throw err;
       },

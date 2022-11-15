@@ -1,27 +1,36 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { User } from '@schemas/user.schema';
+import { Body, Controller, Get, Inject, LoggerService, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
 import { SucessRes } from '@utils/def';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller('api/user')
 export class UserController {
-  constructor(private usersService: UserService) {}
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
+    private userService: UserService,
+  ) {}
 
   @Get()
   getUsers() {
     const createUserDto: CreateUserDto = { id: 'mj', pw: 'mjpw' };
-    this.usersService.createUser(createUserDto);
+    this.userService.createUser(createUserDto);
     return 'hello user';
   }
 
   @Post('following/:id')
-  getFollower(@Param('id') id: string) {
-    const myId = '6372fcf4cf6f605428fe45df';
-    const addFollowingDto: AddFollowingDto = { myId, followId: id };
-    this.usersService.addFollowing(addFollowingDto);
-    return SucessRes;
+  async addFollowing(@Param('id') id: string) {
+    try {
+      const myId = '63734e98384f478a32c3a1cc';
+      // TODO: Request Header에서 access token으로 현재 사용자 알아내기
+      const addFollowingDto: AddFollowingDto = { myId, followId: id };
+      await this.userService.addFollowing(addFollowingDto);
+      return SucessRes;
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      return error.response;
+    }
   }
 
   // @Post()
