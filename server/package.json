@@ -23,10 +23,11 @@
     "test:e2e": "jest --config apps/socket/test/jest-e2e.json"
   },
   "dependencies": {
+    "@asnity/shared": "1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "common": "1.0.0",
+    "argon2": "^0.30.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
