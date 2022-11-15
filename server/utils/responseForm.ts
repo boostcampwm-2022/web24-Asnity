@@ -1,6 +1,6 @@
-export const responseForm = (statusCode: string, message: string) => {
+export const responseForm = (statusCode: string, data: any) => {
   return {
     statusCode,
-    result: message,
+    result: data,
   };
 };
