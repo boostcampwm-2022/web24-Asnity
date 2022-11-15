@@ -9,21 +9,13 @@ export class AuthController {
 
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
-    try {
-      const result = await this.authService.signUp(signUpDto);
-      return responseForm(200, result);
-    } catch (error) {
-      throw error;
-    }
+    const result = await this.authService.signUp(signUpDto);
+    return responseForm(200, result);
   }
 
   @Post('signin')
   async signIn(@Body() signInDto: SignUpDto) {
-    try {
-      const result = await this.authService.signIn(signInDto);
-      return responseForm(200, result);
-    } catch (error) {
-      throw error;
-    }
+    const result = await this.authService.signIn(signInDto);
+    return responseForm(200, result);
   }
 }
