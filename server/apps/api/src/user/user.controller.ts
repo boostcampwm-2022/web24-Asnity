@@ -1,16 +1,16 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { User } from '../../../../dao/schemas/user.schema';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { User } from '@schemas/user.schema';
+import { UserService } from '@user/user.service';
+import { CreateUserDto } from '@user/dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private usersService: UserService) {}
+  constructor(private userService: UserService) {}
 
   @Get()
   getUsers() {
     const createUserDto: CreateUserDto = { id: 'ny', pw: 'nypw' };
-    this.usersService.createUser(createUserDto);
+    this.userService.createUser(createUserDto);
     return 'hello user';
   }
   // @Get('followers/:id')
