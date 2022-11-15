@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
 import mongoose, { Model, Schema } from 'mongoose';
-import { CreateUserDto } from '@user/dto/create-user.dto';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
+import { SignUpDto } from '@api/src/auth/dto';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: SignUpDto) {
     await this.userModel.create(createUserDto);
     return null;
   }

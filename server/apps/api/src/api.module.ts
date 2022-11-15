@@ -8,6 +8,7 @@ import { CommunityModule } from './community/community.module';
 import { UserModule } from './user/user.module';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-win
     UserModule,
     ChannelModule,
     CommunityModule,
+    AuthModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],

@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Inject, LoggerService, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
 import { SucessRes } from '@utils/def';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { User } from '@schemas/user.schema';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { responseForm } from '@utils/responseForm';
 
 @Controller('api/user')
 export class UserController {
@@ -26,12 +28,13 @@ export class UserController {
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
       const addFollowingDto: AddFollowingDto = { myId, followId: id };
       await this.userService.addFollowing(addFollowingDto);
-      return SucessRes;
+      return responseForm(200, {});
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response;
     }
   }
+
 
   // @Post()
   // createUser(@Body() createUserDto: CreateUserDto) {

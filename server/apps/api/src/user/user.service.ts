@@ -1,13 +1,12 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserRepository } from '@repository/user.repository';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { UserRepository } from '@repository/user.repository';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
-
-  // getAllFollowers() {}
 
   createUser(createUserDto: CreateUserDto) {
     this.userRepository.create(createUserDto);

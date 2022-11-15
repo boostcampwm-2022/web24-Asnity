@@ -22,6 +22,7 @@
       "@repository/*": ["dao/repository/*"],
       "@utils/*": ["utils/*"],
       "@user/*": ["apps/api/src/user/*"],
+      "@api/*": ["apps/api/*"],
     }
   }
 }
