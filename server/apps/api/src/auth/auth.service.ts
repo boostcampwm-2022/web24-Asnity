@@ -18,6 +18,6 @@ export class AuthService {
       throw error;
     }
 
-    return responseForm('200', '회원가입 성공!');
+    return responseForm(200, '회원가입 성공!');
   }
 }

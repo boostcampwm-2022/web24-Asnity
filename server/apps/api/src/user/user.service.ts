@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
-import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UserRepository } from '@repository/user.repository';
 
@@ -8,9 +7,9 @@ import { UserRepository } from '@repository/user.repository';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  createUser(createUserDto: CreateUserDto) {
-    this.userRepository.create(createUserDto);
-  }
+  // createUser(createUserDto: CreateUserDto) {
+  //   this.userRepository.create(createUserDto);
+  // }
 
   async addFollowing(addFollowingDto: AddFollowingDto) {
     const user = await this.userRepository.findById(addFollowingDto.myId);

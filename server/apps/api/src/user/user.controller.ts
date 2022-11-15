@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Inject, LoggerService, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AddFollowingDto } from '@user/dto/add-following.dto';
-import { SucessRes } from '@utils/def';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { User } from '@schemas/user.schema';
 import { CreateUserDto } from '@user/dto/create-user.dto';
@@ -14,12 +13,12 @@ export class UserController {
     private userService: UserService,
   ) {}
 
-  @Get()
-  getUsers() {
-    const createUserDto: CreateUserDto = { id: 'mj', pw: 'mjpw' };
-    this.userService.createUser(createUserDto);
-    return 'hello user';
-  }
+  // @Get()
+  // getUsers() {
+  //   const createUserDto: CreateUserDto = { id: 'mj', pw: 'mjpw' };
+  //   this.userService.createUser(createUserDto);
+  //   return 'hello user';
+  // }
 
   @Post('following/:id')
   async addFollowing(@Param('id') id: string) {
