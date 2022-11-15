@@ -17,6 +17,14 @@ export class User {
   @IsString()
   id: string;
 
+  @Prop()
+  @IsString()
+  pw: string;
+
+  @Prop()
+  @IsString()
+  refreshToken: string;
+
   @Prop({ require: true })
   @IsString()
   nickname: string;
