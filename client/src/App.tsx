@@ -13,19 +13,20 @@ import { Route, Routes } from 'react-router-dom';
 
 const App = () => (
   <Routes>
-    <Route path="/" element={<Home />} />
+    <Route path="/" element={<Home />}>
+      <Route path="dms" element={<DM />}>
+        <Route path="followings" element={<Followings />} />
+        <Route path="followers" element={<Followers />} />
+        <Route path="user-search" element={<UserSearch />} />
+        <Route path=":roomId" element={<DMRoom />} />
+      </Route>
+      <Route
+        path="communities/:communityId/channels/:roomId"
+        element={<Community />}
+      />
+    </Route>
     <Route path="/sign-in" element={<SignIn />} />
     <Route path="/sign-up" element={<SignUp />} />
-    <Route path="/dms" element={<DM />}>
-      <Route path="followings" element={<Followings />} />
-      <Route path="followers" element={<Followers />} />
-      <Route path="user-search" element={<UserSearch />} />
-      <Route path=":roomId" element={<DMRoom />} />
-    </Route>
-    <Route
-      path="/communities/:communityId/channels/:roomId"
-      element={<Community />}
-    />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
