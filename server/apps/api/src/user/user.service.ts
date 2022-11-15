@@ -7,8 +7,8 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   // getAllFollowers() {}
-
-  createUser(createUserDto: CreateUserDto) {
-    this.userRepository.create(createUserDto);
-  }
+  //
+  // createUser(createUserDto: CreateUserDto) {
+  //   this.userRepository.create(createUserDto);
+  // }
 }
