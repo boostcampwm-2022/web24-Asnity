@@ -22,7 +22,7 @@ export class AuthService {
       // 아이디 중복시 에러 처리
       if (error.name === 'MongoServerError' && error.code === 11000)
         throw new ForbiddenException('아이디가 중복되었습니다.');
-      throw error;
+      throw new ForbiddenException('DB에 계정 생성 중 에러 발생');
     }
     // 회원가입 성공 응답
     return '회원가입 성공!';
