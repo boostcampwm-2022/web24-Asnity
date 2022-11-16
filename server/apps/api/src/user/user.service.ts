@@ -63,4 +63,19 @@ export class UserService {
     }
     return getUserBasicInfo(user);
   }
+
+  async getFollowers(_id: string) {
+    const user = await this.userRepository.findById(_id);
+    if (!user) {
+      throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
+    }
+    const { followers } = user;
+    // TODO: 배열을 순회하면서 찾지 않고 한번에 db에서 찾도록하는 mongoose 명령 있는지 확인하기
+    const result = await Promise.all(
+      followers.map(async (followerId) => {
+        return getUserBasicInfo(await this.userRepository.findById(followerId));
+      }),
+    );
+    return { followers: result };
+  }
 }
