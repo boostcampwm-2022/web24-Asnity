@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
 import mongoose, { Model, Schema, Types } from 'mongoose';
-import { followerDto } from '@user/dto/follower.dto';
 import { SignUpDto } from '@api/src/auth/dto';
 
 @Injectable()
