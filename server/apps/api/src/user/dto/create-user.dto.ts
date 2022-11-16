@@ -1,9 +1,15 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString()
+  @IsEmail()
+  @IsNotEmpty()
   id: string;
 
   @IsString()
-  pw: string;
+  @Min(8)
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  provider: 'asnity' | 'github';
 }

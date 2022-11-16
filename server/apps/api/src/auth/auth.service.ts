@@ -17,7 +17,7 @@ export class AuthService {
     const hash = await argon.hash(signUpDto.password);
     try {
       // DB에 계정 생성
-      await this.userRepository.create({ ...signUpDto, password: hash });
+      await this.userRepository.create({ ...signUpDto, password: hash, provider: 'asnity' });
     } catch (error) {
       // 아이디 중복시 에러 처리
       if (error.name === 'MongoServerError' && error.code === 11000)
