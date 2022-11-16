@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, LoggerService, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { followerDto } from '@user/dto/follower.dto';
+import { FollowerDto } from '@user/dto/follower.dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { responseForm } from '@utils/responseForm';
 import { ObjectIdValidationPipe } from '@custom_pipe/mongodbObjectIdValidation.pipe';
@@ -24,8 +24,8 @@ export class UserController {
     try {
       const myId = '63739b643969101c3fec8849';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
-      const addFollowingDto: followerDto = { myId, followId: id };
-      await this.userService.addFollowing(addFollowingDto);
+      const addFollowingDto: FollowerDto = { myId, followId: id };
+      const result = await this.userService.toggleFollowing(addFollowingDto);
       return responseForm(200, {});
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
@@ -33,19 +33,19 @@ export class UserController {
     }
   }
 
-  @Delete('following/:id')
-  async unFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
-    try {
-      const myId = '63734e98384f478a32c3a1cc';
-      // TODO: Request Header에서 access token으로 현재 사용자 알아내기
-      const unFollowingDto: followerDto = { myId, followId: id };
-      await this.userService.unFollowing(unFollowingDto);
-      return responseForm(200, {});
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      return error.response;
-    }
-  }
+  // @Delete('following/:id')
+  // async unFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
+  //   try {
+  //     const myId = '63734e98384f478a32c3a1cc';
+  //     // TODO: Request Header에서 access token으로 현재 사용자 알아내기
+  //     const unFollowingDto: followerDto = { myId, followId: id };
+  //     await this.userService.toggleFollowing(unFollowingDto);
+  //     return responseForm(200, {});
+  //   } catch (error) {
+  //     this.logger.error(JSON.stringify(error.response));
+  //     return error.response;
+  //   }
+  // }
 
   @Get('followers')
   async getFollowers() {
