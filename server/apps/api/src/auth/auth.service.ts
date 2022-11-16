@@ -2,10 +2,16 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { UserRepository } from '@repository/user.repository';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private jwt: JwtService,
+    private userRepository: UserRepository,
+    private config: ConfigService,
+  ) {}
   async signUp(signUpDto: SignUpDto) {
     // 비밀번호 암호화
     const hash = await argon.hash(signUpDto.password);
@@ -31,8 +37,36 @@ export class AuthService {
     if (!isMatch) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
-    // 로그인 성공 응답
-    // To-do : accessToken, refreshToken 발행 필요
-    return '로그인 성공!';
+    // accessToken, refreshToken 발행
+    const token = this.signToken(user._id, user.nickname);
+
+    // TODO : refreshToken DB에 넣어주기
+
+    // TODO : accessToken, refreshToken 쿠키에 넣어서 보내기
+
+    return token;
+  }
+
+  async signToken(_id: number, nickname: string) {
+    const accessTokenPayload = {
+      _id,
+      nickname,
+    };
+
+    const refreshTokenPayload = {
+      _id,
+    };
+
+    const accessToken = await this.jwt.signAsync(accessTokenPayload, {
+      expiresIn: '15m',
+      secret: this.config.get('JWT_SECRET'),
+    });
+
+    const refreshToken = await this.jwt.signAsync(refreshTokenPayload, {
+      expiresIn: '1hr',
+      secret: this.config.get('JWT_SECRET'),
+    });
+
+    return { accessToken, refreshToken };
   }
 }
