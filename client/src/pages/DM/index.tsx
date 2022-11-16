@@ -1,7 +1,12 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 const DM = () => {
-  return <div>DM</div>;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 };
 
 export default DM;
