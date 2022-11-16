@@ -1,6 +1,7 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Param } from '@nestjs/common';
 import { followerDto } from '@user/dto/follower.dto';
 import { UserRepository } from '@repository/user.repository';
+import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
 
 @Injectable()
 export class UserService {
@@ -60,12 +61,6 @@ export class UserService {
     if (!user) {
       throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
     }
-    return {
-      id: user.id,
-      nickname: user.nickname,
-      status: user.status,
-      profileUrl: user.profileUrl,
-      description: user.description,
-    };
+    return getUserBasicInfo(user);
   }
 }
