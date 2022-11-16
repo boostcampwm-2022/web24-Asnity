@@ -5,6 +5,9 @@
     "jest": true,
     "commonjs": true
   },
+  "globals": {
+    "JSX": true
+  },
   "extends": ["plugin:react/recommended", "plugin:react-hooks/recommended"],
   "rules": {
     "react/prop-types": "off",
