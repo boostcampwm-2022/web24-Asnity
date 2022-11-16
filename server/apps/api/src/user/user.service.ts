@@ -54,4 +54,18 @@ export class UserService {
       { followers: [unFollowingDto.myId] },
     );
   }
+
+  async getUser(_id: string) {
+    const user = await this.userRepository.findById(_id);
+    if (!user) {
+      throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
+    }
+    return {
+      id: user.id,
+      nickname: user.nickname,
+      status: user.status,
+      profileUrl: user.profileUrl,
+      description: user.description,
+    };
+  }
 }
