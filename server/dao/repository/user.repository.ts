@@ -14,8 +14,8 @@ export class UserRepository {
     return null;
   }
 
-  async findById(id: string) {
-    return await this.userModel.findById(id);
+  async findById(_id: string) {
+    return await this.userModel.findById(_id);
   }
 
   async appendElementAtArr(filter, appendElement) {
