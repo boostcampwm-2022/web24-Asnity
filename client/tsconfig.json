@@ -11,7 +11,8 @@
       "@components/*": ["src/common/components/*"],
       "@features/*": ["src/features/*"],
       "@mocks/*": ["src/mocks/*"],
-      "@stores/*": ["src/stores/*"]
+      "@stores/*": ["src/stores/*"],
+      "@icons/*": ["src/assets/icons/*"]
     }
   },
   "include": ["src", "config"],
