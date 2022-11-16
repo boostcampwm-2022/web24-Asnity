@@ -1,7 +1,9 @@
 import AuthInput from '@components/AuthInput';
+import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Logo from '@components/Logo';
 import SuccessMessage from '@components/SuccessMessage';
+import TextButton from '@components/TextButton';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -24,16 +26,18 @@ const SignUp = () => {
   const password = watch('password');
 
   return (
-    <main>
+    <main className="flex flex-col items-center min-h-screen">
+      <div className="flex flex-col h-[250px] items-center justify-center">
+        <Logo size="lg" />
+        <h1 className="font-mont text-[40px] mb-5 capitalize">asnity</h1>
+      </div>
+
       <form
-        className="flex flex-col justify-start items-center h-screen pt-10"
+        className="flex flex-col justify-start items-center"
         onSubmit={handleSubmit((data) => {
           console.log(data);
         })}
       >
-        <Logo size="lg" />
-        <h1 className="font-mont text-[40px] mb-5 capitalize">asnity</h1>
-
         <Controller
           name="id"
           control={control}
@@ -151,8 +155,17 @@ const SignUp = () => {
           }}
         />
 
-        <button type="submit">회원가입</button>
-        <button type="button">로그인 페이지로</button>
+        <div className="mb-5">
+          <Button color="primary" size="md" type="submit" minWidth={340}>
+            회원가입
+          </Button>
+        </div>
+
+        <div>
+          <TextButton size="sm" className="text-body " type="button">
+            로그인 페이지로
+          </TextButton>
+        </div>
       </form>
     </main>
   );
