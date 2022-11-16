@@ -20,7 +20,7 @@ export class UserController {
   // }
 
   @Post('following/:id')
-  async addFollowing(@Param('id') id: string) {
+  async addFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
     try {
       const myId = '63734e98384f478a32c3a1cc';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
@@ -34,7 +34,7 @@ export class UserController {
   }
 
   @Delete('following/:id')
-  async unFollowing(@Param('id') id: string) {
+  async unFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
     try {
       const myId = '63734e98384f478a32c3a1cc';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
