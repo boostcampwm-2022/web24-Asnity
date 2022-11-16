@@ -16,7 +16,7 @@ export interface Props {
 const SuccessMessage: React.FC<Props> = ({ children, size = 'sm' }) => {
   const memoizedSize = useMemo(() => messageSize[size], [size]);
 
-  return <div className={`text-error ${memoizedSize}`}>{children}</div>;
+  return <div className={`text-success ${memoizedSize}`}>{children}</div>;
 };
 
 export default memo(SuccessMessage);
