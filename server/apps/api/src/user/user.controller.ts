@@ -63,7 +63,7 @@ export class UserController {
   @Get('followings')
   async getFollowings() {
     try {
-      const _id = '63734e98384f478a32c3a1cc';
+      const _id = '63734af9e62b37012c73e399';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
       const result = await this.userService.getFollowings(_id);
       return responseForm(200, { ...result });
