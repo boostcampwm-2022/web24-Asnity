@@ -28,7 +28,7 @@ export class AuthService {
     return '회원가입 성공!';
   }
 
-  async signIn(signInDto: SignInDto) {
+  async signIn(signInDto: SignInDto): Promise<{ accessToken: string; refreshToken: string }> {
     const user = await this.userRepository.findOne({ id: signInDto.id });
     // DB에 아이디가 없으면 예외처리
     if (!user) throw new ForbiddenException('존재하는 아이디가 없습니다.');
@@ -40,9 +40,8 @@ export class AuthService {
     // accessToken, refreshToken 발행
     const [accessToken, refreshToken] = await this.signToken(user._id, user.nickname);
 
+    // DB에 refreshToken 업데이트
     this.userRepository.updateOne({ _id: user._id }, { refreshToken });
-
-    // TODO : accessToken, refreshToken 쿠키에 넣어서 보내기
 
     return { accessToken, refreshToken };
   }
