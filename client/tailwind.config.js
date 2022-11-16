@@ -20,7 +20,7 @@ module.exports = {
       titleActive: '#14142B',
       body: '#4E4B66',
       label: '#6E7191',
-      placeholder: '#D9DBE9',
+      placeholder: '#A0A3BD',
       line: '#D9DBE9',
       inputBackground: '#EFF0F6',
       background: '#F7F7FC;',
