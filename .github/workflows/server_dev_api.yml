@@ -1,0 +1,51 @@
+name: Backend Api Dev Server
+
+on:
+  pull_request:
+    branches:
+      - dev-be
+    types:
+      - closed
+
+jobs:
+  noti_slack:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: action-slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: Backend dev PR merge!
+          fields: repo,commit,message,author
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
+  pull_nCloud_api_server:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: execute remot ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCLOUD_REMOTE_IP }}
+          username: ${{ secrets.NCLOUD_REMOTE_SSH_ID }}
+          password: ${{ secrets.NCLOUD_REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.NCLOUD_REMOTE_SSH_PORT }}
+          script: |
+            whoami
+            cd web24-Asnity
+            git pull origin dev-be
+            ls -al
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            yarn install
+            pm2 restart asnity-api

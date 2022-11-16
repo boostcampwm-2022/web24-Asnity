@@ -14,6 +14,10 @@ export class UserRepository {
     return null;
   }
 
+  async findOne(condition: any) {
+    return await this.userModel.findOne(condition);
+  }
+
   async findById(_id: string) {
     return await this.userModel.findById(_id);
   }
