@@ -22,7 +22,7 @@ export class UserController {
   @Post('following/:id')
   async addFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
     try {
-      const myId = '63734e98384f478a32c3a1cc';
+      const myId = '63739b643969101c3fec8849';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
       const addFollowingDto: followerDto = { myId, followId: id };
       await this.userService.addFollowing(addFollowingDto);
@@ -44,6 +44,19 @@ export class UserController {
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response;
+    }
+  }
+
+  @Get('followers')
+  async getFollowers() {
+    try {
+      const _id = '63734e98384f478a32c3a1cc';
+      // TODO: Request Header에서 access token으로 현재 사용자 알아내기
+      const result = await this.userService.getFollowers(_id);
+      return responseForm(200, { ...result });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      return error.response ?? error;
     }
   }
 
