@@ -1,13 +1,13 @@
 import type {
   ChangeEventHandler,
-  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
   HTMLInputTypeAttribute,
 } from 'react';
 
-import classnames from 'classnames';
+import cn from 'classnames';
 import React from 'react';
 
-interface Props extends ComponentPropsWithoutRef<'input'> {
+interface Props extends ComponentPropsWithRef<'input'> {
   type?: HTMLInputTypeAttribute;
   value: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -17,7 +17,7 @@ interface Props extends ComponentPropsWithoutRef<'input'> {
 
 const AuthInput: React.FC<Props> = ({
   type = 'text',
-  value,
+  value = '',
   onChange,
   className = '',
   placeholder = 'Default',
@@ -25,16 +25,18 @@ const AuthInput: React.FC<Props> = ({
 }) => {
   const inputValueFilled = value.length >= 1;
 
-  const movePlaceholderTop = classnames([
+  const movePlaceholderTop = cn([
     {
+      'top-1/2': !inputValueFilled,
+      'text-s16': !inputValueFilled,
       'top-[16px]': inputValueFilled,
       'text-s12': inputValueFilled,
     },
   ]);
 
-  const moveInputValueBottom = classnames([
+  const moveInputValueBottom = cn([
     {
-      'pt-8': inputValueFilled,
+      'pt-6': inputValueFilled,
     },
   ]);
 
@@ -50,7 +52,7 @@ const AuthInput: React.FC<Props> = ({
         {...restProps}
       />
       <div
-        className={`absolute top-1/2 -translate-y-1/2 transition-all px-6 pointer-events-none text-placeholder ${movePlaceholderTop}`}
+        className={`absolute -translate-y-1/2 transition-all px-6 pointer-events-none text-placeholder ${movePlaceholderTop}`}
       >
         {placeholder}
       </div>
