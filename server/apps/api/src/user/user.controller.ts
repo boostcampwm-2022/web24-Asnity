@@ -26,26 +26,12 @@ export class UserController {
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
       const addFollowingDto: FollowerDto = { myId, followId: id };
       const result = await this.userService.toggleFollowing(addFollowingDto);
-      return responseForm(200, {});
+      return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response;
     }
   }
-
-  // @Delete('following/:id')
-  // async unFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
-  //   try {
-  //     const myId = '63734e98384f478a32c3a1cc';
-  //     // TODO: Request Header에서 access token으로 현재 사용자 알아내기
-  //     const unFollowingDto: followerDto = { myId, followId: id };
-  //     await this.userService.toggleFollowing(unFollowingDto);
-  //     return responseForm(200, {});
-  //   } catch (error) {
-  //     this.logger.error(JSON.stringify(error.response));
-  //     return error.response;
-  //   }
-  // }
 
   @Get('followers')
   async getFollowers() {
