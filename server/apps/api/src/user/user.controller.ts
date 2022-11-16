@@ -50,10 +50,10 @@ export class UserController {
   @Get('followers')
   async getFollowers() {
     try {
-      const _id = '63734e98384f478a32c3a1cc';
+      const _id = '63734f4eca63eaf1876a2c3b';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
-      const result = await this.userService.getFollowers(_id);
-      return responseForm(200, { ...result });
+      const result = await this.userService.getRelatedUsers(_id, 'followers');
+      return responseForm(200, { followers: result });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response ?? error;
@@ -63,10 +63,10 @@ export class UserController {
   @Get('followings')
   async getFollowings() {
     try {
-      const _id = '63734af9e62b37012c73e399';
+      const _id = '63739b643969101c3fec8849';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
-      const result = await this.userService.getFollowings(_id);
-      return responseForm(200, { ...result });
+      const result = await this.userService.getRelatedUsers(_id, 'followings');
+      return responseForm(200, { followings: result });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response ?? error;
