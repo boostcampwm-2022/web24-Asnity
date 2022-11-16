@@ -35,7 +35,7 @@ export class User {
 
   @Prop({ require: true })
   @IsString()
-  provider: string;
+  provider: 'asnity' | 'github';
 
   @Prop({ default: 'default description' })
   @IsString()
