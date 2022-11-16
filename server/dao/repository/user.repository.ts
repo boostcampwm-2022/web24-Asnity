@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
-import mongoose, { Model, Schema, Types } from 'mongoose';
-import { followerDto } from '@user/dto/follower.dto';
+import { Model } from 'mongoose';
 import { SignUpDto } from '@api/src/auth/dto';
 
 @Injectable()
@@ -20,6 +19,10 @@ export class UserRepository {
 
   async findById(_id: string) {
     return await this.userModel.findById(_id);
+  }
+
+  async updateOne(filter, updateField) {
+    await this.userModel.updateOne(filter, updateField);
   }
 
   async appendElementAtArr(filter, appendElement) {
