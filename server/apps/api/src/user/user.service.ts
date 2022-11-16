@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, Injectable, Param } from '@nestjs/common';
-import { followerDto } from '@user/dto/follower.dto';
+import { FollowerDto } from '@user/dto/follower.dto';
 import { UserRepository } from '@repository/user.repository';
 import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
 
@@ -11,49 +11,85 @@ export class UserService {
   //   this.userRepository.create(createUserDto);
   // }
 
-  async addFollowing(addFollowingDto: followerDto) {
-    const user = await this.userRepository.findById(addFollowingDto.myId);
-    const otherUser = await this.userRepository.findById(addFollowingDto.followId);
+  // async addFollowing(addFollowingDto: followerDto) {
+  //   const user = await this.userRepository.findById(addFollowingDto.myId);
+  //   const otherUser = await this.userRepository.findById(addFollowingDto.followId);
+  //   if (!user || !otherUser) {
+  //     throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
+  //   } else if (user.followings.includes(addFollowingDto.followId)) {
+  //     throw new BadRequestException('팔로우 요청한 사용자는 이미 팔로우되어있습니다.');
+  //   } else if (otherUser.followers.includes(addFollowingDto.myId)) {
+  //     throw new ConflictException('상대방의 팔로워 목록에 이미 있습니다.');
+  //   }
+  //
+  //   this.userRepository.appendElementAtArr(
+  //     { _id: addFollowingDto.myId },
+  //     { followings: addFollowingDto.followId },
+  //   );
+  //   this.userRepository.appendElementAtArr(
+  //     { _id: addFollowingDto.followId },
+  //     { followers: addFollowingDto.myId },
+  //   );
+  // }
+  //
+  // async unFollowing(unFollowingDto: followerDto) {
+  //   const user = await this.userRepository.findById(unFollowingDto.myId);
+  //   const otherUser = await this.userRepository.findById(unFollowingDto.followId);
+  //   if (!user || !otherUser) {
+  //     throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
+  //   } else if (!user.followings.includes(unFollowingDto.followId)) {
+  //     throw new BadRequestException(
+  //       `팔로우 요청한 사용자 ${user.nickname}은 ${otherUser.nickname}을 팔로우하고 있지 않습니다.`,
+  //     );
+  //   } else if (!otherUser.followers.includes(unFollowingDto.myId)) {
+  //     throw new ConflictException(
+  //       `${otherUser.nickname}의 팔로워 목록에 ${user.nickname}가 없습니다.`,
+  //     );
+  //   }
+  //   this.userRepository.deleteElementAtArr(
+  //     { _id: unFollowingDto.myId },
+  //     { followings: [unFollowingDto.followId] },
+  //   );
+  //   this.userRepository.deleteElementAtArr(
+  //     { _id: unFollowingDto.followId },
+  //     { followers: [unFollowingDto.myId] },
+  //   );
+  // }
+
+  async toggleFollowing(followerDto: FollowerDto) {
+    const user = await this.userRepository.findById(followerDto.myId);
+    const otherUser = await this.userRepository.findById(followerDto.followId);
+    const isAlreadyFollow = user.followings.includes(followerDto.followId);
+    const isAlreadyFollowAtOther = otherUser.followers.includes(followerDto.myId);
     if (!user || !otherUser) {
       throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
-    } else if (user.followings.includes(addFollowingDto.followId)) {
-      throw new BadRequestException('팔로우 요청한 사용자는 이미 팔로우되어있습니다.');
-    } else if (otherUser.followers.includes(addFollowingDto.myId)) {
-      throw new ConflictException('상대방의 팔로워 목록에 이미 있습니다.');
-    }
-
-    this.userRepository.appendElementAtArr(
-      { _id: addFollowingDto.myId },
-      { followings: addFollowingDto.followId },
-    );
-    this.userRepository.appendElementAtArr(
-      { _id: addFollowingDto.followId },
-      { followers: addFollowingDto.myId },
-    );
-  }
-
-  async unFollowing(unFollowingDto: followerDto) {
-    const user = await this.userRepository.findById(unFollowingDto.myId);
-    const otherUser = await this.userRepository.findById(unFollowingDto.followId);
-    if (!user || !otherUser) {
-      throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
-    } else if (!user.followings.includes(unFollowingDto.followId)) {
-      throw new BadRequestException(
-        `팔로우 요청한 사용자 ${user.nickname}은 ${otherUser.nickname}을 팔로우하고 있지 않습니다.`,
-      );
-    } else if (!otherUser.followers.includes(unFollowingDto.myId)) {
+    } else if (!isAlreadyFollow && isAlreadyFollowAtOther) {
+      throw new ConflictException('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
+    } else if (isAlreadyFollow && !isAlreadyFollowAtOther) {
       throw new ConflictException(
-        `${otherUser.nickname}의 팔로워 목록에 ${user.nickname}가 없습니다.`,
+        '갱신 이상! (팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않음)',
+      );
+    } else if (!isAlreadyFollow && !isAlreadyFollowAtOther) {
+      // 팔로우 되어있지 않은 경우 팔로우 필요
+      this.userRepository.appendElementAtArr(
+        { _id: followerDto.myId },
+        { followings: followerDto.followId },
+      );
+      this.userRepository.appendElementAtArr(
+        { _id: followerDto.followId },
+        { followers: followerDto.myId },
+      );
+    } else if (isAlreadyFollow && isAlreadyFollowAtOther) {
+      // 팔로우 되어있어 언팔로우 필요
+      this.userRepository.deleteElementAtArr(
+        { _id: followerDto.myId },
+        { followings: [followerDto.followId] },
+      );
+      this.userRepository.deleteElementAtArr(
+        { _id: followerDto.followId },
+        { followers: [followerDto.myId] },
       );
     }
-    this.userRepository.deleteElementAtArr(
-      { _id: unFollowingDto.myId },
-      { followings: [unFollowingDto.followId] },
-    );
-    this.userRepository.deleteElementAtArr(
-      { _id: unFollowingDto.followId },
-      { followers: [unFollowingDto.myId] },
-    );
   }
 
   async getUser(_id: string) {
