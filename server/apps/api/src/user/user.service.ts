@@ -45,12 +45,15 @@ export class UserService {
     }
   }
 
-  async getUser(_id: string) {
-    const user = await this.userRepository.findById(_id);
-    if (!user) {
-      throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
-    }
-    return getUserBasicInfo(user);
+  async getUser(id: string) {
+    const users = await this.userRepository.findOr([
+      { id: { $regex: id } },
+      { nickname: { $regex: id } },
+    ]);
+    // if (!users) {
+    //   throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
+    // }
+    return users.map((user) => getUserBasicInfo(user));
   }
 
   async getRelatedUsers(_id: string, option: string) {

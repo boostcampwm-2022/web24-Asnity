@@ -17,6 +17,10 @@ export class UserRepository {
     return await this.userModel.findOne(condition);
   }
 
+  async findOr(conditions: any) {
+    return await this.userModel.find({ $or: conditions });
+  }
+
   async findById(_id: string) {
     return await this.userModel.findById(_id);
   }
