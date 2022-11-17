@@ -18,11 +18,6 @@ export class ModifyUserDto {
 
   @IsOptional()
   @IsString()
-  @Min(8)
-  password: string;
-
-  @IsOptional()
-  @IsString()
   @Length(2, 8)
   nickname: string;
 
