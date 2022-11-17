@@ -51,7 +51,7 @@ const Friends = () => {
         </ul>
       </header>
       <div className="flex flex-1 relative">
-        <div className="flex-1">{TabPanel[tab]}</div>
+        <div className="flex-1 px-[38px] pt-[34px]">{TabPanel[tab]}</div>
         <div className="flex w-[443px] h-full border-l border-line">
           온라인, 오프라인
         </div>
