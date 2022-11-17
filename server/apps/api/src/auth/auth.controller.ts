@@ -7,7 +7,7 @@ import { OauthService } from '@api/src/auth/oauth/oauth.service';
 
 @Controller('api/user/auth')
 export class AuthController {
-  constructor(private authService: AuthService, private oauthService: OauthService) {}
+  constructor(private authService: AuthService) {}
 
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
