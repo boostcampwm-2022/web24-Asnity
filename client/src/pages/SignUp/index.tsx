@@ -1,17 +1,44 @@
 import AuthInput from '@components/AuthInput';
+import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Logo from '@components/Logo';
 import SuccessMessage from '@components/SuccessMessage';
+import TextButton from '@components/TextButton';
+import { API_URL } from '@constants/url';
+import { useMutation } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+interface SignUpField {
+  id: string;
+  nickname: string;
+  password: string;
+  passwordCheck: string;
+}
+
+interface SuccessResponse<T> {
+  statusCode: number;
+  result: T;
+}
+
+type PostUser = (
+  fields: Omit<SignUpField, 'passwordCheck'>,
+) => Promise<SuccessResponse<{ message: string }>>;
+
+const endPoint = `${API_URL}/api/user/auth/signup`;
+
+const postUser: PostUser = ({ id, nickname, password }) => {
+  return axios
+    .post(endPoint, { id, nickname, password })
+    .then((response) => response.data.result);
+};
 
 const SignUp = () => {
-  const { control, handleSubmit, watch } = useForm<{
-    id: string;
-    nickname: string;
-    password: string;
-    passwordCheck: string;
-  }>({
+  // TODO: 리팩토링 하자
+  const { control, handleSubmit, watch, reset } = useForm<SignUpField>({
     mode: 'all',
     defaultValues: {
       id: '',
@@ -21,19 +48,49 @@ const SignUp = () => {
     },
   });
 
+  const navigate = useNavigate();
+
+  const signUpMutate = useMutation(['signUp'], postUser, {
+    onSuccess: () => {
+      toast.success('회원가입에 성공했습니다.');
+      reset();
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        const errorMessage =
+          error?.response?.data?.message || '에러가 발생했습니다!';
+
+        if (Array.isArray(errorMessage)) {
+          return toast.error(errorMessage.join('. '));
+        }
+        return toast.error(errorMessage);
+      }
+
+      toast.error('Unknown Error');
+    },
+  });
+
   const password = watch('password');
 
+  const handleSubmitSignUpForm = (fields: SignUpField) => {
+    signUpMutate.mutate(fields);
+  };
+
+  const handleNavigateSignInPage = () => {
+    navigate('/sign-in');
+  };
+
   return (
-    <main>
-      <form
-        className="flex flex-col justify-start items-center h-screen pt-10"
-        onSubmit={handleSubmit((data) => {
-          console.log(data);
-        })}
-      >
+    <main className="flex flex-col items-center min-h-screen">
+      <div className="flex flex-col h-[250px] items-center justify-center">
         <Logo size="lg" />
         <h1 className="font-mont text-[40px] mb-5 capitalize">asnity</h1>
+      </div>
 
+      <form
+        className="flex flex-col justify-start items-center"
+        onSubmit={handleSubmit(handleSubmitSignUpForm)}
+      >
         <Controller
           name="id"
           control={control}
@@ -69,8 +126,9 @@ const SignUp = () => {
             validate: {
               notIncludesWhitespace: (value) =>
                 !value.includes(' ') || '공백은 포함될 수 없습니다!',
-              moreThan2Chars: (value) =>
-                value.length >= 2 || '닉네임은 두 글자 이상이어야 합니다!',
+              nicknameLength: (value) =>
+                (value.length >= 2 && value.length <= 8) ||
+                '닉네임은 2자 이상, 8자 이하만 가능합니다!',
             },
           }}
           render={({ field, formState: { errors } }) => {
@@ -151,8 +209,28 @@ const SignUp = () => {
           }}
         />
 
-        <button type="submit">회원가입</button>
-        <button type="button">로그인 페이지로</button>
+        <div className="mb-5">
+          <Button
+            color="primary"
+            size="md"
+            type="submit"
+            minWidth={340}
+            disabled={signUpMutate.isLoading}
+          >
+            회원가입
+          </Button>
+        </div>
+
+        <div>
+          <TextButton
+            size="sm"
+            className="text-body"
+            type="button"
+            onClick={handleNavigateSignInPage}
+          >
+            로그인 페이지로
+          </TextButton>
+        </div>
       </form>
     </main>
   );

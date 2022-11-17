@@ -12,7 +12,8 @@
       "@features/*": ["src/features/*"],
       "@mocks/*": ["src/mocks/*"],
       "@stores/*": ["src/stores/*"],
-      "@icons/*": ["src/assets/icons/*"]
+      "@icons/*": ["src/assets/icons/*"],
+      "@constants/*": ["src/constants/*"]
     }
   },
   "include": ["src", "config"],
