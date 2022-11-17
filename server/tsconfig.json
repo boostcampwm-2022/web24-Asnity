@@ -24,6 +24,7 @@
       "@custom_pipe/*": ["custom_pipe/*"],
       "@user/*": ["apps/api/src/user/*"],
       "@api/*": ["apps/api/*"],
+      "@mock/*": ["__mock__/*"],
     }
   }
 }
