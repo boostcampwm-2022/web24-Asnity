@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length, MinLength } from 'class-validator';
 
 export class SignInDto {
   @IsEmail()
@@ -20,6 +20,6 @@ export class SignUpDto {
   password: string;
 
   @IsString()
-  @MinLength(2)
+  @Length(2, 8)
   nickname: string;
 }
