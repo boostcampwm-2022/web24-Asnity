@@ -1,3 +1,3 @@
-import { GetUser } from './Auth';
+import * as AuthHandlers from './Auth';
 
-export const handlers = [GetUser];
+export const handlers = [...Object.values(AuthHandlers)];
