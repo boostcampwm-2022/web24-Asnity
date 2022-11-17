@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, Param } from '@nest
 import { FollowerDto } from '@user/dto/follower.dto';
 import { UserRepository } from '@repository/user.repository';
 import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
+import { ModifyUserDto } from '@user/dto/modify-user.dto';
 
 @Injectable()
 export class UserService {
@@ -70,5 +71,15 @@ export class UserService {
         return getUserBasicInfo(await this.userRepository.findById(userId));
       }),
     );
+  }
+
+  async modifyUser(modifyUserDto: ModifyUserDto) {
+    const { _id, ...updateField } = modifyUserDto;
+    const user = await this.userRepository.findById(_id);
+    if (!user) {
+      throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
+    }
+    // TODO: 꼭 기다려줘야하는지 생각해보기
+    return await this.userRepository.updateOne({ _id }, updateField);
   }
 }
