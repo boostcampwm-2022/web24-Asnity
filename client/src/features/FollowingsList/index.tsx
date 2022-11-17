@@ -1,8 +1,9 @@
-import UserProfile from '@components/UserProfile';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
 import { GetUserResponse } from 'shared/lib/getUserResponse';
+
+import FollowingItem from './components/item';
 
 const getFollowings = () =>
   axios.get('/api/followings').then((res) => res.data);
@@ -13,9 +14,9 @@ const FollowingsList = () => {
   if (isLoading) return <div>loading</div>;
 
   return (
-    <ul className="flex flex-col gap-[12px]">
-      {data.result.followings.map(({ _id, ...rest }: GetUserResponse) => (
-        <UserProfile key={_id} user={rest} />
+    <ul className="flex flex-col">
+      {data.result.followings.map((user: GetUserResponse) => (
+        <FollowingItem key={user._id} user={user} />
       ))}
     </ul>
   );
