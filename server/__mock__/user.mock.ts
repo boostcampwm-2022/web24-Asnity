@@ -43,3 +43,11 @@ export const followerDtoMock: FollowerDto = {
   myId: '63734af9e62b37012c73e399',
   followId: '63734e98384f478a32c3a1cc',
 };
+
+export const user1Modify = {
+  name: '',
+  id: 'test_ny@naver.com',
+  profileUrl: 'nayoung img modify',
+  description: 'hello im nayoung modify',
+  status: 'OFFLINE',
+} as any;

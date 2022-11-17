@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
+import { UserService } from '@user/user.service';
 import { UserRepository } from '@repository/user.repository';
 import { getModelToken } from '@nestjs/mongoose';
-import { followerDtoMock, user1, user2 } from '@mock/user.mock';
+import { followerDtoMock, user1, user1Modify, user2 } from '@mock/user.mock';
 import { User } from '@schemas/user.schema';
 import * as _ from 'lodash';
 import { BadRequestException, ConflictException } from '@nestjs/common';
@@ -139,7 +139,11 @@ describe('[User Service]', () => {
     });
   });
 
-  describe('User 사용자 검색 정보', () => {});
-
-  describe('User 나의 정보 수정', () => {});
+  describe('[modifyUser] 사용자 정보 수', () => {
+    it('정보 수정 정상 동작', async () => {
+      jest.spyOn(userRepository, 'findById').mockResolvedValueOnce(user1);
+      jest.spyOn(userRepository, 'updateOne').mockResolvedValue();
+      expect(await userService.modifyUser(user1Modify)).toBeUndefined();
+    });
+  });
 });
