@@ -60,10 +60,10 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUser(@Param('id', ObjectIdValidationPipe) _id: string) {
+  async getUser(@Param('id') id: string) {
     try {
-      const result = await this.userService.getUser(_id);
-      return responseForm(200, { ...result });
+      const result = await this.userService.getUser(id);
+      return responseForm(200, { result });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response;
