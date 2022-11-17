@@ -1,5 +1,5 @@
+import FollowingsList from '@features/FollowingsList';
 import Followers from '@pages/Followers';
-import Followings from '@pages/Followings';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
 
@@ -25,7 +25,7 @@ const TABS = [
 ];
 
 const TabPanel: Record<string, JSX.Element> = {
-  [TAB.FOLLOWINGS]: <Followings />,
+  [TAB.FOLLOWINGS]: <FollowingsList />,
   [TAB.FOLLOWERS]: <Followers />,
   [TAB.USER_SEARCH]: <UserSearch />,
 };
