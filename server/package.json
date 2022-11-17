@@ -88,6 +88,17 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/"
-    ]
+    ],
+    "moduleNameMapper": {
+      "@app/(.*)": "<rootDir>/src/$1",
+      "@schemas/(.*)": "<rootDir>/dao/schemas/$1",
+      "@repository/(.*)": "<rootDir>/dao/repository/$1",
+      "@utils/(.*)": "<rootDir>/utils/$1",
+      "@custom_pipe/(.*)": "<rootDir>/custom_pipe/$1",
+      "@user/(.*)": "<rootDir>/apps/api/src/user/$1",
+      "@api/(.*)": "<rootDir>/apps/api/$1",
+      "@mock/(.*)": "<rootDir>/__mock__/$1"
+    }
   }
+
 }

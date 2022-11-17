@@ -1,18 +1,108 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
+import { UserRepository } from '@repository/user.repository';
+import { getModelToken } from '@nestjs/mongoose';
+import { followerDtoMock, user1, user2 } from '@mock/user.mock';
+import { User } from '@schemas/user.schema';
+import * as _ from 'lodash';
+import { ConflictException } from '@nestjs/common';
 
-describe('UserService', () => {
-  let service: UserService;
+describe('[User Service]', () => {
+  let userService: UserService;
+  let userRepository: UserRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
+      providers: [
+        UserService,
+        UserRepository,
+        {
+          provide: getModelToken(User.name),
+          useFactory: () => {},
+        },
+      ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
+    userRepository = module.get<UserRepository>(UserRepository);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(userService).toBeDefined();
   });
+
+  describe('/toggleFollowing/ 팔로잉, 언팔로잉', () => {
+    const user1Append = _.cloneDeep(user1);
+    user1Append.followings.push(followerDtoMock.followId);
+    const user2Append = _.cloneDeep(user2);
+    user2Append.followers.push(followerDtoMock.myId);
+
+    beforeEach(async () => {});
+
+    it('팔로잉 정상 동작', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user1)
+        .mockResolvedValueOnce(user2);
+      jest
+        .spyOn(userRepository, 'appendElementAtArr')
+        .mockResolvedValueOnce(user1Append)
+        .mockResolvedValueOnce(user2Append);
+      expect(await userService.toggleFollowing(followerDtoMock)).toEqual({
+        message: '팔로우 신청 완료',
+      });
+    });
+
+    it('언팔로잉 정상 동작', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user1Append)
+        .mockResolvedValueOnce(user2Append);
+      jest
+        .spyOn(userRepository, 'deleteElementAtArr')
+        .mockResolvedValueOnce(user1)
+        .mockResolvedValueOnce(user2);
+      expect(await userService.toggleFollowing(followerDtoMock)).toEqual({
+        message: '언팔로우 완료',
+      });
+    });
+
+    it('팔로우 하지 않았으나 상대방이 팔로우 한 경우 에러', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user1)
+        .mockResolvedValueOnce(user2Append);
+
+      try {
+        await userService.toggleFollowing(followerDtoMock);
+      } catch (e) {
+        expect(e).toBeInstanceOf(ConflictException);
+        expect(e.message).toBe('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
+      }
+    });
+
+    it('팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않은 경우 에러', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user1Append)
+        .mockResolvedValueOnce(user2);
+
+      try {
+        await userService.toggleFollowing(followerDtoMock);
+      } catch (e) {
+        expect(e).toBeInstanceOf(ConflictException);
+        expect(e.message).toBe(
+          '갱신 이상! (팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않음)',
+        );
+      }
+    });
+  });
+
+  describe('User 나의 팔로워 정보', () => {});
+
+  describe('User 나의 팔로잉 정보', () => {});
+
+  describe('User 사용자 검색 정보', () => {});
+
+  describe('User 나의 정보 수정', () => {});
 });
