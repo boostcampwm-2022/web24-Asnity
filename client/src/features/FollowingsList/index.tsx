@@ -7,7 +7,7 @@ import { GetUserResponse } from 'shared/lib/getUserResponse';
 const getFollowings = () =>
   axios.get('/api/followings').then((res) => res.data);
 
-const Followings = () => {
+const FollowingsList = () => {
   const { isLoading, data } = useQuery(['followings'], getFollowings);
 
   if (isLoading) return <div>loading</div>;
@@ -21,4 +21,4 @@ const Followings = () => {
   );
 };
 
-export default Followings;
+export default FollowingsList;
