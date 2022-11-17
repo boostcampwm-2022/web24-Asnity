@@ -26,7 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({ name, url, size, variant }) => {
         <img
           className="object-cover"
           src={url}
-          alt={`커뮤니티 ${name}의 프로필 이미지`}
+          alt={`${name}의 프로필 이미지`}
         />
       ) : (
         name.at(0)
