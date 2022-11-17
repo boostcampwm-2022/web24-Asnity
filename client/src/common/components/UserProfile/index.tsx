@@ -11,10 +11,10 @@ const UserProfile: React.FC<UserItemProps> = ({
   user: { nickname, profileUrl },
 }) => {
   return (
-    <li className="flex items-center gap-[11px] h-[87px] px-[12px] border-b border-line">
+    <div className="flex items-center gap-[11px] h-[87px]">
       <Avatar size="small" variant="circle" name={nickname} url={profileUrl} />
       <div className="font-bold text-s16">{nickname}</div>
-    </li>
+    </div>
   );
 };
 
