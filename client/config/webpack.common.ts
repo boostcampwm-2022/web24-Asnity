@@ -3,11 +3,18 @@ import type { Configuration } from 'webpack';
 import path from 'path';
 
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import dotenv from 'dotenv';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import webpack from 'webpack';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+
+const envPath = isDevelopment
+  ? path.resolve(__dirname, '..', 'env/.env.dev')
+  : path.resolve(__dirname, '..', 'env/.env.prod');
+
+dotenv.config({ path: envPath });
 
 function isTruthy<T>(
   value: T,
@@ -48,12 +55,7 @@ const config: Configuration = {
     new HtmlWebpackPlugin({
       template: '../public/index.html',
     }),
-    new webpack.DefinePlugin({
-      SIGN_IN_URL: JSON.stringify(
-        'https://github.com/login/oauth/authorize?client_id=940294fcbf88a773fdc1',
-      ),
-      BASE_URL: JSON.stringify('http://localhost:8081'),
-    }),
+    new webpack.EnvironmentPlugin(['API_URL']),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(isTruthy),
 };
