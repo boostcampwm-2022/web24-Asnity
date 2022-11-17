@@ -5,12 +5,17 @@ import { getModelToken } from '@nestjs/mongoose';
 import { followerDtoMock, user1, user2 } from '@mock/user.mock';
 import { User } from '@schemas/user.schema';
 import * as _ from 'lodash';
-import { ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
+import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
 
 describe('[User Service]', () => {
   let userService: UserService;
   let userRepository: UserRepository;
 
+  const user1Append = _.cloneDeep(user1);
+  user1Append.followings.push(followerDtoMock.followId);
+  const user2Append = _.cloneDeep(user2);
+  user2Append.followers.push(followerDtoMock.myId);
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -31,14 +36,7 @@ describe('[User Service]', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('/toggleFollowing/ 팔로잉, 언팔로잉', () => {
-    const user1Append = _.cloneDeep(user1);
-    user1Append.followings.push(followerDtoMock.followId);
-    const user2Append = _.cloneDeep(user2);
-    user2Append.followers.push(followerDtoMock.myId);
-
-    beforeEach(async () => {});
-
+  describe('[toggleFollowing] 팔로잉, 언팔로잉', () => {
     it('팔로잉 정상 동작', async () => {
       jest
         .spyOn(userRepository, 'findById')
@@ -96,11 +94,50 @@ describe('[User Service]', () => {
         );
       }
     });
+
+    // it('사용자가 없는 경우 에러', async () => {
+    //   jest.spyOn(userRepository, 'findById').mockResolvedValue({} as any);
+    //
+    //   try {
+    //     await userService.toggleFollowing(followerDtoMock);
+    //   } catch (e) {
+    //     expect(e).toBeInstanceOf(BadRequestException);
+    //     expect(e.message).toBe('해당하는 사용자의 _id가 올바르지 않습니다.');
+    //   }
+    // });
   });
 
-  describe('User 나의 팔로워 정보', () => {});
+  describe('[getUser] 사용자 정보 검색', () => {
+    it('팔로잉 정상 동작', async () => {
+      jest.spyOn(userRepository, 'findOr').mockResolvedValueOnce([user1, user2]);
+      expect(await userService.getUser('test')).toEqual([
+        getUserBasicInfo(user1),
+        getUserBasicInfo(user2),
+      ]);
+    });
+  });
 
-  describe('User 나의 팔로잉 정보', () => {});
+  describe('[getRelatedUsers] 나의 팔로잉 정보', () => {
+    it('팔로잉 정보 정상 동작', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user1Append)
+        .mockResolvedValueOnce(user2Append);
+      expect(await userService.getRelatedUsers('test', 'followings')).toEqual([
+        getUserBasicInfo(user2Append),
+      ]);
+    });
+
+    it('팔로워 정보 정상 동작', async () => {
+      jest
+        .spyOn(userRepository, 'findById')
+        .mockResolvedValueOnce(user2Append)
+        .mockResolvedValueOnce(user1Append);
+      expect(await userService.getRelatedUsers('test', 'followers')).toEqual([
+        getUserBasicInfo(user1Append),
+      ]);
+    });
+  });
 
   describe('User 사용자 검색 정보', () => {});
 
