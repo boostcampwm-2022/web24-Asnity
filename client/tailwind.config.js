@@ -2,6 +2,11 @@
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
+    extend: {
+      height: {
+        header: '97px',
+      },
+    },
     fontSize: {
       s12: ['12px', '18px'],
       s14: ['14px', '24px'],
