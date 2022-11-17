@@ -82,4 +82,5 @@ export class UserService {
     // TODO: 꼭 기다려줘야하는지 생각해보기
     return await this.userRepository.updateOne({ _id }, updateField);
   }
+  정;
 }
