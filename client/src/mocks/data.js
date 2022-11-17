@@ -6,7 +6,7 @@ export const users = [
     id: '1',
     nickname: '나영',
     status: 'online',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(1000)}/70`,
+    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
     description: 'default description',
   },
   {
@@ -14,7 +14,7 @@ export const users = [
     id: '2',
     nickname: '수만',
     status: 'offline',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(1000)}/70`,
+    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
     description: 'default descrption',
   },
   {
@@ -22,7 +22,7 @@ export const users = [
     id: '3',
     nickname: '민종',
     status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(1000)}/70`,
+    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
     description: 'default descrption',
   },
   {
@@ -30,7 +30,7 @@ export const users = [
     id: '4',
     nickname: '준영',
     status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(1000)}/70`,
+    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
     description: 'default descrption',
   },
 ];
