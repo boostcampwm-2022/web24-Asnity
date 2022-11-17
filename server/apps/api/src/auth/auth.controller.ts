@@ -1,12 +1,13 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpDto } from './dto';
+import { SignInDto, SignUpDto } from './dto';
 import { responseForm } from '@utils/responseForm';
 import { Response } from 'Express';
+import { OauthService } from '@api/src/auth/oauth/oauth.service';
 
 @Controller('api/user/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private oauthService: OauthService) {}
 
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
@@ -15,7 +16,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  async signIn(@Body() signInDto: SignUpDto, @Res({ passthrough: true }) res: Response) {
+  async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.signIn(signInDto);
 
     // refreshToken 쿠키에 구워줌
