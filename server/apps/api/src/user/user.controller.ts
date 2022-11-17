@@ -1,9 +1,20 @@
-import { Body, Controller, Delete, Get, Inject, LoggerService, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  LoggerService,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { FollowerDto } from '@user/dto/follower.dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { responseForm } from '@utils/responseForm';
 import { ObjectIdValidationPipe } from '@custom_pipe/mongodbObjectIdValidation.pipe';
+import { ModifyUserDto } from '@user/dto/modify-user.dto';
 
 @Controller('api/user')
 export class UserController {
@@ -64,6 +75,19 @@ export class UserController {
     try {
       const result = await this.userService.getUser(id);
       return responseForm(200, { result });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      return error.response;
+    }
+  }
+
+  @Patch('settings')
+  async modifyUserSetting(@Body() modifyUserDto: ModifyUserDto) {
+    try {
+      const _id = '63734af9e62b37012c73e399';
+      // TODO: Request Header에서 access token으로 현재 사용자 알아내기
+      await this.userService.modifyUser({ ...modifyUserDto, _id });
+      return responseForm(200, {});
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       return error.response;
