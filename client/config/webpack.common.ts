@@ -53,9 +53,12 @@ const config: Configuration = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: '../public/index.html',
+      template: '../public/index.ejs',
+      templateParameters: {
+        PUBLIC_URL: process.env.PUBLIC_URL,
+      },
     }),
-    new webpack.EnvironmentPlugin(['API_URL']),
+    new webpack.EnvironmentPlugin(['API_URL', 'PUBLIC_URL']),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(isTruthy),
 };
