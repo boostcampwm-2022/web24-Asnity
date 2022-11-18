@@ -22,7 +22,7 @@ const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
   };
 
   return (
-    <li className="flex justify-between items-center  px-[12px] w-full border-b border-line hover:bg-background">
+    <li className="flex justify-between items-center px-[12px] w-full border-b border-line hover:bg-background">
       <UserProfile user={user} />
       <div className="flex gap-4">
         <button
