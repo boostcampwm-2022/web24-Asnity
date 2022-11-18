@@ -6,7 +6,7 @@ import { GetUserResponse } from 'shared/lib/getUserResponse';
 import FollowingItem from './components/item';
 
 const getFollowings = () =>
-  axios.get('/api/followings').then((res) => res.data);
+  axios.get('/api/user/followings').then((res) => res.data);
 
 const FollowingsList = () => {
   const { isLoading, data } = useQuery(['followings'], getFollowings);
