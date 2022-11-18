@@ -2,7 +2,7 @@ import { rest } from 'msw';
 
 import { users } from '../data';
 
-const GetFollowings = rest.get('/api/followings', (req, res, ctx) => {
+const GetFollowings = rest.get('/api/user/followings', (req, res, ctx) => {
   return res(
     ctx.delay(),
     ctx.status(200),
