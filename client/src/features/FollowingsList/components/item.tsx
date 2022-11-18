@@ -1,6 +1,8 @@
 import UserProfile from '@components/UserProfile';
-import ChatBubbleRoundedIcon from '@mui/icons-material/ChatBubbleRounded';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {
+  EllipsisHorizontalIcon,
+  ChatBubbleLeftIcon,
+} from '@heroicons/react/20/solid';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetUserResponse } from 'shared/lib/getUserResponse';
@@ -26,13 +28,13 @@ const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
       <UserProfile user={user} />
       <div className="flex gap-4">
         <button
-          className="w-[40px] h-[40px] rounded-full border border-line"
+          className="p-2 rounded-full border border-line"
           onClick={handleChatButtonClick}
         >
-          <ChatBubbleRoundedIcon />
+          <ChatBubbleLeftIcon className="w-6 h-6 fill-indigo" />
         </button>
-        <button className="w-[40px] h-[40px] rounded-full border border-line">
-          <MoreVertIcon />
+        <button className="p-2 rounded-full border border-line">
+          <EllipsisHorizontalIcon className="w-6 h-6 fill-indigo" />
         </button>
       </div>
     </li>
