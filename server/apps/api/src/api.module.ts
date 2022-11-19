@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpException, Module } from '@nestjs/common';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,9 @@ import { UserModule } from './user/user.module';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from './auth/auth.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { SentryInterceptor } from '../../webhook.interceptor';
+import { RavenInterceptor, RavenModule } from 'nest-raven';
 
 @Module({
   imports: [
@@ -20,7 +23,7 @@ import { AuthModule } from './auth/auth.module';
     WinstonModule.forRoot({
       transports: [
         new winston.transports.Console({
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+          level: process.env.NODE_ENV === 'prod' ? 'info' : 'silly',
           format: winston.format.combine(
             winston.format.colorize({ all: true }),
             winston.format.simple(),
