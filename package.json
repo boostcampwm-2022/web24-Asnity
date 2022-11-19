@@ -15,6 +15,8 @@
     "client": "yarn workspace client",
     "server": "yarn workspace server",
     "api-dev": "yarn workspace server api-dev",
-    "socket-dev": "yarn workspace server socket-dev"
+    "socket-dev": "yarn workspace server socket-dev",
+    "api-prod": "yarn workspace server api-prod",
+    "socket-prod": "yarn workspace server socket-prod"
   }
 }

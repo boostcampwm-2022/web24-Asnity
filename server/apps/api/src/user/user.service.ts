@@ -11,11 +11,13 @@ export class UserService {
   async toggleFollowing(followerDto: FollowerDto) {
     const user = await this.userRepository.findById(followerDto.myId);
     const otherUser = await this.userRepository.findById(followerDto.followId);
-    const isAlreadyFollow = user.followings.includes(followerDto.followId);
-    const isAlreadyFollowAtOther = otherUser.followers.includes(followerDto.myId);
     if (!user || !otherUser) {
       throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
-    } else if (!isAlreadyFollow && isAlreadyFollowAtOther) {
+    }
+
+    const isAlreadyFollow = user.followings.includes(followerDto.followId);
+    const isAlreadyFollowAtOther = otherUser.followers.includes(followerDto.myId);
+    if (!isAlreadyFollow && isAlreadyFollowAtOther) {
       throw new ConflictException('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
     } else if (isAlreadyFollow && !isAlreadyFollowAtOther) {
       throw new ConflictException(
