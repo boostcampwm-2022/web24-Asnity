@@ -3,6 +3,7 @@ import { catchError } from 'rxjs/operators';
 import { IncomingWebhook } from '@slack/client';
 import { of } from 'rxjs';
 import * as Sentry from '@sentry/minimal';
+import * as ip from 'ip';
 
 @Injectable()
 export class SentryInterceptor implements NestInterceptor {
@@ -19,7 +20,7 @@ export class SentryInterceptor implements NestInterceptor {
               fields: [
                 {
                   title: error.message,
-                  value: error.stack,
+                  value: `Server IP : ${ip.address()}\n` + error.stack,
                   short: false,
                 },
               ],
