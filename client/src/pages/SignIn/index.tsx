@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface SignInFields {
@@ -83,7 +83,7 @@ const SignIn = () => {
   };
 
   if (accessToken) {
-    navigate('/dms');
+    return <Navigate to="/dms" />;
   }
 
   return (
