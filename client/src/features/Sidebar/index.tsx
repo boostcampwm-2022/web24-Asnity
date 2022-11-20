@@ -20,8 +20,8 @@ const Sidebar = () => {
       </nav>
       <div className="flex justify-between items-center w-full px-4 bg-inputBackground border-t border-line">
         {isLoading ? 'loading' : <UserProfile user={data.result.user} />}
-        <button className="w-7 h-7">
-          <Cog6ToothIcon className="fill-label" />
+        <button>
+          <Cog6ToothIcon className="w-7 h-7 fill-label" />
         </button>
       </div>
     </div>
