@@ -1,14 +1,20 @@
 import { rest } from 'msw';
 
-export const GetUser = rest.get('/users', (req, res, ctx) => {
+import { users } from '../data';
+
+export const GetMyInfo = rest.get('/api/user/auth/me', (req, res, ctx) => {
   return res(
+    ctx.delay(),
     ctx.status(200),
-    ctx.delay(1000),
     ctx.json({
       statusCode: 200,
       result: {
-        nickname: '닉네임',
+        user: users[0],
       },
     }),
   );
 });
+
+const AuthHandlers = [GetMyInfo];
+
+export default AuthHandlers;
