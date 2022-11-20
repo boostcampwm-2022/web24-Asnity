@@ -14,7 +14,7 @@ const FollowingsList = () => {
   if (isLoading) return <div>loading</div>;
 
   return (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col divide-y divide-line">
       {data.result.followings.map((user: GetUserResponse) => (
         <FollowingItem key={user._id} user={user} />
       ))}
