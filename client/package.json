@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.ts --progress",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.ts --progress",
-    "deploy": "aws s3 sync ./build s3://asnity --profile=mjsdo2",
+    "analysis": "cross-env NODE_ENV=production webpack --config ./config/webpack.analysis.ts --progress",
     "test": "jest"
   },
   "dependencies": {
