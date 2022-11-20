@@ -21,6 +21,25 @@ const GetFollowings = rest.get('/api/user/followings', (req, res, ctx) => {
   );
 });
 
-const FriendHandlers = [GetFollowings];
+const UpdateFollowing = rest.post(
+  '/api/user/following/:userId',
+  (req, res, ctx) => {
+    const { userId } = req.params;
+    const idx = users.findIndex((user) => user._id === userId);
+
+    users.splice(idx, 1);
+    console.log(users);
+    return res(
+      ctx.delay(),
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        result: {},
+      }),
+    );
+  },
+);
+
+const FriendHandlers = [GetFollowings, UpdateFollowing];
 
 export default FriendHandlers;
