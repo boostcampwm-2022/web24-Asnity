@@ -2,13 +2,13 @@ import type { Configuration } from 'webpack';
 
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import TerserPlugin from 'terser-webpack-plugin';
 import { merge } from 'webpack-merge';
 
 import common from './webpack.common';
 
 const config: Configuration = {
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   mode: 'production',
   module: {
     rules: [
@@ -19,17 +19,20 @@ const config: Configuration = {
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin(),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      reportFilename: 'report.html',
-      openAnalyzer: false,
-    }),
-  ],
+  plugins: [new MiniCssExtractPlugin()],
   optimization: {
     minimize: true,
-    minimizer: [new CssMinimizerPlugin()],
+    minimizer: [
+      new CssMinimizerPlugin(),
+      new TerserPlugin({
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
+    ],
   },
 };
 
