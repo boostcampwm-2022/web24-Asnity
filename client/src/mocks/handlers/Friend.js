@@ -2,7 +2,7 @@ import { rest } from 'msw';
 
 import { users } from '../data';
 
-const GetFollowings = rest.get('/api/users/followings', (req, res, ctx) => {
+const GetFollowings = rest.get('/api/user/followings', (req, res, ctx) => {
   const query = req.url.searchParams.get('query') ?? '';
 
   return res(

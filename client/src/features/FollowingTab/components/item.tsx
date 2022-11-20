@@ -7,7 +7,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetUserResponse } from 'shared/lib/getUserResponse';
 
-type User = Pick<
+export type User = Pick<
   GetUserResponse,
   '_id' | 'id' | 'nickname' | 'profileUrl' | 'status'
 >;
