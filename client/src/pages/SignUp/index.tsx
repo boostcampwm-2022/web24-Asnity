@@ -12,7 +12,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-interface SignUpField {
+interface SignUpFields {
   id: string;
   nickname: string;
   password: string;
@@ -24,21 +24,21 @@ interface SuccessResponse<T> {
   result: T;
 }
 
-type PostUser = (
-  fields: Omit<SignUpField, 'passwordCheck'>,
+type SignUpApi = (
+  fields: Omit<SignUpFields, 'passwordCheck'>,
 ) => Promise<SuccessResponse<{ message: string }>>;
 
 const endPoint = `${API_URL}/api/user/auth/signup`;
 
-const postUser: PostUser = ({ id, nickname, password }) => {
+const signUpApi: SignUpApi = ({ id, nickname, password }) => {
   return axios
     .post(endPoint, { id, nickname, password })
-    .then((response) => response.data.result);
+    .then((response) => response.data);
 };
 
 const SignUp = () => {
   // TODO: 리팩토링 하자
-  const { control, handleSubmit, watch, reset } = useForm<SignUpField>({
+  const { control, handleSubmit, watch, reset } = useForm<SignUpFields>({
     mode: 'all',
     defaultValues: {
       id: '',
@@ -50,7 +50,7 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const signUpMutate = useMutation(['signUp'], postUser, {
+  const signUpMutate = useMutation(['signUp'], signUpApi, {
     onSuccess: () => {
       toast.success('회원가입에 성공했습니다.');
       reset();
@@ -61,9 +61,14 @@ const SignUp = () => {
           error?.response?.data?.message || '에러가 발생했습니다!';
 
         if (Array.isArray(errorMessage)) {
-          return toast.error(errorMessage.join('. '));
+          errorMessage.forEach((message) => {
+            toast.error(message);
+          });
+          return;
         }
-        return toast.error(errorMessage);
+
+        toast.error(errorMessage);
+        return;
       }
 
       toast.error('Unknown Error');
@@ -72,7 +77,7 @@ const SignUp = () => {
 
   const password = watch('password');
 
-  const handleSubmitSignUpForm = (fields: SignUpField) => {
+  const handleSubmitSignUpForm = (fields: SignUpFields) => {
     signUpMutate.mutate(fields);
   };
 
