@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       height: {
-        header: '97px',
+        header: '90px',
       },
     },
     fontSize: {
@@ -13,7 +13,8 @@ module.exports = {
       s16: ['16px', '26px'],
       s18: ['18px', '30px'],
       s20: ['20px', '36px'],
-      title: ['32px', '58px'],
+      s22: ['22px'],
+      title: ['28px'],
       logo: ['80px', '144px'],
     },
     colors: {
