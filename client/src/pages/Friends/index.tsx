@@ -43,7 +43,7 @@ const Friends = () => {
             <li
               key={t}
               className={`${tab === t ? 'text-indigo' : 'text-placeholder'
-                } font-bold text-[24px]`}
+                } font-bold text-[21px]`}
             >
               <button onClick={() => setTab(t)}>{name}</button>
             </li>
@@ -52,7 +52,7 @@ const Friends = () => {
       </header>
       <div className="flex flex-1 relative">
         <div className="flex-1 px-[38px] pt-[34px]">{TabPanel[tab]}</div>
-        <div className="flex w-[443px] h-full border-l border-line">
+        <div className="flex w-72 h-full border-l border-line">
           온라인, 오프라인
         </div>
       </div>
