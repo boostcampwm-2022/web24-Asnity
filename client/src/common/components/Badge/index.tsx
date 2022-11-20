@@ -8,7 +8,7 @@ interface BadgeProps {
 
 const scale = {
   small: 'w-5 h-5',
-  medium: 'w-7 h-7',
+  medium: 'w-6 h-6',
 };
 
 const background = {
