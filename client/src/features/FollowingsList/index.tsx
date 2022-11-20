@@ -4,6 +4,7 @@ import React from 'react';
 import { GetUserResponse } from 'shared/lib/getUserResponse';
 
 import FollowingItem from './components/item';
+import SearchInput from './components/searchInput';
 
 const getFollowings = () =>
   axios.get('/api/user/followings').then((res) => res.data);
@@ -14,11 +15,16 @@ const FollowingsList = () => {
   if (isLoading) return <div>loading</div>;
 
   return (
-    <ul className="flex flex-col divide-y divide-line">
-      {data.result.followings.map((user: GetUserResponse) => (
-        <FollowingItem key={user._id} user={user} />
-      ))}
-    </ul>
+    <>
+      <div className="w-full p-8">
+        <SearchInput placeholder="검색하기" />
+      </div>
+      <ul className="flex flex-col divide-y divide-line">
+        {data.result.followings.map((user: GetUserResponse) => (
+          <FollowingItem key={user._id} user={user} />
+        ))}
+      </ul>
+    </>
   );
 };
 
