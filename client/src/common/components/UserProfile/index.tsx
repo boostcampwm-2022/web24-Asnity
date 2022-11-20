@@ -1,9 +1,8 @@
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
 import React from 'react';
-import { GetUserResponse } from 'shared/lib/getUserResponse';
+import { User } from 'shared/lib/getUserResponse';
 
-type User = Pick<GetUserResponse, 'profileUrl' | 'status' | 'nickname'>;
 interface UserItemProps {
   user: User;
 }
