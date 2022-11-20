@@ -1,35 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { GetUserResponse } from 'shared/lib/getUserResponse';
+import React, { useState, Suspense } from 'react';
 
-import FollowingItem from './components/item';
+import FollowingList from './components/list';
 import SearchInput from './components/searchInput';
-
-const useDebouncedValue = <T,>(value: T, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [value, delay]);
-  return debouncedValue;
-};
-
-const getFollowings = (query: string) =>
-  axios.get(`/api/users/followings?query=${query}`).then((res) => res.data);
+import useDebouncedValue from './hooks/useDebouncedValue';
+import useFollowingsQuery from './hooks/useFollowingsQuery';
 
 const FollowingTab = () => {
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, 500);
-  const { isLoading, data } = useQuery(['followings', debouncedFilter], () =>
-    getFollowings(debouncedFilter),
-  );
+  const { data } = useFollowingsQuery(debouncedFilter, { suspense: true });
 
   return (
     <>
@@ -40,17 +19,13 @@ const FollowingTab = () => {
           placeholder="검색하기"
         />
       </div>
-      {isLoading ? (
-        <div>loading...</div>
-      ) : (
-        <ul className="flex flex-col divide-y divide-line">
-          {data.result.followings.length
-            ? data.result.followings.map((user: GetUserResponse) => (
-              <FollowingItem key={user._id} user={user} />
-            ))
-            : '일치하는 사용자가 없습니다.'}
-        </ul>
-      )}
+      <Suspense fallback={<div>loading...</div>}>
+        {data.result.followings ? (
+          <FollowingList users={data.result.followings} />
+        ) : (
+          '일치하는 사용자가 없습니다.'
+        )}
+      </Suspense>
     </>
   );
 };
