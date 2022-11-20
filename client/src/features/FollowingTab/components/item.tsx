@@ -5,12 +5,9 @@ import {
 } from '@heroicons/react/20/solid';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GetUserResponse } from 'shared/lib/getUserResponse';
+import { User } from 'shared/lib/getUserResponse';
 
-export type User = Pick<
-  GetUserResponse,
-  '_id' | 'id' | 'nickname' | 'profileUrl' | 'status'
->;
+import useUpdateFollowing from '../hooks/useUpdateFollowing';
 
 interface FollowingProps {
   user: User;
@@ -18,6 +15,7 @@ interface FollowingProps {
 
 const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
   const navigate = useNavigate();
+  const updateFollowing = useUpdateFollowing(user._id);
 
   const handleChatButtonClick = () => {
     navigate(`/dms/${user._id}`);
@@ -34,7 +32,10 @@ const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
           <ChatBubbleLeftIcon className="w-6 h-6 fill-indigo" />
         </button>
         <button className="p-2 rounded-full border border-line">
-          <EllipsisHorizontalIcon className="w-6 h-6 fill-indigo" />
+          <EllipsisHorizontalIcon
+            className="w-6 h-6 fill-indigo"
+            onClick={() => updateFollowing.mutate(user)}
+          />
         </button>
       </div>
     </li>
