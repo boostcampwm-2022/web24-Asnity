@@ -13,9 +13,12 @@
       "@mocks/*": ["src/mocks/*"],
       "@stores/*": ["src/stores/*"],
       "@icons/*": ["src/assets/icons/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
     }
   },
   "include": ["src", "config"],
-  "exclude": ["node_modules", "build", "dist"]
+  "exclude": ["node_modules", "build", "dist"],
+  "references": [
+    { "path":  "../shared" }
+  ]
 }
