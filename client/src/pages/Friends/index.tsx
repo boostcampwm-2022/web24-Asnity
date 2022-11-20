@@ -1,4 +1,4 @@
-import FollowingsList from '@features/FollowingsList';
+import FollowingsList from '@features/FollowingList';
 import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
@@ -50,7 +50,7 @@ const Friends = () => {
           ))}
         </ul>
       </header>
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1">
         <div className="flex-1">{TabPanel[tab]}</div>
         <div className="flex w-72 h-full border-l border-line">
           온라인, 오프라인
