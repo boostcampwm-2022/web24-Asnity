@@ -24,7 +24,7 @@ const useDebouncedValue = <T,>(value: T, delay: number) => {
 const getFollowings = (query: string) =>
   axios.get(`/api/users/followings?query=${query}`).then((res) => res.data);
 
-const FollowingsList = () => {
+const FollowingTab = () => {
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, 500);
   const { isLoading, data } = useQuery(['followings', debouncedFilter], () =>
@@ -55,4 +55,4 @@ const FollowingsList = () => {
   );
 };
 
-export default FollowingsList;
+export default FollowingTab;
