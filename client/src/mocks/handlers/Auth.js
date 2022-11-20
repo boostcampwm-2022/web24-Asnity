@@ -1,6 +1,6 @@
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
-
+import { users } from '../data';
 const BASE_URL = `${API_URL}/api`;
 
 // 회원가입
@@ -63,4 +63,17 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
-export default [SignUp, SignIn];
+export const GetMyInfo = rest.get('/api/user/auth/me', (req, res, ctx) => {
+  return res(
+    ctx.delay(),
+    ctx.status(200),
+    ctx.json({
+      statusCode: 200,
+      result: {
+        user: users[0],
+      },
+    }),
+  );
+});
+
+export default [SignUp, SignIn, GetMyInfo];
