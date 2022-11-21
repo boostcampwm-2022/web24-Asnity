@@ -5,10 +5,10 @@
     "jest": true,
     "commonjs": true
   },
-  "extends": [
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
-  ],
+  "globals": {
+    "JSX": true
+  },
+  "extends": ["plugin:react/recommended", "plugin:react-hooks/recommended"],
   "rules": {
     "react/prop-types": "off",
     "no-param-reassign": "off",

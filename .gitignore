@@ -2,3 +2,7 @@
 node_modules/
 server/dist
 server/node_modules/
+server/config/
+.DS_Store
+client/node_modules/
+yarn-error.log

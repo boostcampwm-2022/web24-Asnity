@@ -17,6 +17,14 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@schemas/*": ["dao/schemas/*"],
+      "@repository/*": ["dao/repository/*"],
+      "@utils/*": ["utils/*"],
+      "@custom_pipe/*": ["custom_pipe/*"],
+      "@user/*": ["apps/api/src/user/*"],
+      "@api/*": ["apps/api/*"],
+      "@mock/*": ["__mock__/*"],
+    }
   }
 }
