@@ -6,14 +6,17 @@
   "author": "Cola <bcad1591@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "client",
-    "server",
-    "shared"
-  ],
+  "workspaces": {
+    "packages": ["client","shared", "server"],
+    "nohoist": ["server", "server/**"]
+  },
   "scripts": {
     "client": "yarn workspace client",
-    "api-dev" : "yarn workspace server api-dev",
-    "socket-dev" : "yarn workspace server socket-dev"
+    "server": "yarn workspace server",
+    "api-dev": "yarn workspace server api-dev",
+    "socket-dev": "yarn workspace server socket-dev",
+    "api-prod": "yarn workspace server api-prod",
+    "socket-prod": "yarn workspace server socket-prod",
+    "server-test": "yarn workspace server test:report"
   }
 }
