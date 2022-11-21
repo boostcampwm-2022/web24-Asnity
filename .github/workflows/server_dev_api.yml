@@ -43,6 +43,7 @@ jobs:
           script: |
             whoami
             cd web24-Asnity
+            git stash
             git pull origin dev-be
             ls -al
             export NVM_DIR=~/.nvm
