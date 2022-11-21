@@ -7,7 +7,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'shared/lib/user';
 
-import useUpdateFollowing from '../hooks/useUpdateFollowing';
+import useFollowingsMutation from '../hooks/useFollowingsMutation';
 
 interface FollowingProps {
   user: User;
@@ -15,7 +15,7 @@ interface FollowingProps {
 
 const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
   const navigate = useNavigate();
-  const updateFollowing = useUpdateFollowing(user._id);
+  const updateFollowing = useFollowingsMutation(user._id);
 
   const handleChatButtonClick = () => {
     navigate(`/dms/${user._id}`);
