@@ -49,8 +49,9 @@ export class AuthController {
 
   @Post('signout')
   @UseGuards(JwtAccessGuard)
-  async singOut(@Req() req: any) {
-    await this.authService.signOut(req.user._id);
+  async singOut(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    await this.authService.signOut(req.user._id); // DB에서 refreshToken 제거
+    res.cookie('refreshToken', 'expired', { maxAge: -1 }); // client에서 refreshToken 제거
     return responseForm(200, { message: '로그아웃 성공!' });
   }
 }
