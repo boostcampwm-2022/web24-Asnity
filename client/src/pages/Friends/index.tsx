@@ -3,12 +3,14 @@ import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
 
+// TODO: 네이밍 생각해보기
 const TAB = {
   FOLLOWINGS: 'followings',
   FOLLOWERS: 'followers',
   USER_SEARCH: 'user-search',
-};
+} as const;
 
+// TODO: 필드 이름 수정하기
 const tabs = [
   {
     name: '팔로잉',
@@ -22,8 +24,9 @@ const tabs = [
     name: '사용자 검색',
     tab: 'user-search',
   },
-];
+] as const;
 
+// TODO: 컴포넌트 이름 수정하기 (FollowingTab -> Followings)
 const TabPanel: Record<string, JSX.Element> = {
   [TAB.FOLLOWINGS]: <FollowingTab />,
   [TAB.FOLLOWERS]: <Followers />,
@@ -33,7 +36,9 @@ const TabPanel: Record<string, JSX.Element> = {
 const DEFAULT_TAB = TAB.FOLLOWINGS;
 
 const Friends = () => {
-  const [tab, setTab] = useState(DEFAULT_TAB);
+  const [tab, setTab] = useState<'followings' | 'followers' | 'user-search'>(
+    DEFAULT_TAB,
+  );
 
   return (
     <div className="w-full h-full flex flex-col">
