@@ -1,12 +1,17 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '@repository/user.repository';
+import { AuthService } from '@api/src/auth/auth.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
-  constructor(config: ConfigService, private userRepository: UserRepository) {
+  constructor(
+    config: ConfigService,
+    private userRepository: UserRepository,
+    private authService: AuthService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
@@ -19,21 +24,18 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
   }
 
   async validate(req, payload: any) {
-    console.log(payload);
     const refreshToken = req.cookies?.refreshToken;
     const user = await this.userRepository.findById(payload._id);
     if (!user) {
       throw new ForbiddenException('잘못된 요청입니다.');
     }
+
     if (refreshToken !== user.refreshToken) {
-      console.log('refreshToken : ', refreshToken);
-      console.log('user.refreshToken : ', user.refreshToken);
-      return false;
+      throw new UnauthorizedException('refreshToken이 일치하지 않습니다.');
     }
 
-    // TODO: accessToken 재발행 로직
+    const accessToken = await this.authService.signAccessToken(user._id, user.nickname);
 
-    console.log('accessToken 재발행 필요');
-    return 'accessToken';
+    return accessToken;
   }
 }
