@@ -4,6 +4,7 @@ import { ApiModule } from './api.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 import { SentryInterceptor } from '../../webhook.interceptor';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
     });
     app.useGlobalInterceptors(new SentryInterceptor());
   }
+  app.use(cookieParser());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
