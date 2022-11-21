@@ -1,6 +1,7 @@
 import React from 'react';
+import { User } from 'shared/lib/user';
 
-import FollowingItem, { User } from './item';
+import FollowingItem from './item';
 
 interface FollowingListProps {
   users: User[];
