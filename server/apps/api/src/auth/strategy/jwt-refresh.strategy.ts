@@ -3,14 +3,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '@repository/user.repository';
-import { AuthService } from '@api/src/auth/auth.service';
+import { SignToken } from '@api/src/auth/helper/signToken';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
   constructor(
     config: ConfigService,
     private userRepository: UserRepository,
-    private authService: AuthService,
+    private signToken: SignToken,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -34,7 +34,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
       throw new UnauthorizedException('refreshToken이 일치하지 않습니다.');
     }
 
-    const accessToken = await this.authService.signAccessToken(user._id, user.nickname);
+    const accessToken = await this.signToken.signAccessToken(user._id, user.nickname);
 
     return accessToken;
   }

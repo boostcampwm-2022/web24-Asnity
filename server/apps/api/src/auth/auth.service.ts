@@ -2,16 +2,11 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { UserRepository } from '@repository/user.repository';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { SignToken } from '@api/src/auth/helper/signToken';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwt: JwtService,
-    private userRepository: UserRepository,
-    private config: ConfigService,
-  ) {}
+  constructor(private userRepository: UserRepository, private signToken: SignToken) {}
   async signUp(signUpDto: SignUpDto) {
     // 비밀번호 암호화
     const hash = await argon.hash(signUpDto.password);
@@ -38,8 +33,8 @@ export class AuthService {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
     // accessToken, refreshToken 발행
-    const accessToken = await this.signAccessToken(user._id, user.nickname);
-    const refreshToken = await this.signRefreshToken(user._id);
+    const accessToken = await this.signToken.signAccessToken(user._id, user.nickname);
+    const refreshToken = await this.signToken.signRefreshToken(user._id);
 
     // DB에 refreshToken 업데이트
     this.userRepository.updateOne({ _id: user._id }, { refreshToken });
@@ -47,26 +42,12 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async signAccessToken(_id: number, nickname: string): Promise<string> {
-    const accessTokenPayload = {
-      _id,
-      nickname,
-    };
-    const accessToken = await this.jwt.signAsync(accessTokenPayload, {
-      expiresIn: '15m',
-      secret: this.config.get('JWT_SECRET'),
-    });
-    return accessToken;
-  }
-
-  async signRefreshToken(_id: number): Promise<string> {
-    const refreshTokenPayload = {
-      _id,
-    };
-    const refreshToken = await this.jwt.signAsync(refreshTokenPayload, {
-      expiresIn: '100hr',
-      secret: this.config.get('JWT_SECRET'),
-    });
-    return refreshToken;
+  async signOut(userId: string) {
+    try {
+      console.log(userId);
+      await this.userRepository.updateOne({ _id: userId }, { refreshToken: '' });
+    } catch (error) {
+      throw new ForbiddenException('잘못된 접근입니다.');
+    }
   }
 }
