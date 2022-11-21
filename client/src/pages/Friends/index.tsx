@@ -1,4 +1,4 @@
-import FollowingTab from '@features/FollowingTab';
+import FollowingTab from '@layouts/FollowingTab';
 import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
