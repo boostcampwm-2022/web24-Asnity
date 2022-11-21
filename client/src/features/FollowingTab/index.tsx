@@ -20,7 +20,7 @@ const FollowingTab = () => {
         />
       </div>
       <Suspense fallback={<div>loading...</div>}>
-        {data.result.followings ? (
+        {data.result.followings.length ? (
           <FollowingList users={data.result.followings} />
         ) : (
           '일치하는 사용자가 없습니다.'
