@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { SignInDto, SignUpDto } from './dto';
 import { responseForm } from '@utils/responseForm';
 import { Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
+import { JwtAuthGuard } from '@api/src/auth/guard';
 
 @Controller('api/user/auth')
 export class AuthController {
@@ -31,8 +31,8 @@ export class AuthController {
     return responseForm(200, { message: '로그인 성공!', accessToken: result.accessToken });
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('me')
+  @UseGuards(JwtAuthGuard)
   async getMyInfo(@Req() req: any) {
     return getUserBasicInfo(req.user);
   }
