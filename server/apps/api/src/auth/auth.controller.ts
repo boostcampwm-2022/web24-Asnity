@@ -4,7 +4,7 @@ import { SignInDto, SignUpDto } from './dto';
 import { responseForm } from '@utils/responseForm';
 import { Response } from 'express';
 import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
-import { JwtAuthGuard } from '@api/src/auth/guard';
+import { JwtAccessGuard } from '@api/src/auth/guard';
 
 @Controller('api/user/auth')
 export class AuthController {
@@ -32,7 +32,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   async getMyInfo(@Req() req: any) {
     return getUserBasicInfo(req.user);
   }
