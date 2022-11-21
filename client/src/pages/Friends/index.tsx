@@ -9,7 +9,7 @@ const TAB = {
   USER_SEARCH: 'user-search',
 };
 
-const TABS = [
+const tabs = [
   {
     name: '팔로잉',
     tab: 'followings',
@@ -36,27 +36,32 @@ const Friends = () => {
   const [tab, setTab] = useState(DEFAULT_TAB);
 
   return (
-    <>
-      <header className="flex items-center pl-[55px] w-full h-header border-b border-line">
+    <div className="w-full h-full flex flex-col">
+      <header className="flex items-center pl-[56px] w-full h-header border-b border-line">
         <ul className="flex gap-[45px]">
-          {TABS.map(({ name, tab: t }) => (
+          {tabs.map(({ name, tab: t }) => (
             <li
               key={t}
-              className={`${tab === t ? 'text-indigo' : 'text-placeholder'
-                } font-bold text-[21px]`}
+              className={`${
+                tab === t ? 'text-indigo' : 'text-placeholder'
+              } font-bold text-s20`}
             >
-              <button onClick={() => setTab(t)}>{name}</button>
+              <button className="w-[100%]" onClick={() => setTab(t)}>
+                {name}
+              </button>
             </li>
           ))}
         </ul>
       </header>
-      <div className="flex flex-1">
-        <div className="flex-1">{TabPanel[tab]}</div>
+      <div className="flex grow">
+        <div className="flex-1 min-w-[720px] max-w-[960px]">
+          {TabPanel[tab]}
+        </div>
         <div className="flex w-72 h-full border-l border-line">
           온라인, 오프라인
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
