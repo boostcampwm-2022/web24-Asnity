@@ -11,17 +11,13 @@ const USER_STATUS = {
   OFFLINE: 'offline',
   ONLINE: 'online',
   AFK: 'afk',
-};
+} as const;
 
-type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
-
-const statusColor: {
-  [key: UserStatus]: 'default' | 'success' | 'error';
-} = {
+const statusColor = {
   [USER_STATUS.OFFLINE]: 'default',
   [USER_STATUS.ONLINE]: 'success',
   [USER_STATUS.AFK]: 'error',
-};
+} as const;
 
 const UserProfile: React.FC<UserItemProps> = ({
   user: { nickname, profileUrl, status },
