@@ -33,10 +33,7 @@ export class UserController {
   // }
 
   @Post('following/:id')
-  async addFollowing(
-    @Param('id', ObjectIdValidationPipe) id: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async addFollowing(@Param('id', ObjectIdValidationPipe) id: string) {
     try {
       const myId = '63786b635d4f08bbe0c940de';
       // TODO: Request Header에서 access token으로 현재 사용자 알아내기
