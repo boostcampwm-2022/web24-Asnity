@@ -6,12 +6,13 @@ import useDebouncedValue from './hooks/useDebouncedValue';
 import useFollowingsQuery from './hooks/useFollowingsQuery';
 
 const FollowingTab = () => {
+  const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
-  const debouncedFilter = useDebouncedValue(filter, 500);
+  const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
   const { data } = useFollowingsQuery(debouncedFilter, { suspense: true });
 
   return (
-    <>
+    <div>
       <div className="w-full p-8">
         <SearchInput
           value={filter}
@@ -26,7 +27,7 @@ const FollowingTab = () => {
           '일치하는 사용자가 없습니다.'
         )}
       </Suspense>
-    </>
+    </div>
   );
 };
 

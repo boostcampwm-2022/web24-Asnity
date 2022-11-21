@@ -3,7 +3,7 @@ import { GetUsersReponse, User } from 'shared/lib/user';
 
 import updateFollowing from '../apis/updateFollowing';
 
-const useUpdateFollowing = (userId: string) => {
+const useFollowingsMutation = (userId: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation(() => updateFollowing(userId), {
     onMutate: async (deleted: User) => {
@@ -40,4 +40,4 @@ const useUpdateFollowing = (userId: string) => {
   return mutation;
 };
 
-export default useUpdateFollowing;
+export default useFollowingsMutation;
