@@ -7,7 +7,7 @@ export interface User {
   descrption: string;
 }
 
-export interface GetUserReponse {
+export interface GetUsersReponse {
   statusCode: number;
   result: {
     users: User[];

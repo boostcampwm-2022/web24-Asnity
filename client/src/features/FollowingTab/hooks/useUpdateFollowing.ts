@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GetUserReponse, User } from 'shared/lib/getUserResponse';
+import { GetUsersReponse, User } from 'shared/lib/user';
 
 import updateFollowing from '../apis/updateFollowing';
 
@@ -8,14 +8,14 @@ const useUpdateFollowing = (userId: string) => {
   const mutation = useMutation(() => updateFollowing(userId), {
     onMutate: async (deleted: User) => {
       await queryClient.cancelQueries(['followings']);
-      const previousFollowings = queryClient.getQueryData<GetUserReponse>([
+      const previousFollowings = queryClient.getQueryData<GetUsersReponse>([
         'followings',
       ]);
 
       if (previousFollowings) {
         const { users } = previousFollowings.result;
 
-        queryClient.setQueryData<GetUserReponse>(['followings'], {
+        queryClient.setQueryData<GetUsersReponse>(['followings'], {
           ...previousFollowings,
           result: {
             ...previousFollowings.result,
@@ -27,7 +27,7 @@ const useUpdateFollowing = (userId: string) => {
     },
     onError: (err, variables, context) => {
       if (context?.previousFollowings)
-        queryClient.setQueryData<GetUserReponse>(
+        queryClient.setQueryData<GetUsersReponse>(
           ['followings'],
           context.previousFollowings,
         );
