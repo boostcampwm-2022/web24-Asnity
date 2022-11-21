@@ -23,7 +23,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config apps/socket/test/jest-e2e.json",
-    "test:report": "jest --ci --reporters=default --reporters=jest-junit"
+    "test:report": "jest --coverage --ci --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
     "@asnity/shared": "1.0.0",
@@ -107,6 +107,13 @@
       "@user/(.*)": "<rootDir>/apps/api/src/user/$1",
       "@api/(.*)": "<rootDir>/apps/api/$1",
       "@mock/(.*)": "<rootDir>/__mock__/$1"
-    }
+    },
+    "coveragePathIgnorePatterns": [
+      ".module.ts",
+      ".controller.ts",
+      ".mock.ts",
+      ".dto.ts",
+      "main.ts"
+    ]
   }
 }

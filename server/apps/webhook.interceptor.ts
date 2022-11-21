@@ -7,6 +7,7 @@ import * as ip from 'ip';
 
 @Injectable()
 export class SentryInterceptor implements NestInterceptor {
+  // TODO: logger로 error logging interceptor에서 하도록 refactoring
   intercept(_: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       catchError((error) => {
