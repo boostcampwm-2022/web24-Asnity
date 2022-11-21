@@ -1,3 +1,4 @@
-import { GetUser } from './Auth';
+import AuthHandlers from './Auth';
+import FriendHandlers from './Friend';
 
-export const handlers = [GetUser];
+export const handlers = [...AuthHandlers, ...FriendHandlers];

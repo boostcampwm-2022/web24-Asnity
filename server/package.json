@@ -26,7 +26,7 @@
     "test:report": "jest --coverage --ci --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
-    "@asnity/shared": "1.0.0",
+    "shared" : "1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",

@@ -6,7 +6,6 @@
   "author": "Cola <bcad1591@gmail.com>",
   "license": "MIT",
   "private": true,
-
   "workspaces": {
     "packages": ["client","shared", "server"],
     "nohoist": ["server", "server/**"]
