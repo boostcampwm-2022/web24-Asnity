@@ -47,7 +47,6 @@ export class UserController {
       this.logger.error(JSON.stringify(error.response));
       // res.status(400).json(error.response);
       throw error;
-      // return error.response;
     }
   }
 
@@ -61,7 +60,6 @@ export class UserController {
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
-      // return error.response ?? error;
     }
   }
 
@@ -75,7 +73,6 @@ export class UserController {
     } catch (error) {
       this.logger.error(JSON.stringify(error.response ?? error));
       throw error;
-      return error.response ?? error;
     }
   }
 
@@ -87,7 +84,6 @@ export class UserController {
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
-      return error.response;
     }
   }
 
@@ -101,7 +97,6 @@ export class UserController {
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
-      return error.response;
     }
   }
 
