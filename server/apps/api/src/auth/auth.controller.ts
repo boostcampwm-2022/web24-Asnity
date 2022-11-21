@@ -10,13 +10,13 @@ import { JwtAccessGuard, JwtRefreshGuard } from '@api/src/auth/guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('signup')
+  @Post('signup') // 회원가입
   async signUp(@Body() signUpDto: SignUpDto) {
     await this.authService.signUp(signUpDto);
     return responseForm(200, { message: '회원가입 성공!' });
   }
 
-  @Post('signin')
+  @Post('signin') // 로그인
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, accessToken } = await this.authService.signIn(signInDto);
 
@@ -31,7 +31,7 @@ export class AuthController {
     return responseForm(200, { message: '로그인 성공!', accessToken });
   }
 
-  @Post('refresh')
+  @Post('refresh') // AccessToken 재발행
   @UseGuards(JwtRefreshGuard)
   async refresh(@Req() req: any) {
     const accessToken = req.user;
@@ -41,9 +41,16 @@ export class AuthController {
     return responseForm(200, { message: 'accessToken 재발행 성공!', accessToken });
   }
 
-  @Get('me')
+  @Get('me') // 자신의 유저 정보 제공
   @UseGuards(JwtAccessGuard)
   async getMyInfo(@Req() req: any) {
     return getUserBasicInfo(req.user);
+  }
+
+  @Post('signout')
+  @UseGuards(JwtAccessGuard)
+  async singOut(@Req() req: any) {
+    await this.authService.signOut(req.user._id);
+    return responseForm(200, { message: '로그아웃 성공!' });
   }
 }
