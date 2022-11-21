@@ -16,7 +16,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { responseForm } from '@utils/responseForm';
 import { ObjectIdValidationPipe } from '@custom_pipe/mongodbObjectIdValidation.pipe';
 import { ModifyUserDto } from '@user/dto/modify-user.dto';
-import { Response } from 'express';
 
 @Controller('api/user')
 export class UserController {
