@@ -7,13 +7,13 @@
     "outDir": "./build",
     "paths": {
       "@pages/*": ["src/pages/*"],
-      "@layouts/*": ["src/common/layouts/*"],
+      "@layouts/*": ["src/layouts/*"],
       "@components/*": ["src/components/*"],
-      "@features/*": ["src/features/*"],
       "@mocks/*": ["src/mocks/*"],
       "@stores/*": ["src/stores/*"],
       "@icons/*": ["src/assets/icons/*"],
       "@constants/*": ["src/constants/*"],
+      "@apis/*": ["src/apis/*"],
     }
   },
   "include": ["src", "config"],

@@ -14,7 +14,7 @@ const Sidebar = () => {
   const { isLoading, data } = useQuery(['me'], getMyInfo);
 
   return (
-    <div className="flex flex-col w-80 h-full bg-background border-r border-line">
+    <div className="flex flex-col min-w-[320px] w-[320px] h-full bg-background border-r border-line">
       <nav className="flex flex-col flex-1">
         {pathname.startsWith('/dms') ? <DmNav /> : <CommunityNav />}
       </nav>
