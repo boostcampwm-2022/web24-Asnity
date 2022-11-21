@@ -6,9 +6,19 @@
     "baseUrl": ".",
     "outDir": "./build",
     "paths": {
-
+      "@pages/*": ["src/pages/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@components/*": ["src/components/*"],
+      "@mocks/*": ["src/mocks/*"],
+      "@stores/*": ["src/stores/*"],
+      "@icons/*": ["src/assets/icons/*"],
+      "@constants/*": ["src/constants/*"],
+      "@apis/*": ["src/apis/*"],
     }
   },
   "include": ["src", "config"],
-  "exclude": ["node_modules", "build", "dist"]
+  "exclude": ["node_modules", "build", "dist"],
+  "references": [
+    { "path":  "../shared" }
+  ]
 }
