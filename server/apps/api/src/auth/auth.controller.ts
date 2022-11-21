@@ -4,7 +4,7 @@ import { SignInDto, SignUpDto } from './dto';
 import { responseForm } from '@utils/responseForm';
 import { Response } from 'express';
 import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
-import { JwtAccessGuard } from '@api/src/auth/guard';
+import { JwtAccessGuard, JwtRefreshGuard } from '@api/src/auth/guard';
 
 @Controller('api/user/auth')
 export class AuthController {
@@ -18,17 +18,27 @@ export class AuthController {
 
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
-    const result = await this.authService.signIn(signInDto);
+    const { refreshToken, accessToken } = await this.authService.signIn(signInDto);
 
     // refreshToken 쿠키에 구워줌
-    res.cookie('refreshToken', result.refreshToken, {
-      path: '/refresh',
+    res.cookie('refreshToken', refreshToken, {
+      path: '/api/user/auth/refresh',
       httpOnly: true,
       secure: false,
-      maxAge: 3600000, // 1시간 만료
+      maxAge: 360000000, // 100시간 만료
     });
 
-    return responseForm(200, { message: '로그인 성공!', accessToken: result.accessToken });
+    return responseForm(200, { message: '로그인 성공!', accessToken });
+  }
+
+  @Post('refresh')
+  @UseGuards(JwtRefreshGuard)
+  async refresh(@Req() req: any) {
+    const accessToken = req.user;
+    if (accessToken === null) {
+      return responseForm(401, { message: '로그인 필요' });
+    }
+    return responseForm(200, { message: 'accessToken 재발행 성공!', accessToken });
   }
 
   @Get('me')
