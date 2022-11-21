@@ -1,6 +1,8 @@
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
-import { users } from '../data';
+
+import { users } from '../data/users';
+
 const BASE_URL = `${API_URL}/api`;
 
 // 회원가입

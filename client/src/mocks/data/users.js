@@ -1,4 +1,4 @@
-import { getRandomInt } from './utils/rand';
+import { getRandomInt } from '../utils/rand';
 
 export const users = [
   {
