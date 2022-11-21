@@ -9,7 +9,12 @@ const FollowingTab = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
-  const { data } = useFollowingsQuery(debouncedFilter, { suspense: true });
+
+  // TODO: Suspense는 모든 쿼리 인스턴스에 사용할 것인가요?
+  // TODO: Suspense가 사용되는 쿼리와 그렇지 않은 쿼리는 어떤 차이를 두고 사용하시나요?
+  const { data } = useFollowingsQuery(debouncedFilter, {
+    suspense: true,
+  });
 
   return (
     <div>
