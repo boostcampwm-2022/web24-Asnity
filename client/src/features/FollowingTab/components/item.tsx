@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/20/solid';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from 'shared/lib/getUserResponse';
+import { User } from 'shared/lib/user';
 
 import useUpdateFollowing from '../hooks/useUpdateFollowing';
 
