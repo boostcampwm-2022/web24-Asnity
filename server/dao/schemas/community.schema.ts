@@ -13,7 +13,6 @@ export class Community {
 
   @Prop({
     required: true,
-    unique: true,
   })
   @IsString()
   @IsNotEmpty()
