@@ -53,7 +53,7 @@ const config: Configuration = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: '../public/index.ejs',
+      template: '../public/index.html',
       templateParameters: {
         PUBLIC_URL: process.env.PUBLIC_URL,
       },
