@@ -38,7 +38,8 @@ export class AuthService {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
     // accessToken, refreshToken 발행
-    const { accessToken, refreshToken } = await this.signToken(user._id, user.nickname);
+    const accessToken = await this.signAccessToken(user._id, user.nickname);
+    const refreshToken = await this.signRefreshToken(user._id);
 
     // DB에 refreshToken 업데이트
     this.userRepository.updateOne({ _id: user._id }, { refreshToken });
@@ -46,29 +47,26 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async signToken(
-    _id: number,
-    nickname: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  async signAccessToken(_id: number, nickname: string): Promise<string> {
     const accessTokenPayload = {
       _id,
       nickname,
     };
-
-    const refreshTokenPayload = {
-      _id,
-    };
-
     const accessToken = await this.jwt.signAsync(accessTokenPayload, {
       expiresIn: '15m',
       secret: this.config.get('JWT_SECRET'),
     });
+    return accessToken;
+  }
 
+  async signRefreshToken(_id: number): Promise<string> {
+    const refreshTokenPayload = {
+      _id,
+    };
     const refreshToken = await this.jwt.signAsync(refreshTokenPayload, {
-      expiresIn: '1hr',
+      expiresIn: '100hr',
       secret: this.config.get('JWT_SECRET'),
     });
-
-    return { accessToken, refreshToken };
+    return refreshToken;
   }
 }
