@@ -8,7 +8,7 @@
     "paths": {
       "@pages/*": ["src/pages/*"],
       "@layouts/*": ["src/common/layouts/*"],
-      "@components/*": ["src/common/components/*"],
+      "@components/*": ["src/components/*"],
       "@features/*": ["src/features/*"],
       "@mocks/*": ["src/mocks/*"],
       "@stores/*": ["src/stores/*"],
