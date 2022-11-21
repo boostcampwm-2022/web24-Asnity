@@ -9,9 +9,6 @@ import { UserModule } from './user/user.module';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from './auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { SentryInterceptor } from '../../webhook.interceptor';
-import { RavenInterceptor, RavenModule } from 'nest-raven';
 
 @Module({
   imports: [
