@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { catchError } from 'rxjs/operators';
-import { IncomingWebhook } from '@slack/client';
+import { IncomingWebhook } from '@slack/webhook';
 import { of } from 'rxjs';
 import * as Sentry from '@sentry/minimal';
 import * as ip from 'ip';

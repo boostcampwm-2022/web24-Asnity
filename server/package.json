@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "api-dev": "NODE_ENV=dev nest start api --watch",
     "socket-dev": "NODE_ENV=dev nest start socket --watch",
-    "api-prod": "NODE_ENV=prod nest start api --watch",
+    "api-prod": "NODE_ENV=prod nest start api",
     "socket-prod": "NODE_ENV=prod nest start socket",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
