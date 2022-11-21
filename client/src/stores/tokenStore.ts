@@ -4,7 +4,7 @@ import createVanillaStore from 'zustand/vanilla';
 
 type TokenStore = {
   accessToken: null | string;
-  setAccessToken: (accessToken: string) => void;
+  setAccessToken: (accessToken: null | string) => void;
 };
 
 export const tokenStore = createVanillaStore<TokenStore>()(
