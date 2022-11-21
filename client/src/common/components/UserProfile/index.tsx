@@ -1,7 +1,7 @@
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
 import React from 'react';
-import { User } from 'shared/lib/getUserResponse';
+import { User } from 'shared/lib/user';
 
 interface UserItemProps {
   user: User;
