@@ -21,3 +21,25 @@ export const signUp: SignUp = ({ id, nickname, password }) => {
     .post(endPoint, { id, nickname, password })
     .then((response) => response.data);
 };
+
+export interface SignInRequest {
+  id: string;
+  password: string;
+}
+
+export interface SignInResult {
+  _id: string;
+  accessToken: string;
+}
+
+type SignIn = (fields: SignInRequest) => Promise<SuccessResponse<SignInResult>>;
+
+export const signIn: SignIn = ({ id, password }) => {
+  const endPoint = `${API_URL}/api/user/auth/signin`;
+
+  return axios
+    .post(endPoint, { id, password })
+    .then((response) => response.data);
+};
+// 액세스 토큰으로 다시 유저 정보 요청해야함
+// _id, id(이메일), nickname, status, profileUrl, description
