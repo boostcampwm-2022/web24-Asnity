@@ -21,12 +21,15 @@ export class CommunityService {
   async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
     await Promise.all(
       appendUsersToCommunityDto.users.map(async (user_id) => {
-        const user = this.userRepository.findById(user_id);
+        const user = await this.userRepository.findById(user_id);
         if (!user) {
           throw new BadRequestException(
             `커뮤니티에 추가를 요청한 사용자 _id(${user_id})가 올바르지 않습니다.`,
           );
         }
+        await this.userRepository.addArrAtArr({ _id: user_id }, 'communities', [
+          appendUsersToCommunityDto.community_id,
+        ]);
       }),
     );
     const community = await this.communityRepository.addArrAtArr(
@@ -35,6 +38,14 @@ export class CommunityService {
       appendUsersToCommunityDto.users,
     );
     if (!community) {
+      await Promise.all(
+        appendUsersToCommunityDto.users.map((user_id) => {
+          this.userRepository.deleteElementAtArr(
+            { _id: user_id },
+            { communities: [appendUsersToCommunityDto.community_id] },
+          );
+        }),
+      );
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
     }
     return { message: '커뮤니티 사용자 추가 완료' };
