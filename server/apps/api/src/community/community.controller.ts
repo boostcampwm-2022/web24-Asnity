@@ -83,7 +83,8 @@ export class CommunityController {
       return responseForm(200, {});
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      throw error;
+      // TODO : error response header status code 어떻게 할지 논의
+      throw error; // 이렇게하면 header status code 400 간다.
     }
   }
 }
