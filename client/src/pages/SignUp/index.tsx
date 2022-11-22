@@ -18,34 +18,20 @@ interface SignUpFormFields extends SignUpRequest {
   passwordCheck: string;
 }
 
-interface SuccessResponse<T> {
-  statusCode: number;
-  result: T;
-}
-
-type SignUpApi = (
-  fields: Omit<SignUpFields, 'passwordCheck'>,
-) => Promise<SuccessResponse<{ message: string }>>;
-
-const endPoint = `${API_URL}/api/user/auth/signup`;
-
-const signUpApi: SignUpApi = ({ id, nickname, password }) => {
-  return axios
-    .post(endPoint, { id, nickname, password })
-    .then((response) => response.data);
+const signUpFormDefaultValues = {
+  id: '',
+  nickname: '',
+  password: '',
+  passwordCheck: '',
 };
 
 const SignUp = () => {
-  // TODO: 리팩토링 하자
-  const { control, handleSubmit, watch, reset } = useForm<SignUpFields>({
+  const { control, handleSubmit, watch, reset } = useForm<SignUpFormFields>({
     mode: 'all',
-    defaultValues: {
-      id: '',
-      nickname: '',
-      password: '',
-      passwordCheck: '',
-    },
+    defaultValues: signUpFormDefaultValues,
   });
+
+  const password = watch('password');
 
   const navigate = useNavigate();
 
@@ -55,22 +41,7 @@ const SignUp = () => {
       reset();
     },
     onError: (error) => {
-      if (error instanceof AxiosError) {
-        const errorMessage =
-          error?.response?.data?.message || '에러가 발생했습니다!';
-
-        if (Array.isArray(errorMessage)) {
-          errorMessage.forEach((message) => {
-            toast.error(message);
-          });
-          return;
-        }
-
-        toast.error(errorMessage);
-        return;
-      }
-
-      toast.error('Unknown Error');
+      defaultErrorHandler(error);
     },
   });
 
