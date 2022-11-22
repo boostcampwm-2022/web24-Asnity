@@ -1,25 +1,25 @@
+import { GetFollowingsResponse, updateFollowing } from '@apis/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GetUsersReponse, User } from 'shared/lib/user';
+import { User } from 'shared/lib/user';
+import queryKeyCreator from 'src/queryKeyCreator';
 
-import updateFollowing from '../apis/updateFollowing';
-
-const useFollowingsMutation = (userId: string) => {
+const useFollowingMutation = (userId: string) => {
+  const key = queryKeyCreator.followings();
   const queryClient = useQueryClient();
   const mutation = useMutation(() => updateFollowing(userId), {
     onMutate: async (deleted: User) => {
-      await queryClient.cancelQueries(['followings']);
-      const previousFollowings = queryClient.getQueryData<GetUsersReponse>([
-        'followings',
-      ]);
+      await queryClient.cancelQueries(key);
+      const previousFollowings =
+        queryClient.getQueryData<GetFollowingsResponse>(key);
 
       if (previousFollowings) {
-        const { users } = previousFollowings.result;
-
-        queryClient.setQueryData<GetUsersReponse>(['followings'], {
+        queryClient.setQueryData<GetFollowingsResponse>(key, {
           ...previousFollowings,
           result: {
             ...previousFollowings.result,
-            users: users.filter((user) => user._id !== deleted._id),
+            followings: previousFollowings.result.followings.filter(
+              (following) => following._id !== deleted._id,
+            ),
           },
         });
       }
@@ -27,17 +27,17 @@ const useFollowingsMutation = (userId: string) => {
     },
     onError: (err, variables, context) => {
       if (context?.previousFollowings)
-        queryClient.setQueryData<GetUsersReponse>(
-          ['followings'],
+        queryClient.setQueryData<GetFollowingsResponse>(
+          key,
           context.previousFollowings,
         );
     },
     onSettled: () => {
-      queryClient.invalidateQueries(['followings']);
+      queryClient.invalidateQueries(key);
     },
   });
 
   return mutation;
 };
 
-export default useFollowingsMutation;
+export default useFollowingMutation;
