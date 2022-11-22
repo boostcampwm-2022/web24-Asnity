@@ -1,3 +1,5 @@
+import type { SignUpRequest } from '@apis/auth';
+
 import AuthInput from '@components/AuthInput';
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
@@ -12,10 +14,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-interface SignUpFields {
-  id: string;
-  nickname: string;
-  password: string;
+interface SignUpFormFields extends SignUpRequest {
   passwordCheck: string;
 }
 
