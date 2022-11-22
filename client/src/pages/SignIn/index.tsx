@@ -1,87 +1,52 @@
+import type { SignInRequest } from '@apis/auth';
+
 import AuthInput from '@components/AuthInput';
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Logo from '@components/Logo';
 import TextButton from '@components/TextButton';
-import { API_URL } from '@constants/url';
+import REGEX from '@constants/regex';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
+import useSignInMutation from '@hooks/useSignInMutation';
 import { useTokenStore } from '@stores/tokenStore';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
-interface SignInFields {
-  id: string;
-  password: string;
-}
-
-interface SuccessResponse<T> {
-  statusCode: number;
-  result: T;
-}
-
-type SignInApi = (
-  fields: SignInFields,
-) => Promise<SuccessResponse<{ _id: string; accessToken: string }>>;
-
-const endPoint = `${API_URL}/api/user/auth/signin`;
-
-const signInApi: SignInApi = ({ id, password }) => {
-  return axios
-    .post(endPoint, { id, password })
-    .then((response) => response.data);
+const signUpFormDefaultValues = {
+  id: '',
+  password: '',
 };
-// 액세스 토큰으로 다시 유저 정보 요청해야함
-// _id, id(이메일), nickname, status, profileUrl, description
 
 const SignIn = () => {
   const accessToken = useTokenStore((state) => state.accessToken);
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
-  const { control, handleSubmit, reset } = useForm<SignInFields>({
+  const { control, handleSubmit, reset } = useForm<SignInRequest>({
     mode: 'all',
-    defaultValues: {
-      id: '',
-      password: '',
-    },
+    defaultValues: signUpFormDefaultValues,
   });
 
   const navigate = useNavigate();
 
-  const signInMutate = useMutation(['signIn'], signInApi, {
+  const signInMutation = useSignInMutation({
     onSuccess: (data) => {
       setAccessToken(data.result.accessToken);
     },
     onError: (error) => {
       reset();
-      if (error instanceof AxiosError) {
-        const errorMessage =
-          error?.response?.data?.message || '에러가 발생했습니다!';
-
-        if (Array.isArray(errorMessage)) {
-          errorMessage.forEach((message) => {
-            toast.error(message);
-          });
-          return;
-        }
-
-        toast.error(errorMessage);
-        return;
-      }
-
-      toast.error('Unknown Error');
+      defaultErrorHandler(error);
     },
   });
 
-  const handleSubmitSignInForm = ({ id, password }: SignInFields) => {
-    signInMutate.mutate({ id, password });
+  const handleSubmitSignInForm = ({ id, password }: SignInRequest) => {
+    signInMutation.mutate({ id, password });
   };
 
   const handleNavigateSignUpPage = () => {
     navigate('/sign-up');
   };
 
+  // TODO: 리다이렉트 조건 다시 생각해보기
   if (accessToken) {
     return <Navigate to="/dms" />;
   }
@@ -102,7 +67,7 @@ const SignIn = () => {
           control={control}
           rules={{
             pattern: {
-              value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+              value: REGEX.EMAIL,
               message: '아이디는 이메일 형식으로 입력해야 합니다!',
             },
           }}
@@ -149,7 +114,7 @@ const SignIn = () => {
             size="md"
             type="submit"
             minWidth={340}
-            disabled={signInMutate.isLoading}
+            disabled={signInMutation.isLoading}
           >
             로그인
           </Button>
