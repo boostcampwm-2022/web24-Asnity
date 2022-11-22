@@ -3,6 +3,7 @@ import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto'
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
 import { AppendUsersToCommunityDto } from '@api/src/community/dto/append-particitants-to-community.dto';
+import { ModifyCommunityDto } from '@api/src/community/dto/modify-community.dto';
 
 @Injectable()
 export class CommunityService {
@@ -49,5 +50,26 @@ export class CommunityService {
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
     }
     return { message: '커뮤니티 사용자 추가 완료' };
+  }
+
+  async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
+    this.verfiyManager(modifyCommunityDto.managerId);
+    this.verfiyCommunity(modifyCommunityDto.community_id);
+  }
+
+  async verfiyManager(managerId: string) {
+    const manager = await this.userRepository.findById(managerId);
+    if (!manager) {
+      throw new BadRequestException('해당하는 매니저의 _id가 올바르지 않습니다.');
+    }
+    return manager;
+  }
+
+  async verfiyCommunity(community_id: string) {
+    const community = await this.communityRepository.findOne(community_id);
+    if (!community) {
+      throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
+    }
+    return community;
   }
 }
