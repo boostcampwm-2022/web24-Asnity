@@ -1,9 +1,14 @@
 const queryKeyCreator = {
-  me: () => ['me'],
-  signUp: () => ['signUp'],
-  signIn: () => ['signIn'],
+  me: () => ['me'] as const,
+  signUp: () => ['signUp'] as const,
+  signIn: () => ['signIn'] as const,
   followings: (): [string] => ['followings'],
   followers: (): [string] => ['followers'],
+  reissueToken: () => ['reissueToken'] as const,
 } as const;
 
 export default queryKeyCreator;
+
+type QueryKeyCreatorType = typeof queryKeyCreator;
+export type QueryKeyCreator<T extends keyof QueryKeyCreatorType> =
+  QueryKeyCreatorType[T];
