@@ -1,4 +1,13 @@
-import { Body, Controller, Inject, LoggerService, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  LoggerService,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { CommunityService } from '@api/src/community/community.service';
 import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
@@ -24,6 +33,27 @@ export class CommunityController {
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
+      if (process.env.NODE_ENV == 'prod') {
+        throw error;
+      } else {
+        return error.response;
+      }
+    }
+  }
+
+  @Post(':community_id/participants')
+  @UseGuards(JwtAccessGuard)
+  async appendParticipantsToCommunity(
+    @Param('community_id') community_id: string,
+    @Body('users') users: string[],
+    @Req() req: any,
+  ) {
+    try {
+      const _id = req.user._id;
+      const appendUsersToCommunityDto = { requestUser_id: _id, community_id };
+      console.log(users);
+      const result = await this.communityService.appendParticipantsToCommunity();
+    } catch (error) {
       if (process.env.NODE_ENV == 'prod') {
         throw error;
       } else {
