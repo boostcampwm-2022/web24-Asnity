@@ -10,6 +10,7 @@ import NotFound from '@pages/NotFound';
 import Root from '@pages/Root';
 import SignIn from '@pages/SignIn';
 import SignUp from '@pages/SignUp';
+import UnknownError from '@pages/UnknownError';
 import React from 'react';
 import {
   RouterProvider,
@@ -38,7 +39,8 @@ const router = createBrowserRouter(
         <Route path="sign-in" element={<SignIn />} />
         <Route path="sign-up" element={<SignUp />} />
       </Route>
-      <Route path="/error" element={<AccessDenied />} />
+      <Route path="/access-denied" element={<AccessDenied />} />
+      <Route path="/unknown-error" element={<UnknownError />} />
       <Route path="*" element={<NotFound />} />
     </Route>,
   ),
