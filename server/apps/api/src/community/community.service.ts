@@ -12,7 +12,6 @@ export class CommunityService {
   ) {}
 
   async createCommunity(createCommunityDto: CreateCommunityDto) {
-    await this.verfiyManager(createCommunityDto.managerId);
     return await this.communityRepository.create({
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
@@ -20,7 +19,6 @@ export class CommunityService {
   }
 
   async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
-    await this.verfiyManager(modifyCommunityDto.managerId);
     const community = await this.verfiyCommunity(modifyCommunityDto.community_id);
     if (community.managerId != modifyCommunityDto.managerId) {
       throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
@@ -28,14 +26,6 @@ export class CommunityService {
     const { managerId, community_id, ...updateField } = modifyCommunityDto;
     // TODO: 꼭 기다려줘야하는지 생각해보기
     return await this.communityRepository.updateOne({ _id: community_id }, updateField);
-  }
-
-  async verfiyManager(managerId: string) {
-    const manager = await this.userRepository.findById(managerId);
-    if (!manager) {
-      throw new BadRequestException('해당하는 매니저의 _id가 올바르지 않습니다.');
-    }
-    return manager;
   }
 
   async verfiyCommunity(community_id: string) {
