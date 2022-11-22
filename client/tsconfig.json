@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "outDir": "./build",
     "paths": {
+      "@/*": ["src/*"],
       "@pages/*": ["src/pages/*"],
       "@layouts/*": ["src/layouts/*"],
       "@components/*": ["src/components/*"],
@@ -14,6 +15,9 @@
       "@icons/*": ["src/assets/icons/*"],
       "@constants/*": ["src/constants/*"],
       "@apis/*": ["src/apis/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@errors/*": ["src/errors/*"],
+      "@@types/*": ["src/types/*"],
     }
   },
   "include": ["src", "config"],
