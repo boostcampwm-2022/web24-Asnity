@@ -6,9 +6,9 @@ import ErrorMessage from '@components/ErrorMessage';
 import Logo from '@components/Logo';
 import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
-import { API_URL } from '@constants/url';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import REGEX from '@constants/regex';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
+import useSignUpMutation from '@hooks/useSignUpMutation';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -49,7 +49,7 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const signUpMutate = useMutation(['signUp'], signUpApi, {
+  const signUpMutation = useSignUpMutation({
     onSuccess: () => {
       toast.success('회원가입에 성공했습니다.');
       reset();
@@ -74,10 +74,8 @@ const SignUp = () => {
     },
   });
 
-  const password = watch('password');
-
-  const handleSubmitSignUpForm = (fields: SignUpFields) => {
-    signUpMutate.mutate(fields);
+  const handleSubmitSignUpForm = (fields: SignUpFormFields) => {
+    signUpMutation.mutate(fields);
   };
 
   const handleNavigateSignInPage = () => {
@@ -219,7 +217,7 @@ const SignUp = () => {
             size="md"
             type="submit"
             minWidth={340}
-            disabled={signUpMutate.isLoading}
+            disabled={signUpMutation.isLoading}
           >
             회원가입
           </Button>
