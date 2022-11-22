@@ -12,4 +12,8 @@ export class CommunityRepository {
     const result = await this.communityModel.create(createCommunityDto);
     return (result as any)._doc;
   }
+
+  async findOne(condition: any) {
+    return await this.communityModel.findOne(condition);
+  }
 }
