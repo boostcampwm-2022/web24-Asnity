@@ -14,7 +14,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <div className="relative">
       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-        {/* TODO: 이쪽도 아이콘의 의미에 맞는 설명을 넣어주면 좋을 것 같아요. */}
+        <span className="sr-only">검색</span>
         <MagnifyingGlassIcon className="w-5 h-5 fill-label" />
       </div>
       <input
@@ -28,8 +28,5 @@ const SearchInput: React.FC<SearchInputProps> = ({
     </div>
   );
 };
-
-// TODO: displayName 없애도 데브툴엔 제대로 표기되는거로 확인되었는데, 문제 생기는 부분이 있는걸까요?
-SearchInput.displayName = 'SearchInput';
 
 export default SearchInput;
