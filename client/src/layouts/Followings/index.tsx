@@ -5,7 +5,7 @@ import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowingsQuery from '@hooks/useFollowingsQuery';
 import React, { useState, Suspense } from 'react';
 
-const FollowingTab = () => {
+const Followings = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
@@ -37,4 +37,4 @@ const FollowingTab = () => {
   );
 };
 
-export default FollowingTab;
+export default Followings;
