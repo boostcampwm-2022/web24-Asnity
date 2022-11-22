@@ -43,3 +43,6 @@ export const signIn: SignIn = ({ id, password }) => {
 };
 // 액세스 토큰으로 다시 유저 정보 요청해야함
 // _id, id(이메일), nickname, status, profileUrl, description
+
+export const getMyInfo = () =>
+  axios.get(`${API_URL}/api/user/auth/me`).then((res) => res.data);
