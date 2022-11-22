@@ -3,11 +3,10 @@ import {
   EllipsisHorizontalIcon,
   ChatBubbleLeftIcon,
 } from '@heroicons/react/20/solid';
+import useFollowingMutation from '@hooks/useFollowingMutation';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'shared/lib/user';
-
-import useFollowingsMutation from '../hooks/useFollowingsMutation';
 
 interface FollowingProps {
   user: User;
@@ -15,7 +14,7 @@ interface FollowingProps {
 
 const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
   const navigate = useNavigate();
-  const updateFollowing = useFollowingsMutation(user._id);
+  const updateFollowing = useFollowingMutation(user._id);
 
   const handleChatButtonClick = () => {
     navigate(`/dms/${user._id}`);
