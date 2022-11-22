@@ -2,7 +2,7 @@ const queryKeyCreator = {
   me: () => ['me'],
   signUp: () => ['signUp'],
   signIn: () => ['signIn'],
-  followings: () => ['followings'],
+  followings: (): [string] => ['followings'],
 } as const;
 
 export default queryKeyCreator;
