@@ -11,10 +11,10 @@ export class CommunityService {
   ) {}
 
   async createCommunity(createCommunityDto: CreateCommunityDto) {
-    const manager = await this.userRepository.findById(createCommunityDto.managerId);
-    if (!manager) {
-      throw new BadRequestException('해당하는 매니저의 _id가 올바르지 않습니다.');
-    }
+    // const manager = await this.userRepository.findById(createCommunityDto.managerId);
+    // if (!manager) {
+    //   throw new BadRequestException('해당하는 매니저의 _id가 올바르지 않습니다.');
+    // }
     return await this.communityRepository.create({
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
