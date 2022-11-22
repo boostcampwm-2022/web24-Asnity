@@ -28,9 +28,11 @@ const FollowingItem: React.FC<FollowingProps> = ({ user }) => {
           className="p-2 rounded-full border border-line"
           onClick={handleChatButtonClick}
         >
+          <span className="sr-only">다이렉트 메시지</span>
           <ChatBubbleLeftIcon className="w-6 h-6 fill-indigo" />
         </button>
         <button className="p-2 rounded-full border border-line">
+          <span className="sr-only">더보기</span>
           <EllipsisHorizontalIcon
             className="w-6 h-6 fill-indigo"
             onClick={() => updateFollowing.mutate(user)}

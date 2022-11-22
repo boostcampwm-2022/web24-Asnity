@@ -22,7 +22,7 @@ const Sidebar = () => {
           <UserProfile user={myInfoQuery.data.result.user} />
         )}
         <button>
-          <span className="sr-only">환경 설정 버튼</span>
+          <span className="sr-only">환경 설정</span>
           <Cog6ToothIcon className="w-7 h-7 fill-label" />
         </button>
       </div>
