@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export type CommunityDocument = Community & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Community {
   @Prop()
   @IsString()
@@ -25,12 +25,6 @@ export class Community {
   @Prop({ default: 'default community profile' })
   @IsString()
   profileUrl: string;
-
-  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
-  createdAt: Date;
-
-  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
-  updatedAt: Date;
 
   @Prop({ type: mongoose.Schema.Types.Date })
   deletedAt: Date;
