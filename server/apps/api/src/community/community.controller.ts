@@ -13,6 +13,7 @@ import { CommunityService } from '@api/src/community/community.service';
 import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
 import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
+import { AppendUsersToCommunityDto } from '@community/dto/append-particitants-to-community.dto';
 
 @Controller('api/community')
 export class CommunityController {
@@ -41,19 +42,28 @@ export class CommunityController {
     }
   }
 
-  @Post(':community_id/participants')
+  @Post('participants')
   @UseGuards(JwtAccessGuard)
   async appendParticipantsToCommunity(
-    @Param('community_id') community_id: string,
-    @Body('users') users: string[],
+    // @Param('community_id') community_id: string,
+    // @Body('users') users: string[],
+    @Body() appendUsersToCommunityDto: AppendUsersToCommunityDto,
     @Req() req: any,
   ) {
     try {
       const _id = req.user._id;
-      const appendUsersToCommunityDto = { requestUser_id: _id, community_id };
-      console.log(users);
-      const result = await this.communityService.appendParticipantsToCommunity();
+      // const appendUsersToCommunityDto: AppendUsersToCommunityDto = {
+      //   requestUser_id: _id,
+      //   community_id,
+      // };
+      // console.log(users);
+      const result = await this.communityService.appendParticipantsToCommunity({
+        ...appendUsersToCommunityDto,
+        requestUser_id: _id,
+      });
+      return responseForm(200, result);
     } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
       if (process.env.NODE_ENV == 'prod') {
         throw error;
       } else {
