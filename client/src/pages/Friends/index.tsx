@@ -1,4 +1,4 @@
-import FollowingTab from '@layouts/FollowingTab';
+import Followings from '@layouts/Followings';
 import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
@@ -25,7 +25,7 @@ const tabs = [
 ];
 
 const TabPanel: Record<string, JSX.Element> = {
-  [TAB.FOLLOWINGS]: <FollowingTab />,
+  [TAB.FOLLOWINGS]: <Followings />,
   [TAB.FOLLOWERS]: <Followers />,
   [TAB.USER_SEARCH]: <UserSearch />,
 };
