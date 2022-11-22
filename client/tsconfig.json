@@ -14,11 +14,10 @@
       "@icons/*": ["src/assets/icons/*"],
       "@constants/*": ["src/constants/*"],
       "@apis/*": ["src/apis/*"],
+      "@@types/*": ["src/types/*"]
     }
   },
   "include": ["src", "config"],
   "exclude": ["node_modules", "build", "dist"],
-  "references": [
-    { "path":  "../shared" }
-  ]
+  "references": [{ "path": "../shared" }]
 }
