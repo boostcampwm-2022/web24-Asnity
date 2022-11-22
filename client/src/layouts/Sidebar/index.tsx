@@ -1,7 +1,7 @@
 import UserProfile from '@components/UserProfile';
-import CommunityNav from '@features/CommunityNav';
-import DmNav from '@features/DmNav';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import CommunityNav from '@layouts/CommunityNav';
+import DmNav from '@layouts/DmNav';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';

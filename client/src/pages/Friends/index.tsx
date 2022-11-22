@@ -1,4 +1,4 @@
-import FollowingTab from '@features/FollowingTab';
+import FollowingTab from '@layouts/FollowingTab';
 import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
@@ -42,9 +42,8 @@ const Friends = () => {
           {tabs.map(({ name, tab: t }) => (
             <li
               key={t}
-              className={`${
-                tab === t ? 'text-indigo' : 'text-placeholder'
-              } font-bold text-s20`}
+              className={`${tab === t ? 'text-indigo' : 'text-placeholder'
+                } font-bold text-s20`}
             >
               <button className="w-[100%]" onClick={() => setTab(t)}>
                 {name}
