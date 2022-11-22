@@ -1,15 +1,27 @@
-import React, { useState, Suspense } from 'react';
+import useDebouncedValue from '@hooks/useDebouncedValue';
+import useFollowingsQuery from '@hooks/useFollowingsQuery';
+import React, { useState, Suspense, useEffect } from 'react';
 
 import FollowingList from './components/list';
 import SearchInput from './components/searchInput';
-import useDebouncedValue from './hooks/useDebouncedValue';
-import useFollowingsQuery from './hooks/useFollowingsQuery';
 
 const FollowingTab = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
-  const { data } = useFollowingsQuery(debouncedFilter, { suspense: true });
+  const followingQuery = useFollowingsQuery({
+    suspense: true,
+    select: (data) => {
+      const { result } = data;
+      const followings = debouncedFilter
+        ? result.followings.filter(({ nickname }) =>
+          nickname.toUpperCase().includes(filter.toUpperCase()),
+        )
+        : result.followings;
+
+      return { ...data, result: { ...result, followings } };
+    },
+  });
 
   return (
     <div>
@@ -21,8 +33,8 @@ const FollowingTab = () => {
         />
       </div>
       <Suspense fallback={<div>loading...</div>}>
-        {data.result.followings.length ? (
-          <FollowingList users={data.result.followings} />
+        {followingQuery.data?.result.followings ? (
+          <FollowingList users={followingQuery.data.result.followings} />
         ) : (
           '일치하는 사용자가 없습니다.'
         )}
