@@ -12,4 +12,14 @@ export class CommunityRepository {
     const result = await this.communityModel.create(createCommunityDto);
     return (result as any)._doc;
   }
+
+  async findById(_id: string) {
+    return await this.communityModel.findById(_id);
+  }
+
+  async addArrAtArr(filter, attribute, appendArr) {
+    const addArr = {};
+    addArr[attribute] = { $each: appendArr };
+    await this.communityModel.updateOne(filter, { $addToSet: addArr });
+  }
 }
