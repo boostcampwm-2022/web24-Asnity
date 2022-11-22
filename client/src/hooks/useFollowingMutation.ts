@@ -9,6 +9,7 @@ const useFollowingMutation = (userId: string) => {
   const mutation = useMutation(() => updateFollowing(userId), {
     onMutate: async (deleted: User) => {
       await queryClient.cancelQueries(key);
+
       const previousFollowings =
         queryClient.getQueryData<GetFollowingsResponse>(key);
 

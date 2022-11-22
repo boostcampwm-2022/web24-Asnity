@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
-type SearchInputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type SearchInputProps = InputHTMLAttributes<HTMLInputElement>;
 
 const SearchInput: React.FC<SearchInputProps> = ({
   value,
@@ -17,7 +17,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <input
         type="text"
         id="input-group-1"
-        className="bg-inputBackground border border-line text-s16 text-label rounded-2xl w-full pl-10 p-2.5 focus:outline-line focus:bg-offWhite focus:font-bold"
+        className="bg-inputBackground border border-line text-s16 text-label rounded-2xl min-w-full pl-10 p-2.5 focus:outline-line focus:bg-offWhite focus:font-bold"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
