@@ -16,4 +16,8 @@ export class CommunityRepository {
   async findOne(condition: any) {
     return await this.communityModel.findOne(condition);
   }
+
+  async updateOne(filter, updateField) {
+    await this.communityModel.updateOne(filter, updateField);
+  }
 }
