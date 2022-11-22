@@ -8,10 +8,3 @@ export interface User {
   profileUrl: string;
   descrption: string;
 }
-
-export interface GetUsersReponse {
-  statusCode: number;
-  result: {
-    users: User[];
-  };
-}

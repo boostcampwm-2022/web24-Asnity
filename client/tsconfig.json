@@ -17,12 +17,10 @@
       "@apis/*": ["src/apis/*"],
       "@hooks/*": ["src/hooks/*"],
       "@errors/*": ["src/errors/*"],
-      "@@types/*": ["src/types/*"],
+      "@@types/*": ["src/types/*"]
     }
   },
   "include": ["src", "config"],
   "exclude": ["node_modules", "build", "dist"],
-  "references": [
-    { "path":  "../shared" }
-  ]
+  "references": [{ "path": "../shared" }]
 }
