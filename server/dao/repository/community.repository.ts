@@ -20,6 +20,6 @@ export class CommunityRepository {
   async addArrAtArr(filter, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
-    await this.communityModel.updateOne(filter, { $addToSet: addArr });
+    return await this.communityModel.findOneAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
 }
