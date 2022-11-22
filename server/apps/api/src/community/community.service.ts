@@ -12,7 +12,7 @@ export class CommunityService {
   ) {}
 
   async createCommunity(createCommunityDto: CreateCommunityDto) {
-    this.verfiyManager(createCommunityDto.managerId);
+    await this.verfiyManager(createCommunityDto.managerId);
     return await this.communityRepository.create({
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
