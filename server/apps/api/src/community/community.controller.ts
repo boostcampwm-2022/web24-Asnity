@@ -4,6 +4,7 @@ import {
   Inject,
   LoggerService,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -14,6 +15,7 @@ import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto'
 import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { AppendUsersToCommunityDto } from '@community/dto/append-particitants-to-community.dto';
+import { ModifyCommunityDto } from '@api/src/community/dto/modify-community.dto';
 
 @Controller('api/community')
 export class CommunityController {
@@ -69,6 +71,19 @@ export class CommunityController {
       } else {
         return error.response;
       }
+    }
+  }
+
+  @Patch('settings')
+  @UseGuards(JwtAccessGuard)
+  async modifyCommunitySetting(@Body() modifyCommunityDto: ModifyCommunityDto, @Req() req: any) {
+    try {
+      const _id = req.user._id;
+      await this.communityService.modifyCommunity({ ...modifyCommunityDto, managerId: _id });
+      return responseForm(200, {});
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
     }
   }
 }
