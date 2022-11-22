@@ -98,7 +98,7 @@ const SignUp = () => {
           control={control}
           rules={{
             pattern: {
-              value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+              value: REGEX.EMAIL,
               message: '아이디는 이메일 형식으로 입력해야 합니다!',
             },
             required: '필수 요소입니다!',
