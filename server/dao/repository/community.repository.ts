@@ -22,4 +22,8 @@ export class CommunityRepository {
     addArr[attribute] = { $each: appendArr };
     return await this.communityModel.findOneAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
+
+  async findOne(condition: any) {
+    return await this.communityModel.findOne(condition);
+  }
 }
