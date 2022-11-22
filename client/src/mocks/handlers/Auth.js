@@ -65,17 +65,20 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
-export const GetMyInfo = rest.get('/api/user/auth/me', (req, res, ctx) => {
-  return res(
-    ctx.delay(),
-    ctx.status(200),
-    ctx.json({
-      statusCode: 200,
-      result: {
-        user: users[0],
-      },
-    }),
-  );
-});
+export const GetMyInfo = rest.get(
+  `${BASE_URL}/user/auth/me`,
+  (req, res, ctx) => {
+    return res(
+      ctx.delay(),
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        result: {
+          user: users[0],
+        },
+      }),
+    );
+  },
+);
 
 export default [SignUp, SignIn, GetMyInfo];
