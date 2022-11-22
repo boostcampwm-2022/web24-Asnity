@@ -1,4 +1,5 @@
-import { SuccessResponse } from '@@types/apis/response';
+import type { SuccessResponse } from '@@types/apis/response';
+
 import { API_URL } from '@constants/url';
 import axios from 'axios';
 
@@ -44,5 +45,22 @@ export const signIn: SignIn = ({ id, password }) => {
 // 액세스 토큰으로 다시 유저 정보 요청해야함
 // _id, id(이메일), nickname, status, profileUrl, description
 
+// TODO: 유저 api로 분리하기
 export const getMyInfo = () =>
   axios.get(`${API_URL}/api/user/auth/me`).then((res) => res.data);
+
+export interface ReissueTokenResult {
+  accessToken: string;
+}
+
+type ReissueToken = () => Promise<SuccessResponse<ReissueTokenResult>>;
+
+export const reissueToken: ReissueToken = () => {
+  const endPoint = `${API_URL}/api/user/auth/refresh`;
+
+  return axios
+    .post(endPoint, {}, { withCredentials: true })
+    .then((response) => {
+      return response.data;
+    });
+};
