@@ -20,4 +20,14 @@ export class CommunityRepository {
   async updateOne(filter, updateField) {
     await this.communityModel.updateOne(filter, updateField);
   }
+  
+  async findById(_id: string) {
+    return await this.communityModel.findById(_id);
+  }
+
+  async addArrAtArr(filter, attribute, appendArr) {
+    const addArr = {};
+    addArr[attribute] = { $each: appendArr };
+    return await this.communityModel.findOneAndUpdate(filter, { $addToSet: addArr }, { new: true });
+  }
 }

@@ -23,6 +23,7 @@
       "@utils/*": ["utils/*"],
       "@custom_pipe/*": ["custom_pipe/*"],
       "@user/*": ["apps/api/src/user/*"],
+      "@community/*": ["apps/api/src/community/*"],
       "@api/*": ["apps/api/*"],
       "@mock/*": ["__mock__/*"],
     }
