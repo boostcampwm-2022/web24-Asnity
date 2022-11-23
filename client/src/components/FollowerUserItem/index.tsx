@@ -1,4 +1,4 @@
-import type { User } from 'shared/lib/user';
+import type { User } from '@apis/user';
 
 import UserItem from '@components/UserItem';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';

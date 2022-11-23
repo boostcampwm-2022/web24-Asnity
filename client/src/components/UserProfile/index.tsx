@@ -1,8 +1,10 @@
+import type { User } from '@apis/user';
+import type { ComponentPropsWithoutRef } from 'react';
+
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
 import { USER_STATUS } from '@constants/user';
-import React, { ComponentPropsWithoutRef } from 'react';
-import { User } from 'shared/lib/user';
+import React from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'div'> {
   user: User;
