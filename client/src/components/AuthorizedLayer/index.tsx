@@ -21,7 +21,10 @@ const AuthorizedLayer = () => {
   // [X] 2-2. 성공시 통과, 실패시 로그인 페이지로.
   // NOTE: /access-denied 페이지로 이동하는게 맞는 것 같기도?
 
-  const reissueTokenMutation = useReissueTokenMutation('/sign-in');
+  const reissueTokenMutation = useReissueTokenMutation(
+    '/sign-in',
+    '/unknown-error',
+  );
 
   useEffect(() => {
     if (user) return;
