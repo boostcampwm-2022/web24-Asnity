@@ -1,6 +1,8 @@
+import type { User } from '@apis/user';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+
 import UserProfile from '@components/UserProfile';
-import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { User } from 'shared/lib/user';
+import React from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
   user: User;
