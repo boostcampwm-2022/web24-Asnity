@@ -1,4 +1,5 @@
 import type { MyInfoResult } from '@apis/user';
+import type { AxiosError } from 'axios';
 
 import { getMyInfo } from '@apis/user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -6,7 +7,7 @@ import queryKeyCreator from 'src/queryKeyCreator';
 
 export const useMyInfoQuery = () => {
   const key = queryKeyCreator.me();
-  const query = useQuery(key, getMyInfo);
+  const query = useQuery<MyInfoResult, AxiosError>(key, getMyInfo, {});
 
   return query;
 };
