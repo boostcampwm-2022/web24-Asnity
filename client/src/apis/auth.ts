@@ -13,7 +13,9 @@ export interface SignUpResult {
   message: string;
 }
 
-type SignUp = (fields: SignUpRequest) => Promise<SuccessResponse<SignUpResult>>;
+export type SignUp = (
+  fields: SignUpRequest,
+) => Promise<SuccessResponse<SignUpResult>>;
 
 export const signUp: SignUp = ({ id, nickname, password }) => {
   const endPoint = `${API_URL}/api/user/auth/signup`;
@@ -33,27 +35,25 @@ export interface SignInResult {
   accessToken: string;
 }
 
-type SignIn = (fields: SignInRequest) => Promise<SuccessResponse<SignInResult>>;
+export type SignIn = (
+  fields: SignInRequest,
+) => Promise<SuccessResponse<SignInResult>>;
 
 export const signIn: SignIn = ({ id, password }) => {
   const endPoint = `${API_URL}/api/user/auth/signin`;
 
   return axios
-    .post(endPoint, { id, password })
+    .post(endPoint, { id, password }, { withCredentials: true })
     .then((response) => response.data);
 };
 // 액세스 토큰으로 다시 유저 정보 요청해야함
 // _id, id(이메일), nickname, status, profileUrl, description
 
-// TODO: 유저 api로 분리하기
-export const getMyInfo = () =>
-  axios.get(`${API_URL}/api/user/auth/me`).then((res) => res.data);
-
 export interface ReissueTokenResult {
   accessToken: string;
 }
 
-type ReissueToken = () => Promise<SuccessResponse<ReissueTokenResult>>;
+export type ReissueToken = () => Promise<SuccessResponse<ReissueTokenResult>>;
 
 export const reissueToken: ReissueToken = () => {
   const endPoint = `${API_URL}/api/user/auth/refresh`;
