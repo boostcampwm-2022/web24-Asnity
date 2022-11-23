@@ -19,10 +19,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-/**
- * react-toastify import css 안되는 이슈
- * // TODO: 링크 업데이트하기
- */
+// https://github.com/fkhadra/react-toastify/issues/195#issuecomment-860722903
+// https://grand-beanie-e57.notion.site/react-toastify-import-css-2b14956185394af797bc1c1842207473
 injectStyle();
 
 root.render(
