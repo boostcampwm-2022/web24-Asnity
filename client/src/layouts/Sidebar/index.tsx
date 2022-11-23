@@ -10,7 +10,6 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const myInfoQuery = useMyInfoQuery();
 
-  // TODO: DMNav와 CommunityNav가 좀 더 정확한 의미를 갖도록 바꾸기!
   return (
     <div className="flex flex-col min-w-[320px] w-[320px] h-full bg-background border-r border-line">
       <div className="flex-1">
@@ -18,9 +17,9 @@ const Sidebar = () => {
       </div>
       <div className="flex justify-between items-center w-full px-4 bg-inputBackground border-t border-line">
         {myInfoQuery.isLoading ? (
-          'loading'
+          <div>로딩중...</div>
         ) : (
-          <UserProfile user={myInfoQuery.data.result.user} />
+          myInfoQuery.data && <UserProfile user={myInfoQuery.data} />
         )}
         <button>
           <span className="sr-only">환경 설정</span>
