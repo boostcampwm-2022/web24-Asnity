@@ -26,13 +26,6 @@ export class UserController {
     private userService: UserService,
   ) {}
 
-  // @Get()
-  // getUsers() {
-  //   const createUserDto: CreateUserDto = { id: 'mj', pw: 'mjpw' };
-  //   this.userService.createUser(createUserDto);
-  //   return 'hello user';
-  // }
-
   @Post('following/:id')
   @UseGuards(JwtAccessGuard)
   async addFollowing(@Param('id', ObjectIdValidationPipe) id: string, @Req() req: any) {
@@ -43,7 +36,6 @@ export class UserController {
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      // res.status(400).json(error.response);
       throw error;
     }
   }
@@ -97,9 +89,4 @@ export class UserController {
       throw error;
     }
   }
-
-  // @Post()
-  // createUser(@Body() createUserDto: CreateUserDto) {
-  //   this.usersService.createUser(createUserDto);
-  // }
 }

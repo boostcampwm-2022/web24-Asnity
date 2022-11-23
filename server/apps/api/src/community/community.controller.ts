@@ -40,29 +40,18 @@ export class CommunityController {
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      if (process.env.NODE_ENV == 'prod') {
-        throw error;
-      } else {
-        return error.response;
-      }
+      throw error;
     }
   }
 
   @Post('participants')
   @UseGuards(JwtAccessGuard)
   async appendParticipantsToCommunity(
-    // @Param('community_id') community_id: string,
-    // @Body('users') users: string[],
     @Body() appendUsersToCommunityDto: AppendUsersToCommunityDto,
     @Req() req: any,
   ) {
     try {
       const _id = req.user._id;
-      // const appendUsersToCommunityDto: AppendUsersToCommunityDto = {
-      //   requestUser_id: _id,
-      //   community_id,
-      // };
-      // console.log(users);
       const result = await this.communityService.appendParticipantsToCommunity({
         ...appendUsersToCommunityDto,
         requestUser_id: _id,
@@ -70,11 +59,7 @@ export class CommunityController {
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      if (process.env.NODE_ENV == 'prod') {
-        throw error;
-      } else {
-        return error.response;
-      }
+      throw error;
     }
   }
 
@@ -87,8 +72,7 @@ export class CommunityController {
       return responseForm(200, {});
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      // TODO : error response header status code 어떻게 할지 논의
-      throw error; // 이렇게하면 header status code 400 간다.
+      throw error;
     }
   }
 
@@ -102,11 +86,7 @@ export class CommunityController {
       return responseForm(200, { message: '커뮤니티 삭제 성공' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
-      if (process.env.NODE_ENV == 'prod') {
-        throw error;
-      } else {
-        return error.response;
-      }
+      throw error;
     }
   }
 }
