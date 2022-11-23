@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
+import Followers from '@layouts/Followers';
 import Followings from '@layouts/Followings';
-import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
 import React, { useState } from 'react';
 
