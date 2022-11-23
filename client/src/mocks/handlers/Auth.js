@@ -85,7 +85,7 @@ const ReissueToken = rest.post(
     );
 
     const unAuthErrorResponse = res(
-      ctx.status(400),
+      ctx.status(401),
       ctx.delay(1000),
       ctx.json({
         statusCode: 401,
@@ -95,7 +95,7 @@ const ReissueToken = rest.post(
     );
 
     const unknownErrorResponse = res(
-      ctx.status(400),
+      ctx.status(502),
       ctx.delay(1000),
       ctx.json({
         statusCode: 502,
