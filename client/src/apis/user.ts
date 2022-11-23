@@ -1,8 +1,29 @@
 import type { SuccessResponse } from '@@types/apis/response';
-import type { User } from 'shared/lib/user';
 
 import { API_URL } from '@constants/url';
 import axios from 'axios';
+
+export type UserStatus = 'online' | 'offline' | 'afk';
+
+// TODO: 토큰 추가하기
+export interface User {
+  _id: string;
+  id: string;
+  nickname: string;
+  status: string;
+  profileUrl: string;
+  description: string;
+}
+
+export type MyInfoResult = User;
+
+type GetMyInfo = () => Promise<SuccessResponse<MyInfoResult>>;
+
+export const getMyInfo: GetMyInfo = () => {
+  return axios
+    .get(`${API_URL}/api/user/auth/me`)
+    .then((response) => response.data);
+};
 
 export interface GetFollowingsResult {
   followings: User[];
