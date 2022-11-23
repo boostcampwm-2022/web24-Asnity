@@ -17,12 +17,12 @@ export interface User {
 
 export type MyInfoResult = User;
 
-type GetMyInfo = () => Promise<SuccessResponse<MyInfoResult>>;
+type GetMyInfo = () => Promise<MyInfoResult>;
 
 export const getMyInfo: GetMyInfo = () => {
   return axios
     .get(`${API_URL}/api/user/auth/me`)
-    .then((response) => response.data);
+    .then((response) => response.data.result);
 };
 
 export interface GetFollowingsResult {
