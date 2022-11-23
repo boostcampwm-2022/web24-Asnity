@@ -1,3 +1,5 @@
+import type { User } from 'shared/lib/user';
+
 import UserItem from '@components/UserItem';
 import {
   EllipsisHorizontalIcon,
@@ -6,7 +8,6 @@ import {
 import useFollowingMutation from '@hooks/useFollowingMutation';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from 'shared/lib/user';
 
 interface Props {
   user: User;
