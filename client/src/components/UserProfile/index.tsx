@@ -16,7 +16,9 @@ const STATUS_COLOR = {
   [USER_STATUS.AFK]: 'error',
 } as const;
 
-const UserProfile = ({ user: { nickname, profileUrl, status } }: Props) => {
+const UserProfile: React.FC<Props> = ({
+  user: { nickname, profileUrl, status },
+}) => {
   return (
     <div className="flex items-center gap-[11px] h-[87px]">
       <Badge color={STATUS_COLOR[status]}>
