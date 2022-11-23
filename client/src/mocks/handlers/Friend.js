@@ -40,6 +40,19 @@ const UpdateFollowing = rest.post(
   },
 );
 
-const FriendHandlers = [GetFollowings, UpdateFollowing];
+const GetFollowers = rest.get(`${BASE_URL}/user/followers`, (req, res, ctx) => {
+  return res(
+    ctx.delay(),
+    ctx.status(200),
+    ctx.json({
+      statusCode: 200,
+      result: {
+        followers: users,
+      },
+    }),
+  );
+});
+
+const FriendHandlers = [GetFollowings, UpdateFollowing, GetFollowers];
 
 export default FriendHandlers;
