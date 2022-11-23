@@ -1,9 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { AppendUsersToCommunityDto } from '@api/src/community/dto/append-particitants-to-community.dto';
-import { ModifyCommunityDto } from '@api/src/community/dto/modify-community.dto';
+import { CreateCommunityDto, AppendUsersToCommunityDto, ModifyCommunityDto } from './dto';
 
 @Injectable()
 export class CommunityService {
