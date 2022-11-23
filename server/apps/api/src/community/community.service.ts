@@ -90,11 +90,10 @@ export class CommunityService {
       }
     }
     await Promise.all(
-      community.users.map(
-        async (user_id) => await this.deleteCommunityAtUserDocument(user_id, community._id),
+      community.users.map((user_id) =>
+        this.deleteCommunityAtUserDocument(user_id, community._id.toString()),
       ),
     );
-    return community;
   }
   async verfiyCommunity(community_id: string) {
     const community = await this.communityRepository.findOne({ _id: community_id });
@@ -104,11 +103,12 @@ export class CommunityService {
     return community;
   }
 
-  async deleteCommunityAtUserDocument(user_id: string, community_id: string) {
-    console.log(user_id, typeof user_id);
-    const result = await this.userRepository.deleteElementAtArr2(user_id, {
-      communities: [community_id],
-    });
-    console.log(result);
+  deleteCommunityAtUserDocument(user_id: string, community_id: string) {
+    this.userRepository.deleteElementAtArr(
+      { _id: user_id },
+      {
+        communities: [community_id],
+      },
+    );
   }
 }
