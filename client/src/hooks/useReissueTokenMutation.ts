@@ -40,6 +40,7 @@ const useReissueTokenMutation: UseReissueTokenMutation = (
     },
     onError: (error) => {
       if (!(error instanceof AxiosError)) {
+        console.error(error);
         return;
       }
 
