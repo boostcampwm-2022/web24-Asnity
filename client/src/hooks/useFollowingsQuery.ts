@@ -4,7 +4,8 @@ import {
   GetFollowingsResult,
 } from '@apis/user';
 import { useQuery } from '@tanstack/react-query';
-import queryKeyCreator from 'src/queryKeyCreator';
+
+import queryKeyCreator from '@/queryKeyCreator';
 
 type FollowingQueryData = {
   statusCode: number;
