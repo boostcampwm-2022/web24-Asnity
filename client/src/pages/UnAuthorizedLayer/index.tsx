@@ -26,7 +26,7 @@ const UnAuthorizedLayer = () => {
   }, []);
 
   if (user || accessToken) return <Navigate to="/" replace />;
-  if (location.state.alreadyTriedReissueToken) return <Outlet />;
+  if (location.state?.alreadyTriedReissueToken) return <Outlet />;
   if (isTryingReissueToken) return <div>로딩중...</div>;
   return <Outlet />;
 };
