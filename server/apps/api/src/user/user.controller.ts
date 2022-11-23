@@ -78,7 +78,7 @@ export class UserController {
   async getUser(@Param('id') id: string) {
     try {
       const result = await this.userService.getUser(id);
-      return responseForm(200, { result });
+      return responseForm(200, { users: result });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;

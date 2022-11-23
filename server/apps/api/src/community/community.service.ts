@@ -16,10 +16,15 @@ export class CommunityService {
   ) {}
 
   async createCommunity(createCommunityDto: CreateCommunityDto) {
-    return await this.communityRepository.create({
+    const community = await this.communityRepository.create({
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
     });
+    await this.userRepository.appendElementAtArr(
+      { _id: createCommunityDto.managerId },
+      { communities: community._id.toString() },
+    );
+    return community;
   }
 
   async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
@@ -84,6 +89,11 @@ export class CommunityService {
         throw new BadRequestException('이미 삭제된 커뮤니티입니다.');
       }
     }
+    await Promise.all(
+      community.users.map(
+        async (user_id) => await this.deleteCommunityAtUserDocument(user_id, community._id),
+      ),
+    );
     return community;
   }
   async verfiyCommunity(community_id: string) {
@@ -92,5 +102,13 @@ export class CommunityService {
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
     }
     return community;
+  }
+
+  async deleteCommunityAtUserDocument(user_id: string, community_id: string) {
+    console.log(user_id, typeof user_id);
+    const result = await this.userRepository.deleteElementAtArr2(user_id, {
+      communities: [community_id],
+    });
+    console.log(result);
   }
 }

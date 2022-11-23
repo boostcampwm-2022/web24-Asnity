@@ -37,9 +37,13 @@ export class UserRepository {
     await this.userModel.updateOne(filter, { $pullAll: removeElement });
   }
 
+  async deleteElementAtArr2(_id, removeElement) {
+    await this.userModel.findByIdAndUpdate(_id, { $pullAll: removeElement }, { new: true });
+  }
+
   async addArrAtArr(filter, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
-    return await this.userModel.findOneAndUpdate(filter, { $addToSet: addArr }, { new: true });
+    return await this.userModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
 }
