@@ -1,4 +1,6 @@
-import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+
+import React from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'ul'> {
   children?: ReactNode;

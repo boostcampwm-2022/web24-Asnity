@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import Followings from '@layouts/Followings';
 import Followers from '@pages/Followers';
 import UserSearch from '@pages/UserSearch';
@@ -27,7 +29,7 @@ const tabs = [
 ] as const;
 
 // TODO: 컴포넌트 이름 수정하기 (FollowingTab -> Followings)
-const TabPanel: Record<string, JSX.Element> = {
+const TabPanel: Record<string, ReactNode> = {
   [TAB.FOLLOWINGS]: <Followings />,
   [TAB.FOLLOWERS]: <Followers />,
   [TAB.USER_SEARCH]: <UserSearch />,

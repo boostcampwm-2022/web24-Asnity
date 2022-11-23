@@ -1,7 +1,8 @@
+import type { User } from 'shared/lib/user';
+
 import UserItem from '@components/UserItem';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
 import React from 'react';
-import { User } from 'shared/lib/user';
 
 interface Props {
   user: User;

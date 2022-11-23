@@ -1,5 +1,7 @@
+import type { InputHTMLAttributes } from 'react';
+
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import React, { InputHTMLAttributes } from 'react';
+import React from 'react';
 
 type SearchInputProps = InputHTMLAttributes<HTMLInputElement>;
 
