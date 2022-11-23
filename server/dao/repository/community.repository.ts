@@ -17,10 +17,10 @@ export class CommunityRepository {
     return await this.communityModel.findById(_id);
   }
 
-  async addArrAtArr(filter, attribute, appendArr) {
+  async addArrAtArr(_id, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
-    return await this.communityModel.findOneAndUpdate(filter, { $addToSet: addArr }, { new: true });
+    return await this.communityModel.findByIdAndUpdate(_id, { $addToSet: addArr }, { new: true });
   }
 
   async findOne(condition: any) {
@@ -29,5 +29,9 @@ export class CommunityRepository {
 
   async updateOne(filter, updateField) {
     await this.communityModel.updateOne(filter, updateField);
+  }
+
+  async findAndUpdateOne(filter, updateField) {
+    return await this.communityModel.findOneAndUpdate(filter, updateField, { new: true });
   }
 }
