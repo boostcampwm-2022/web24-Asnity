@@ -1,7 +1,9 @@
+import type { User } from 'shared/lib/user';
+
 import { GetFollowingsResponse, updateFollowing } from '@apis/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { User } from 'shared/lib/user';
-import queryKeyCreator from 'src/queryKeyCreator';
+
+import queryKeyCreator from '@/queryKeyCreator';
 
 const useFollowingMutation = (userId: string) => {
   const key = queryKeyCreator.followings();

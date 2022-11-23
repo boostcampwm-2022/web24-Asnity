@@ -1,10 +1,10 @@
 import UserProfile from '@components/UserProfile';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import useMyInfoQuery from '@hooks/useMyInfoQuery';
 import CommunityNav from '@layouts/CommunityNav';
 import DmNav from '@layouts/DmNav';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import useMyInfoQuery from 'src/hooks/useMyInfoQuery';
 
 const Sidebar = () => {
   const { pathname } = useLocation();
