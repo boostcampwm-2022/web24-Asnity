@@ -3,15 +3,13 @@ import SearchInput from '@components/searchInput';
 import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowingsQuery from '@hooks/useFollowingsQuery';
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 
 const Followings = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
-  const followingsQuery = useFollowingsQuery(debouncedFilter, {
-    suspense: true,
-  });
+  const followingsQuery = useFollowingsQuery(debouncedFilter);
 
   return (
     <div>
@@ -22,17 +20,17 @@ const Followings = () => {
           placeholder="검색하기"
         />
       </div>
-      <Suspense fallback={<div>loading...</div>}>
-        {followingsQuery.data?.followings.length ? (
-          <UserList>
-            {followingsQuery.data.followings.map((user) => (
-              <FollowingUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
-        ) : (
-          '일치하는 사용자가 없습니다.'
-        )}
-      </Suspense>
+      {followingsQuery.isLoading ? (
+        <div>loading...</div>
+      ) : followingsQuery.data?.followings.length ? (
+        <UserList>
+          {followingsQuery.data.followings.map((user) => (
+            <FollowingUserItem key={user._id} user={user} />
+          ))}
+        </UserList>
+      ) : (
+        '일치하는 사용자가 없습니다.'
+      )}
     </div>
   );
 };
