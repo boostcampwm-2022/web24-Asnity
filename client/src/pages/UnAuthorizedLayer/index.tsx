@@ -1,7 +1,7 @@
 import useReissueTokenMutation from '@hooks/useReissueTokenMutation';
 import { useTokenStore } from '@stores/tokenStore';
 import React, { useEffect, useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 /**
  * @description
@@ -11,22 +11,23 @@ import { Outlet, Navigate } from 'react-router-dom';
  */
 const UnAuthorizedLayer = () => {
   const user = useTokenStore((state) => state.user);
+  const location = useLocation();
 
   const accessToken = useTokenStore((state) => state.accessToken);
-  const [isInProgress, setIsInProgress] = useState(true);
+  const [isTryingReissueToken, setIsTryingReissueToken] = useState(true);
 
-  const complete = () => setIsInProgress(false);
+  const complete = () => setIsTryingReissueToken(false);
 
   const reissueTokenMutation = useReissueTokenMutation(complete, complete);
 
   useEffect(() => {
     if (user) return;
-
     reissueTokenMutation.mutate();
   }, []);
 
   if (user || accessToken) return <Navigate to="/" replace />;
-  if (isInProgress) return <div>로딩중...</div>;
+  if (location.state.alreadyTriedReissueToken) return <Outlet />;
+  if (isTryingReissueToken) return <div>로딩중...</div>;
   return <Outlet />;
 };
 
