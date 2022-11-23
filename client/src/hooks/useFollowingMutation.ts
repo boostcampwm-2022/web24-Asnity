@@ -1,6 +1,6 @@
-import type { User } from 'shared/lib/user';
+import type { GetFollowingsResponse, User } from '@apis/user';
 
-import { GetFollowingsResponse, updateFollowing } from '@apis/user';
+import { updateFollowing } from '@apis/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
