@@ -3,15 +3,17 @@ import { useTokenStore } from '@stores/tokenStore';
 import React, { useEffect, useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 
+/**
+ * @description
+ * ## 로그인 하지 않은 유저들만 머무를 수 있는 페이지.
+ * - 새로고침시 토큰 갱신을 시도하며, 로그인한(유저 상태나 액세스 토큰 상태가 있는) 유저가 접근하면 **`/`** 로 리다이렉트된다.
+ * - 토큰 갱신 요청시, 유효하지 않은 토큰 에러나 알 수 없는 에러가 발생하면 페이지 이동 없이 그대로 유지한다.
+ */
 const UnAuthorizedLayer = () => {
   const user = useTokenStore((state) => state.user);
 
   const accessToken = useTokenStore((state) => state.accessToken);
   const [isInProgress, setIsInProgress] = useState(true);
-
-  // Silent Refresh
-  // 성공(로그인 성공) -> / -> /dms
-  // 실패(로그인 실패) -> 현재 페이지에 머무름.
 
   const complete = () => setIsInProgress(false);
 
