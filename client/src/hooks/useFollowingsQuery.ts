@@ -1,13 +1,11 @@
-import {
-  getFollowings,
-  GetFollowingsResponse,
-  GetFollowingsResult,
-} from '@apis/user';
+import type { GetFollowingsResponse, GetFollowingsResult } from '@apis/user';
+
+import { getFollowings } from '@apis/user';
 import { useQuery } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
-type FollowingQueryData = {
+type FollowingsQueryData = {
   statusCode: number;
 } & GetFollowingsResult;
 
@@ -19,7 +17,7 @@ const useFollowingsQuery = (
   const query = useQuery<
     GetFollowingsResponse,
     unknown,
-    FollowingQueryData,
+    FollowingsQueryData,
     [string]
   >(key, getFollowings, {
     ...options,
