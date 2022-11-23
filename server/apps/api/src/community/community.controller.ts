@@ -98,8 +98,8 @@ export class CommunityController {
     try {
       const managerId = req.user._id;
       const deleteCommunityDto: DeleteCommunityDto = { managerId, community_id };
-      const result = await this.communityService.deleteCommunity(deleteCommunityDto);
-      return responseForm(200, {});
+      await this.communityService.deleteCommunity(deleteCommunityDto);
+      return responseForm(200, { message: '커뮤니티 삭제 성공' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       if (process.env.NODE_ENV == 'prod') {
