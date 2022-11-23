@@ -13,12 +13,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { FollowerDto } from '@user/dto/follower.dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { responseForm } from '@utils/responseForm';
 import { ObjectIdValidationPipe } from '@custom_pipe/mongodbObjectIdValidation.pipe';
-import { ModifyUserDto } from '@user/dto/modify-user.dto';
 import { JwtAccessGuard } from '@api/src/auth/guard';
+import { FollowerDto, ModifyUserDto } from './dto';
 
 @Controller('api/user')
 export class UserController {

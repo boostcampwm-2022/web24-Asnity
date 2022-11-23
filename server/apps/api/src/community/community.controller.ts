@@ -11,11 +11,9 @@ import {
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { CommunityService } from '@api/src/community/community.service';
-import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
 import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
-import { AppendUsersToCommunityDto } from '@community/dto/append-particitants-to-community.dto';
-import { ModifyCommunityDto } from '@api/src/community/dto/modify-community.dto';
+import { CreateCommunityDto, AppendUsersToCommunityDto, ModifyCommunityDto } from './dto';
 
 @Controller('api/community')
 export class CommunityController {
