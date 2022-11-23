@@ -9,7 +9,6 @@ export type ChannelDocument = Channel & Document;
 export class Channel {
   @Prop({
     required: true,
-    unique: true,
   })
   @IsString()
   @IsNotEmpty()
@@ -18,7 +17,6 @@ export class Channel {
 
   @Prop({
     required: true,
-    unique: true,
   })
   @IsString()
   communityId: string;
