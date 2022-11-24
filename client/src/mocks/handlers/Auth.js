@@ -4,6 +4,9 @@ import { rest } from 'msw';
 import { users } from '../data/users';
 
 const BASE_URL = `${API_URL}/api`;
+const devCookies = {
+  refreshTokenKey: 'dev_refreshToken',
+};
 
 // 회원가입
 const SignUp = rest.post(`${BASE_URL}/user/auth/signup`, (req, res, ctx) => {
@@ -41,6 +44,7 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
   const ERROR = false;
 
   const successResponse = res(
+    ctx.cookie(devCookies.refreshTokenKey, '.'),
     ctx.status(200),
     ctx.delay(500),
     ctx.json({
@@ -70,7 +74,8 @@ const ReissueToken = rest.post(
   `${BASE_URL}/user/auth/refresh`,
   (req, res, ctx) => {
     // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
-    const ERROR = true;
+    const existsRefreshToken = !!req.cookies[devCookies.refreshTokenKey];
+    const ERROR = existsRefreshToken && true;
     const isUnknownError = true;
 
     const successResponse = res(
