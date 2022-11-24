@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react';
 
 import FollowerUserItem from '@components/FollowerUserItem';
-import SearchInput from '@components/searchInput';
+import SearchInput from '@components/SearchInput';
 import UserList from '@components/UserList';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
@@ -26,7 +26,7 @@ const UserSearch = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <div className="w-full p-8">
         <form onSubmit={handleSubmit} className="flex gap-2 items-center">
           <SearchInput
@@ -39,15 +39,17 @@ const UserSearch = () => {
           </Button>
         </form>
       </div>
-      {usersQuery.data?.users.length ? (
-        <UserList>
-          {usersQuery.data.users.map((user) => (
-            <FollowerUserItem key={user._id} user={user} />
-          ))}
-        </UserList>
-      ) : (
-        <div>검색된 사용자가 없습니다</div>
-      )}
+      <div className="h-full overflow-auto">
+        {usersQuery.data?.users.length ? (
+          <UserList>
+            {usersQuery.data.users.map((user) => (
+              <FollowerUserItem key={user._id} user={user} />
+            ))}
+          </UserList>
+        ) : (
+          <div>검색된 사용자가 없습니다</div>
+        )}
+      </div>
     </div>
   );
 };

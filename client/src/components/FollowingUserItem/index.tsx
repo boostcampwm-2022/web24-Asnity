@@ -6,7 +6,7 @@ import {
   ChatBubbleLeftIcon,
 } from '@heroicons/react/20/solid';
 import useFollowingMutation from '@hooks/useFollowingMutation';
-import React from 'react';
+import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -47,4 +47,4 @@ const FollowingUserItem: React.FC<Props> = ({ user }) => {
   );
 };
 
-export default FollowingUserItem;
+export default memo(FollowingUserItem);
