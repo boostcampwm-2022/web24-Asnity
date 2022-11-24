@@ -7,7 +7,7 @@ import {
   ModifyCommunityDto,
   DeleteCommunityDto,
 } from './dto';
-import { IsUserInCommunity } from '@community/helper/checkUserIsInCommunity';
+import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
 
 @Injectable()
 export class CommunityService {
@@ -21,7 +21,7 @@ export class CommunityService {
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
     });
-    const newCommunity = this.makeCommunityObj(community._id.toString());
+    const newCommunity = makeCommunityObj(community._id.toString());
     await this.userRepository.updateObject({ _id: createCommunityDto.managerId }, newCommunity);
     return community;
   }
@@ -34,7 +34,7 @@ export class CommunityService {
     if (!IsUserInCommunity(reqUser, communityId)) {
       throw new BadRequestException(`커뮤니티에 속하지 않는 사용자는 요청할 수 없습니다.`);
     }
-    const newCommunity = this.makeCommunityObj(communityId);
+    const newCommunity = makeCommunityObj(communityId);
     await Promise.all(
       // 사용자 document 검증 (올바른 사용자인지, 해당 사용자가 이미 커뮤니티에 참여하고 있는건 아닌지)
       appendUsersToCommunityDto.users.map(async (user_id) => {
@@ -120,14 +120,5 @@ export class CommunityService {
         communities: [community_id],
       },
     );
-  }
-
-  makeCommunityObj(community_id: string) {
-    const newCommunity = {};
-    newCommunity[`communities.${community_id}`] = {
-      _id: community_id,
-      channels: {},
-    };
-    return newCommunity;
   }
 }
