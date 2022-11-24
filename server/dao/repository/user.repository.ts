@@ -34,7 +34,11 @@ export class UserRepository {
   }
 
   async updateObject(filter, appendElement) {
-    await this.userModel.updateOne(filter, { $set: appendElement });
+    return await this.userModel.updateOne(filter, { $set: appendElement });
+  }
+
+  async deleteObject(filter, appendElement) {
+    await this.userModel.updateOne(filter, { $unset: appendElement });
   }
 
   async deleteElementAtArr(filter, removeElement) {
