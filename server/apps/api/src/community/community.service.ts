@@ -8,6 +8,7 @@ import {
   DeleteCommunityDto,
 } from './dto';
 import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
+import { communityInUser } from '@user/dto/community-in-user.dto';
 
 @Injectable()
 export class CommunityService {
@@ -16,6 +17,45 @@ export class CommunityService {
     private readonly userRepository: UserRepository,
   ) {}
 
+  async getCommunities(user2) {
+    const user = await this.userRepository.findById('637f2abb146636e4082885b1');
+    const infos = [];
+    await Promise.all(
+      Array.from(user.communities.values()).map(async (userCommunity) => {
+        const { _id, channels } = userCommunity as communityInUser;
+        const community = await this.communityRepository.findById(_id);
+        if (!community) {
+          throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
+        }
+        const result = Array.from(channels.keys()).filter(
+          (channel_id: string) => !community.channels.includes(channel_id),
+        );
+        if (result.length > 0) {
+          console.log(result);
+          throw new BadRequestException('커뮤니티에 없는 비정상적인 채널이 존재합니다.');
+        }
+        const info = {};
+        info[_id] = [];
+        await Promise.all(
+          Array.from(channels.keys()).map(async (channelId) => {
+            const lastRead = channels.get(channelId);
+            console.log(lastRead);
+            // TODO: soft delete이면 조건 다시 설정
+            // const channel = await this.channelRepository.findById(channelId);
+            // if (!channel) {
+            //   throw new BadRequestException('존재하지 않는 채널입니다.');
+            // }
+            // info[_id][channelId] = lastRead < channel.updatedAt;
+            // console.log(info[_id]);
+          }),
+        );
+        console.log(info);
+
+        infos.push(info);
+      }),
+    );
+    return infos;
+  }
   async createCommunity(createCommunityDto: CreateCommunityDto) {
     const community = await this.communityRepository.create({
       ...createCommunityDto,
