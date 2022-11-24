@@ -1,5 +1,5 @@
 import FollowerUserItem from '@components/FollowerUserItem';
-import SearchInput from '@components/searchInput';
+import SearchInput from '@components/SearchInput';
 import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowersQuery from '@hooks/useFollowersQuery';
@@ -12,7 +12,7 @@ const Followers = () => {
   const followersQuery = useFollowersQuery(debouncedFilter);
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <div className="w-full p-8">
         <SearchInput
           value={filter}
@@ -20,17 +20,19 @@ const Followers = () => {
           placeholder="검색하기"
         />
       </div>
-      {followersQuery.isLoading ? (
-        <div>loading...</div>
-      ) : followersQuery.data?.followers.length ? (
-        <UserList>
-          {followersQuery.data.followers.map((user) => (
-            <FollowerUserItem key={user._id} user={user} />
-          ))}
-        </UserList>
-      ) : (
-        '일치하는 사용자가 없습니다.'
-      )}
+      <div className="h-full overflow-auto">
+        {followersQuery.isLoading ? (
+          <div>loading...</div>
+        ) : followersQuery.data?.followers.length ? (
+          <UserList>
+            {followersQuery.data.followers.map((user) => (
+              <FollowerUserItem key={user._id} user={user} />
+            ))}
+          </UserList>
+        ) : (
+          '일치하는 사용자가 없습니다.'
+        )}
+      </div>
     </div>
   );
 };
