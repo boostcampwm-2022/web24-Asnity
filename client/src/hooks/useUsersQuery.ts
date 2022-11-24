@@ -16,7 +16,7 @@ const useUserSearchQuery = (
   const key = queryKeyCreator.userSearch(filter);
   const query = useQuery<GetUsersResponse, unknown, UsersQueryData>(
     key,
-    () => GetUsers(filter),
+    () => GetUsers({ search: filter }),
     {
       ...options,
       select: (data) => {
