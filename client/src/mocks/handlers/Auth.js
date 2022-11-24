@@ -120,9 +120,7 @@ export const GetMyInfo = rest.get(
       ctx.status(200),
       ctx.json({
         statusCode: 200,
-        result: {
-          user: users[0],
-        },
+        result: users[0],
       }),
     );
   },
