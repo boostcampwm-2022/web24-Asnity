@@ -53,11 +53,11 @@ export class CommunityController {
   ) {
     try {
       const _id = req.user._id;
-      const result = await this.communityService.appendParticipantsToCommunity({
+      await this.communityService.appendParticipantsToCommunity({
         ...appendUsersToCommunityDto,
         requestUser_id: _id,
       });
-      return responseForm(200, result);
+      return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
