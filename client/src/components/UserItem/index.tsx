@@ -2,7 +2,7 @@ import type { User } from '@apis/user';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 import UserProfile from '@components/UserProfile';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
   user: User;
@@ -18,4 +18,4 @@ const UserItem: React.FC<Props> = ({ user, right }) => {
   );
 };
 
-export default UserItem;
+export default memo(UserItem);
