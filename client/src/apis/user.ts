@@ -50,3 +50,13 @@ export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
 
 export const getFollowers = (): Promise<GetFollowersResponse> =>
   axios.get(`${API_URL}/api/user/followers`).then((res) => res.data);
+export interface GetUsersResult {
+  users: User[];
+}
+
+export type GetUsersResponse = SuccessResponse<GetUsersResult>;
+
+export const GetUsers = (query: string): Promise<GetUsersResponse> =>
+  axios
+    .get(`${API_URL}/api/users`, { params: { query } })
+    .then((res) => res.data);
