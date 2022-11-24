@@ -20,13 +20,14 @@ export class CommunityService {
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
     });
-    const newCommunity = {};
-    newCommunity[`communities.${community._id.toString()}`] = { _id: community._id.toString() };
+    const newCommunity = this.makeCommunityObj(community._id.toString());
     await this.userRepository.updateObject({ _id: createCommunityDto.managerId }, newCommunity);
     return community;
   }
 
   async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
+    const communityId = appendUsersToCommunityDto.community_id;
+    const newCommunity = this.makeCommunityObj(communityId);
     await Promise.all(
       appendUsersToCommunityDto.users.map(async (user_id) => {
         const user = await this.userRepository.findById(user_id);
@@ -109,5 +110,14 @@ export class CommunityService {
         communities: [community_id],
       },
     );
+  }
+
+  makeCommunityObj(community_id: string) {
+    const newCommunity = {};
+    newCommunity[`communities.${community_id}`] = {
+      _id: community_id,
+      channels: {},
+    };
+    return newCommunity;
   }
 }
