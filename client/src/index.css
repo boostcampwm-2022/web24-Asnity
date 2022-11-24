@@ -19,3 +19,12 @@
   left: 0;
   right: 0;
 }
+
+.no-display-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-display-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
