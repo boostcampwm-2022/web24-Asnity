@@ -23,7 +23,6 @@ export class Channel {
 
   @Prop({
     required: true,
-    unique: true,
   })
   @IsString()
   @IsNotEmpty()
