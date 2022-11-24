@@ -11,7 +11,7 @@ type UsersQueryData = {
 
 const useUserSearchQuery = (
   filter: string,
-  options?: { suspense?: boolean; enabled?: boolean; refetchOnMount?: boolean },
+  options?: { suspense?: boolean; enabled?: boolean },
 ) => {
   const key = queryKeyCreator.userSearch(filter);
   const query = useQuery<GetUsersResponse, unknown, UsersQueryData>(
