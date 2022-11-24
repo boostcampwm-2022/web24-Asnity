@@ -9,6 +9,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   placeholder,
+  ...props
 }) => {
   return (
     <div className="relative">
@@ -17,6 +18,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         <MagnifyingGlassIcon className="w-5 h-5 fill-label" />
       </div>
       <input
+        {...props}
         type="text"
         id="input-group-1"
         className="bg-inputBackground border border-line text-s16 text-label rounded-2xl min-w-full pl-10 p-2.5 focus:outline-line focus:bg-offWhite focus:font-bold"
