@@ -5,7 +5,6 @@ import axios from 'axios';
 
 export type UserStatus = 'online' | 'offline' | 'afk';
 
-// TODO: 토큰 추가하기
 export interface User {
   _id: string;
   id: string;
