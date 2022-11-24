@@ -23,7 +23,8 @@ export class ChannelService {
       ...createChannelDto,
       users: [createChannelDto.managerId],
     });
-    await this.communityRepository.addArrAtArr({ id: community.id }, 'channels', [channel._id]);
-    // // TODO: 유저 도큐먼트에 채널 추가
+    const newChannel = {};
+    newChannel[`communities.${community._id.toString()}.channels.${channel._id}`] = new Date();
+    await this.userRepository.updateObject({ _id: createChannelDto.managerId }, newChannel);
   }
 }
