@@ -15,13 +15,13 @@ const buttonRounded = {
 const buttonBg = (outlined: boolean) => ({
   primary: outlined
     ? 'border-primary hover:border-primary-dark active:border-primary'
-    : 'bg-primary hover:bg-primary-dark active:bg-primary',
+    : 'bg-primary hover:bg-primary-dark active:bg-primary border-primary',
   secondary: outlined
     ? 'border-secondary hover:border-secondary-dark active:border-secondary'
-    : 'bg-secondary hover:bg-secondary-dark active:bg-secondary',
+    : 'bg-secondary hover:bg-secondary-dark active:bg-secondary border-secondary',
   dark: outlined
     ? 'border-indigo hover:border-titleActive active:border-indigo'
-    : 'bg-indigo hover:bg-titleActive active:bg-indigo',
+    : 'bg-indigo hover:bg-titleActive active:bg-indigo border-indigo',
 });
 
 const buttonText = (outlined: boolean) => ({
