@@ -11,7 +11,7 @@ import useSignInMutation from '@hooks/useSignInMutation';
 import { useTokenStore } from '@stores/tokenStore';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const signUpFormDefaultValues = {
   id: '',
@@ -19,7 +19,6 @@ const signUpFormDefaultValues = {
 };
 
 const SignIn = () => {
-  const accessToken = useTokenStore((state) => state.accessToken);
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
   const { control, handleSubmit, reset } = useForm<SignInRequest>({
     mode: 'all',
@@ -31,6 +30,7 @@ const SignIn = () => {
   const signInMutation = useSignInMutation({
     onSuccess: (data) => {
       setAccessToken(data.result.accessToken);
+      navigate('/dms');
     },
     onError: (error) => {
       reset();
@@ -45,11 +45,6 @@ const SignIn = () => {
   const handleNavigateSignUpPage = () => {
     navigate('/sign-up');
   };
-
-  // TODO: 리다이렉트 조건 다시 생각해보기
-  if (accessToken) {
-    return <Navigate to="/dms" />;
-  }
 
   return (
     <main className="flex flex-col items-center min-h-screen">
