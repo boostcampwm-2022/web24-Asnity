@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react';
+import type { FormEvent } from 'react';
 
 import FollowerUserItem from '@components/FollowerUserItem';
 import SearchInput from '@components/searchInput';
@@ -6,28 +6,38 @@ import UserList from '@components/UserList';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
 
+import Button from '@/components/Button';
+
 // TODO: `handleKeyDown` 이벤트 핸들러 네이밍 명확하게 지어야함
 const UserSearch = () => {
-  const [filter, setFilter] = useState('');
-  const [submittedFilter, setsubmittedFilter] = useState('');
+  const [submittedFilter, setSubmittedFilter] = useState('');
   const usersQuery = useUsersQuery(submittedFilter, {
     enabled: !!submittedFilter,
   });
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter' || filter.length === 0) return;
-    setsubmittedFilter(filter);
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const filter =
+      (new FormData(e.currentTarget).get('user-search') as string) ?? '';
+
+    if (filter.length === 0) return;
+
+    setSubmittedFilter(filter);
   };
 
   return (
     <div>
       <div className="w-full p-8">
-        <SearchInput
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="검색하기"
-        />
+        <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+          <SearchInput
+            name="user-search"
+            placeholder="검색하기"
+            className="flex-1"
+          />
+          <Button color="dark" size="sm">
+            검색
+          </Button>
+        </form>
       </div>
       {usersQuery.data?.users.length ? (
         <UserList>
