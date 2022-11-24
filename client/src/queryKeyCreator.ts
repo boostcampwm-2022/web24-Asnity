@@ -5,6 +5,7 @@ const queryKeyCreator = {
   followings: (): [string] => ['followings'],
   followers: (): [string] => ['followers'],
   reissueToken: () => ['reissueToken'] as const,
+  userSearch: (filter: string) => ['userSearch', filter],
 } as const;
 
 export default queryKeyCreator;
