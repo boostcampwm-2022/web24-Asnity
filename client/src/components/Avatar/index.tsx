@@ -29,7 +29,7 @@ const Avatar: React.FC<AvatarProps> = ({ name, url, size, variant }) => {
           alt={`${name}의 프로필 이미지`}
         />
       ) : (
-        name.at(0)
+        name
       )}
     </div>
   );
