@@ -3,6 +3,7 @@ import { ChannelRepository } from '@repository/channel.repository';
 import { CreateChannelDto } from '@api/src/channel/dto';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
+import { addChannelToUserForm } from '@utils/addObjectForm';
 
 @Injectable()
 export class ChannelService {
@@ -29,8 +30,7 @@ export class ChannelService {
       ]);
 
       // 유저 목록에 자신이 속한 채널 업데이트
-      const newChannel = {};
-      newChannel[`communities.${community._id.toString()}.channels.${channel._id}`] = new Date();
+      const newChannel = addChannelToUserForm(community._id, channel._id);
       await this.userRepository.updateObject({ _id: createChannelDto.managerId }, newChannel);
     } catch (error) {
       throw new BadRequestException('채널 생성 중 오류 발생!');
