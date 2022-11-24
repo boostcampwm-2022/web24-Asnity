@@ -21,12 +21,12 @@ const AuthorizedLayer = () => {
   }, '/unknown-error');
 
   useEffect(() => {
-    if (user) return;
+    if (user || accessToken) return;
 
     reissueTokenMutation.mutate();
   }, []);
 
-  if (!(user || accessToken)) return <div>로딩중...</div>; // Spinner 넣기
+  if (!user && !accessToken) return <div>로딩중...</div>; // Spinner 넣기
   return <Outlet />;
 };
 
