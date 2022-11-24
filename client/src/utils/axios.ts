@@ -5,7 +5,6 @@ import axios from 'axios';
 const { getState } = tokenStore;
 
 /**
- * @description
  * ## Asnity api server 전용 Axios instance
  * - `baseURL`은 Asnity server 이다. 따라서 엔드포인트 작성시 `baseURL`이후 부분만 적는다.
  * - Api 요청시 전역 상태에서 관리하는 accessToken을 Authorization header에 삽입하고 보낸다.
@@ -17,7 +16,6 @@ export const tokenAxios = axios.create({
 });
 
 /**
- * @description
  * ## Asnity api server 전용 Axios instance
  * - `baseURL`은 Asnity server 이다. 따라서 엔드포인트 작성시 `baseURL`이후 부분만 적는다.
  * - accessToken이 필요없는 요청을 보낼 때 사용한다.
