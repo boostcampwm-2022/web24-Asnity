@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ChannelRepository } from '@repository/channel.repository';
-import { CreateChannelDto } from '@api/src/channel/dto';
+import { CreateChannelDto, ModifyChannelDto } from '@api/src/channel/dto';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
 import { addChannelToUserForm } from '@utils/addObjectForm';
@@ -34,6 +34,14 @@ export class ChannelService {
       await this.userRepository.updateObject({ _id: createChannelDto.managerId }, newChannel);
     } catch (error) {
       throw new BadRequestException('채널 생성 중 오류 발생!');
+    }
+  }
+
+  async modifyChannel(modifyChannelDto: ModifyChannelDto) {
+    try {
+      await this.channelRepository.updateOne({ id: modifyChannelDto.channelId }, modifyChannelDto);
+    } catch (error) {
+      throw new BadRequestException('채널 수정 중 오류 발생!');
     }
   }
 }

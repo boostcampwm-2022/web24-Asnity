@@ -15,4 +15,8 @@ export class ChannelRepository {
   async findOne(condition: any) {
     return await this.channelModel.findOne(condition);
   }
+
+  async updateOne(filter, updateField) {
+    return await this.channelModel.updateOne(filter, updateField);
+  }
 }
