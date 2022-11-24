@@ -9,12 +9,14 @@ import React, { useState } from 'react';
 // TODO: `handleKeyDown` 이벤트 핸들러 네이밍 명확하게 지어야함
 const UserSearch = () => {
   const [filter, setFilter] = useState('');
-  const [제출된필터, set제출된필터] = useState('');
-  const usersQuery = useUsersQuery(제출된필터, { enabled: !!제출된필터 });
+  const [submittedFilter, setsubmittedFilter] = useState('');
+  const usersQuery = useUsersQuery(submittedFilter, {
+    enabled: !!submittedFilter,
+  });
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || filter.length === 0) return;
-    set제출된필터(filter);
+    setsubmittedFilter(filter);
   };
 
   return (
