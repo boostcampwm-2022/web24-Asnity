@@ -43,14 +43,15 @@ const Friends = () => {
   );
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <header className="flex items-center pl-[56px] w-full h-header border-b border-line">
+    <div className="w-full h-full flex flex-col h-full">
+      <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <ul className="flex gap-[45px]">
           {tabs.map(({ name, tab: t }) => (
             <li
               key={t}
-              className={`${tab === t ? 'text-indigo' : 'text-placeholder'
-                } font-bold text-s20`}
+              className={`${
+                tab === t ? 'text-indigo' : 'text-placeholder'
+              } font-bold text-s20`}
             >
               <button className="w-[100%]" onClick={() => setTab(t)}>
                 {name}
@@ -59,8 +60,8 @@ const Friends = () => {
           ))}
         </ul>
       </header>
-      <div className="flex grow">
-        <div className="flex-1 min-w-[720px] max-w-[960px]">
+      <div className="flex h-full">
+        <div className="flex-1 min-w-[720px] max-w-[960px] h-[100%]">
           {TabPanel[tab]}
         </div>
         <div className="flex w-72 h-full border-l border-line">
