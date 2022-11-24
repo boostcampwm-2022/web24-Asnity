@@ -7,6 +7,7 @@ import {
   ModifyCommunityDto,
   DeleteCommunityDto,
 } from './dto';
+import { IsUserInCommunity } from '@community/helper/checkUserIsInCommunity';
 
 @Injectable()
 export class CommunityService {
@@ -25,8 +26,14 @@ export class CommunityService {
     return community;
   }
 
-  async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
+  async appendParticipantsToCommunity(
+    reqUser,
+    appendUsersToCommunityDto: AppendUsersToCommunityDto,
+  ) {
     const communityId = appendUsersToCommunityDto.community_id;
+    if (!IsUserInCommunity(reqUser, communityId)) {
+      throw new BadRequestException(`커뮤니티에 속하지 않는 사용자는 요청할 수 없습니다.`);
+    }
     const newCommunity = this.makeCommunityObj(communityId);
     await Promise.all(
       // 사용자 document 검증 (올바른 사용자인지, 해당 사용자가 이미 커뮤니티에 참여하고 있는건 아닌지)
@@ -36,10 +43,7 @@ export class CommunityService {
           throw new BadRequestException(
             `커뮤니티에 추가를 요청한 사용자 _id(${user_id})가 올바르지 않습니다.`,
           );
-        } else if (
-          (user.communities ?? false) &&
-          Array.from(user.communities.keys()).includes(communityId)
-        ) {
+        } else if (IsUserInCommunity(user, communityId)) {
           throw new BadRequestException(`이미 커뮤니티에 추가된 사용자 입니다.`);
         }
       }),
