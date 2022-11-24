@@ -91,16 +91,16 @@ export class CommunityController {
     }
   }
 
-  @Get()
-  @UseGuards(JwtAccessGuard)
-  async getCommunities(@Req() req: any) {
-    try {
-      const _id = req.user._id;
-      const result = await this.communityService.getCommunities(_id);
-      return responseForm(200, result);
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
+  // @Get()
+  // @UseGuards(JwtAccessGuard)
+  // async getCommunities(@Req() req: any) {
+  //   try {
+  //     const _id = req.user._id;
+  //     const result = await this.communityService.getCommunities(_id);
+  //     return responseForm(200, result);
+  //   } catch (error) {
+  //     this.logger.error(JSON.stringify(error.response));
+  //     throw error;
+  //   }
+  // }
 }

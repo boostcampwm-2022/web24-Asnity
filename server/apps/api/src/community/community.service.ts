@@ -20,10 +20,9 @@ export class CommunityService {
       ...createCommunityDto,
       users: [createCommunityDto.managerId],
     });
-    await this.userRepository.appendElementAtArr(
-      { _id: createCommunityDto.managerId },
-      { communities: community._id.toString() },
-    );
+    const newCommunity = {};
+    newCommunity[`communities.${community._id.toString()}`] = { _id: community._id.toString() };
+    await this.userRepository.updateObject({ _id: createCommunityDto.managerId }, newCommunity);
     return community;
   }
 
