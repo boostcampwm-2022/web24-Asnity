@@ -29,6 +29,18 @@ export class CommunityController {
     private communityService: CommunityService,
   ) {}
 
+  @Get()
+  @UseGuards(JwtAccessGuard)
+  async getCommunities(@Req() req: any) {
+    try {
+      const result = await this.communityService.getCommunities(req.user._doc);
+      return responseForm(200, result);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
   @Post()
   @UseGuards(JwtAccessGuard)
   async crateCommunity(@Body() createCommunityDto: CreateCommunityDto, @Req() req: any) {
@@ -69,7 +81,7 @@ export class CommunityController {
     try {
       const _id = req.user._id;
       await this.communityService.modifyCommunity({ ...modifyCommunityDto, managerId: _id });
-      return responseForm(200, {});
+      return responseForm(200, { message: '커뮤니티 정보 수정 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
@@ -89,17 +101,4 @@ export class CommunityController {
       throw error;
     }
   }
-
-  // @Get()
-  // @UseGuards(JwtAccessGuard)
-  // async getCommunities(@Req() req: any) {
-  //   try {
-  //     const _id = req.user._id;
-  //     const result = await this.communityService.getCommunities(_id);
-  //     return responseForm(200, result);
-  //   } catch (error) {
-  //     this.logger.error(JSON.stringify(error.response));
-  //     throw error;
-  //   }
-  // }
 }
