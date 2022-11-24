@@ -52,11 +52,10 @@ export class CommunityController {
     @Req() req: any,
   ) {
     try {
-      const _id = req.user._id;
-      await this.communityService.appendParticipantsToCommunity({
-        ...appendUsersToCommunityDto,
-        requestUser_id: _id,
-      });
+      await this.communityService.appendParticipantsToCommunity(
+        req.user,
+        appendUsersToCommunityDto,
+      );
       return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
