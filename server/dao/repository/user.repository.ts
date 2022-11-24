@@ -33,6 +33,10 @@ export class UserRepository {
     await this.userModel.updateOne(filter, { $push: appendElement });
   }
 
+  async updateObject(filter, appendElement) {
+    await this.userModel.updateOne(filter, { $set: appendElement });
+  }
+
   async deleteElementAtArr(filter, removeElement) {
     await this.userModel.updateOne(filter, { $pullAll: removeElement });
   }
@@ -46,4 +50,10 @@ export class UserRepository {
     addArr[attribute] = { $each: appendArr };
     return await this.userModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
+
+  // async set(filter, obj) {
+  //   const user = new User();
+  //
+  //   this.userModel.find(filter).communities.set();
+  // }
 }
