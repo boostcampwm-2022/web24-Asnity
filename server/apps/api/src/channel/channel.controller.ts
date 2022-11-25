@@ -39,7 +39,7 @@ export class ChannelController {
   async modifyChannel(@Body() modifyChannelDto: ModifyChannelDto, @Req() req: any) {
     const _id = req.user._id;
     try {
-      this.channelService.modifyChannel({ ...modifyChannelDto, managerId: _id });
+      await this.channelService.modifyChannel({ ...modifyChannelDto, managerId: _id });
       return responseForm(200, { message: '채널 수정 성공!' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
