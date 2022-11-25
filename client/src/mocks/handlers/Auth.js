@@ -75,7 +75,8 @@ const ReissueToken = rest.post(
   (req, res, ctx) => {
     // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
     const existsRefreshToken = !!req.cookies[devCookies.refreshTokenKey];
-    const ERROR = existsRefreshToken && true;
+
+    const ERROR = !existsRefreshToken || false;
     const isUnknownError = true;
 
     const successResponse = res(
@@ -121,7 +122,7 @@ export const GetMyInfo = rest.get(
   `${BASE_URL}/user/auth/me`,
   (req, res, ctx) => {
     return res(
-      ctx.delay(),
+      ctx.delay(300),
       ctx.status(200),
       ctx.json({
         statusCode: 200,
