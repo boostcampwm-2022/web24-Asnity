@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Inject,
   LoggerService,
   Param,
@@ -28,18 +27,6 @@ export class CommunityController {
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
     private communityService: CommunityService,
   ) {}
-
-  @Get()
-  @UseGuards(JwtAccessGuard)
-  async getCommunities(@Req() req: any) {
-    try {
-      const result = await this.communityService.getCommunities(req.user._doc);
-      return responseForm(200, result);
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
 
   @Post()
   @UseGuards(JwtAccessGuard)
