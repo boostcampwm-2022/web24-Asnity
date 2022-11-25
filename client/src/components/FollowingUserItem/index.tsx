@@ -6,7 +6,7 @@ import {
   ChatBubbleLeftIcon,
 } from '@heroicons/react/20/solid';
 import useFollowingMutation from '@hooks/useFollowingMutation';
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 interface Props {
