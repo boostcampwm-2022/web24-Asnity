@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ChannelRepository } from '@repository/channel.repository';
-import { CreateChannelDto, ModifyChannelDto } from '@api/src/channel/dto';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { addChannelToUserForm } from '@api/src/channel/helper/addObjectForm';
+import { addChannelToUserForm } from '@channel/helper/addObjectForm';
+import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
 
 @Injectable()
 export class ChannelService {
