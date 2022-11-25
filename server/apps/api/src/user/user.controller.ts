@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Inject,
   LoggerService,
@@ -9,7 +8,6 @@ import {
   Patch,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -62,17 +60,6 @@ export class UserController {
       return responseForm(200, { followings: result });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response ?? error));
-      throw error;
-    }
-  }
-
-  @Get(':id')
-  async getUser(@Param('id') id: string) {
-    try {
-      const result = await this.userService.getUser(id);
-      return responseForm(200, { users: result });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
       throw error;
     }
   }
