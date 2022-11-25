@@ -99,8 +99,10 @@ export class CommunityController {
         community_id,
         requestUser_id,
       };
-      await this.communityService.getParticipantsInCommunity(requestUserAboutCommunityDto);
-      return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
+      const result = await this.communityService.getParticipantsInCommunity(
+        requestUserAboutCommunityDto,
+      );
+      return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
