@@ -30,6 +30,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@faker-js/faker": "^7.6.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.9",
     "@tanstack/react-query-devtools": "^4.16.1",
     "@testing-library/jest-dom": "^5.16.5",
