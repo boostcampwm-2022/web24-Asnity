@@ -21,9 +21,8 @@ export class CommunityService {
     private readonly channelRepository: ChannelRepository,
   ) {}
 
-  async getCommunities(user2) {
-    const user = await this.userRepository.findById('637f2abb146636e4082885b1'); // 검증용
-    const infos = [];
+  async getCommunities(user) {
+    const communitiesInfo = [];
     await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
@@ -53,10 +52,10 @@ export class CommunityService {
           }),
         );
         const communityInfo = getCommunityBasicInfo(community, channelsInfo);
-        infos.push(communityInfo);
+        communitiesInfo.push(communityInfo);
       }),
     );
-    return { communities: infos };
+    return { communities: communitiesInfo };
   }
   async createCommunity(createCommunityDto: CreateCommunityDto) {
     const community = await this.communityRepository.create({
