@@ -3,7 +3,7 @@ import { ChannelRepository } from '@repository/channel.repository';
 import { CreateChannelDto, ModifyChannelDto } from '@api/src/channel/dto';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { addChannelToUserForm } from '@utils/addObjectForm';
+import { addChannelToUserForm } from '@api/src/channel/helper/addObjectForm';
 
 @Injectable()
 export class ChannelService {
