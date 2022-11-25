@@ -10,6 +10,8 @@ import {
 import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
 import { communityInUser } from '@user/dto/community-in-user.dto';
 import { ChannelRepository } from '@repository/channel.repository';
+import { getCommunityBasicInfo } from '@community/dto/community-basic-info.dto';
+import { getChannelBasicInfo } from '@api/src/channel/dto/channel-basic-info.dto';
 
 @Injectable()
 export class CommunityService {
@@ -19,8 +21,8 @@ export class CommunityService {
     private readonly channelRepository: ChannelRepository,
   ) {}
 
-  async getCommunities(user) {
-    // const user = await this.userRepository.findById('637f2abb146636e4082885b1'); // 검증용
+  async getCommunities(user2) {
+    const user = await this.userRepository.findById('637f2abb146636e4082885b1'); // 검증용
     const infos = [];
     await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
@@ -36,7 +38,7 @@ export class CommunityService {
           console.log(result);
           throw new BadRequestException('커뮤니티에 없는 비정상적인 채널이 존재합니다.');
         }
-        const info = { [_id]: [] };
+        const channelsInfo = [];
         await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
             const lastRead = channels.get(channelId);
@@ -44,11 +46,14 @@ export class CommunityService {
             if (!channel || channel.deletedAt) {
               throw new BadRequestException('존재하지 않는 채널입니다.');
             }
+            const channelInfo = getChannelBasicInfo(channel);
             // TODO : channel document의 updatedAt 아니고 다르값 비교
-            info[_id].push({ [channelId]: lastRead.getTime() >= channel.updatedAt.getTime() });
+            channelInfo['lastRead'] = lastRead.getTime() >= channel.updatedAt.getTime();
+            channelsInfo.push(channelInfo);
           }),
         );
-        infos.push(info);
+        const communityInfo = getCommunityBasicInfo(community, channelsInfo);
+        infos.push(communityInfo);
       }),
     );
     return { communities: infos };
