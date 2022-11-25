@@ -8,11 +8,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ChannelService } from '@api/src/channel/channel.service';
-import { JwtAccessGuard } from '@api/src/auth/guard';
-import { CreateChannelDto, ModifyChannelDto } from '@api/src/channel/dto';
 import { responseForm } from '@utils/responseForm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { ChannelService } from '@channel/channel.service';
+import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
+import { JwtAccessGuard } from '@auth/guard';
 
 @Controller('api/channel')
 export class ChannelController {
