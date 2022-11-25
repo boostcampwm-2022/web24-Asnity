@@ -11,7 +11,7 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 
 const UserItem: React.FC<Props> = ({ user, right }) => {
   return (
-    <div className="flex justify-between items-center px-10 min-w-full">
+    <div className="flex justify-between items-center px-10 min-w-full py-2">
       <UserProfile user={user} />
       {right}
     </div>
