@@ -5,6 +5,7 @@ import SearchInput from '@components/SearchInput';
 import UserList from '@components/UserList';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 import Button from '@/components/Button';
 
@@ -39,15 +40,19 @@ const UserSearch = () => {
           </Button>
         </form>
       </div>
-      {usersQuery.data?.users.length ? (
-        <UserList>
-          {usersQuery.data.users.map((user) => (
-            <FollowerUserItem key={user._id} user={user} />
-          ))}
-        </UserList>
-      ) : (
-        <div>검색된 사용자가 없습니다</div>
-      )}
+      <Scrollbars>
+        {usersQuery.data?.users.length ? (
+          <UserList>
+            {usersQuery.data.users.map((user) => (
+              <FollowerUserItem key={user._id} user={user} />
+            ))}
+          </UserList>
+        ) : (
+          <div className="flex justify-center items-center">
+            검색된 사용자가 없습니다
+          </div>
+        )}
+      </Scrollbars>
     </div>
   );
 };
