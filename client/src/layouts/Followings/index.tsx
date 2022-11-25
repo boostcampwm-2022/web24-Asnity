@@ -20,19 +20,19 @@ const Followings = () => {
           placeholder="검색하기"
         />
       </div>
-      <div className="h-full overflow-auto">
-        {followingsQuery.isLoading ? (
-          <div>loading...</div>
-        ) : followingsQuery.data?.followings.length ? (
-          <UserList>
-            {followingsQuery.data.followings.map((user) => (
-              <FollowingUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
-        ) : (
-          '일치하는 사용자가 없습니다.'
-        )}
-      </div>
+      {followingsQuery.isLoading ? (
+        <div>loading...</div>
+      ) : followingsQuery.data?.followings.length ? (
+        <UserList>
+          {followingsQuery.data.followings.map((user) => (
+            <li key={user._id} className="hover:bg-background py-2">
+              <FollowingUserItem user={user} />
+            </li>
+          ))}
+        </UserList>
+      ) : (
+        '일치하는 사용자가 없습니다.'
+      )}
     </div>
   );
 };

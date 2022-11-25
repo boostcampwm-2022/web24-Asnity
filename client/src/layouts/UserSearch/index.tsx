@@ -39,17 +39,17 @@ const UserSearch = () => {
           </Button>
         </form>
       </div>
-      <div className="h-full overflow-auto">
-        {usersQuery.data?.users.length ? (
-          <UserList>
-            {usersQuery.data.users.map((user) => (
-              <FollowerUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
-        ) : (
-          <div>검색된 사용자가 없습니다</div>
-        )}
-      </div>
+      {usersQuery.data?.users.length ? (
+        <UserList>
+          {usersQuery.data.users.map((user) => (
+            <li key={user._id} className="hover:bg-background py-2">
+              <FollowerUserItem user={user} />
+            </li>
+          ))}
+        </UserList>
+      ) : (
+        <div>검색된 사용자가 없습니다</div>
+      )}
     </div>
   );
 };
