@@ -1,68 +1,14 @@
+import { faker } from '@faker-js/faker';
+
 import { getRandomInt } from '../utils/rand';
 
-export const users = [
-  {
-    _id: '6379beb15d4f08bbe0c940e9',
-    id: 'test@test.com',
-    nickname: 'test',
-    status: 'online',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '6379c1b25d4f08bbe0c940ef',
-    id: 'soomanbaek@naver.com',
-    nickname: 'sooman',
-    status: '',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '637a143c2e0b02d228d9c4fc',
-    id: 'test999@test.com',
-    nickname: 'test',
-    status: 'online',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '637a14ea2e0b02d228d9c4fe',
-    id: 'asnity@asnity.com',
-    nickname: 'asnity',
-    status: 'offline',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '637b3536c5105b5805888e34',
-    id: 'sooman@naver.com',
-    nickname: 'sooman',
-    status: 'offline',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '637b6ad90680fb86893517a5',
-    id: 'sooman11@naver.com',
-    nickname: 'sooman',
-    status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: '637c510611fd8ffcabe029cd',
-    id: 'test@naver.com',
-    nickname: 'asnity',
-    status: 'offline',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'i change description3',
-  },
-  {
-    _id: '637cc581c3801784d5a5f150',
-    id: 'leegwae@gmail.com',
-    nickname: '이준영',
-    status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-];
+export const createMockUser = () => ({
+  _id: faker.datatype.uuid(),
+  id: faker.internet.email(),
+  nickname: faker.name.fullName(),
+  status: ['online', 'offline', 'afk'][getRandomInt(3)],
+  profileUrl: faker.image.avatar(),
+  description: faker.lorem.sentence(),
+});
+
+export const users = [...Array(30)].map(createMockUser);
