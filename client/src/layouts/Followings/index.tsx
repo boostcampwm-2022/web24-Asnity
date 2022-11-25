@@ -4,6 +4,7 @@ import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowingsQuery from '@hooks/useFollowingsQuery';
 import React, { useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 const Followings = () => {
   const DEBOUNCE_DELAY = 500;
@@ -20,17 +21,19 @@ const Followings = () => {
           placeholder="검색하기"
         />
       </div>
-      {followingsQuery.isLoading ? (
-        <div>loading...</div>
-      ) : followingsQuery.data?.followings.length ? (
-        <UserList>
-          {followingsQuery.data.followings.map((user) => (
-            <FollowingUserItem key={user._id} user={user} />
-          ))}
-        </UserList>
-      ) : (
-        '일치하는 사용자가 없습니다.'
-      )}
+      <Scrollbars>
+        {followingsQuery.isLoading ? (
+          <div className="flex items-center justify-center">로딩중...</div>
+        ) : followingsQuery.data?.followings.length ? (
+          <UserList>
+            {followingsQuery.data.followings.map((user) => (
+              <FollowingUserItem key={user._id} user={user} />
+            ))}
+          </UserList>
+        ) : (
+          '일치하는 사용자가 없습니다.'
+        )}
+      </Scrollbars>
     </div>
   );
 };
