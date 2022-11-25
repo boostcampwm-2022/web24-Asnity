@@ -19,4 +19,12 @@ export class ChannelRepository {
   async updateOne(filter, updateField) {
     return await this.channelModel.updateOne(filter, updateField);
   }
+
+  async findById(_id: string) {
+    return await this.channelModel.findById(_id);
+  }
+
+  async findOr(conditions: any) {
+    return await this.channelModel.find({ $or: conditions });
+  }
 }

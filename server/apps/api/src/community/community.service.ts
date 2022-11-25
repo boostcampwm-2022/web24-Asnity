@@ -9,16 +9,18 @@ import {
 } from './dto';
 import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
 import { communityInUser } from '@user/dto/community-in-user.dto';
+import { ChannelRepository } from '@repository/channel.repository';
 
 @Injectable()
 export class CommunityService {
   constructor(
     private readonly communityRepository: CommunityRepository,
     private readonly userRepository: UserRepository,
+    private readonly channelRepository: ChannelRepository,
   ) {}
 
-  async getCommunities(user2) {
-    const user = await this.userRepository.findById('637f2abb146636e4082885b1');
+  async getCommunities(user) {
+    // const user = await this.userRepository.findById('637f2abb146636e4082885b1'); // 검증용
     const infos = [];
     await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
@@ -34,27 +36,22 @@ export class CommunityService {
           console.log(result);
           throw new BadRequestException('커뮤니티에 없는 비정상적인 채널이 존재합니다.');
         }
-        const info = {};
-        info[_id] = [];
+        const info = { [_id]: [] };
         await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
             const lastRead = channels.get(channelId);
-            console.log(lastRead);
-            // TODO: soft delete이면 조건 다시 설정
-            // const channel = await this.channelRepository.findById(channelId);
-            // if (!channel) {
-            //   throw new BadRequestException('존재하지 않는 채널입니다.');
-            // }
-            // info[_id][channelId] = lastRead < channel.updatedAt;
-            // console.log(info[_id]);
+            const channel = (await this.channelRepository.findById(channelId)) as any;
+            if (!channel || channel.deletedAt) {
+              throw new BadRequestException('존재하지 않는 채널입니다.');
+            }
+            // TODO : channel document의 updatedAt 아니고 다르값 비교
+            info[_id].push({ [channelId]: lastRead.getTime() >= channel.updatedAt.getTime() });
           }),
         );
-        console.log(info);
-
         infos.push(info);
       }),
     );
-    return infos;
+    return { communities: infos };
   }
   async createCommunity(createCommunityDto: CreateCommunityDto) {
     const community = await this.communityRepository.create({
