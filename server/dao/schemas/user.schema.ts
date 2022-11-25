@@ -3,6 +3,11 @@ import { IsIn, IsString } from 'class-validator';
 import mongoose, { Document } from 'mongoose';
 import { STATUS } from '@utils/def';
 
+const channels = {
+  _id: { type: String },
+  lastRead: { type: Date, default: new Date() },
+};
+
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
@@ -67,6 +72,7 @@ export class User {
     }),
   )
   communities;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -101,4 +101,31 @@ export class CommunityController {
       throw error;
     }
   }
+
+  @Delete(':_id')
+  @UseGuards(JwtAccessGuard)
+  async deleteCommunity(@Param('_id') community_id: string, @Req() req: any) {
+    try {
+      const managerId = req.user._id;
+      const deleteCommunityDto: DeleteCommunityDto = { managerId, community_id };
+      await this.communityService.deleteCommunity(deleteCommunityDto);
+      return responseForm(200, { message: '커뮤니티 삭제 성공' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  // @Get()
+  // @UseGuards(JwtAccessGuard)
+  // async getCommunities(@Req() req: any) {
+  //   try {
+  //     const _id = req.user._id;
+  //     const result = await this.communityService.getCommunities(_id);
+  //     return responseForm(200, result);
+  //   } catch (error) {
+  //     this.logger.error(JSON.stringify(error.response));
+  //     throw error;
+  //   }
+  // }
 }

@@ -14,5 +14,6 @@ import { UserModule } from '@user/user.module';
   ],
   controllers: [CommunityController],
   providers: [CommunityService, CommunityRepository, UserRepository],
+  exports: [MongooseModule],
 })
 export class CommunityModule {}

@@ -95,7 +95,7 @@ export class CommunityService {
       }),
     );
     const community = await this.communityRepository.addArrAtArr(
-      { _id: appendUsersToCommunityDto.community_id },
+      appendUsersToCommunityDto.community_id,
       'users',
       appendUsersToCommunityDto.users,
     );
