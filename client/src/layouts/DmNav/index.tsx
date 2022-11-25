@@ -1,10 +1,9 @@
 import UserProfile from '@components/UserProfile';
 import useDirectMessagesQuery from '@hooks/useDirectMessagesQuery';
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const DmNav = () => {
-  const naviagte = useNavigate();
   const directMessagesQuery = useDirectMessagesQuery();
 
   return (
@@ -19,9 +18,9 @@ const DmNav = () => {
           <ul className="flex flex-col p-6 [&>*:hover]:rounded-md [&>*:hover]:bg-offWhite">
             {directMessagesQuery.data.map((directMessage) => (
               <li key={directMessage._id}>
-                <button onClick={() => naviagte(`/dms/${directMessage._id}`)}>
+                <Link to={`/dms/${directMessage._id}`}>
                   <UserProfile user={directMessage.user} />
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
