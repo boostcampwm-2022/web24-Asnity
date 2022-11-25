@@ -42,9 +42,7 @@ const UserSearch = () => {
       {usersQuery.data?.users.length ? (
         <UserList>
           {usersQuery.data.users.map((user) => (
-            <li key={user._id} className="hover:bg-background py-2">
-              <FollowerUserItem user={user} />
-            </li>
+            <FollowerUserItem key={user._id} user={user} />
           ))}
         </UserList>
       ) : (

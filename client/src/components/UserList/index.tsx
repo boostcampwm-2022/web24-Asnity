@@ -7,7 +7,11 @@ interface Props extends ComponentPropsWithoutRef<'ul'> {
 }
 
 const UserList = ({ children }: Props) => {
-  return <ul className="flex flex-col divide-y divide-line">{children}</ul>;
+  return (
+    <ul className="flex flex-col divide-y divide-line [&>*:hover]:bg-background">
+      {children}
+    </ul>
+  );
 };
 
 export default UserList;
