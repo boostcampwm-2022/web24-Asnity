@@ -1,15 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "es2015.iterable"
-    ],
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "lib": ["DOM", "es2015.iterable"],
     "jsx": "react-jsx",
     "baseUrl": ".",
     "outDir": "./build",
     "paths": {
-      "@/*": ["src/*"],
       "@pages/*": ["src/pages/*"],
       "@layouts/*": ["src/layouts/*"],
       "@components/*": ["src/components/*"],
@@ -20,7 +18,8 @@
       "@apis/*": ["src/apis/*"],
       "@hooks/*": ["src/hooks/*"],
       "@errors/*": ["src/errors/*"],
-      "@@types/*": ["src/types/*"]
+      "@@types/*": ["src/types/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src", "config"],
