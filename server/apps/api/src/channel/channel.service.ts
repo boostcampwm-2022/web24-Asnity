@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ChannelRepository } from '@repository/channel.repository';
 import { CreateChannelDto, ModifyChannelDto } from '@api/src/channel/dto';
 import { CommunityRepository } from '@repository/community.repository';
@@ -38,6 +38,13 @@ export class ChannelService {
   }
 
   async modifyChannel(modifyChannelDto: ModifyChannelDto) {
+    // 채널의 관리자가 아니면 예외처리
+    const channel = await this.channelRepository.findOne({ id: modifyChannelDto.channelId });
+    if (channel === undefined || modifyChannelDto.managerId !== channel.managerId) {
+      throw new UnauthorizedException('채널 관리자가 아닙니다.');
+    }
+
+    // 채널 수정
     try {
       await this.channelRepository.updateOne({ id: modifyChannelDto.channelId }, modifyChannelDto);
     } catch (error) {
