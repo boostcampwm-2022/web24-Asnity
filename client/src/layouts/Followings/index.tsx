@@ -25,9 +25,7 @@ const Followings = () => {
       ) : followingsQuery.data?.followings.length ? (
         <UserList>
           {followingsQuery.data.followings.map((user) => (
-            <li key={user._id} className="hover:bg-background py-2">
-              <FollowingUserItem user={user} />
-            </li>
+            <FollowingUserItem key={user._id} user={user} />
           ))}
         </UserList>
       ) : (

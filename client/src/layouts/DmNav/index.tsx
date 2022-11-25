@@ -16,12 +16,9 @@ const DmNav = () => {
         <div>loading...</div>
       ) : (
         directMessagesQuery.data?.length && (
-          <ul className="flex flex-col p-6">
+          <ul className="flex flex-col p-6 [&>*:hover]:rounded-md [&>*:hover]:bg-offWhite">
             {directMessagesQuery.data.map((directMessage) => (
-              <li
-                key={directMessage._id}
-                className="hover:rounded-md hover:bg-offWhite"
-              >
+              <li key={directMessage._id}>
                 <button onClick={() => naviagte(`/dms/${directMessage._id}`)}>
                   <UserProfile user={directMessage.user} />
                 </button>
