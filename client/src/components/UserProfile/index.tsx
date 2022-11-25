@@ -20,7 +20,7 @@ const UserProfile: React.FC<Props> = ({
   user: { nickname, profileUrl, status },
 }) => {
   return (
-    <div className="flex items-center gap-[11px] h-[87px]">
+    <div className="flex items-center gap-[11px] py-2">
       <Badge color={STATUS_COLOR[status]}>
         <Avatar
           size="small"
