@@ -12,6 +12,8 @@ import { communityInUser } from '@user/dto/community-in-user.dto';
 import { ChannelRepository } from '@repository/channel.repository';
 import { getCommunityBasicInfo } from '@community/dto/community-basic-info.dto';
 import { getChannelBasicInfo } from '@api/src/channel/dto/channel-basic-info.dto';
+import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
+import { getUserBasicInfo } from '@user/dto';
 
 @Injectable()
 export class CommunityService {
@@ -113,7 +115,7 @@ export class CommunityService {
 
   async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
     // TODO : refactoring을 findAndUpdate로 해서 매니저 id, deletedAt인지 바로 검증이랑 동시에 하도록..
-    const community = await this.verfiyCommunity(modifyCommunityDto.community_id);
+    const community = await this.getCommunity(modifyCommunityDto.community_id);
     if (community.managerId != modifyCommunityDto.managerId) {
       throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
     }
@@ -133,7 +135,7 @@ export class CommunityService {
       updateField,
     );
     if (!community) {
-      community = await this.verfiyCommunity(deleteCommunityDto.community_id);
+      community = await this.getCommunity(deleteCommunityDto.community_id);
       if (community.managerId != deleteCommunityDto.managerId) {
         throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
       } else if (community.deletedAt) {
@@ -146,8 +148,11 @@ export class CommunityService {
       ),
     );
   }
-  async verfiyCommunity(community_id: string) {
-    const community = await this.communityRepository.findOne({ _id: community_id });
+  async getCommunity(community_id: string, ...otherConditions) {
+    const community = await this.communityRepository.findOne({
+      _id: community_id,
+      ...otherConditions[0],
+    });
     if (!community) {
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
     }
@@ -161,5 +166,18 @@ export class CommunityService {
         communities: [community_id],
       },
     );
+  }
+
+  async getParticipantsInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
+    const community = await this.getCommunity(requestUserAboutCommunityDto.community_id, {
+      users: { $elemMatch: { $eq: requestUserAboutCommunityDto.requestUser_id } },
+    });
+    const result = await Promise.all(
+      community.users.map(async (_id) => {
+        const user = await this.userRepository.findById(_id);
+        return getUserBasicInfo(user);
+      }),
+    );
+    return { users: result };
   }
 }
