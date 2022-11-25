@@ -29,6 +29,7 @@
     "no-duplicate-imports": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/consistent-type-imports": "error",
-    "no-nested-ternary": "off"
+    "no-nested-ternary": "off",
+    "@typescript-eslint/no-empty-interface": "off"
   }
 }
