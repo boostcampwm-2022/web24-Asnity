@@ -11,10 +11,10 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 
 const UserItem: React.FC<Props> = ({ user, right }) => {
   return (
-    <li className="flex justify-between items-center px-10 min-w-full hover:bg-background">
+    <div className="flex justify-between items-center px-10 min-w-full">
       <UserProfile user={user} />
       {right}
-    </li>
+    </div>
   );
 };
 
