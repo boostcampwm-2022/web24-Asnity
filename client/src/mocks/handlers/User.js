@@ -4,7 +4,7 @@ import { rest } from 'msw';
 import { users } from '../data/users';
 
 const GetFilteredUsers = rest.get(`${API_URL}/api/users`, (req, res, ctx) => {
-  const search = req.url.searchParams.get('search');
+  const search = req.url.searchParams.get('search').toUpperCase();
 
   return res(
     ctx.delay(),
@@ -13,7 +13,9 @@ const GetFilteredUsers = rest.get(`${API_URL}/api/users`, (req, res, ctx) => {
       statusCode: 200,
       result: {
         users: users.filter(
-          (user) => user.id.includes(search) || user.nickname.includes(search),
+          (user) =>
+            user.id.toUpperCase().includes(search) ||
+            user.nickname.toUpperCase().includes(search),
         ),
       },
     }),
