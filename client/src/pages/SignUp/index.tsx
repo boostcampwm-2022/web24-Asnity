@@ -1,84 +1,52 @@
+import type { SignUpRequest } from '@apis/auth';
+
 import AuthInput from '@components/AuthInput';
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Logo from '@components/Logo';
 import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
-import { API_URL } from '@constants/url';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import REGEX from '@constants/regex';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
+import useSignUpMutation from '@hooks/useSignUpMutation';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-interface SignUpFields {
-  id: string;
-  nickname: string;
-  password: string;
+interface SignUpFormFields extends SignUpRequest {
   passwordCheck: string;
 }
 
-interface SuccessResponse<T> {
-  statusCode: number;
-  result: T;
-}
-
-type SignUpApi = (
-  fields: Omit<SignUpFields, 'passwordCheck'>,
-) => Promise<SuccessResponse<{ message: string }>>;
-
-const endPoint = `${API_URL}/api/user/auth/signup`;
-
-const signUpApi: SignUpApi = ({ id, nickname, password }) => {
-  return axios
-    .post(endPoint, { id, nickname, password })
-    .then((response) => response.data);
+const signUpFormDefaultValues = {
+  id: '',
+  nickname: '',
+  password: '',
+  passwordCheck: '',
 };
 
 const SignUp = () => {
-  // TODO: 리팩토링 하자
-  const { control, handleSubmit, watch, reset } = useForm<SignUpFields>({
+  const { control, handleSubmit, watch, reset } = useForm<SignUpFormFields>({
     mode: 'all',
-    defaultValues: {
-      id: '',
-      nickname: '',
-      password: '',
-      passwordCheck: '',
-    },
+    defaultValues: signUpFormDefaultValues,
   });
+
+  const password = watch('password');
 
   const navigate = useNavigate();
 
-  const signUpMutate = useMutation(['signUp'], signUpApi, {
+  const signUpMutation = useSignUpMutation({
     onSuccess: () => {
       toast.success('회원가입에 성공했습니다.');
       reset();
     },
     onError: (error) => {
-      if (error instanceof AxiosError) {
-        const errorMessage =
-          error?.response?.data?.message || '에러가 발생했습니다!';
-
-        if (Array.isArray(errorMessage)) {
-          errorMessage.forEach((message) => {
-            toast.error(message);
-          });
-          return;
-        }
-
-        toast.error(errorMessage);
-        return;
-      }
-
-      toast.error('Unknown Error');
+      defaultErrorHandler(error);
     },
   });
 
-  const password = watch('password');
-
-  const handleSubmitSignUpForm = (fields: SignUpFields) => {
-    signUpMutate.mutate(fields);
+  const handleSubmitSignUpForm = (fields: SignUpFormFields) => {
+    signUpMutation.mutate(fields);
   };
 
   const handleNavigateSignInPage = () => {
@@ -101,7 +69,7 @@ const SignUp = () => {
           control={control}
           rules={{
             pattern: {
-              value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+              value: REGEX.EMAIL,
               message: '아이디는 이메일 형식으로 입력해야 합니다!',
             },
             required: '필수 요소입니다!',
@@ -220,7 +188,7 @@ const SignUp = () => {
             size="md"
             type="submit"
             minWidth={340}
-            disabled={signUpMutate.isLoading}
+            disabled={signUpMutation.isLoading}
           >
             회원가입
           </Button>

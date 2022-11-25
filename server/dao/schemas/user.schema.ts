@@ -1,11 +1,11 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsIn, IsString } from 'class-validator';
 import mongoose, { Document } from 'mongoose';
 import { STATUS } from '@utils/def';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop()
   name: string;
@@ -49,12 +49,6 @@ export class User {
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   lastLogin: Date;
 
-  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
-  createdAt: Date;
-
-  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
-  updatedAt: Date;
-
   @Prop({ type: mongoose.Schema.Types.Date })
   deletedAt: Date;
 
@@ -66,7 +60,13 @@ export class User {
   @IsString()
   followers: string[];
 
-  @Prop()
-  communities: string[];
+  @Prop(
+    raw({
+      type: Map,
+      of: new mongoose.Schema({ _id: { type: String }, channels: { type: Map, of: Date } }),
+    }),
+  )
+  communities;
 }
+
 export const UserSchema = SchemaFactory.createForClass(User);

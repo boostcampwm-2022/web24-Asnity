@@ -19,6 +19,6 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access-to
       throw new ForbiddenException('잘못된 요청입니다.');
     }
     delete user.password;
-    return user;
+    return { ...user, _id: user._id.toString() };
   }
 }

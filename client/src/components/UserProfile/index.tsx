@@ -1,34 +1,27 @@
+import type { User } from '@apis/user';
+import type { ComponentPropsWithoutRef } from 'react';
+
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
+import { USER_STATUS } from '@constants/user';
 import React from 'react';
-import { User } from 'shared/lib/user';
 
-interface UserItemProps {
+interface Props extends ComponentPropsWithoutRef<'div'> {
   user: User;
 }
 
-const USER_STATUS = {
-  OFFLINE: 'offline',
-  ONLINE: 'online',
-  AFK: 'afk',
-};
-
-type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
-
-const statusColor: {
-  [key: UserStatus]: 'default' | 'success' | 'error';
-} = {
+const STATUS_COLOR = {
   [USER_STATUS.OFFLINE]: 'default',
   [USER_STATUS.ONLINE]: 'success',
   [USER_STATUS.AFK]: 'error',
-};
+} as const;
 
-const UserProfile: React.FC<UserItemProps> = ({
+const UserProfile: React.FC<Props> = ({
   user: { nickname, profileUrl, status },
 }) => {
   return (
-    <div className="flex items-center gap-[11px] h-[87px]">
-      <Badge color={statusColor[status]}>
+    <div className="flex items-center gap-[11px] py-2">
+      <Badge color={STATUS_COLOR[status]}>
         <Avatar
           size="small"
           variant="circle"

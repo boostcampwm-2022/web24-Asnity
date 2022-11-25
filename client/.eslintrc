@@ -26,6 +26,10 @@
     ],
     "@typescript-eslint/no-var-requires": "off",
     "react/no-unknown-property": "off",
-    "no-duplicate-imports": "off"
+    "no-duplicate-imports": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "no-nested-ternary": "off",
+    "@typescript-eslint/no-empty-interface": "off"
   }
 }

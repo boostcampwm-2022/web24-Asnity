@@ -1,7 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "lib": ["DOM"],
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "lib": ["DOM", "es2015.iterable"],
     "jsx": "react-jsx",
     "baseUrl": ".",
     "outDir": "./build",
@@ -14,11 +16,13 @@
       "@icons/*": ["src/assets/icons/*"],
       "@constants/*": ["src/constants/*"],
       "@apis/*": ["src/apis/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@errors/*": ["src/errors/*"],
+      "@@types/*": ["src/types/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src", "config"],
   "exclude": ["node_modules", "build", "dist"],
-  "references": [
-    { "path":  "../shared" }
-  ]
+  "references": [{ "path": "../shared" }]
 }

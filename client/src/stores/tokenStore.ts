@@ -9,7 +9,7 @@ type TokenStore = {
 
 export const tokenStore = createVanillaStore<TokenStore>()(
   devtools((set) => ({
-    accessToken: null,
+    accessToken: process.env.NODE_ENV === 'development' ? 'null' : null,
     setAccessToken: (newAccessToken) =>
       set(() => ({ accessToken: newAccessToken })),
   })),

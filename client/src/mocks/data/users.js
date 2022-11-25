@@ -1,36 +1,14 @@
+import { faker } from '@faker-js/faker';
+
 import { getRandomInt } from '../utils/rand';
 
-export const users = [
-  {
-    _id: 'a',
-    id: '1',
-    nickname: '나영',
-    status: 'online',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default description',
-  },
-  {
-    _id: 'b',
-    id: '2',
-    nickname: '수만',
-    status: 'offline',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default descrption',
-  },
-  {
-    _id: 'c',
-    id: '3',
-    nickname: '민종',
-    status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default descrption',
-  },
-  {
-    _id: 'd',
-    id: '4',
-    nickname: '준영',
-    status: 'afk',
-    profileUrl: `https://picsum.photos/id/${getRandomInt(500)}/70`,
-    description: 'default descrption',
-  },
-];
+export const createMockUser = () => ({
+  _id: faker.datatype.uuid(),
+  id: faker.internet.email(),
+  nickname: faker.name.fullName(),
+  status: ['online', 'offline', 'afk'][getRandomInt(3)],
+  profileUrl: faker.image.avatar(),
+  description: faker.lorem.sentence(),
+});
+
+export const users = [...Array(30)].map(createMockUser);

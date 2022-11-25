@@ -4,6 +4,9 @@ import { rest } from 'msw';
 import { users } from '../data/users';
 
 const BASE_URL = `${API_URL}/api`;
+const devCookies = {
+  refreshTokenKey: 'dev_refreshToken',
+};
 
 // 회원가입
 const SignUp = rest.post(`${BASE_URL}/user/auth/signup`, (req, res, ctx) => {
@@ -41,6 +44,7 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
   const ERROR = false;
 
   const successResponse = res(
+    ctx.cookie(devCookies.refreshTokenKey, '.'),
     ctx.status(200),
     ctx.delay(500),
     ctx.json({
@@ -65,17 +69,67 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
-export const GetMyInfo = rest.get('/api/user/auth/me', (req, res, ctx) => {
-  return res(
-    ctx.delay(),
-    ctx.status(200),
-    ctx.json({
-      statusCode: 200,
-      result: {
-        user: users[0],
-      },
-    }),
-  );
-});
+// 토큰 재발급
+const ReissueToken = rest.post(
+  `${BASE_URL}/user/auth/refresh`,
+  (req, res, ctx) => {
+    // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
+    const existsRefreshToken = !!req.cookies[devCookies.refreshTokenKey];
 
-export default [SignUp, SignIn, GetMyInfo];
+    const ERROR = !existsRefreshToken || false;
+    const isUnknownError = true;
+
+    const successResponse = res(
+      ctx.status(200),
+      ctx.delay(1000),
+      ctx.json({
+        statusCode: 200,
+        result: {
+          accessToken: 'accessToken',
+        },
+      }),
+    );
+
+    const unAuthErrorResponse = res(
+      ctx.status(401),
+      ctx.delay(1000),
+      ctx.json({
+        statusCode: 401,
+        message: 'Unauthorized',
+        error: '',
+      }),
+    );
+
+    const unknownErrorResponse = res(
+      ctx.status(502),
+      ctx.delay(1000),
+      ctx.json({
+        statusCode: 502,
+        message: 'Unknown',
+        error: '',
+      }),
+    );
+
+    const errorResponse = isUnknownError
+      ? unknownErrorResponse
+      : unAuthErrorResponse;
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
+export const GetMyInfo = rest.get(
+  `${BASE_URL}/user/auth/me`,
+  (req, res, ctx) => {
+    return res(
+      ctx.delay(300),
+      ctx.status(200),
+      ctx.json({
+        statusCode: 200,
+        result: users[0],
+      }),
+    );
+  },
+);
+
+export default [SignUp, SignIn, GetMyInfo, ReissueToken];

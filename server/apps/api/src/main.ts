@@ -8,7 +8,11 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiModule);
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   if (process.env.NODE_ENV == 'prod') {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
