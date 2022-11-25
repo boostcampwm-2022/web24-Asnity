@@ -20,6 +20,7 @@ import {
   ModifyCommunityDto,
   DeleteCommunityDto,
 } from './dto';
+import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 
 @Controller('api/community')
 export class CommunityController {
@@ -83,6 +84,23 @@ export class CommunityController {
       const deleteCommunityDto: DeleteCommunityDto = { managerId, community_id };
       await this.communityService.deleteCommunity(deleteCommunityDto);
       return responseForm(200, { message: '커뮤니티 삭제 성공' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  @Get(':id/participants')
+  @UseGuards(JwtAccessGuard)
+  async getParticipantsInCommunity(@Param('id') community_id: string, @Req() req: any) {
+    try {
+      const requestUser_id = req.user._id;
+      const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
+        community_id,
+        requestUser_id,
+      };
+      await this.communityService.getParticipantsInCommunity(requestUserAboutCommunityDto);
+      return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
