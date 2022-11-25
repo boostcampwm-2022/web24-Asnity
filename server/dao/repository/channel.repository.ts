@@ -15,4 +15,12 @@ export class ChannelRepository {
   async findOne(condition: any) {
     return await this.channelModel.findOne(condition);
   }
+
+  async findById(_id: string) {
+    return await this.channelModel.findById(_id);
+  }
+
+  async findOr(conditions: any) {
+    return await this.channelModel.find({ $or: conditions });
+  }
 }
