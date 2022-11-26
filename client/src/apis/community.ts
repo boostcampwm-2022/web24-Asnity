@@ -39,7 +39,7 @@ export interface CreateCommunityResult extends CommunitySummary {
 
 export type CreateCommunity = (
   fields: CreateCommunityRequest,
-) => Promise<SuccessResponse<CreateCommunityResult>>;
+) => Promise<CreateCommunityResult>;
 
 export const createCommunity: CreateCommunity = ({
   name,
