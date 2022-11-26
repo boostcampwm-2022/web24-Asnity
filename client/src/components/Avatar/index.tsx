@@ -50,7 +50,7 @@ const Avatar: React.FC<AvatarProps> = ({
       {!children &&
         (url ? (
           <img
-            className="object-cover"
+            className="block object-cover h-full"
             src={url}
             alt={`${name}의 프로필 이미지`}
           />
