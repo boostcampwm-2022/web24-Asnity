@@ -2,12 +2,21 @@ import type { SuccessResponse } from '@@types/apis/response';
 import type {
   CreateCommunityResult,
   CreateCommunityRequest,
+  GetCommunitiesResult,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
-import { createCommunity } from '@apis/community';
-import { useMutation } from '@tanstack/react-query';
+import { createCommunity, getCommunities } from '@apis/community';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import queryKeyCreator from 'src/queryKeyCreator';
+
+export const useCommunitiesQuery = () => {
+  const key = queryKeyCreator.community.all();
+  const query = useQuery<GetCommunitiesResult, AxiosError>(key, getCommunities);
+
+  return query;
+};
 
 export const useCreateCommunityMutation = (
   options: UseMutationOptions<

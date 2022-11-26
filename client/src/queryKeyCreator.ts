@@ -5,6 +5,7 @@ const directMessageQueryKey = {
 } as const;
 
 const communityQueryKey = {
+  all: () => ['communities'] as const,
   createCommunity: () => ['createCommunity'] as const,
 };
 
