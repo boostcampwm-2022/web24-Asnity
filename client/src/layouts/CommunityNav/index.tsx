@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 const CommunityNav = () => {
   const { communityId } = useParams();
-  const communitiesQuery = useCommunitiesQuery();
+  const { communitiesQuery } = useCommunitiesQuery();
   const communitySummary = communitiesQuery.data?.find(
     ({ _id }) => _id === communityId,
   );
