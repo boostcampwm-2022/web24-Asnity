@@ -31,22 +31,37 @@ const CreateCommunity = rest.post(
     const ERROR = false;
     const { name, description } = await req.json();
 
+    const newCommunity = {
+      name,
+      managerId: '6379beb15d4f08bbe0c940e9',
+      description,
+      profileUrl: '',
+      createdAt: '2022-11-21T10:07:14.390Z',
+      updatedAt: '2022-11-21T10:07:14.390Z',
+      channels: [],
+      users: ['6379beb15d4f08bbe0c940e9'],
+      _id: crypto.randomUUID(),
+      __v: 0,
+    };
+
     const successResponse = res(
-      ...createSuccessContext(ctx, 201, 500, {
-        name,
-        managerId: '6379beb15d4f08bbe0c940e9',
-        description,
-        profileUrl: 'request profileUrl',
-        createdAt: '2022-11-21T10:07:14.390Z',
-        updatedAt: '2022-11-21T10:07:14.390Z',
-        channels: [],
-        users: ['6379beb15d4f08bbe0c940e9'],
-        _id: '637b4dd7ec4ba00e3e288930',
-        __v: 0,
-      }),
+      ...createSuccessContext(ctx, 201, 500, newCommunity),
     );
 
     const errorResponse = res(...createErrorContext(ctx));
+
+    if (!ERROR) {
+      // eslint-disable-next-line no-shadow
+      const { name, _id, managerId, profileUrl, description } = newCommunity;
+
+      communities.push({
+        name,
+        _id,
+        managerId,
+        profileUrl,
+        description,
+      });
+    }
 
     return ERROR ? errorResponse : successResponse;
   },
