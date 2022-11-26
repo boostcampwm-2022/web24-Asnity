@@ -2,43 +2,58 @@ import Avatar from '@components/Avatar';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { useCommunitiesQuery } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { memo } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 const Gnb = () => {
   const { pathname } = useLocation();
+  const params = useParams();
+
   const openCreateCommunityModal = useRootStore(
     (state) => state.openCreateCommunityModal,
   );
+  const communitiesQuery = useCommunitiesQuery();
 
   return (
     <div className="flex min-w-[80px] w-[80px] h-full bg-background border-r border-line z-[100px]">
-      <div className="flex flex-col justify-start items-center w-full pt-[16px] overflow-auto no-display-scrollbar">
-        <GnbItemContainer isActive={pathname === '/dms'}>
-          <Link to="/dms">
-            <Avatar
-              name="Direct Message"
-              size="small"
-              url={LOGO_IMG_URL}
-              variant="rectangle"
-            />
-          </Link>
-        </GnbItemContainer>
+      <div className="flex flex-col justify-start items-center w-full pt-[16px] overflow-auto no-display-scrollbar pb-[30vh]">
+        <div className="w-full">
+          <GnbItemContainer isActive={pathname === '/dms'}>
+            <Link to="/dms">
+              <Avatar
+                name="Direct Message"
+                size="small"
+                url={LOGO_IMG_URL}
+                variant="rectangle"
+              />
+            </Link>
+          </GnbItemContainer>
+        </div>
 
-        <div className="w-[70%] h-[2px] bg-line mb-[10px]"></div>
+        <div className="w-[70%] h-[2px] bg-line mb-[10px]" />
 
         <ul className="w-full">
-          <GnbItemContainer>
-            <Link to="/dms">
-              <Avatar name="Asnity" size="small" variant="rectangle" />
-            </Link>
-          </GnbItemContainer>
-          <GnbItemContainer>
-            <Link to="/dms">
-              <Avatar name="Asnity" size="small" variant="rectangle" />
-            </Link>
-          </GnbItemContainer>
+          {communitiesQuery.isLoading ? (
+            <div>로딩중</div>
+          ) : (
+            communitiesQuery.data?.map(({ _id, name, profileUrl }) => (
+              <GnbItemContainer
+                key={_id}
+                isActive={params?.communityId === _id}
+              >
+                <Link to={`/communities/${_id}`}>
+                  <Avatar
+                    name={name}
+                    size="small"
+                    variant="rectangle"
+                    url={profileUrl}
+                  />
+                </Link>
+              </GnbItemContainer>
+            ))
+          )}
         </ul>
 
         <button type="button" onClick={openCreateCommunityModal}>
@@ -57,4 +72,4 @@ const Gnb = () => {
   );
 };
 
-export default Gnb;
+export default memo(Gnb);
