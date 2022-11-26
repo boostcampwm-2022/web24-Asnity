@@ -22,6 +22,12 @@ const buttonBg = (outlined: boolean) => ({
   dark: outlined
     ? 'border-indigo hover:border-titleActive active:border-indigo'
     : 'bg-indigo hover:bg-titleActive active:bg-indigo border-indigo',
+  error: outlined
+    ? 'border-error hover:border-error-dark active:border-error'
+    : 'bg-error hover:bg-error-dark active:bg-error border-error',
+  success: outlined
+    ? 'border-success hover:border-success-dark active:border-success'
+    : 'bg-success hover:bg-success-dark active:bg-success border-success',
 });
 
 const buttonText = (outlined: boolean) => ({
@@ -34,16 +40,29 @@ const buttonText = (outlined: boolean) => ({
   dark: outlined
     ? 'text-indigo hover:text-titleActive active:text-indigo'
     : 'text-offWhite',
+  error: outlined
+    ? 'text-error hover:text-error-dark active:text-error'
+    : 'text-offWhite',
+  success: outlined
+    ? 'text-success hover:text-success-dark active:success'
+    : 'text-offWhite',
 });
 
 const focusOutline = {
   primary: 'outline-primary-light',
   secondary: 'outline-secondary-light',
   dark: 'outline-placeholder',
+  error: 'outline-error-light',
+  success: 'outline-success-light',
 };
 
 export type ButtonSize = 'md' | 'sm';
-export type ButtonColor = 'primary' | 'secondary' | 'dark';
+export type ButtonColor =
+  | 'primary'
+  | 'secondary'
+  | 'dark'
+  | 'error'
+  | 'success';
 export interface Props extends ComponentPropsWithoutRef<'button'> {
   children: ReactNode;
   outlined?: boolean;
@@ -51,7 +70,7 @@ export interface Props extends ComponentPropsWithoutRef<'button'> {
   minWidth?: number | string;
   maxWidth?: number | string;
   size?: ButtonSize;
-  color: ButtonColor;
+  color?: ButtonColor;
 }
 
 const Button: React.FC<Props> = ({
