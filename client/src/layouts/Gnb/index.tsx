@@ -2,11 +2,15 @@ import Avatar from '@components/Avatar';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Gnb = () => {
   const { pathname } = useLocation();
+  const openCreateCommunityModal = useRootStore(
+    (state) => state.openCreateCommunityModal,
+  );
 
   return (
     <div className="flex min-w-[80px] w-[80px] h-full bg-background border-r border-line z-[100px]">
@@ -37,7 +41,7 @@ const Gnb = () => {
           </GnbItemContainer>
         </ul>
 
-        <button type="button">
+        <button type="button" onClick={openCreateCommunityModal}>
           <Avatar
             name="커뮤니티 추가"
             size="small"
