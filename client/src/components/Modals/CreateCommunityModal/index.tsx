@@ -4,7 +4,10 @@ import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Input from '@components/Input';
 import SuccessMessage from '@components/SuccessMessage';
-import { useCreateCommunityMutation } from '@hooks/community';
+import {
+  useCommunitiesQuery,
+  useCreateCommunityMutation,
+} from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -43,9 +46,10 @@ const CreateCommunityModal: React.FC<Props> = () => {
   const closeCreateCommunityModal = useRootStore(
     (state) => state.closeCreateCommunityModal,
   );
+  const { invalidateCommunitiesQuery } = useCommunitiesQuery();
   const createCommunityMutation = useCreateCommunityMutation({
     onSuccess: () => {
-      console.log('커뮤니티 생성 완료!');
+      invalidateCommunitiesQuery();
       // eslint-disable-next-line no-use-before-define
       handleCloseModal();
     },
