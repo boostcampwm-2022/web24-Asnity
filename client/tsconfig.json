@@ -18,6 +18,7 @@
       "@apis/*": ["src/apis/*"],
       "@hooks/*": ["src/hooks/*"],
       "@errors/*": ["src/errors/*"],
+      "@utils/*": ["src/utils/*"],
       "@@types/*": ["src/types/*"],
       "@/*": ["src/*"]
     }
