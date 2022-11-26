@@ -42,6 +42,7 @@ const Gnb = () => {
         </ul>
 
         <button type="button" onClick={openCreateCommunityModal}>
+          <span className="sr-only">커뮤니티 추가</span>
           <Avatar
             name="커뮤니티 추가"
             size="small"
