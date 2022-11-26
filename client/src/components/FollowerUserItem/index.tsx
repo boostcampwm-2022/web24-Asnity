@@ -2,7 +2,7 @@ import type { User } from '@apis/user';
 
 import UserItem from '@components/UserItem';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props {
   user: User;
@@ -24,4 +24,4 @@ const FollowerUserItem: React.FC<Props> = ({ user }) => {
   );
 };
 
-export default FollowerUserItem;
+export default memo(FollowerUserItem);
