@@ -84,7 +84,7 @@ const CreateCommunityModal: React.FC<Props> = () => {
         onSubmit={handleSubmit(handleSubmitCreateCommunityForm)}
       >
         <header className="mb-[10px]">
-          <h1 className="text-s20">커뮤니티 만들기</h1>
+          <h2 className="text-s20">커뮤니티 만들기</h2>
         </header>
         <div className="w-full">
           <Controller
@@ -152,7 +152,7 @@ const CreateCommunityModal: React.FC<Props> = () => {
           />
         </div>
         <footer className="flex justify-center gap-x-[24px] w-full h-full items-end">
-          <h1 className="sr-only">액션 버튼 그룹</h1>
+          <h2 className="sr-only">액션 버튼 그룹</h2>
           <Button
             type="button"
             color="error"
