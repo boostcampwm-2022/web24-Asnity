@@ -4,6 +4,10 @@ const directMessageQueryKey = {
   detail: (id: string) => [...directMessageQueryKey.all, id] as const,
 } as const;
 
+const communityQueryKey = {
+  createCommunity: () => ['createCommunity'] as const,
+};
+
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
@@ -13,6 +17,7 @@ const queryKeyCreator = {
   reissueToken: () => ['reissueToken'] as const,
   userSearch: (filter: string) => ['userSearch', { filter }],
   directMessage: directMessageQueryKey,
+  community: communityQueryKey,
 } as const;
 
 export default queryKeyCreator;
