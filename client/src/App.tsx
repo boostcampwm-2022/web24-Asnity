@@ -1,5 +1,6 @@
 import AccessDenied from '@pages/AccessDenied';
 import AuthorizedLayer from '@pages/AuthorizedLayer';
+import Channel from '@pages/Channel';
 import Community from '@pages/Community';
 import DM from '@pages/DM';
 import DMRoom from '@pages/DMRoom';
@@ -29,10 +30,9 @@ const router = createBrowserRouter(
             <Route index element={<Friends />} />
             <Route path=":roomId" element={<DMRoom />} />
           </Route>
-          <Route
-            path="communities/:communityId/channels/:roomId"
-            element={<Community />}
-          />
+          <Route path="communities/:communityId" element={<Community />}>
+            <Route path="channels/:roomId" element={<Channel />} />
+          </Route>
         </Route>
       </Route>
       <Route element={<UnAuthorizedLayer />}>
