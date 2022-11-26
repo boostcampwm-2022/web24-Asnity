@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 export interface AvatarProps {
   size: 'small' | 'medium';
@@ -61,4 +61,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export default Avatar;
+export default memo(Avatar);
