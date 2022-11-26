@@ -1,4 +1,3 @@
-import type { SuccessResponse } from '@@types/apis/response';
 import type {
   CreateCommunityResult,
   CreateCommunityRequest,
@@ -18,7 +17,7 @@ export const useCommunitiesQuery = () => {
   const key = queryKeyCreator.community.all();
   const query = useQuery<GetCommunitiesResult, AxiosError>(key, getCommunities);
   const invalidate = useCallback(() => {
-    queryClient.invalidateQueries(key);
+    return queryClient.invalidateQueries(key);
   }, [queryClient, key]);
 
   return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
@@ -26,7 +25,7 @@ export const useCommunitiesQuery = () => {
 
 export const useCreateCommunityMutation = (
   options: UseMutationOptions<
-    SuccessResponse<CreateCommunityResult>,
+    CreateCommunityResult,
     unknown,
     CreateCommunityRequest
   >,

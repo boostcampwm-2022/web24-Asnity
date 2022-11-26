@@ -4,6 +4,7 @@ import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
 import Input from '@components/Input';
 import SuccessMessage from '@components/SuccessMessage';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
 import {
   useCommunitiesQuery,
   useCreateCommunityMutation,
@@ -12,6 +13,8 @@ import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ReactModal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface CreateCommunityFormFields {
   communityName: string;
@@ -46,12 +49,24 @@ const CreateCommunityModal: React.FC<Props> = () => {
   const closeCreateCommunityModal = useRootStore(
     (state) => state.closeCreateCommunityModal,
   );
+  const navigate = useNavigate();
   const { invalidateCommunitiesQuery } = useCommunitiesQuery();
   const createCommunityMutation = useCreateCommunityMutation({
-    onSuccess: () => {
-      invalidateCommunitiesQuery();
+    onSuccess: ({ _id }) => {
+      invalidateCommunitiesQuery()
+        .then(() => {
+          navigate(`/communities/${_id}`);
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error('커뮤니티는 생성되었지만, 불러오는데 실패했습니다.');
+        });
+
       // eslint-disable-next-line no-use-before-define
       handleCloseModal();
+    },
+    onError: (error) => {
+      defaultErrorHandler(error);
     },
   });
 
