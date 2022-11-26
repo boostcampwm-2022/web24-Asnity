@@ -14,7 +14,7 @@ const Gnb = () => {
   const openCreateCommunityModal = useRootStore(
     (state) => state.openCreateCommunityModal,
   );
-  const communitiesQuery = useCommunitiesQuery();
+  const { communitiesQuery } = useCommunitiesQuery();
 
   return (
     <div className="flex min-w-[80px] w-[80px] h-full bg-background border-r border-line z-[100px]">
