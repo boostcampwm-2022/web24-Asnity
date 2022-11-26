@@ -1,14 +1,14 @@
-import type { ModalSlice } from '@stores/modalSlice';
+import type { CreateCommunityModalSlice } from '@stores/createCommunityModalSlice';
 
 import store from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { createModalSlice } from './modalSlice';
+import { createCommunityModalSlice } from './createCommunityModalSlice';
 
-export type Store = ModalSlice;
+export type Store = CreateCommunityModalSlice;
 
-export const useStore = store<Store>()(
+export const useRootStore = store<Store>()(
   devtools((...a) => ({
-    ...createModalSlice(...a),
+    ...createCommunityModalSlice(...a),
   })),
 );
