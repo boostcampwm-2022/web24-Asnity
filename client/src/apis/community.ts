@@ -35,5 +35,5 @@ export const createCommunity: CreateCommunity = ({
 
   return tokenAxios
     .post(endPoint, { name, description, profileUrl })
-    .then((response) => response.data);
+    .then((response) => response.data.result);
 };
