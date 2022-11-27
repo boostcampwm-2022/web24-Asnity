@@ -1,3 +1,4 @@
+import AlertModal from '@components/Modals/AlertModal';
 import ContextMenuModal from '@components/Modals/ContextMenuModal';
 import CreateCommunityModal from '@components/Modals/CreateCommunityModal';
 import Gnb from '@layouts/Gnb';
@@ -13,6 +14,7 @@ const Home = () => {
       <Outlet />
       <CreateCommunityModal />
       <ContextMenuModal />
+      <AlertModal />
     </div>
   );
 };
