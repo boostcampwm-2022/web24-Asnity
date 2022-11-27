@@ -10,10 +10,10 @@ import {
 import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
 import { communityInUser } from '@user/dto/community-in-user.dto';
 import { ChannelRepository } from '@repository/channel.repository';
-import { getCommunityBasicInfo } from '@community/dto/community-basic-info.dto';
+import { getCommunityBasicInfo } from '@community/helper/getCommunityBasicInfo';
+import { getChannelBasicInfo } from '@api/src/channel/dto/channel-basic-info.dto';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/dto';
-import { getChannelBasicInfo } from '@channel/helper';
 
 @Injectable()
 export class CommunityService {
@@ -66,7 +66,7 @@ export class CommunityService {
     });
     const newCommunity = makeCommunityObj(community._id.toString());
     await this.userRepository.updateObject({ _id: createCommunityDto.managerId }, newCommunity);
-    return community;
+    return getCommunityBasicInfo(community, []);
   }
 
   async appendParticipantsToCommunity(
@@ -116,7 +116,7 @@ export class CommunityService {
   async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
     // TODO : refactoring을 findAndUpdate로 해서 매니저 id, deletedAt인지 바로 검증이랑 동시에 하도록..
     const community = await this.getCommunity(modifyCommunityDto.community_id);
-    if (community.managerId != modifyCommunityDto.managerId) {
+    if (community.managerId != modifyCommunityDto.requestUserId) {
       throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
     }
     const { managerId, community_id, ...updateField } = modifyCommunityDto;
@@ -160,10 +160,10 @@ export class CommunityService {
   }
 
   deleteCommunityAtUserDocument(user_id: string, community_id: string) {
-    this.userRepository.deleteElementAtArr(
+    return this.userRepository.deleteObject(
       { _id: user_id },
       {
-        communities: [community_id],
+        communities: { _id: community_id },
       },
     );
   }
@@ -179,5 +179,23 @@ export class CommunityService {
       }),
     );
     return { users: result };
+  }
+
+  async exitUserInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
+    const { requestUser_id, community_id } = requestUserAboutCommunityDto;
+    const user = await this.userRepository.findById(requestUser_id);
+    const community = await this.communityRepository.findById(community_id);
+    if (!user) {
+      throw new BadRequestException(`요청한 사용자 _id(${requestUser_id})가 올바르지 않습니다.`);
+    } else if (!community) {
+      throw new BadRequestException(`요청한 커뮤니티 _id가 올바르지 않습니다.`);
+    } else if (requestUser_id === community.managerId) {
+      throw new BadRequestException(`매니저는 커뮤니티에서 탈퇴할 수 없습니다. 매니저 위임하세요.`);
+    }
+    await this.deleteCommunityAtUserDocument(requestUser_id, community_id);
+    await this.communityRepository.deleteElementAtArr(
+      { _id: community_id },
+      { users: [requestUser_id] },
+    );
   }
 }
