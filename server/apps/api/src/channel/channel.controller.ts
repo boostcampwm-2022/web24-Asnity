@@ -14,9 +14,8 @@ import {
 import { responseForm } from '@utils/responseForm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChannelService } from '@channel/channel.service';
-import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
+import { CreateChannelDto, DeleteChannelDto, ModifyChannelDto } from '@channel/dto';
 import { JwtAccessGuard } from '@auth/guard';
-import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 
 @Controller('api/channel')
 export class ChannelController {
@@ -51,12 +50,16 @@ export class ChannelController {
     }
   }
 
-  @Delete('exit')
+  @Delete(':community_id/user/:channel_id')
   @UseGuards(JwtAccessGuard)
-  async exitChannel(@Body() exitChannelDto: ExitChannelDto, @Req() req: any) {
+  async exitChannel(
+    @Param('community_id') community_id,
+    @Param('channel_id') channel_id,
+    @Req() req: any,
+  ) {
     const user_id = req.user._id;
     try {
-      await this.channelService.exitChannel({ ...exitChannelDto, user_id });
+      await this.channelService.exitChannel({ community_id, channel_id, user_id });
       return responseForm(200, { message: '채널 퇴장 성공!' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
