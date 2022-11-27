@@ -13,6 +13,7 @@ const directMessageQueryKey = {
 const communityQueryKey = {
   all: () => ['communities'] as const,
   createCommunity: () => ['createCommunity'] as const,
+  removeCommunity: () => ['removeCommunity'] as const,
   detail: (communityId: string) =>
     [...communityQueryKey.all(), 'detail', communityId] as const,
 };
