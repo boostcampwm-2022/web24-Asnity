@@ -3,11 +3,17 @@ import type {
   CreateCommunityRequest,
   GetCommunitiesResult,
   GetCommunityResult,
+  RemoveCommunityResult,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { getCommunity, createCommunity, getCommunities } from '@apis/community';
+import {
+  createCommunity,
+  getCommunities,
+  removeCommunity,
+  getCommunity,
+} from '@apis/community';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
@@ -48,6 +54,15 @@ export const useCreateCommunityMutation = (
 ) => {
   const key = queryKeyCreator.community.createCommunity();
   const mutation = useMutation(key, createCommunity, { ...options });
+
+  return mutation;
+};
+
+export const useRemoveCommunityMutation = (
+  options?: UseMutationOptions<RemoveCommunityResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.community.removeCommunity();
+  const mutation = useMutation(key, removeCommunity, { ...options });
 
   return mutation;
 };
