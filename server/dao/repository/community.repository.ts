@@ -35,4 +35,8 @@ export class CommunityRepository {
   async findAndUpdateOne(filter, updateField) {
     return await this.communityModel.findOneAndUpdate(filter, updateField, { new: true });
   }
+
+  async deleteElementAtArr(filter, removeElement) {
+    await this.communityModel.updateOne(filter, { $pullAll: removeElement });
+  }
 }
