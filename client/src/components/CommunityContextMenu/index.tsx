@@ -35,6 +35,9 @@ const CommunityContextMenu: React.FC<Props> = () => {
           </button>
         </li>
       </ul>
+      <div className="px-[12px] mb-[8px]">
+        <div className="w-full h-[1px] bg-line mx-auto"></div>
+      </div>
       <div>
         <button className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]">
           <span>커뮤니티에서 나가기</span>
