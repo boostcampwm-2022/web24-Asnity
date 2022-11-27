@@ -1,3 +1,4 @@
+import ContextMenuModal from '@components/Modals/ContextMenuModal';
 import CreateCommunityModal from '@components/Modals/CreateCommunityModal';
 import Gnb from '@layouts/Gnb';
 import Sidebar from '@layouts/Sidebar';
@@ -11,6 +12,7 @@ const Home = () => {
       <Sidebar />
       <Outlet />
       <CreateCommunityModal />
+      <ContextMenuModal />
     </div>
   );
 };
