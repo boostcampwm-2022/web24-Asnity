@@ -87,8 +87,7 @@ export class ChannelService {
   }
 
   async getChannelInfo(channel_id) {
-    const channelInfo = await this.channelRepository.findOne({ _id: channel_id });
-    return JSON.parse(JSON.stringify(channelInfo));
+    return await this.channelRepository.findOne({ _id: channel_id });
   }
 
   async deleteChannel(deleteChannelDto: DeleteChannelDto) {
