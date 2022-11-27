@@ -1,19 +1,76 @@
+import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
+import defaultErrorHandler from '@errors/defaultErrorHandler';
 import {
   UserPlusIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/20/solid';
+import {
+  useLeaveCommunityMutation,
+  useSetCommunitiesQuery,
+} from '@hooks/community';
+import { useRootStore } from '@stores/rootStore';
 import React, { useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-interface Props {}
+interface Props {
+  community: CommunitySummary;
+}
 
-const CommunityContextMenu: React.FC<Props> = () => {
+const CommunityContextMenu: React.FC<Props> = ({ community }) => {
+  const params = useParams();
+  const navigate = useNavigate();
   const handleRightClickContextMenu: MouseEventHandler<HTMLDivElement> =
     useCallback((e) => {
       e.preventDefault();
     }, []);
+
+  const leaveCommunityMutation = useLeaveCommunityMutation();
+  const setCommunities = useSetCommunitiesQuery();
+
+  const openAlertModal = useRootStore((state) => state.openAlertModal);
+  const closeAlertModal = useRootStore((state) => state.closeAlertModal);
+  const disableAlertModal = useRootStore((state) => state.disableAlertModal);
+  const enableAlertModal = useRootStore((state) => state.enableAlertModal);
+
+  const closeContextMenuModal = useRootStore(
+    (state) => state.closeContextMenuModal,
+  );
+
+  const handleSubmitAlert = () => {
+    disableAlertModal();
+    leaveCommunityMutation
+      .mutateAsync(community._id)
+      .then(() => {
+        setCommunities((prevCommunities) =>
+          prevCommunities?.filter(
+            (prevCommunity) => prevCommunity._id !== community._id,
+          ),
+        );
+
+        if (params?.communityId === community._id) {
+          navigate('/dms');
+        }
+        closeAlertModal();
+      })
+      .catch((error) => {
+        defaultErrorHandler(error);
+      })
+      .finally(() => {
+        enableAlertModal();
+      });
+  };
+
+  const handleClickCommunityLeaveButton = () => {
+    closeContextMenuModal();
+    openAlertModal({
+      description: `정말로 ${community.name} 커뮤니티에서 나가시겠습니까?`,
+      onCancel: closeAlertModal,
+      onSubmit: handleSubmitAlert,
+    });
+  };
 
   return (
     <section
@@ -39,7 +96,10 @@ const CommunityContextMenu: React.FC<Props> = () => {
         <div className="w-full h-[1px] bg-line mx-auto"></div>
       </div>
       <div>
-        <button className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]">
+        <button
+          className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
+          onClick={handleClickCommunityLeaveButton}
+        >
           <span>커뮤니티에서 나가기</span>
           <ArrowRightOnRectangleIcon className="w-6 h-6 pointer-events-none text-error" />
         </button>
