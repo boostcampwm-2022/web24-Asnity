@@ -56,21 +56,22 @@ const CommunityNav = () => {
         ) : (
           <ul className="flex flex-col">
             {channelsQuery.data?.map((channel) => (
-              <Link
-                to={`/communities/${communityId}/channels/${channel.id}`}
+              <li
                 key={channel.id}
-                className={classNames({
+                className={classNames('pl-[40px]', {
                   hidden: !visible && channel.id !== roomId,
                   'text-placeholder hover:bg-offWhite': channel.id !== roomId,
                   'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite':
                     channel.id === roomId,
                 })}
               >
-                <ChannelItem
-                  name={channel.name}
-                  isPrivate={channel.isPrivate}
-                />
-              </Link>
+                <Link to={`/communities/${communityId}/channels/${channel.id}`}>
+                  <ChannelItem
+                    name={channel.name}
+                    isPrivate={channel.isPrivate}
+                  />
+                </Link>
+              </li>
             ))}
           </ul>
         )}

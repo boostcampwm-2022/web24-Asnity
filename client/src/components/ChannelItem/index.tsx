@@ -1,15 +1,13 @@
-import type { ComponentPropsWithoutRef } from 'react';
-
 import { HashtagIcon, LockClosedIcon } from '@heroicons/react/20/solid';
 import React from 'react';
 
-interface Props extends ComponentPropsWithoutRef<'li'> {
+interface Props {
   isPrivate?: boolean;
   name: string;
 }
 const ChannelItem: React.FC<Props> = ({ isPrivate = true, name }) => {
   return (
-    <li className="flex items-center gap-[5px] pl-[40px] h-[45px] select-none">
+    <div className="flex items-center gap-[5px] h-[45px] select-none">
       <div>
         {isPrivate ? (
           <>
@@ -24,7 +22,7 @@ const ChannelItem: React.FC<Props> = ({ isPrivate = true, name }) => {
         )}
       </div>
       <div className="text-s18">{name}</div>
-    </li>
+    </div>
   );
 };
 
