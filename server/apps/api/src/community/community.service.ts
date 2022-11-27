@@ -14,6 +14,7 @@ import { getCommunityBasicInfo } from '@community/helper/getCommunityBasicInfo';
 import { getChannelBasicInfo } from '@api/src/channel/dto/channel-basic-info.dto';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/dto';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class CommunityService {
@@ -191,10 +192,18 @@ export class CommunityService {
     } else if (requestUser_id === community.managerId) {
       throw new BadRequestException(`매니저는 커뮤니티에서 탈퇴할 수 없습니다. 매니저 위임하세요.`);
     }
+    // user doc에서 community 삭제하기
     await this.deleteCommunityAtUserDocument(requestUser_id, community_id);
+    // community doc에서 users에 사용자 삭제하기
     await this.communityRepository.deleteElementAtArr(
       { _id: community_id },
       { users: [requestUser_id] },
+    );
+    // user가 속한 해당 community의 channel doc 에서 삭제하기
+    await Promise.all(
+      Object.keys(user.communities[community_id].channels).map((channel_id) =>
+        this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUser_id] }),
+      ),
     );
   }
 }
