@@ -26,7 +26,6 @@
     "test:report": "jest --coverage --ci --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
-    "shared" : "1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
@@ -39,7 +38,8 @@
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "shared": "1.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -67,6 +67,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.1.3",
     "jest-junit": "^14.0.1",
+    "mongodb-memory-server": "^8.10.1",
     "mongoose": "^6.7.2",
     "nest-raven": "^9.0.0",
     "nest-winston": "^1.8.0",

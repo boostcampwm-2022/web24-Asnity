@@ -9,13 +9,22 @@ import { UserRepository } from '@repository/user.repository';
 import { communityDto1 } from '@mock/community.mock';
 import { UserModule } from '@user/user.module';
 import { User } from '@schemas/user.schema';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { connect } from 'mongoose';
+import { Channel } from '@schemas/channel.schema';
 
 describe('[Community Service]', () => {
   let communityService: CommunityService;
   let communityRepository: CommunityRepository;
   let userRepository: UserRepository;
+  let mongodb, mongoConnection;
+  let communityModel, userModel, channelModel;
 
   beforeEach(async () => {
+    mongodb = await MongoMemoryServer.create();
+    const uri = mongodb.getUri();
+    mongoConnection = (await connect(uri)).connection;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommunityService,
@@ -23,15 +32,18 @@ describe('[Community Service]', () => {
         UserRepository,
         {
           provide: getModelToken(Community.name),
-          useFactory: () => {},
+          useValue: communityModel,
         },
         {
           provide: getModelToken(User.name),
-          useFactory: () => {},
+          useValue: userModel,
+        },
+        {
+          provide: getModelToken(Channel.name),
+          useValue: channelModel,
         },
       ],
     }).compile();
-
     communityService = module.get<CommunityService>(CommunityService);
     communityRepository = module.get<CommunityRepository>(CommunityRepository);
     userRepository = module.get<UserRepository>(UserRepository);
@@ -50,5 +62,19 @@ describe('[Community Service]', () => {
       const result = await communityService.createCommunity(communityDto1);
       expect(result).toEqual(community1);
     });
+  });
+
+  afterEach(async () => {
+    const collections = mongoConnection.collections;
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany({});
+    }
+  });
+
+  afterAll(async () => {
+    await mongoConnection.dropDatabase();
+    await mongoConnection.close();
+    await mongodb.stop();
   });
 });
