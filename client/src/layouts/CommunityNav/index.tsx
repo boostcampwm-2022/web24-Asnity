@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { useChannelsQuery } from '@hooks/channel';
 import { useCommunitiesQuery } from '@hooks/community';
-import classNames from 'classnames';
+import cn from 'classnames';
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
@@ -58,7 +58,7 @@ const CommunityNav = () => {
             {channelsQuery.data?.map((channel) => (
               <li
                 key={channel.id}
-                className={classNames('pl-[40px]', {
+                className={cn('pl-[40px]', {
                   hidden: !visible && channel.id !== roomId,
                   'text-placeholder hover:bg-offWhite': channel.id !== roomId,
                   'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite':
