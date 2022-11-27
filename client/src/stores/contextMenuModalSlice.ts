@@ -1,22 +1,40 @@
+import type { CommunitySummary } from '@apis/community';
 import type { StateCreator } from 'zustand';
 
 import { immer } from 'zustand/middleware/immer';
 
-export type ContextMenuType = 'community' | 'channel' | null;
-
-export interface ContextMenuModal {
-  id: string | null;
+export interface ContextMenuModalBase {
   x: number;
   y: number;
-  type: ContextMenuType;
   isOpen: boolean;
 }
+
+export interface CommunityContextMenuModal extends ContextMenuModalBase {
+  data: CommunitySummary;
+  type: 'community';
+}
+
+export interface ChannelContextMenuModal extends ContextMenuModalBase {
+  data: CommunitySummary; // TODO: 채널 모달 타입으로 바꿔야 함.
+  type: 'channel';
+}
+
+export interface InitialContextMenuModal extends ContextMenuModalBase {
+  data: null;
+  type: null;
+}
+
+export type ContextMenuModal =
+  | InitialContextMenuModal
+  | ChannelContextMenuModal
+  | CommunityContextMenuModal;
+
 export type OpenContextMenuModal = ({
-  id,
+  data,
   x,
   y,
   type,
-}: Omit<ContextMenuModal, 'isOpen'>) => void;
+}: Omit<CommunityContextMenuModal | ChannelContextMenuModal, 'isOpen'>) => void;
 
 export interface ContextMenuModalSlice {
   contextMenuModal: ContextMenuModal;
@@ -25,12 +43,12 @@ export interface ContextMenuModalSlice {
 }
 
 const initialContextMenuModalValue = {
-  id: null,
+  data: null,
   type: null,
   isOpen: false,
   x: 0,
   y: 0,
-};
+} as const;
 
 export const contextMenuModalSlice: StateCreator<
   ContextMenuModalSlice,
@@ -39,10 +57,10 @@ export const contextMenuModalSlice: StateCreator<
   ContextMenuModalSlice
 > = immer((set) => ({
   contextMenuModal: initialContextMenuModalValue,
-  openContextMenuModal: ({ id, x, y, type }) =>
+  openContextMenuModal: ({ data, x, y, type }) =>
     set((state) => {
       state.contextMenuModal = {
-        id,
+        data,
         x,
         y,
         type,
