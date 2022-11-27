@@ -58,7 +58,7 @@ const CommunityNav = () => {
             {channelsQuery.data?.map((channel) => (
               <li
                 key={channel.id}
-                className={cn('pl-[40px]', {
+                className={cn('flex items-center py-[6px] pl-[40px]', {
                   hidden: !visible && channel.id !== roomId,
                   'text-placeholder hover:bg-offWhite': channel.id !== roomId,
                   'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite':
