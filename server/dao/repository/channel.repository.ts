@@ -34,6 +34,10 @@ export class ChannelRepository {
     return await this.channelModel.find({ $or: conditions });
   }
 
+  async findAndUpdateOne(filter, updateField) {
+    return await this.channelModel.findOneAndUpdate(filter, updateField, { new: true });
+  }
+
   async addArrAtArr(filter, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
