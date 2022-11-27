@@ -2,8 +2,9 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ChannelRepository } from '@repository/channel.repository';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { addChannelToUserForm } from '@channel/helper/addObjectForm';
+import { getChannelToUserForm } from '@channel/helper/addObjectForm';
 import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
+import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 
 @Injectable()
 export class ChannelService {
@@ -65,12 +66,28 @@ export class ChannelService {
         newUserList.map((userId) => {
           this.userRepository.updateObject(
             { _id: userId },
-            addChannelToUserForm(communityId, channelId),
+            getChannelToUserForm(communityId, channelId),
           );
         }),
       );
     } catch (error) {
       throw new BadRequestException('유저 도큐먼트에 communities 필드 업데이트 중 오류 발생!');
     }
+  }
+
+  async exitChannel(exitChannelDto: ExitChannelDto) {
+    console.log('userId : ', exitChannelDto.user_id);
+    // channel도큐먼트에 users필드에서 user_id 제거
+    await this.channelRepository.deleteElementAtArr(
+      { _id: exitChannelDto.channel_id },
+      { users: [exitChannelDto.user_id] },
+    );
+    // user도큐먼트에 community 필드에 channel_id 제거
+    const deleteChannel = getChannelToUserForm(
+      exitChannelDto.community_id,
+      exitChannelDto.channel_id,
+    );
+    console.log(deleteChannel);
+    await this.userRepository.deleteObject({ _id: exitChannelDto.user_id }, deleteChannel);
   }
 }

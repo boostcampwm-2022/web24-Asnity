@@ -20,6 +20,12 @@ export class ChannelRepository {
     return await this.channelModel.updateOne(filter, updateField);
   }
 
+  async deleteElementAtArr(filter, removeElement) {
+    return await this.channelModel.updateOne(filter, {
+      $pullAll: removeElement,
+    });
+  }
+
   async findById(_id: string) {
     return await this.channelModel.findById(_id);
   }
