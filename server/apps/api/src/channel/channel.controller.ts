@@ -50,7 +50,7 @@ export class ChannelController {
     }
   }
 
-  @Delete('user/:channel_id')
+  @Delete('/:channel_id/me')
   @UseGuards(JwtAccessGuard)
   async exitChannel(@Param('channel_id') channel_id, @Req() req: any) {
     const user_id = req.user._id;
@@ -66,8 +66,13 @@ export class ChannelController {
   @Get(':id')
   @UseGuards(JwtAccessGuard)
   async getChannelInfo(@Param('id') channel_id: string) {
-    const channelInfo = await this.channelService.getChannelInfo(channel_id);
-    return responseForm(200, channelInfo);
+    try {
+      const channelInfo = await this.channelService.getChannelInfo(channel_id);
+      return responseForm(200, channelInfo);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
   }
 
   @Delete(':channel_id')
