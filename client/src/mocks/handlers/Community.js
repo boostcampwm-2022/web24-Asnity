@@ -93,17 +93,23 @@ export const LeaveCommunity = rest.delete(
   (req, res, ctx) => {
     const { id } = req.params;
 
-    colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`);
-
     const ERROR = false;
+    const successDelay = 500;
 
     const successResponse = res(
-      ...createSuccessContext(ctx, 201, 500, {
+      ...createSuccessContext(ctx, 201, successDelay, {
         message: '커뮤니티 퇴장 성공~',
       }),
     );
 
     const errorResponse = res(...createErrorContext(ctx));
+
+    if (!ERROR) {
+      setTimeout(
+        () => colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`),
+        successDelay,
+      );
+    }
 
     return ERROR ? errorResponse : successResponse;
   },
