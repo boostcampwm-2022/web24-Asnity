@@ -20,4 +20,8 @@ export class ModifyCommunityDto {
   @IsOptional()
   @IsString()
   profileUrl: string;
+
+  @IsOptional()
+  @IsString()
+  requestUserId: string;
 }
