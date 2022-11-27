@@ -14,7 +14,10 @@ interface Props {}
 ReactModal.setAppElement('#root');
 
 const ContextMenuModal: React.FC<Props> = () => {
-  const { x, y, isOpen } = useRootStore((state) => state.contextMenuModal);
+  const { x, y, isOpen, data, type } = useRootStore(
+    (state) => state.contextMenuModal,
+  );
+
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
   );
@@ -27,6 +30,14 @@ const ContextMenuModal: React.FC<Props> = () => {
     borderRadius: 10,
     padding: 0,
   };
+
+  let ContextMenu;
+
+  if (type === 'community')
+    ContextMenu = <CommunityContextMenu community={data} />;
+  else if (type === 'channel')
+    // TODO: ChannelContextMenu로 바꿔야함.
+    ContextMenu = <CommunityContextMenu community={data} />;
 
   return (
     <ReactModal
@@ -45,7 +56,7 @@ const ContextMenuModal: React.FC<Props> = () => {
         });
       }}
     >
-      <CommunityContextMenu />
+      {ContextMenu}
     </ReactModal>
   );
 };
