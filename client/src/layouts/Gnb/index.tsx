@@ -1,23 +1,51 @@
+import type { MouseEventHandler } from 'react';
+
 import Avatar from '@components/Avatar';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { useCommunitiesQuery } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
 const Gnb = () => {
   const { pathname } = useLocation();
   const params = useParams();
+  const openContextMenuModal = useRootStore(
+    (state) => state.openContextMenuModal,
+  );
 
   const openCreateCommunityModal = useRootStore(
     (state) => state.openCreateCommunityModal,
   );
   const { communitiesQuery } = useCommunitiesQuery();
 
+  const handleRightClickGnb: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+    },
+    [],
+  );
+
+  const handleRightClickCommunityLink: (
+    id: string,
+  ) => MouseEventHandler<HTMLAnchorElement> = (id: string) => (e) => {
+    e.preventDefault();
+
+    openContextMenuModal({
+      x: e.clientX,
+      y: e.clientY,
+      type: 'community',
+      id,
+    });
+  };
+
   return (
-    <div className="flex min-w-[80px] w-[80px] h-full bg-background border-r border-line z-[100px]">
+    <div
+      className="flex min-w-[80px] w-[80px] h-full bg-background border-r border-line z-[100px]"
+      onContextMenu={handleRightClickGnb}
+    >
       <div className="flex flex-col justify-start items-center w-full pt-[16px] overflow-auto no-display-scrollbar pb-[30vh]">
         <div className="w-full">
           <GnbItemContainer isActive={pathname === '/dms'}>
@@ -39,19 +67,21 @@ const Gnb = () => {
             <div>로딩중</div>
           ) : (
             communitiesQuery.data?.map(({ _id, name, profileUrl }) => (
-              <GnbItemContainer
-                key={_id}
-                isActive={params?.communityId === _id}
-              >
-                <Link to={`/communities/${_id}`}>
-                  <Avatar
-                    name={name}
-                    size="small"
-                    variant="rectangle"
-                    url={profileUrl}
-                  />
-                </Link>
-              </GnbItemContainer>
+              <li key={_id}>
+                <GnbItemContainer isActive={params?.communityId === _id}>
+                  <Link
+                    to={`/communities/${_id}`}
+                    onContextMenu={handleRightClickCommunityLink(_id)}
+                  >
+                    <Avatar
+                      name={name}
+                      size="small"
+                      variant="rectangle"
+                      url={profileUrl}
+                    />
+                  </Link>
+                </GnbItemContainer>
+              </li>
             ))
           )}
         </ul>
@@ -68,6 +98,9 @@ const Gnb = () => {
           </Avatar>
         </button>
       </div>
+
+      {/* <div className="absolute p-[12px] w-max h-max bg-titleActive text-offWhite left-[100px] top-[20px] z-[9000px]">*/}
+      {/* </div>*/}
     </div>
   );
 };
