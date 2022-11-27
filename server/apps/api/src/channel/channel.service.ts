@@ -76,17 +76,14 @@ export class ChannelService {
   }
 
   async exitChannel(exitChannelDto: ExitChannelDto) {
+    const { channel_id, user_id } = exitChannelDto;
     // channel도큐먼트에 users필드에서 user_id 제거
-    await this.channelRepository.deleteElementAtArr(
-      { _id: exitChannelDto.channel_id },
-      { users: [exitChannelDto.user_id] },
-    );
+    await this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [user_id] });
+    const channel = await this.channelRepository.findOne({ _id: channel_id });
+
     // user도큐먼트에 community 필드에 channel_id 제거
-    const deleteChannel = getChannelToUserForm(
-      exitChannelDto.community_id,
-      exitChannelDto.channel_id,
-    );
-    await this.userRepository.deleteObject({ _id: exitChannelDto.user_id }, deleteChannel);
+    const deleteChannel = getChannelToUserForm(channel.communityId, channel_id);
+    await this.userRepository.deleteObject({ _id: user_id }, deleteChannel);
   }
 
   async getChannelInfo(channel_id) {
