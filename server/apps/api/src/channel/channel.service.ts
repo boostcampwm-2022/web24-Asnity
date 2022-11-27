@@ -3,7 +3,7 @@ import { ChannelRepository } from '@repository/channel.repository';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
 import { getChannelToUserForm } from '@channel/helper/addObjectForm';
-import { CreateChannelDto, DeleteChannelDto, ModifyChannelDto } from '@channel/dto';
+import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 
 @Injectable()
@@ -91,35 +91,5 @@ export class ChannelService {
 
   async getChannelInfo(channel_id) {
     return await this.channelRepository.findOne({ _id: channel_id });
-  }
-
-  async deleteChannel(deleteChannelDto: DeleteChannelDto) {
-    const { channel_id, user_id } = deleteChannelDto;
-    // 관리자가 아니면 채널 삭제 에러 처리
-    const channel = await this.channelRepository.findOne({ _id: channel_id });
-    if (user_id !== channel.managerId) {
-      throw new BadRequestException('관리자가 아닙니다!');
-    }
-
-    // channel에 속한 모든 user들에 대하여 user 도큐먼트에 communities:channels 필드 수정
-    await Promise.all(
-      channel.users.map((user) => {
-        this.userRepository.deleteObject(
-          { _id: user },
-          getChannelToUserForm(channel.communityId, channel_id),
-        );
-      }),
-    );
-
-    // channel 도큐먼트 softDelete
-    const updateField = { deletedAt: new Date() };
-    await this.channelRepository.findAndUpdateOne(
-      {
-        _id: channel_id,
-        managerId: user_id,
-        deletedAt: { $exists: false },
-      },
-      updateField,
-    );
   }
 }
