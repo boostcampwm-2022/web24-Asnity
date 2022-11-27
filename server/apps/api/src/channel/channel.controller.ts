@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   LoggerService,
+  Param,
   Patch,
   Post,
   Req,
@@ -60,5 +62,11 @@ export class ChannelController {
       this.logger.error(JSON.stringify(error.response));
       throw error;
     }
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAccessGuard)
+  async getChannelInfo(@Param('id') channel_id: string) {
+    return await this.channelService.getChannelInfo(channel_id);
   }
 }
