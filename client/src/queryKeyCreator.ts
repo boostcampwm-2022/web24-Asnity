@@ -1,3 +1,9 @@
+const userQueryKey = {
+  all: () => ['users'] as const,
+  detail: (userId: string) =>
+    [...userQueryKey.all(), 'detail', userId] as const,
+};
+
 const directMessageQueryKey = {
   all: ['directMessages'] as const,
   list: () => [...directMessageQueryKey.all] as const,
