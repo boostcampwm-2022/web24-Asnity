@@ -15,7 +15,8 @@ export class CommunitiesController {
   @UseGuards(JwtAccessGuard)
   async getCommunities(@Req() req: any) {
     try {
-      const result = await this.communityService.getCommunities(req.user._doc);
+      const _id = req.user._id;
+      const result = await this.communityService.getCommunities(_id);
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
