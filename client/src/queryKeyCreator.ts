@@ -36,6 +36,7 @@ const queryKeyCreator = {
   directMessage: directMessageQueryKey,
   community: communityQueryKey,
   channel: channelQueryKey,
+  user: userQueryKey,
 } as const;
 
 export default queryKeyCreator;
