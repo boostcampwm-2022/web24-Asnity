@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   LoggerService,
   Param,
@@ -68,7 +69,7 @@ export class CommunityController {
   async modifyCommunitySetting(@Body() modifyCommunityDto: ModifyCommunityDto, @Req() req: any) {
     try {
       const _id = req.user._id;
-      await this.communityService.modifyCommunity({ ...modifyCommunityDto, managerId: _id });
+      await this.communityService.modifyCommunity({ ...modifyCommunityDto, requestUserId: _id });
       return responseForm(200, { message: '커뮤니티 정보 수정 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
@@ -103,6 +104,23 @@ export class CommunityController {
         requestUserAboutCommunityDto,
       );
       return responseForm(200, result);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  @Delete(':id/me')
+  @UseGuards(JwtAccessGuard)
+  async exitUserInCommunity(@Param('id') community_id: string, @Req() req: any) {
+    try {
+      const requestUser_id = req.user._id;
+      const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
+        community_id,
+        requestUser_id,
+      };
+      await this.communityService.exitUserInCommunity(requestUserAboutCommunityDto);
+      return responseForm(200, { message: '사용자 커뮤니티 탈퇴 성공' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
