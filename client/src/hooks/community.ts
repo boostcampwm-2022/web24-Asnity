@@ -2,11 +2,12 @@ import type {
   CreateCommunityResult,
   CreateCommunityRequest,
   GetCommunitiesResult,
+  GetCommunityResult,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { createCommunity, getCommunities } from '@apis/community';
+import { getCommunity, createCommunity, getCommunities } from '@apis/community';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
@@ -21,6 +22,21 @@ export const useCommunitiesQuery = () => {
   }, [queryClient, key]);
 
   return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
+};
+
+export const useCommunityQuery = (communityId: string) => {
+  const queryClient = useQueryClient();
+
+  const key = queryKeyCreator.community.detail(communityId);
+  const query = useQuery<GetCommunityResult, AxiosError>(key, () =>
+    getCommunity(communityId),
+  );
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return { communityQuery: query, invalidateCommunityQuery: invalidate };
 };
 
 export const useCreateCommunityMutation = (
