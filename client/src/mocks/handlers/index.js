@@ -1,4 +1,5 @@
 import AuthHandlers from './Auth';
+import ChannelHandlers from './Channel';
 import CommunityHandlers from './Community';
 import DMHandlers from './DM';
 import FriendHandlers from './Friend';
@@ -10,4 +11,5 @@ export const handlers = [
   ...UserHandlers,
   ...DMHandlers,
   ...CommunityHandlers,
+  ...ChannelHandlers,
 ];
