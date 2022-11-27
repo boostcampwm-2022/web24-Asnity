@@ -16,6 +16,7 @@ const communityQueryKey = {
   removeCommunity: () => ['removeCommunity'] as const,
   detail: (communityId: string) =>
     [...communityQueryKey.all(), 'detail', communityId] as const,
+  leaveCommunity: () => ['leaveCommunity'] as const,
 };
 
 const channelQueryKey = {
