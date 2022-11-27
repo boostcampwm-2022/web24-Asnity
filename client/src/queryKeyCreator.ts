@@ -20,7 +20,9 @@ const communityQueryKey = {
 const channelQueryKey = {
   all: () => ['channels'] as const,
   list: (communityId: string) =>
-    [...channelQueryKey.all(), communityId] as const,
+    [...channelQueryKey.all(), 'list', communityId] as const,
+  detail: (channelId: string) =>
+    [...channelQueryKey.all(), 'detail', channelId] as const,
 };
 
 const queryKeyCreator = {

@@ -1,7 +1,7 @@
-import type { GetChannelsResult } from '@apis/channel';
+import type { GetChannelResult, GetChannelsResult } from '@apis/channel';
 import type { AxiosError } from 'axios';
 
-import { getChannels } from '@apis/channel';
+import { getChannel, getChannels } from '@apis/channel';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
@@ -20,4 +20,19 @@ export const useChannelsQuery = (communityId: string) => {
   );
 
   return { channelsQuery: query, invalidateChannelsQuery: invalidate };
+};
+
+export const useChannelQuery = (channelId: string) => {
+  const queryClient = useQueryClient();
+  const key = queryKeyCreator.channel.detail(channelId);
+
+  const query = useQuery<GetChannelResult, AxiosError>(key, () =>
+    getChannel(channelId),
+  );
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return { channelQuery: query, invalidateChannelQuery: invalidate };
 };
