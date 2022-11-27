@@ -76,7 +76,6 @@ export class ChannelService {
   }
 
   async exitChannel(exitChannelDto: ExitChannelDto) {
-    console.log('userId : ', exitChannelDto.user_id);
     // channel도큐먼트에 users필드에서 user_id 제거
     await this.channelRepository.deleteElementAtArr(
       { _id: exitChannelDto.channel_id },
@@ -87,7 +86,6 @@ export class ChannelService {
       exitChannelDto.community_id,
       exitChannelDto.channel_id,
     );
-    console.log(deleteChannel);
     await this.userRepository.deleteObject({ _id: exitChannelDto.user_id }, deleteChannel);
   }
 }
