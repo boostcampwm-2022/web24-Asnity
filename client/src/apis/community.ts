@@ -75,3 +75,15 @@ export const removeCommunity: RemoveCommunity = (id) => {
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
 };
+
+export interface LeaveCommunityResult {
+  message: string;
+}
+
+export type LeaveCommunity = (id: string) => Promise<LeaveCommunityResult>;
+
+export const leaveCommunity: LeaveCommunity = (id) => {
+  const endPoint = `api/community/${id}/me`;
+
+  return tokenAxios.delete(endPoint).then((response) => response.data.result);
+};
