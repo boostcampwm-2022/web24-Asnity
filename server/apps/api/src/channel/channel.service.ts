@@ -2,9 +2,9 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ChannelRepository } from '@repository/channel.repository';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { getChannelToUserForm } from '@channel/helper/addObjectForm';
 import { CreateChannelDto, DeleteChannelDto, ModifyChannelDto } from '@channel/dto';
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
+import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
 
 @Injectable()
 export class ChannelService {
@@ -88,7 +88,7 @@ export class ChannelService {
 
   async getChannelInfo(channel_id) {
     const channelInfo = await this.channelRepository.findOne({ _id: channel_id });
-    return JSON.parse(JSON.stringify(channelInfo));
+    return getChannelBasicInfo(JSON.parse(JSON.stringify(channelInfo)));
   }
 
   async deleteChannel(deleteChannelDto: DeleteChannelDto) {
