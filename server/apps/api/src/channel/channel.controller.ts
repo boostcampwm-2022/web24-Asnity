@@ -14,7 +14,7 @@ import {
 import { responseForm } from '@utils/responseForm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChannelService } from '@channel/channel.service';
-import { CreateChannelDto, DeleteChannelDto, ModifyChannelDto } from '@channel/dto';
+import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
 import { JwtAccessGuard } from '@auth/guard';
 
 @Controller('api/channel')
@@ -50,7 +50,7 @@ export class ChannelController {
     }
   }
 
-  @Delete(':community_id/user/:channel_id')
+  @Delete('user/:community_id/:channel_id')
   @UseGuards(JwtAccessGuard)
   async exitChannel(
     @Param('community_id') community_id,
@@ -70,6 +70,15 @@ export class ChannelController {
   @Get(':id')
   @UseGuards(JwtAccessGuard)
   async getChannelInfo(@Param('id') channel_id: string) {
-    return await this.channelService.getChannelInfo(channel_id);
+    const channelInfo = await this.channelService.getChannelInfo(channel_id);
+    return responseForm(200, channelInfo);
+  }
+
+  @Delete(':channel_id')
+  @UseGuards(JwtAccessGuard)
+  async deleteChannel(@Param('channel_id') channel_id, @Req() req) {
+    const user_id = req.user;
+    await this.channelService.deleteChannel({ channel_id, user_id });
+    return responseForm(200, { message: '채널 삭제 성공' });
   }
 }
