@@ -88,8 +88,4 @@ export class ChannelService {
     );
     await this.userRepository.deleteObject({ _id: exitChannelDto.user_id }, deleteChannel);
   }
-
-  async getChannelInfo(channel_id) {
-    return await this.channelRepository.findOne({ _id: channel_id });
-  }
 }
