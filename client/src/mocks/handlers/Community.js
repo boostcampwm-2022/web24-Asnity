@@ -6,6 +6,7 @@ import {
   createErrorContext,
   createSuccessContext,
 } from '../utils/createContext';
+import { colorLog } from '../utils/logging';
 
 const BASE_URL = `${API_URL}/api`;
 
@@ -87,4 +88,25 @@ const CreateCommunity = rest.post(
   },
 );
 
-export default [GetCommunities, GetCommunity, CreateCommunity];
+export const LeaveCommunity = rest.delete(
+  `${BASE_URL}/community/:id/me`,
+  (req, res, ctx) => {
+    const { id } = req.params;
+
+    colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`);
+
+    const ERROR = false;
+
+    const successResponse = res(
+      ...createSuccessContext(ctx, 201, 500, {
+        message: '커뮤니티 퇴장 성공~',
+      }),
+    );
+
+    const errorResponse = res(...createErrorContext(ctx));
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
+export default [GetCommunities, GetCommunity, CreateCommunity, LeaveCommunity];
