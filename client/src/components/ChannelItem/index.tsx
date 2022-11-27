@@ -4,10 +4,16 @@ import React from 'react';
 interface Props {
   isPrivate?: boolean;
   name: string;
+  className?: string;
 }
-const ChannelItem: React.FC<Props> = ({ isPrivate = true, name }) => {
+
+const ChannelItem: React.FC<Props> = ({
+  isPrivate = true,
+  name,
+  className,
+}) => {
   return (
-    <div className="flex items-center gap-[5px] h-[45px] select-none">
+    <div className={`flex items-center gap-[5px] select-none ${className}`}>
       <div>
         {isPrivate ? (
           <>
