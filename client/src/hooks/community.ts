@@ -4,6 +4,7 @@ import type {
   GetCommunitiesResult,
   GetCommunityResult,
   RemoveCommunityResult,
+  LeaveCommunityResult,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
@@ -11,6 +12,7 @@ import type { AxiosError } from 'axios';
 import {
   createCommunity,
   getCommunities,
+  leaveCommunity,
   removeCommunity,
   getCommunity,
 } from '@apis/community';
@@ -63,6 +65,15 @@ export const useRemoveCommunityMutation = (
 ) => {
   const key = queryKeyCreator.community.removeCommunity();
   const mutation = useMutation(key, removeCommunity, { ...options });
+
+  return mutation;
+};
+
+export const useLeaveCommunityMutation = (
+  options?: UseMutationOptions<LeaveCommunityResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.community.leaveCommunity();
+  const mutation = useMutation(key, leaveCommunity, { ...options });
 
   return mutation;
 };
