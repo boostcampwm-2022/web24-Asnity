@@ -50,16 +50,12 @@ export class ChannelController {
     }
   }
 
-  @Delete('user/:community_id/:channel_id')
+  @Delete('user/:channel_id')
   @UseGuards(JwtAccessGuard)
-  async exitChannel(
-    @Param('community_id') community_id,
-    @Param('channel_id') channel_id,
-    @Req() req: any,
-  ) {
+  async exitChannel(@Param('channel_id') channel_id, @Req() req: any) {
     const user_id = req.user._id;
     try {
-      await this.channelService.exitChannel({ community_id, channel_id, user_id });
+      await this.channelService.exitChannel({ channel_id, user_id });
       return responseForm(200, { message: '채널 퇴장 성공!' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
@@ -78,7 +74,12 @@ export class ChannelController {
   @UseGuards(JwtAccessGuard)
   async deleteChannel(@Param('channel_id') channel_id, @Req() req) {
     const user_id = req.user;
-    await this.channelService.deleteChannel({ channel_id, user_id });
-    return responseForm(200, { message: '채널 삭제 성공' });
+    try {
+      await this.channelService.deleteChannel({ channel_id, user_id });
+      return responseForm(200, { message: '채널 삭제 성공' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
   }
 }
