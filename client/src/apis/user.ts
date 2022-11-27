@@ -1,6 +1,7 @@
 import type { SuccessResponse } from '@@types/apis/response';
 
 import { API_URL } from '@constants/url';
+import { tokenAxios } from '@utils/axios';
 import axios from 'axios';
 
 export type UserStatus = 'online' | 'offline' | 'afk';
@@ -61,3 +62,15 @@ export type GetUsersResponse = SuccessResponse<GetUsersResult>;
 
 export const GetUsers = (params: GetUsersParams): Promise<GetUsersResponse> =>
   axios.get(`${API_URL}/api/users`, { params }).then((res) => res.data);
+
+export type GetUserResult = User;
+export type GetUserResponse = SuccessResponse<GetUserResult>;
+export type GetUser = (userId: string) => Promise<GetUserResult>;
+
+export const getUser: GetUser = (userId: string) => {
+  const endPoint = `${API_URL}/api/users/${userId}`;
+
+  return tokenAxios
+    .get<GetUserResponse>(endPoint)
+    .then((response) => response.data.result);
+};
