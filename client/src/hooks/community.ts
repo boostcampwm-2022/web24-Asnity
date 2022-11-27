@@ -32,6 +32,42 @@ export const useCommunitiesQuery = () => {
   return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
 };
 
+interface SetCommunities {
+  (
+    callback: (
+      communities?: GetCommunitiesResult,
+    ) => GetCommunitiesResult | undefined,
+  ): void;
+  (communities: GetCommunitiesResult): void;
+}
+
+/**
+ * ### 커뮤니티 쿼리 응답 데이터의 Setter를 반환하는 Custom Hook
+ * - useState hook의 setState처럼 사용하면 됩니다.
+ * ```tsx
+ *   사용 예시
+ *   setComms(
+ *     (prevComms) => prevComms.filter(
+ *       (prevComm) => prevComm.id !== id
+ *     )
+ *   )
+ * ```
+ */
+export const useSetCommunitiesQuery = () => {
+  const queryClient = useQueryClient();
+
+  const key = queryKeyCreator.community.all();
+
+  const setCommunities: SetCommunities = (cb) => {
+    queryClient.setQueryData<GetCommunitiesResult>(key, (communities) => {
+      if (typeof cb === 'function') return cb(communities);
+      return cb;
+    });
+  };
+
+  return setCommunities;
+};
+
 export const useCommunityQuery = (communityId: string) => {
   const queryClient = useQueryClient();
 
