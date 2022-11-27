@@ -2,6 +2,10 @@ import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { users } from '../data/users';
+import {
+  createErrorContext,
+  createSuccessContext,
+} from '../utils/createContext';
 
 const GetFilteredUsers = rest.get(`${API_URL}/api/users`, (req, res, ctx) => {
   const search = req.url.searchParams.get('search').toUpperCase();
@@ -22,4 +26,13 @@ const GetFilteredUsers = rest.get(`${API_URL}/api/users`, (req, res, ctx) => {
   );
 });
 
-export default [GetFilteredUsers];
+const GetUser = rest.get(`${API_URL}/api/users/:userId`, (req, res, ctx) => {
+  const ERROR = false;
+
+  const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(...createSuccessContext(ctx, 200, 500, users[0]));
+
+  return ERROR ? errorResponse : successResponse;
+});
+
+export default [GetFilteredUsers, GetUser];
