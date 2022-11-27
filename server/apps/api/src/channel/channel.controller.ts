@@ -73,7 +73,7 @@ export class ChannelController {
   @Delete(':channel_id')
   @UseGuards(JwtAccessGuard)
   async deleteChannel(@Param('channel_id') channel_id, @Req() req) {
-    const user_id = req.user;
+    const user_id = req.user._id;
     try {
       await this.channelService.deleteChannel({ channel_id, user_id });
       return responseForm(200, { message: '채널 삭제 성공' });
