@@ -1,3 +1,4 @@
+import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
@@ -29,15 +30,15 @@ const Gnb = () => {
   );
 
   const handleRightClickCommunityLink: (
-    id: string,
-  ) => MouseEventHandler<HTMLAnchorElement> = (id: string) => (e) => {
+    community: CommunitySummary,
+  ) => MouseEventHandler<HTMLAnchorElement> = (community) => (e) => {
     e.preventDefault();
 
     openContextMenuModal({
       x: e.clientX,
       y: e.clientY,
       type: 'community',
-      id,
+      data: community,
     });
   };
 
@@ -66,23 +67,27 @@ const Gnb = () => {
           {communitiesQuery.isLoading ? (
             <div>로딩중</div>
           ) : (
-            communitiesQuery.data?.map(({ _id, name, profileUrl }) => (
-              <li key={_id}>
-                <GnbItemContainer isActive={params?.communityId === _id}>
-                  <Link
-                    to={`/communities/${_id}`}
-                    onContextMenu={handleRightClickCommunityLink(_id)}
-                  >
-                    <Avatar
-                      name={name}
-                      size="small"
-                      variant="rectangle"
-                      url={profileUrl}
-                    />
-                  </Link>
-                </GnbItemContainer>
-              </li>
-            ))
+            communitiesQuery.data?.map((community) => {
+              const { _id, name, profileUrl } = community;
+
+              return (
+                <li key={_id}>
+                  <GnbItemContainer isActive={params?.communityId === _id}>
+                    <Link
+                      to={`/communities/${_id}`}
+                      onContextMenu={handleRightClickCommunityLink(community)}
+                    >
+                      <Avatar
+                        name={name}
+                        size="small"
+                        variant="rectangle"
+                        url={profileUrl}
+                      />
+                    </Link>
+                  </GnbItemContainer>
+                </li>
+              );
+            })
           )}
         </ul>
 
@@ -99,6 +104,7 @@ const Gnb = () => {
         </button>
       </div>
 
+      {/* TODO: 툴팁 만들기 */}
       {/* <div className="absolute p-[12px] w-max h-max bg-titleActive text-offWhite left-[100px] top-[20px] z-[9000px]">*/}
       {/* </div>*/}
     </div>
