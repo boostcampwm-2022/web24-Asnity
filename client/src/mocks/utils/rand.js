@@ -2,6 +2,8 @@ export const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
 };
 
+export const getRandomBool = () => Boolean(getRandomInt(2));
+
 /**
  * @param fn {Function} 실행할 함수
  * @param percent {number} 0 ~ 100 사이의 숫자
