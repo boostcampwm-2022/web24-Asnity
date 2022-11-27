@@ -24,6 +24,26 @@ const GetCommunities = rest.get(
   },
 );
 
+const GetCommunity = rest.get(
+  `${BASE_URL}/communities/:communityId`,
+  (req, res, ctx) => {
+    const { communityId } = req.params;
+    const ERROR = false;
+
+    const errorResponse = res(...createErrorContext(ctx));
+    const successResponse = res(
+      ...createSuccessContext(
+        ctx,
+        200,
+        500,
+        communities.find((community) => community._id === communityId),
+      ),
+    );
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
 // 커뮤니티 생성
 const CreateCommunity = rest.post(
   `${BASE_URL}/community`,
@@ -67,4 +87,4 @@ const CreateCommunity = rest.post(
   },
 );
 
-export default [GetCommunities, CreateCommunity];
+export default [GetCommunities, GetCommunity, CreateCommunity];
