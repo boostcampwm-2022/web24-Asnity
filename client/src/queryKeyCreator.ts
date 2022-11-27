@@ -9,6 +9,12 @@ const communityQueryKey = {
   createCommunity: () => ['createCommunity'] as const,
 };
 
+const channelQueryKey = {
+  all: () => ['channels'] as const,
+  list: (communityId: string) =>
+    [...channelQueryKey.all(), communityId] as const,
+};
+
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
@@ -19,6 +25,7 @@ const queryKeyCreator = {
   userSearch: (filter: string) => ['userSearch', { filter }],
   directMessage: directMessageQueryKey,
   community: communityQueryKey,
+  channel: channelQueryKey,
 } as const;
 
 export default queryKeyCreator;
