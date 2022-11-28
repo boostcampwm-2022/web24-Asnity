@@ -109,7 +109,12 @@ export class ChannelController {
   @UseGuards(JwtAccessGuard)
   async updateLastRead(@Body() updateLastReaddto: UpdateLastReadDto, @Req() req: any) {
     const user_id = req.user._id;
-    await this.channelService.updateLastRead({ ...updateLastReaddto, user_id });
-    return responseForm(200, { message: 'Last Read 업데이트 성공' });
+    try {
+      await this.channelService.updateLastRead({ ...updateLastReaddto, user_id });
+      return responseForm(200, { message: 'Last Read 업데이트 성공' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
   }
 }
