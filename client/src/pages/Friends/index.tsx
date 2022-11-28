@@ -43,15 +43,14 @@ const Friends = () => {
   );
 
   return (
-    <div className="w-full h-full flex flex-col h-full">
+    <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <ul className="flex gap-[45px]">
           {tabs.map(({ name, tab: t }) => (
             <li
               key={t}
-              className={`${
-                tab === t ? 'text-indigo' : 'text-placeholder'
-              } font-bold text-s20`}
+              className={`${tab === t ? 'text-indigo' : 'text-placeholder'
+                } font-bold text-s20`}
             >
               <button className="w-[100%]" onClick={() => setTab(t)}>
                 {name}
