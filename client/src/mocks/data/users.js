@@ -12,3 +12,4 @@ export const createMockUser = () => ({
 });
 
 export const users = [...Array(30)].map(createMockUser);
+export const communityUsers = users.slice(0, 10);
