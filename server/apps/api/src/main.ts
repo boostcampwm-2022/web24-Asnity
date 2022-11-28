@@ -22,6 +22,10 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  if (process.env.NODE_ENV == 'prod') {
+    await app.listen(3001);
+  } else {
+    await app.listen(3000);
+  }
 }
 bootstrap();
