@@ -13,7 +13,7 @@ interface UserSearchInput {
 }
 
 interface Props {
-  Variant: FC<{ users?: User[] }>;
+  Variant: FC<{ users?: User[]; isLoading: boolean; error: unknown }>;
 }
 
 const UserSearch: React.FC<Props> = ({ Variant }) => {
@@ -29,7 +29,7 @@ const UserSearch: React.FC<Props> = ({ Variant }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-[20px]">
       <div className="w-full p-8">
         <form
           onSubmit={handleSubmit(handleSubmitUserSearchForm)}
@@ -37,7 +37,7 @@ const UserSearch: React.FC<Props> = ({ Variant }) => {
         >
           <SearchInput
             {...register('filter')}
-            placeholder="검색하기"
+            placeholder="닉네임이나 이메일로 검색하기"
             className="flex-1"
           />
           <Button color="dark" size="sm">
@@ -45,7 +45,11 @@ const UserSearch: React.FC<Props> = ({ Variant }) => {
           </Button>
         </form>
       </div>
-      <Variant users={usersQuery?.data} />
+      <Variant
+        users={usersQuery?.data}
+        isLoading={usersQuery.isFetching}
+        error={usersQuery.error}
+      />
     </div>
   );
 };
