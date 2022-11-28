@@ -13,7 +13,7 @@ import { Logger } from '@nestjs/common';
 
 //TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
 
-@WebSocketGateway(8081, {
+@WebSocketGateway({
   namespace: /\/socket\/commu-.+/,
   cors: {
     origin: '*', //['http://localhost:80'],
