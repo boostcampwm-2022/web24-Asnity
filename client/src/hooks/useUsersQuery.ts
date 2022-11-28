@@ -18,6 +18,7 @@ const useUserSearchQuery = (
       select: (data) => {
         return data.result.users;
       },
+      refetchOnWindowFocus: false,
     },
   );
 
