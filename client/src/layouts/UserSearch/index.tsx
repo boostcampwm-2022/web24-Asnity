@@ -25,7 +25,9 @@ const UserSearch: React.FC<Props> = ({ Variant }) => {
   });
 
   const handleSubmitUserSearchForm = (data: UserSearchInput) => {
-    setSubmittedFilter(data.filter);
+    if (data.filter.trim()) {
+      setSubmittedFilter(data.filter);
+    }
   };
 
   return (
