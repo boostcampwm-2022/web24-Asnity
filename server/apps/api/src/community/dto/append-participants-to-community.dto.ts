@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class AppendUsersToCommunityDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   community_id: string;
 
