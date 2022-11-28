@@ -35,3 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 junit.xml
+
+/apps/socket/src/mock_client/node_modules
