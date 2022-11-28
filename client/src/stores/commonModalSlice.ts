@@ -7,10 +7,13 @@ type OverlayBackground = 'white' | 'black' | 'transparent';
 
 export interface CommonModal {
   isOpen: boolean;
-  content: ReactNode;
   overlayBackground: OverlayBackground;
-  onCancel: () => void;
-  onSubmit: () => void;
+  x: number | string;
+  y: number | string;
+  transform?: string;
+  content?: ReactNode;
+  onCancel?: () => void;
+  onSubmit?: () => void;
 }
 
 type SetCommonModal = (commonModalState: Partial<CommonModal>) => void;
@@ -25,14 +28,15 @@ export interface CommonModalSlice {
   closeCommonModal: () => void;
 }
 
-const defaultHandler = () => {};
-
 const initialCommonModalValue = {
   isOpen: false,
-  content: null,
+  content: undefined,
   overlayBackground: 'transparent',
-  onCancel: defaultHandler,
-  onSubmit: defaultHandler,
+  onCancel: undefined,
+  onSubmit: undefined,
+  transform: undefined,
+  x: 0,
+  y: 0,
 } as const;
 
 export const commonModalSlice: StateCreator<
