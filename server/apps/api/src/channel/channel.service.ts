@@ -127,10 +127,10 @@ export class ChannelService {
   }
 
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
-    const { community_id, channel_id, inviteUserId } = inviteChannelDto;
+    const { community_id, channel_id, inviteUserList } = inviteChannelDto;
     // channel 도큐먼트 user 필드에 추가
-    await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', [inviteUserId]);
+    await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', inviteUserList);
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
-    await this.addUserToChannel(community_id, channel_id, [inviteUserId]);
+    await this.addUserToChannel(community_id, channel_id, inviteUserList);
   }
 }

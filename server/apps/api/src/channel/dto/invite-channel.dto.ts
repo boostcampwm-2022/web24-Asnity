@@ -9,7 +9,6 @@ export class InviteChannelDto {
   @IsNotEmpty()
   channel_id: string;
 
-  @IsString()
   @IsOptional()
-  inviteUserId: string;
+  inviteUserList: string[];
 }
