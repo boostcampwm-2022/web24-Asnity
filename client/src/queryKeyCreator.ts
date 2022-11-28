@@ -19,6 +19,7 @@ const communityQueryKey = {
   detail: (communityId: string) =>
     [...communityQueryKey.all(), 'detail', communityId] as const,
   leaveCommunity: () => ['leaveCommunity'] as const,
+  inviteCommunity: () => ['inviteCommunity'] as const,
 };
 
 const channelQueryKey = {
