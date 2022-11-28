@@ -12,9 +12,25 @@ helloSocket.emit('join', { channels: ['a', 'b', 'c'] });
 // worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
 
 // message listen
-helloSocket.on('new-message', ({ channelId, message }) => {
-  console.log(`new message from server : ${channelId} ${message}`);
+helloSocket.on('new-message', ({ channelId, user_id, message }) => {
+  console.log(`new message channel : ${channelId}, sender : ${user_id}, msg : ${message}`);
+});
+helloSocket.on('modify-message', ({ channelId, user_id, messageId, message }) => {
+  console.log(
+    `modify message channel : ${channelId}, sender : ${user_id}, msg(${messageId}) : ${message}`,
+  );
 });
 
 // message 전송
-helloSocket.emit('new-message', { channelId: 'a', message: 'hi i am the first client~' });
+helloSocket.emit('new-message', {
+  channelId: 'a',
+  user_id: '311',
+  message: 'hi i am the first client~',
+});
+
+helloSocket.emit('modify-message', {
+  channelId: 'a',
+  user_id: '311',
+  messageId: '0a2',
+  message: 'hi this is modify message',
+});
