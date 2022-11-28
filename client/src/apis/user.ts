@@ -15,6 +15,8 @@ export interface User {
   description: string;
 }
 
+export type UserUID = User['_id'];
+
 export type MyInfoResult = User;
 
 type GetMyInfo = () => Promise<MyInfoResult>;
