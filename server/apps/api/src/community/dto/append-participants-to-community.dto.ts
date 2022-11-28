@@ -14,7 +14,7 @@ export class AppendUsersToCommunityDto {
 
   @IsOptional()
   @IsString()
-  requestUser_id: string;
+  requestUserId: string;
 
   @IsNotEmpty()
   @IsArray()
