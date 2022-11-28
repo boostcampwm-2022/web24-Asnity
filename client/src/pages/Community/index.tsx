@@ -3,10 +3,9 @@ import { Outlet } from 'react-router-dom';
 
 const Community = () => {
   return (
-    <div>
-      <div>CommunityLayer</div>
+    <main className="flex flex-col flex-1">
       <Outlet />
-    </div>
+    </main>
   );
 };
 
