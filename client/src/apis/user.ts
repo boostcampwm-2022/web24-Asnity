@@ -67,10 +67,27 @@ export type GetUserResult = User;
 export type GetUserResponse = SuccessResponse<GetUserResult>;
 export type GetUser = (userId: string) => Promise<GetUserResult>;
 
-export const getUser: GetUser = (userId: string) => {
+export const getUser: GetUser = (userId) => {
   const endPoint = `${API_URL}/api/users/${userId}`;
 
   return tokenAxios
     .get<GetUserResponse>(endPoint)
     .then((response) => response.data.result);
+};
+
+export interface GetCommunityUsersResult {
+  users: User[];
+}
+
+export type GetCommunityUsersResponse =
+  SuccessResponse<GetCommunityUsersResult>;
+
+export type GetCommunityUsers = (communityId: string) => Promise<User[]>;
+
+export const getCommunityUsers: GetCommunityUsers = (communityId) => {
+  const endPoint = `${API_URL}/api/community/${communityId}/participants`;
+
+  return tokenAxios
+    .get<GetCommunityUsersResponse>(endPoint)
+    .then((response) => response.data.result.users);
 };
