@@ -2,7 +2,7 @@ import { API_URL } from '@constants/url';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
-import { channels } from '../data/channels';
+import { channels } from '../data/communities';
 import { users } from '../data/users';
 import {
   createErrorContext,
@@ -35,7 +35,7 @@ const GetChannel = rest.get(
     const errorResponse = res(...createErrorContext(ctx));
     const successResponse = res(
       ...createSuccessContext(ctx, 200, 500, {
-        ...channels.find((channel) => channel.id === channelId),
+        ...channels.find((channel) => channel._id === channelId),
         communityId: faker.datatype.uuid(),
         type: 'Channel',
         users: users.slice(3, 10).map((user) => user._id),
