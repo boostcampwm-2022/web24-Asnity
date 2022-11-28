@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const port = 8081;
+const port = 8080;
 // 형식은 'commu-{community id}'
 const helloSocket = io(`http://localhost:${port}/socket/commu-hello`);
 // const worldSocket = io(`http://localhost:${port}/socket/commu-world`); // 다른 namesapce
