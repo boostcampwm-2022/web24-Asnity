@@ -2,13 +2,8 @@ import type { FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChannelItem from '@components/ChannelItem';
+import { formatDate } from '@utils/date';
 import React from 'react';
-
-const formatDate = (str: string) => {
-  const d = new Date(str);
-
-  return { year: d.getFullYear(), month: d.getMonth() + 1, date: d.getDate() };
-};
 
 interface Props {
   profileUrl: string;
@@ -25,8 +20,6 @@ const ChannelMetadata: FC<Props> = ({
   isPrivate,
   createdAt,
 }) => {
-  const { year, month, date } = formatDate(createdAt);
-
   return (
     <div className="flex min-w-max min-h-[55px] items-center gap-2">
       <div>
@@ -47,8 +40,8 @@ const ChannelMetadata: FC<Props> = ({
           의 시작이에요.
         </div>
         <div>
-          <span className="font-bold">@{managerName}</span>님이 이 채널을 {year}
-          년 {month}월 {date}일에 생성했습니다.
+          <span className="font-bold">@{managerName}</span>님이 이 채널을{' '}
+          {formatDate(createdAt)}에 생성했습니다.
         </div>
       </div>
     </div>
