@@ -73,7 +73,7 @@ export class CommunityService {
 
   async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
     const communityId = appendUsersToCommunityDto.community_id;
-    const user = this.userRepository.findById(appendUsersToCommunityDto.requestUser_id);
+    const user = this.userRepository.findById(appendUsersToCommunityDto.requestUserId);
     if (!IsUserInCommunity(user, communityId)) {
       throw new BadRequestException(`커뮤니티에 속하지 않는 사용자는 요청할 수 없습니다.`);
     }
@@ -170,7 +170,7 @@ export class CommunityService {
 
   async getParticipantsInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
     const community = await this.getCommunity(requestUserAboutCommunityDto.community_id, {
-      users: { $elemMatch: { $eq: requestUserAboutCommunityDto.requestUser_id } },
+      users: { $elemMatch: { $eq: requestUserAboutCommunityDto.requestUserId } },
     });
     const result = await Promise.all(
       community.users.map(async (_id) => {
@@ -182,27 +182,27 @@ export class CommunityService {
   }
 
   async exitUserInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
-    const { requestUser_id, community_id } = requestUserAboutCommunityDto;
-    const user = await this.userRepository.findById(requestUser_id);
+    const { requestUserId, community_id } = requestUserAboutCommunityDto;
+    const user = await this.userRepository.findById(requestUserId);
     const community = await this.communityRepository.findById(community_id);
     if (!user) {
-      throw new BadRequestException(`요청한 사용자 _id(${requestUser_id})가 올바르지 않습니다.`);
+      throw new BadRequestException(`요청한 사용자 _id(${requestUserId})가 올바르지 않습니다.`);
     } else if (!community) {
       throw new BadRequestException(`요청한 커뮤니티 _id가 올바르지 않습니다.`);
-    } else if (requestUser_id === community.managerId) {
+    } else if (requestUserId === community.managerId) {
       throw new BadRequestException(`매니저는 커뮤니티에서 탈퇴할 수 없습니다. 매니저 위임하세요.`);
     }
     // user doc에서 community 삭제하기
-    await this.deleteCommunityAtUserDocument(requestUser_id, community_id);
+    await this.deleteCommunityAtUserDocument(requestUserId, community_id);
     // community doc에서 users에 사용자 삭제하기
     await this.communityRepository.deleteElementAtArr(
       { _id: community_id },
-      { users: [requestUser_id] },
+      { users: [requestUserId] },
     );
     // user가 속한 해당 community의 channel doc 에서 삭제하기
     await Promise.all(
       Object.keys(user.communities[community_id].channels).map((channel_id) =>
-        this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUser_id] }),
+        this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUserId] }),
       ),
     );
   }
