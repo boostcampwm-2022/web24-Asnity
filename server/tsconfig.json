@@ -28,6 +28,7 @@
       "@community/*": ["apps/api/src/community/*"],
       "@api/*": ["apps/api/*"],
       "@mock/*": ["__mock__/*"],
+      "@socketInterface/*": ["../shared/socket/*"]
     }
   }
 }
