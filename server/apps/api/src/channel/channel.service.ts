@@ -2,7 +2,12 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ChannelRepository } from '@repository/channel.repository';
 import { CommunityRepository } from '@repository/community.repository';
 import { UserRepository } from '@repository/user.repository';
-import { CreateChannelDto, DeleteChannelDto, ModifyChannelDto } from '@channel/dto';
+import {
+  CreateChannelDto,
+  DeleteChannelDto,
+  InviteChannelDto,
+  ModifyChannelDto,
+} from '@channel/dto';
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
 
@@ -119,5 +124,13 @@ export class ChannelService {
       },
       updateField,
     );
+  }
+
+  async inviteChannel(inviteChannelDto: InviteChannelDto) {
+    const { community_id, channel_id, inviteUserId } = inviteChannelDto;
+    // channel 도큐먼트 user 필드에 추가
+    await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', [inviteUserId]);
+    // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
+    await this.addUserToChannel(community_id, channel_id, [inviteUserId]);
   }
 }
