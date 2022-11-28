@@ -25,37 +25,37 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('join') // socket.on('join', ({}) => {})
   joinEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-    const namespace = socket.nsp;
-    const namespaceName = socket.nsp.name;
+    const community = socket.nsp;
+    const communityName = socket.nsp.name;
     const channels = data.channels;
     // channel 별로 join 하는 로직
-    namespace.socketsJoin(channels);
+    community.socketsJoin(channels);
     console.log(
-      `This socket which ns is '${namespaceName}' join rooms : ` + Array.from(socket.rooms),
+      `This socket which ns is '${communityName}' join rooms : ` + Array.from(socket.rooms),
     );
   }
 
   @SubscribeMessage('new-message') // socket.on('new-message', ({}) => {})
   newMessageEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-    const namespace = socket.nsp;
-    const namespaceName = socket.nsp.name;
-    const { channelId, user_id, message } = data;
+    const community = socket.nsp;
+    const communityName = socket.nsp.name;
+    const { channelId, user_id, message, time } = data;
     console.log(
-      `new message : \n\tns : ${namespaceName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}`,
+      `new message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: [${time}] ${message}`,
     );
-    // namespace.emit('new-message', { message: message }); // namespace에 전체 broad casting
-    namespace.to(channelId).emit('new-message', data);
+    // community.emit('new-message', { message: message }); // community에 전체 broad casting
+    community.to(channelId).emit('new-message', data);
   }
 
   @SubscribeMessage('modify-message')
   modifyMessageEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-    const namespace = socket.nsp;
-    const namespaceName = socket.nsp.name;
+    const community = socket.nsp;
+    const communityName = socket.nsp.name;
     const { channelId, user_id, message, messageId } = data;
     console.log(
-      `modify message : \n\tns : ${namespaceName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}\n\torigin id : ${messageId}`,
+      `modify message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}\n\torigin id : ${messageId}`,
     );
-    namespace.to(channelId).emit('modify-message', data);
+    community.to(channelId).emit('modify-message', data);
     // TODO : db에 message data 수정을 여기서할지 논의하기
   }
 
