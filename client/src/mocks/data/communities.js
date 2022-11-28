@@ -13,7 +13,7 @@ export const createMockChannel = () => ({
   type: 'Channel',
 });
 
-const channels = [...Array(10)].map(createMockChannel);
+export const channels = [...Array(10)].map(createMockChannel);
 
 export const createMockCommunities = () => ({
   _id: faker.datatype.uuid(),
