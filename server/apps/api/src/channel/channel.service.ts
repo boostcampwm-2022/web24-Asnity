@@ -75,6 +75,11 @@ export class ChannelService {
     }
   }
 
+  async getChannelInfo(channel_id) {
+    const channelInfo = await this.channelRepository.findOne({ _id: channel_id });
+    return getChannelBasicInfo(channelInfo);
+  }
+
   async exitChannel(exitChannelDto: ExitChannelDto) {
     const { channel_id, user_id } = exitChannelDto;
     // channel도큐먼트에 users필드에서 user_id 제거
@@ -84,11 +89,6 @@ export class ChannelService {
     // user도큐먼트에 community 필드에 channel_id 제거
     const deleteChannel = getChannelToUserForm(channel.communityId, channel_id);
     await this.userRepository.deleteObject({ _id: user_id }, deleteChannel);
-  }
-
-  async getChannelInfo(channel_id) {
-    const channelInfo = await this.channelRepository.findOne({ _id: channel_id });
-    return getChannelBasicInfo(JSON.parse(JSON.stringify(channelInfo)));
   }
 
   async deleteChannel(deleteChannelDto: DeleteChannelDto) {
