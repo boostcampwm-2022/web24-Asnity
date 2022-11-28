@@ -1,12 +1,12 @@
 import type { FC } from 'react';
 
-import Avatar from '@components/Avatar';
 import ChannelItem from '@components/ChannelItem';
+import RoomMetadata from '@components/RoomMetadata';
 import { formatDate } from '@utils/date';
 import React from 'react';
 
 interface Props {
-  profileUrl: string;
+  profileUrl?: string;
   channelName: string;
   isPrivate: boolean;
   createdAt: string;
@@ -21,15 +21,7 @@ const ChannelMetadata: FC<Props> = ({
   createdAt,
 }) => {
   return (
-    <div className="flex min-w-max min-h-[55px] items-center gap-2">
-      <div>
-        <Avatar
-          variant="rectangle"
-          size="small"
-          url={profileUrl}
-          name={channelName}
-        />
-      </div>
+    <RoomMetadata profileUrl={profileUrl} channelName={channelName}>
       <div className="flex flex-col justify-center h-full">
         <div className="flex items-center">
           <ChannelItem
@@ -44,7 +36,7 @@ const ChannelMetadata: FC<Props> = ({
           {formatDate(createdAt)}에 생성했습니다.
         </div>
       </div>
-    </div>
+    </RoomMetadata>
   );
 };
 
