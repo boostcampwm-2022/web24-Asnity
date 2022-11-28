@@ -6,7 +6,7 @@ import queryKeyCreator from '@/queryKeyCreator';
 
 export const useUserQuery = (
   userId: string,
-  options: {
+  options?: {
     enabled?: boolean;
   },
 ) => {
