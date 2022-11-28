@@ -1,3 +1,4 @@
+import type { JoinedChannel } from '@apis/channel';
 import type {
   CreateCommunityResult,
   CreateCommunityRequest,
@@ -30,6 +31,25 @@ export const useCommunitiesQuery = () => {
   }, [queryClient, key]);
 
   return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
+};
+
+/**
+ * @param id 접속한 커뮤니티의 id
+ * 접속한 커뮤니티에서 참여하고 있는 채널 목록
+ */
+export const useJoinedChannelsQuery = (id: string) => {
+  const key = queryKeyCreator.community.all();
+  const query = useQuery<GetCommunitiesResult, AxiosError, JoinedChannel[]>(
+    key,
+    getCommunities,
+    {
+      select: (data) => {
+        return data.find((community) => community._id === id)?.channels || [];
+      },
+    },
+  );
+
+  return { joinedChannelsQuery: query };
 };
 
 interface SetCommunities {
