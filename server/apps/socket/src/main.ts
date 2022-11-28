@@ -3,6 +3,6 @@ import { SocketModule } from './socket.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(SocketModule);
-  await app.listen(3000);
+  await app.listen(8080);
 }
 bootstrap();
