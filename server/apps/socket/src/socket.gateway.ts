@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
-
+import { Join, NewMessage, ModifyMessage } from '@socketInterface/index';
 //TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
 
 @WebSocketGateway({
@@ -24,10 +24,10 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   private logger: Logger = new Logger('Socket');
 
   @SubscribeMessage('join') // socket.on('join', ({}) => {})
-  joinEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+  joinEvent(@MessageBody() data: Join, @ConnectedSocket() socket: Socket) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
-    const channels = data.channels;
+    const { channels } = data;
     // channel 별로 join 하는 로직
     community.socketsJoin(channels);
     console.log(
@@ -36,7 +36,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('new-message') // socket.on('new-message', ({}) => {})
-  newMessageEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+  newMessageEvent(@MessageBody() data: NewMessage, @ConnectedSocket() socket: Socket) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { channelId, user_id, message, time } = data;
@@ -48,7 +48,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('modify-message')
-  modifyMessageEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+  modifyMessageEvent(@MessageBody() data: ModifyMessage, @ConnectedSocket() socket: Socket) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { channelId, user_id, message, messageId } = data;
