@@ -1,16 +1,16 @@
 import { HashtagIcon, LockClosedIcon } from '@heroicons/react/20/solid';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props {
-  isPrivate?: boolean;
   name: string;
+  isPrivate?: boolean;
   className?: string;
 }
 
 const ChannelItem: React.FC<Props> = ({
-  isPrivate = true,
   name,
-  className,
+  isPrivate = true,
+  className = '',
 }) => {
   return (
     <div className={`flex items-center gap-[5px] select-none ${className}`}>
@@ -27,9 +27,9 @@ const ChannelItem: React.FC<Props> = ({
           </>
         )}
       </div>
-      <div className="text-s18">{name}</div>
+      <div className="text-s16 w-full">{name}</div>
     </div>
   );
 };
 
-export default ChannelItem;
+export default memo(ChannelItem);
