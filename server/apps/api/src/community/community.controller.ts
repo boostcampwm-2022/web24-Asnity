@@ -46,25 +46,6 @@ export class CommunityController {
     }
   }
 
-  @Post('participants')
-  @UseGuards(JwtAccessGuard)
-  async appendParticipantsToCommunity(
-    @Body() appendUsersToCommunityDto: AppendUsersToCommunityDto,
-    @Req() req: any,
-  ) {
-    try {
-      const requestUserId = req.user._id;
-      await this.communityService.appendParticipantsToCommunity({
-        ...appendUsersToCommunityDto,
-        requestUserId,
-      });
-      return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
-
   @Patch('settings')
   @UseGuards(JwtAccessGuard)
   async modifyCommunitySetting(@Body() modifyCommunityDto: ModifyCommunityDto, @Req() req: any) {
