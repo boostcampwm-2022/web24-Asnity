@@ -1,6 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 import type { JoinedChannel } from '@apis/channel';
-import type { User } from '@apis/user';
+import type { User, UserUID } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
 
@@ -88,4 +88,25 @@ export const leaveCommunity: LeaveCommunity = (id) => {
   const endPoint = `api/community/${id}/me`;
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
+};
+
+export interface InviteCommunityRequest {
+  communityId: string;
+  userIds: Array<UserUID>;
+}
+
+export interface InviteCommunityResult {
+  message: string;
+}
+
+export type InviteCommunity = (
+  fields: InviteCommunityRequest,
+) => Promise<InviteCommunityResult>;
+
+export const inviteCommunity: InviteCommunity = ({ communityId, userIds }) => {
+  const endPoint = `api/community/${communityId}/participants`;
+
+  return tokenAxios
+    .post<SuccessResponse<InviteCommunityResult>>(endPoint, { users: userIds })
+    .then((response) => response.data.result);
 };
