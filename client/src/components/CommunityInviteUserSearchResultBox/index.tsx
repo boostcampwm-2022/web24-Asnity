@@ -1,12 +1,19 @@
-import type { User } from '@apis/user';
+import type { User, UserUID } from '@apis/user';
+import type { MouseEventHandler } from 'react';
 
 import ErrorMessage from '@components/ErrorMessage';
 import UserItem from '@components/UserItem';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserPlusIcon } from '@heroicons/react/20/solid';
-import { useCommunityUsersQuery } from '@hooks/user';
+import { useInviteCommunityMutation } from '@hooks/community';
+import {
+  useCommunityUsersQuery,
+  useInvalidateCommunityUsersQuery,
+} from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
+import { toast } from 'react-toastify';
 
 interface Props {
   users?: User[];
@@ -24,6 +31,27 @@ const CommunityInviteUserSearchResultBox: React.FC<Props> = ({
   );
 
   const { communityUsersQuery } = useCommunityUsersQuery(data.communityId);
+  const inviteCommunityMutation = useInviteCommunityMutation();
+  const { invalidateCommunityUsersQuery } = useInvalidateCommunityUsersQuery(
+    data.communityId,
+  );
+
+  const handleClickCommunityInviteButton =
+    (
+      communityId: string,
+      userIds: Array<UserUID>,
+    ): MouseEventHandler<HTMLButtonElement> =>
+    () => {
+      if (inviteCommunityMutation.isLoading) return;
+
+      inviteCommunityMutation
+        .mutateAsync({ communityId, userIds })
+        .then(async () => {
+          await invalidateCommunityUsersQuery();
+          toast.success('커뮤니티로 초대 성공!');
+        })
+        .catch((_error) => defaultErrorHandler(_error));
+    };
 
   if (!communityUsersQuery?.data) {
     return <div />;
@@ -75,14 +103,17 @@ const CommunityInviteUserSearchResultBox: React.FC<Props> = ({
               key={user._id}
               user={user}
               right={
-                <div className="flex">
+                <div className="flex items-center">
                   <button
                     type="button"
                     className="p-2 rounded-full border border-line active:bg-indigo active:fill-offWhite disabled:bg-offWhite disabled:fill-error-light disabled:cursor-not-allowed"
-                    onClick={() => {}}
+                    onClick={handleClickCommunityInviteButton(
+                      data.communityId,
+                      [user._id],
+                    )}
                     disabled={disabled}
                   >
-                    <span className="sr-only">초대하기</span>
+                    <span className="sr-only">커뮤니티에 초대하기</span>
                     <UserPlusIcon className="w-6 h-6 fill-[inherit] pointer-events-none" />
                   </button>
                 </div>
