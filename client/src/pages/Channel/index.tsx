@@ -45,8 +45,8 @@ const Channel = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <header className="flex items-center pl-[55px] w-full h-header border-b border-line text-indigo font-bold text-[24px]">
-        <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap">
+      <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
+        <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap text-indigo font-bold text-[24px]">
           {channelQuery.data && `#${channelQuery.data.name}`}
         </div>
       </header>
