@@ -105,10 +105,12 @@ export const LeaveCommunity = rest.delete(
     const errorResponse = res(...createErrorContext(ctx));
 
     if (!ERROR) {
-      setTimeout(
-        () => colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`),
-        successDelay,
-      );
+      setTimeout(() => {
+        colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`);
+        const targetIdx = communities.findIndex(({ _id }) => _id === id);
+
+        communities.splice(targetIdx, 1);
+      }, successDelay);
     }
 
     return ERROR ? errorResponse : successResponse;
