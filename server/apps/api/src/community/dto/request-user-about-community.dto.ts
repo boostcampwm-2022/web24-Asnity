@@ -7,5 +7,5 @@ export class RequestUserAboutCommunityDto {
 
   @IsNotEmpty()
   @IsString()
-  requestUser_id: string;
+  requestUserId: string;
 }
