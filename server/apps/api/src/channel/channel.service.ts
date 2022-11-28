@@ -26,7 +26,6 @@ export class ChannelService {
     // 채널 생성
     const channel = await this.channelRepository.create({
       ...createChannelDto,
-      users: [createChannelDto.managerId],
     });
 
     // 커뮤니티 도큐먼트의 채널 필드 업데이트
@@ -61,7 +60,7 @@ export class ChannelService {
   async addUserToChannel(communityId, channelId, newUserList) {
     // 채널 도큐먼트의 유저 필드 업데이트
     try {
-      this.channelRepository.addArrAtArr({ _id: channelId }, 'channels', newUserList);
+      await this.channelRepository.addArrAtArr({ _id: channelId }, 'users', newUserList);
     } catch (error) {
       throw new BadRequestException('채널에 user 추가 중 오류 발생!');
     }
@@ -128,8 +127,6 @@ export class ChannelService {
 
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
     const { community_id, channel_id, inviteUserList } = inviteChannelDto;
-    // channel 도큐먼트 user 필드에 추가
-    await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', inviteUserList);
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     await this.addUserToChannel(community_id, channel_id, inviteUserList);
   }
