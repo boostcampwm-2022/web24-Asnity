@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class ExitChannelDto {
+export class DeleteChannelDto {
   @IsString()
   @IsNotEmpty()
   channel_id: string;

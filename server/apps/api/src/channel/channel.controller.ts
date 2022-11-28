@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   LoggerService,
+  Param,
   Patch,
   Post,
   Req,
@@ -14,7 +16,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChannelService } from '@channel/channel.service';
 import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
 import { JwtAccessGuard } from '@auth/guard';
-import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 
 @Controller('api/channel')
 export class ChannelController {
@@ -49,13 +50,38 @@ export class ChannelController {
     }
   }
 
-  @Delete('exit')
+  @Delete('/:channel_id/me')
   @UseGuards(JwtAccessGuard)
-  async exitChannel(@Body() exitChannelDto: ExitChannelDto, @Req() req: any) {
+  async exitChannel(@Param('channel_id') channel_id, @Req() req: any) {
     const user_id = req.user._id;
     try {
-      await this.channelService.exitChannel({ ...exitChannelDto, user_id });
+      await this.channelService.exitChannel({ channel_id, user_id });
       return responseForm(200, { message: '채널 퇴장 성공!' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAccessGuard)
+  async getChannelInfo(@Param('id') channel_id: string) {
+    try {
+      const channelInfo = await this.channelService.getChannelInfo(channel_id);
+      return responseForm(200, channelInfo);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  @Delete(':channel_id')
+  @UseGuards(JwtAccessGuard)
+  async deleteChannel(@Param('channel_id') channel_id, @Req() req) {
+    const user_id = req.user._id;
+    try {
+      await this.channelService.deleteChannel({ channel_id, user_id });
+      return responseForm(200, { message: '채널 삭제 성공' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
