@@ -1,4 +1,5 @@
 import type { SuccessResponse } from '@@types/apis/response';
+import type { JoinedChannel } from '@apis/channel';
 import type { User } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
@@ -9,6 +10,7 @@ export interface CommunitySummary {
   profileUrl: string;
   description: string;
   managerId: string;
+  channels: JoinedChannel[];
 }
 
 export type GetCommunitiesResult = CommunitySummary[];
@@ -45,7 +47,7 @@ export interface CreateCommunityResult extends CommunitySummary {
   createdAt: string;
   updatedAt: string;
   channels: [];
-  users: Array<User['id']>;
+  users: Array<User['_id']>;
 }
 
 export type CreateCommunity = (
