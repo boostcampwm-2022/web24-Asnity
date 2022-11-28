@@ -3,9 +3,11 @@ import type { User } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
 
+type UserUID = User['_id'];
+
 export interface JoinedChannel {
   _id: string;
-  managerId: User['_id'];
+  managerId: UserUID;
   name: string;
   isPrivate: boolean;
   profileUrl: string;
@@ -14,32 +16,9 @@ export interface JoinedChannel {
   type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
 }
 
-export interface ChannelSummary {
-  id: string;
-  managerId: User['_id'];
-  name: string;
-  users: Array<User['_id']>;
-  profileUrl: string;
-  description: string;
-  isPrivate: boolean;
-}
-
-export type GetChannelsResult = ChannelSummary[];
-export type GetChannelsResponse = SuccessResponse<GetChannelsResult>;
-export type GetChannels = (communityId: string) => Promise<GetChannelsResult>;
-
-export const getChannels: GetChannels = (communityId: string) => {
-  const endPoint = `/api/user/community/${communityId}/channels`;
-
-  return tokenAxios
-    .get<GetChannelsResponse>(endPoint)
-    .then((response) => response.data.result);
-};
-
-export interface Channel extends ChannelSummary {
+export interface Channel extends JoinedChannel {
   communityId: string;
-  type: 'Channel';
-  users: Array<User['id']>;
+  users: Array<UserUID>;
   chatLists: [];
   createdAt: string;
   updatedAt: string;
