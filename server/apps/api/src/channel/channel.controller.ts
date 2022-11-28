@@ -14,7 +14,12 @@ import {
 import { responseForm } from '@utils/responseForm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChannelService } from '@channel/channel.service';
-import { CreateChannelDto, InviteChannelDto, ModifyChannelDto } from '@channel/dto';
+import {
+  CreateChannelDto,
+  InviteChannelDto,
+  ModifyChannelDto,
+  UpdateLastReadDto,
+} from '@channel/dto';
 import { JwtAccessGuard } from '@auth/guard';
 
 @Controller('api/channel')
@@ -98,5 +103,13 @@ export class ChannelController {
       this.logger.error(JSON.stringify(error.response));
       throw error;
     }
+  }
+
+  @Post('update/lastRead')
+  @UseGuards(JwtAccessGuard)
+  async updateLastRead(@Body() updateLastReaddto: UpdateLastReadDto, @Req() req: any) {
+    const user_id = req.user._id;
+    await this.channelService.updateLastRead({ ...updateLastReaddto, user_id });
+    return responseForm(200, { message: 'Last Read 업데이트 성공' });
   }
 }

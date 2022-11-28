@@ -7,6 +7,7 @@ import {
   DeleteChannelDto,
   InviteChannelDto,
   ModifyChannelDto,
+  UpdateLastReadDto,
 } from '@channel/dto';
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
@@ -129,5 +130,14 @@ export class ChannelService {
     const { community_id, channel_id, inviteUserList } = inviteChannelDto;
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     await this.addUserToChannel(community_id, channel_id, inviteUserList);
+  }
+
+  async updateLastRead(updateLastReadDto: UpdateLastReadDto) {
+    const { community_id, channel_id, user_id } = updateLastReadDto;
+    // 유저 도큐먼트의 커뮤니티: 채널 필드 업데이트
+    await this.userRepository.updateObject(
+      { _id: user_id },
+      getChannelToUserForm(community_id, channel_id),
+    );
   }
 }
