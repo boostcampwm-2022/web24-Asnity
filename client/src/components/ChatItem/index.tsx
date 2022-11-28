@@ -37,7 +37,9 @@ const ChatItem: FC<Props> = ({ className = '', chat, isSystem = false }) => {
               >
                 {userQuery.data.nickname}
               </span>
-              <span className="text-placeholder">{formatDate(createdAt)}</span>
+              <span className="text-placeholder">
+                {formatDate(createdAt, { hour: 'numeric', minute: 'numeric' })}
+              </span>
               {deletedAt.length ? (
                 <span className="text-label">(삭제됨)</span>
               ) : updatedAt.length ? (
