@@ -11,10 +11,9 @@ import { IsUserInCommunity, makeCommunityObj } from '@community/helper';
 import { communityInUser } from '@user/dto/community-in-user.dto';
 import { ChannelRepository } from '@repository/channel.repository';
 import { getCommunityBasicInfo } from '@community/helper/getCommunityBasicInfo';
-import { getChannelBasicInfo } from '@api/src/channel/dto/channel-basic-info.dto';
+import { getChannelBasicInfo } from '@channel/helper/getChannelBasicInfo';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/dto';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class CommunityService {
