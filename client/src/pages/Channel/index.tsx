@@ -1,9 +1,38 @@
 import ChannelMetadata from '@components/ChannelMetadata';
+import ChatItem from '@components/ChatItem';
+import { faker } from '@faker-js/faker';
 import { useChannelQuery } from '@hooks/channel';
 import { useUserQuery } from '@hooks/user';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
+
+const chatList = [
+  {
+    _id: faker.datatype.uuid(),
+    content: faker.lorem.sentences(),
+    senderId: faker.datatype.uuid(),
+    updatedAt: '',
+    createdAt: new Date().toISOString(),
+    deletedAt: '',
+  },
+  {
+    _id: faker.datatype.uuid(),
+    content: faker.lorem.sentences(),
+    senderId: faker.datatype.uuid(),
+    updatedAt: 'updatedAt',
+    createdAt: new Date().toISOString(),
+    deletedAt: '',
+  },
+  {
+    _id: faker.datatype.uuid(),
+    content: faker.lorem.sentences(),
+    senderId: faker.datatype.uuid(),
+    updatedAt: '',
+    createdAt: new Date().toISOString(),
+    deletedAt: 'deletedAt',
+  },
+];
 
 const Channel = () => {
   const { roomId } = useParams();
@@ -35,7 +64,13 @@ const Channel = () => {
                 />
               </div>
             )}
-            <div>채팅목록 렌더링</div>
+            <div>
+              <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
+                {chatList.map((chat) => (
+                  <ChatItem key={chat._id} chat={chat} className="px-8" />
+                ))}
+              </ul>
+            </div>
           </Scrollbars>
         </div>
         <div className="flex w-72 h-full border-l border-line">
