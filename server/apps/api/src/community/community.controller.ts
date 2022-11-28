@@ -34,9 +34,9 @@ export class CommunityController {
   @UseGuards(JwtAccessGuard)
   async crateCommunity(@Body() createCommunityDto: CreateCommunityDto, @Req() req: any) {
     try {
-      const _id = req.user._id;
+      const managerId = req.user._id;
       const result = await this.communityService.createCommunity({
-        managerId: _id,
+        managerId,
         ...createCommunityDto,
       });
       return responseForm(200, result);
@@ -53,10 +53,10 @@ export class CommunityController {
     @Req() req: any,
   ) {
     try {
-      const _id = req.user._id;
+      const requestUserId = req.user._id;
       await this.communityService.appendParticipantsToCommunity({
         ...appendUsersToCommunityDto,
-        requestUser_id: _id,
+        requestUserId,
       });
       return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
     } catch (error) {
@@ -69,8 +69,8 @@ export class CommunityController {
   @UseGuards(JwtAccessGuard)
   async modifyCommunitySetting(@Body() modifyCommunityDto: ModifyCommunityDto, @Req() req: any) {
     try {
-      const _id = req.user._id;
-      await this.communityService.modifyCommunity({ ...modifyCommunityDto, requestUserId: _id });
+      const requestUserId = req.user._id;
+      await this.communityService.modifyCommunity({ ...modifyCommunityDto, requestUserId });
       return responseForm(200, { message: '커뮤니티 정보 수정 완료' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
@@ -96,10 +96,10 @@ export class CommunityController {
   @UseGuards(JwtAccessGuard)
   async getParticipantsInCommunity(@Param('id') community_id: string, @Req() req: any) {
     try {
-      const requestUser_id = req.user._id;
+      const requestUserId = req.user._id;
       const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
         community_id,
-        requestUser_id,
+        requestUserId,
       };
       const result = await this.communityService.getParticipantsInCommunity(
         requestUserAboutCommunityDto,
@@ -115,10 +115,10 @@ export class CommunityController {
   @UseGuards(JwtAccessGuard)
   async exitUserInCommunity(@Param('id') community_id: string, @Req() req: any) {
     try {
-      const requestUser_id = req.user._id;
+      const requestUserId = req.user._id;
       const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
         community_id,
-        requestUser_id,
+        requestUserId,
       };
       await this.communityService.exitUserInCommunity(requestUserAboutCommunityDto);
       return responseForm(200, { message: '사용자 커뮤니티 탈퇴 성공' });
