@@ -7,11 +7,11 @@ export interface JoinedChannel {
   _id: string;
   managerId: User['_id'];
   name: string;
-  type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
   isPrivate: boolean;
   profileUrl: string;
   description: string;
   lastRead: boolean;
+  type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
 }
 
 export interface ChannelSummary {
