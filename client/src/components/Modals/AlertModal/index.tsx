@@ -18,6 +18,8 @@ const modalContentStyle: CSSProperties = {
   transform: 'translate3d(-50%, -50%, 0)',
 };
 
+const defaultHandler = () => {};
+
 const AlertModal = () => {
   const { isOpen, description, onCancel, onSubmit, disabled } = useRootStore(
     (state) => state.alertModal,
@@ -35,14 +37,12 @@ const AlertModal = () => {
       style={{ content: modalContentStyle, overlay: modalOverlayStyle }}
       onRequestClose={handleCloseAlertModal}
     >
-      {onSubmit && onCancel && (
-        <AlertBox
-          description={description}
-          onCancel={onCancel}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
-      )}
+      <AlertBox
+        description={description}
+        onCancel={onCancel || defaultHandler}
+        onSubmit={onSubmit || defaultHandler}
+        disabled={disabled}
+      />
     </ReactModal>
   );
 };
