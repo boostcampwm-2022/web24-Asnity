@@ -14,7 +14,7 @@ import {
 import { responseForm } from '@utils/responseForm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChannelService } from '@channel/channel.service';
-import { CreateChannelDto, ModifyChannelDto } from '@channel/dto';
+import { CreateChannelDto, InviteChannelDto, ModifyChannelDto } from '@channel/dto';
 import { JwtAccessGuard } from '@auth/guard';
 
 @Controller('api/channel')
@@ -77,11 +77,23 @@ export class ChannelController {
 
   @Delete(':channel_id')
   @UseGuards(JwtAccessGuard)
-  async deleteChannel(@Param('channel_id') channel_id, @Req() req) {
+  async deleteChannel(@Param('channel_id') channel_id, @Req() req: any) {
     const user_id = req.user._id;
     try {
       await this.channelService.deleteChannel({ channel_id, user_id });
       return responseForm(200, { message: '채널 삭제 성공' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+
+  @Post('invite')
+  @UseGuards(JwtAccessGuard)
+  async inviteChannel(@Body() inviteChannelDto: InviteChannelDto) {
+    try {
+      await this.channelService.inviteChannel(inviteChannelDto);
+      return responseForm(200, { message: '채널 초대 성공' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
