@@ -1,7 +1,7 @@
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
-import { users } from '../data/users';
+import { communityUsers, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -42,11 +42,8 @@ const GetCommunityUsers = rest.get(
   (req, res, ctx) => {
     const ERROR = false;
 
-    const communityUsers = [...users];
-
-    // users는 사용자 배열이고, communityUsers는 그중 일부만 가져와서
+    // communityUsers는 users의 부분집합
     // 커뮤니티 초대 모달에서 유저를 검색하면, 일부는 이미 커뮤니티에 속해있는 것을 재현할 수 있음.
-    communityUsers.splice(0, 10);
 
     const errorResponse = res(...createErrorContext(ctx));
     const successResponse = res(

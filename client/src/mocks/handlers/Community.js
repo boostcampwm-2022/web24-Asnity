@@ -2,6 +2,7 @@ import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { communities } from '../data/communities';
+import { communityUsers, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -88,7 +89,7 @@ const CreateCommunity = rest.post(
   },
 );
 
-export const LeaveCommunity = rest.delete(
+const LeaveCommunity = rest.delete(
   `${BASE_URL}/community/:id/me`,
   (req, res, ctx) => {
     const { id } = req.params;
@@ -117,4 +118,36 @@ export const LeaveCommunity = rest.delete(
   },
 );
 
-export default [GetCommunities, GetCommunity, CreateCommunity, LeaveCommunity];
+const InviteCommunity = rest.post(
+  `${BASE_URL}/community/:id/participants`,
+  async (req, res, ctx) => {
+    const { users: userIds } = await req.json();
+
+    const ERROR = false;
+    const successDelay = 500;
+
+    const successResponse = res(
+      ...createSuccessContext(ctx, 201, successDelay, {
+        message: '커뮤니티 초대 성공~',
+      }),
+    );
+
+    const errorResponse = res(...createErrorContext(ctx));
+
+    if (!ERROR) {
+      setTimeout(() => {
+        communityUsers.push(users.find(({ _id }) => _id === userIds[0]));
+      }, successDelay);
+    }
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
+export default [
+  GetCommunities,
+  GetCommunity,
+  CreateCommunity,
+  LeaveCommunity,
+  InviteCommunity,
+];
