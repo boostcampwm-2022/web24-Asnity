@@ -12,8 +12,8 @@ helloSocket.emit('join', { channels: ['a', 'b', 'c'] });
 // worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
 
 // message listen
-helloSocket.on('new-message', ({ channelId, user_id, message }) => {
-  console.log(`new message channel : ${channelId}, sender : ${user_id}, msg : ${message}`);
+helloSocket.on('new-message', ({ channelId, user_id, message, time }) => {
+  console.log(`new message channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`);
 });
 helloSocket.on('modify-message', ({ channelId, user_id, messageId, message }) => {
   console.log(
@@ -26,6 +26,7 @@ helloSocket.emit('new-message', {
   channelId: 'a',
   user_id: '311',
   message: 'hi i am the first client~',
+  time: new Date(),
 });
 
 helloSocket.emit('modify-message', {
