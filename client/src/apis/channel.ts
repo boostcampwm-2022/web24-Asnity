@@ -1,9 +1,7 @@
 import type { SuccessResponse } from '@@types/apis/response';
-import type { User } from '@apis/user';
+import type { UserUID } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
-
-type UserUID = User['_id'];
 
 export interface JoinedChannel {
   _id: string;
