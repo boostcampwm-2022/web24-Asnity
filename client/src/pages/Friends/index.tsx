@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import NormalUserSearchResultBox from '@components/NormalUserSearchResultBox';
 import Followers from '@layouts/Followers';
 import Followings from '@layouts/Followings';
 import UserSearch from '@layouts/UserSearch';
@@ -32,7 +33,7 @@ const tabs = [
 const TabPanel: Record<string, ReactNode> = {
   [TAB.FOLLOWINGS]: <Followings />,
   [TAB.FOLLOWERS]: <Followers />,
-  [TAB.USER_SEARCH]: <UserSearch />,
+  [TAB.USER_SEARCH]: <UserSearch Variant={NormalUserSearchResultBox} />,
 };
 
 const DEFAULT_TAB = TAB.FOLLOWINGS;
