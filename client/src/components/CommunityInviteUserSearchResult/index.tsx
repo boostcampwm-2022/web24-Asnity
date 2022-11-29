@@ -18,10 +18,7 @@ interface Props {
   communityId: string;
 }
 
-const CommunityInviteUserSearchResultBox: FC<Props> = ({
-  users,
-  communityId,
-}) => {
+const CommunityInviteUserSearchResult: FC<Props> = ({ users, communityId }) => {
   const { communityUsersQuery } = useCommunityUsersQuery(communityId);
   const inviteCommunityMutation = useInviteCommunityMutation();
   const { invalidateCommunityUsersQuery } =
@@ -89,4 +86,4 @@ const CommunityInviteUserSearchResultBox: FC<Props> = ({
   );
 };
 
-export default CommunityInviteUserSearchResultBox;
+export default CommunityInviteUserSearchResult;
