@@ -7,7 +7,6 @@ type OverlayBackground = 'white' | 'black' | 'transparent';
 
 export interface CommonModal {
   isOpen: boolean;
-  data?: unknown;
   overlayBackground: OverlayBackground;
   x: number | string;
   y: number | string;
@@ -31,7 +30,6 @@ export interface CommonModalSlice {
 
 const initialCommonModalValue = {
   isOpen: false,
-  data: undefined,
   content: undefined,
   overlayBackground: 'transparent',
   onCancel: undefined,
