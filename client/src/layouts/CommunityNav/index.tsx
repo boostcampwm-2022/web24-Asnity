@@ -1,4 +1,5 @@
 import ChannelItem from '@components/ChannelItem';
+import ErrorMessage from '@components/ErrorMessage';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { useCommunitiesQuery, useJoinedChannelsQuery } from '@hooks/community';
 import cn from 'classnames';
@@ -13,6 +14,7 @@ const CommunityNav = () => {
     ({ _id }) => _id === communityId,
   );
   const { joinedChannelsQuery } = useJoinedChannelsQuery(communityId);
+  const joinedChannelsLength = joinedChannelsQuery.data?.length || 0;
 
   const [visible, setVisible] = useState(true);
 
@@ -39,7 +41,9 @@ const CommunityNav = () => {
                 className={`w-[20px] h-[20px] fill-titleActive transition-[transform] ${rotateChevronIconClassnames}`}
               />
             </button>
-            <span className="text-s18 font-bold">참여중인 채널</span>
+            <span className="text-s18 font-bold">
+              참여중인 채널 ({joinedChannelsLength})
+            </span>
           </div>
           <button>
             <span className="sr-only">채널 생성</span>
@@ -48,9 +52,14 @@ const CommunityNav = () => {
         </div>
         {joinedChannelsQuery.isLoading ? (
           <div>로딩중...</div>
+        ) : joinedChannelsQuery.error ? (
+          <ErrorMessage size="lg" className="flex justify-center mt-[30px]">
+            채널 목록을 불러오는데
+            <br /> 오류가 발생했습니다.
+          </ErrorMessage>
         ) : (
           <ul className="flex flex-col">
-            {joinedChannelsQuery.data?.map((channel) => {
+            {joinedChannelsQuery.data.map((channel) => {
               const itemClassnames = cn('flex items-center', {
                 hidden: !visible && channel._id !== roomId,
                 'text-placeholder hover:bg-offWhite': channel._id !== roomId,
