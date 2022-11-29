@@ -1,11 +1,11 @@
-import type { ComponentPropsWithRef } from 'react';
+import type { ComponentPropsWithRef, FC } from 'react';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import React, { forwardRef } from 'react';
 
 export interface Props extends ComponentPropsWithRef<'input'> {}
 
-const SearchInput: React.FC<Props> = forwardRef(
+const SearchInput: FC<Props> = forwardRef(
   ({ className, value, onChange, placeholder, ...restProps }, ref) => {
     return (
       <div className={`relative h-[40px] ${className}`}>

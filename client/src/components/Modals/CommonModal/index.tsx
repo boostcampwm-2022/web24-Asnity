@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import { useRootStore } from '@stores/rootStore';
 import React, { useMemo } from 'react';
@@ -10,7 +10,7 @@ const OverlayBackground = {
   transparent: 'transparent',
 } as const;
 
-const CommonModal: React.FC = () => {
+const CommonModal: FC = () => {
   const {
     isOpen,
     content: Content,
