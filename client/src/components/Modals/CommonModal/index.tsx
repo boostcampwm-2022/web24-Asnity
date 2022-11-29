@@ -50,6 +50,12 @@ const CommonModal: FC = () => {
         content: contentStyle,
       }}
       onRequestClose={onCancel ?? closeCommonModal}
+      overlayRef={(ref) => {
+        if (!ref) return;
+        ref.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+        });
+      }}
     >
       {Content}
     </ReactModal>
