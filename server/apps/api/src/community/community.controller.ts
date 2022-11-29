@@ -36,17 +36,4 @@ export class CommunityController {
       throw error;
     }
   }
-
-  @Patch('settings')
-  @UseGuards(JwtAccessGuard)
-  async modifyCommunitySetting(@Body() modifyCommunityDto: ModifyCommunityDto, @Req() req: any) {
-    try {
-      const requestUserId = req.user._id;
-      await this.communityService.modifyCommunity({ ...modifyCommunityDto, requestUserId });
-      return responseForm(200, { message: '커뮤니티 정보 수정 완료' });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
 }
