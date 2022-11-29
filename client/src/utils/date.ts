@@ -1,4 +1,4 @@
-export const formatDate = (
+export const dateStringToKRLocaleDateString = (
   str: string,
   options: Intl.DateTimeFormatOptions = {},
 ) =>

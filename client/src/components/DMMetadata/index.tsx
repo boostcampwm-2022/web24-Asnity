@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import ChannelItem from '@components/ChannelItem';
 import RoomMetadata from '@components/RoomMetadata';
-import { formatDate } from '@utils/date';
+import { dateStringToKRLocaleDateString } from '@utils/date';
 import React from 'react';
 
 interface Props {
@@ -29,7 +29,7 @@ const DMMetadata: FC<Props> = ({
         </div>
         <div>
           <span className="font-bold">@{creatorName}</span>님이 이 채널을{' '}
-          {formatDate(createdAt)}에 생성했습니다.
+          {dateStringToKRLocaleDateString(createdAt)}에 생성했습니다.
         </div>
       </div>
     </RoomMetadata>
