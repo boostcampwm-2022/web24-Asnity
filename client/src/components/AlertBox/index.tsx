@@ -31,12 +31,7 @@ const AlertBox: FC<Props> = ({
         >
           취소
         </Button>
-        <Button
-          color="success"
-          width="50%"
-          onClick={onSubmit}
-          disabled={disabled}
-        >
+        <Button color="dark" width="50%" onClick={onSubmit} disabled={disabled}>
           확인
         </Button>
       </div>
