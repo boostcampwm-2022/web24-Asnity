@@ -41,7 +41,7 @@ export class User {
   @IsString()
   description: string;
 
-  @Prop({ default: 'ONLINE' })
+  @Prop({ default: 'OFFLINE' })
   @IsString()
   @IsIn(STATUS)
   status: string;
