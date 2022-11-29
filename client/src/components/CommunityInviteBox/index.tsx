@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import Button from '@components/Button';
-import CommunityInviteUserSearchResultBox from '@components/CommunityInviteUserSearchResultBox';
+import CommunityInviteUserSearchResult from '@components/CommunityInviteUserSearchResult';
 import ErrorMessage from '@components/ErrorMessage';
 import SearchInput from '@components/SearchInput';
 import useUsersQuery from '@hooks/useUsersQuery';
@@ -58,7 +58,7 @@ const CommunityInviteBox: FC<Props> = ({ communityId }) => {
           ) : usersQuery.error ? (
             <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
           ) : (
-            <CommunityInviteUserSearchResultBox
+            <CommunityInviteUserSearchResult
               users={usersQuery.data}
               communityId={communityId}
             />
