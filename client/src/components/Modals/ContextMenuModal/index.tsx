@@ -1,6 +1,5 @@
 import type { CSSProperties, FC } from 'react';
 
-import CommunityContextMenu from '@components/CommunityContextMenu';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import ReactModal from 'react-modal';
@@ -14,9 +13,13 @@ interface Props {}
 ReactModal.setAppElement('#root');
 
 const ContextMenuModal: FC<Props> = () => {
-  const { x, y, isOpen, data, type } = useRootStore(
-    (state) => state.contextMenuModal,
-  );
+  const {
+    x = 1,
+    y = 1,
+    isOpen,
+    content,
+    transform,
+  } = useRootStore((state) => state.contextMenuModal);
 
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
@@ -25,19 +28,12 @@ const ContextMenuModal: FC<Props> = () => {
   const modalContentStyle: CSSProperties = {
     width: 'max-content',
     height: 'max-content',
-    left: x,
-    top: y,
     borderRadius: 10,
     padding: 0,
+    left: x,
+    top: y,
+    transform,
   };
-
-  let ContextMenu;
-
-  if (type === 'community')
-    ContextMenu = <CommunityContextMenu community={data} />;
-  else if (type === 'channel')
-    // TODO: ChannelContextMenu로 바꿔야함.
-    ContextMenu = <CommunityContextMenu community={data} />;
 
   return (
     <ReactModal
@@ -56,7 +52,7 @@ const ContextMenuModal: FC<Props> = () => {
         });
       }}
     >
-      {ContextMenu}
+      {content}
     </ReactModal>
   );
 };

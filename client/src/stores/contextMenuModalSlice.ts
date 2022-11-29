@@ -1,53 +1,37 @@
-import type { CommunitySummary } from '@apis/community';
+import type { ReactNode } from 'react';
 import type { StateCreator } from 'zustand';
 
 import { immer } from 'zustand/middleware/immer';
 
-export interface ContextMenuModalBase {
-  x: number;
-  y: number;
+export interface ContextMenuModal {
   isOpen: boolean;
+  x: number | string;
+  y: number | string;
+  transform?: string;
+  content?: ReactNode;
 }
 
-export interface CommunityContextMenuModal extends ContextMenuModalBase {
-  data: CommunitySummary;
-  type: 'community';
-}
+type SetContextMenuModal = (
+  contextMenuModalState: Partial<ContextMenuModal>,
+) => void;
 
-export interface ChannelContextMenuModal extends ContextMenuModalBase {
-  data: CommunitySummary; // TODO: 채널 모달 타입으로 바꿔야 함.
-  type: 'channel';
-}
-
-export interface InitialContextMenuModal extends ContextMenuModalBase {
-  data: null;
-  type: null;
-}
-
-export type ContextMenuModal =
-  | InitialContextMenuModal
-  | ChannelContextMenuModal
-  | CommunityContextMenuModal;
-
-export type OpenContextMenuModal = ({
-  data,
-  x,
-  y,
-  type,
-}: Omit<CommunityContextMenuModal | ChannelContextMenuModal, 'isOpen'>) => void;
+type OpenContextMenuModal = (
+  contextMenuModal: Partial<Omit<ContextMenuModal, 'isOpen'>>,
+) => void;
 
 export interface ContextMenuModalSlice {
   contextMenuModal: ContextMenuModal;
+  setContextMenuModal: SetContextMenuModal;
   openContextMenuModal: OpenContextMenuModal;
   closeContextMenuModal: () => void;
 }
 
 const initialContextMenuModalValue = {
-  data: null,
-  type: null,
   isOpen: false,
   x: 0,
   y: 0,
+  transform: undefined,
+  content: undefined,
 } as const;
 
 export const contextMenuModalSlice: StateCreator<
@@ -57,13 +41,18 @@ export const contextMenuModalSlice: StateCreator<
   ContextMenuModalSlice
 > = immer((set) => ({
   contextMenuModal: initialContextMenuModalValue,
-  openContextMenuModal: ({ data, x, y, type }) =>
+  setContextMenuModal: (contextMenuModalState) =>
     set((state) => {
       state.contextMenuModal = {
-        data,
-        x,
-        y,
-        type,
+        ...state.contextMenuModal,
+        ...contextMenuModalState,
+      };
+    }),
+  openContextMenuModal: (contextMenuModalState) =>
+    set((state) => {
+      state.contextMenuModal = {
+        ...state.contextMenuModal,
+        ...contextMenuModalState,
         isOpen: true,
       };
     }),
