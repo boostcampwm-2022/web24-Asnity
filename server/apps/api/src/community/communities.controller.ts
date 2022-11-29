@@ -40,14 +40,14 @@ export class CommunitiesController {
 
   @Post(':community_id/users')
   @UseGuards(JwtAccessGuard)
-  async appendParticipantsToCommunity(
+  async appendUsersToCommunity(
     @Param('community_id') community_id: string,
     @Body() appendUsersToCommunityDto: AppendUsersToCommunityDto,
     @Req() req: any,
   ) {
     try {
       const requestUserId = req.user._id;
-      await this.communityService.appendParticipantsToCommunity({
+      await this.communityService.appendUsersToCommunity({
         ...appendUsersToCommunityDto,
         community_id,
         requestUserId,
@@ -63,8 +63,8 @@ export class CommunitiesController {
   @UseGuards(JwtAccessGuard)
   async deleteCommunity(@Param('community_id') community_id: string, @Req() req: any) {
     try {
-      const managerId = req.user._id;
-      const deleteCommunityDto: DeleteCommunityDto = { managerId, community_id };
+      const requestUserId = req.user._id;
+      const deleteCommunityDto: DeleteCommunityDto = { requestUserId, community_id };
       await this.communityService.deleteCommunity(deleteCommunityDto);
       return responseForm(200, { message: '커뮤니티 삭제 성공' });
     } catch (error) {
@@ -75,16 +75,14 @@ export class CommunitiesController {
 
   @Get(':community_id/users')
   @UseGuards(JwtAccessGuard)
-  async getParticipantsInCommunity(@Param('community_id') community_id: string, @Req() req: any) {
+  async getUsersInCommunity(@Param('community_id') community_id: string, @Req() req: any) {
     try {
       const requestUserId = req.user._id;
       const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
         community_id,
         requestUserId,
       };
-      const result = await this.communityService.getParticipantsInCommunity(
-        requestUserAboutCommunityDto,
-      );
+      const result = await this.communityService.getUsersInCommunity(requestUserAboutCommunityDto);
       return responseForm(200, result);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
