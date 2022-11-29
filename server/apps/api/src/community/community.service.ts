@@ -70,7 +70,7 @@ export class CommunityService {
     return getCommunityBasicInfo(community, []);
   }
 
-  async appendParticipantsToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
+  async appendUsersToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
     const communityId = appendUsersToCommunityDto.community_id;
     const user = await this.userRepository.findById(appendUsersToCommunityDto.requestUserId);
     if (!IsUserInCommunity(user, communityId)) {
@@ -100,12 +100,12 @@ export class CommunityService {
     await Promise.all(
       // 사용자 document 검증 (올바른 사용자인지, 해당 사용자가 이미 커뮤니티에 참여하고 있는건 아닌지)
       appendUsersToCommunityDto.users.map(async (user_id) => {
-        const newParticipant = await this.userRepository.findById(user_id);
-        if (!newParticipant) {
+        const newUsers = await this.userRepository.findById(user_id);
+        if (!newUsers) {
           throw new BadRequestException(
             `커뮤니티에 추가를 요청한 사용자 _id(${user_id})가 올바르지 않습니다.`,
           );
-        } else if (IsUserInCommunity(newParticipant, communityId)) {
+        } else if (IsUserInCommunity(newUsers, communityId)) {
           throw new BadRequestException(`이미 커뮤니티에 추가된 사용자 입니다.`);
         }
       }),
@@ -158,14 +158,14 @@ export class CommunityService {
     let community = await this.communityRepository.findAndUpdateOne(
       {
         _id: deleteCommunityDto.community_id,
-        managerId: deleteCommunityDto.managerId,
+        managerId: deleteCommunityDto.requestUserId,
         deletedAt: { $exists: false },
       },
       updateField,
     );
     if (!community) {
       community = await this.getCommunity(deleteCommunityDto.community_id);
-      if (community.managerId != deleteCommunityDto.managerId) {
+      if (community.managerId != deleteCommunityDto.requestUserId) {
         throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
       } else if (community.deletedAt) {
         throw new BadRequestException('이미 삭제된 커뮤니티입니다.');
@@ -197,7 +197,7 @@ export class CommunityService {
     );
   }
 
-  async getParticipantsInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
+  async getUsersInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
     const community = await this.getCommunity(requestUserAboutCommunityDto.community_id, {
       users: { $elemMatch: { $eq: requestUserAboutCommunityDto.requestUserId } },
     });
