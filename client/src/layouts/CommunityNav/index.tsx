@@ -1,3 +1,4 @@
+import type { JoinedChannel } from '@apis/channel';
 import type { MouseEventHandler } from 'react';
 
 import ChannelContextMenu from '@components/ChannelContextMenu';
@@ -28,13 +29,15 @@ const CommunityNav = () => {
     (state) => state.openContextMenuModal,
   );
 
-  const handleRightClickChannelItem: MouseEventHandler<HTMLLIElement> = (e) => {
-    openContextMenuModal({
-      x: e.clientX,
-      y: e.clientY,
-      content: <ChannelContextMenu />,
-    });
-  };
+  const handleRightClickChannelItem =
+    (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
+    (e) => {
+      openContextMenuModal({
+        x: e.clientX,
+        y: e.clientY,
+        content: <ChannelContextMenu channel={channel} />,
+      });
+    };
 
   return (
     <nav className="flex flex-col flex-1">
@@ -88,7 +91,7 @@ const CommunityNav = () => {
                   communityId={communityId}
                   channel={channel}
                   className={itemClassnames}
-                  onContextMenu={handleRightClickChannelItem}
+                  onContextMenu={handleRightClickChannelItem(channel)}
                 />
               );
             })}
