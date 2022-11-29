@@ -18,4 +18,8 @@ export class ChatListRespository {
     addArr[attribute] = { $each: appendArr };
     return await this.chatListModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
+
+  async updateOne(filter, updateField) {
+    return await this.chatListModel.updateOne(filter, updateField);
+  }
 }

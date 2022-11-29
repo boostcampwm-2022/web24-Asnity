@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @Injectable()
 export class RestoreMessageDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   channel_id: string;
 
   @IsString()
