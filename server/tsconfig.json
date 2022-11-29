@@ -26,6 +26,7 @@
       "@user/*": ["apps/api/src/user/*"],
       "@channel/*": ["apps/api/src/channel/*"],
       "@community/*": ["apps/api/src/community/*"],
+      "@chat-list/*": ["apps/api/src/chat-list/*"],
       "@api/*": ["apps/api/*"],
       "@mock/*": ["__mock__/*"],
       "@socketInterface/*": ["../shared/socket/*"]
