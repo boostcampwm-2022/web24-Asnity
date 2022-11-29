@@ -1,4 +1,3 @@
-import AlertModal from '@components/Modals/AlertModal';
 import CommonModal from '@components/Modals/CommonModal';
 import ContextMenuModal from '@components/Modals/ContextMenuModal';
 import Gnb from '@layouts/Gnb';
@@ -13,7 +12,6 @@ const Home = () => {
       <Sidebar />
       <Outlet />
       <ContextMenuModal />
-      <AlertModal />
       <CommonModal />
     </div>
   );
