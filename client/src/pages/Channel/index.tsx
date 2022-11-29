@@ -35,8 +35,9 @@ const chatList = [
 ];
 
 const Channel = () => {
-  const { roomId } = useParams();
-  const { channelQuery } = useChannelQuery(roomId as string);
+  const params = useParams();
+  const roomId = params.roomId as string;
+  const { channelQuery } = useChannelQuery(roomId);
   const { userQuery } = useUserQuery(channelQuery.data?.managerId as string, {
     enabled: !!channelQuery.data?.managerId,
   });
