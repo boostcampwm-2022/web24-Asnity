@@ -9,7 +9,7 @@ import { UserModule } from '@user/user.module';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from '@auth/auth.module';
-import { ChatListModule } from './chat-list/chat-list.module';
+import { ChatListModule } from '@chat-list/chat-list.module';
 
 @Module({
   imports: [
