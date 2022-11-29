@@ -11,12 +11,15 @@ const messageSize = {
 export interface Props {
   children: ReactNode;
   size?: keyof typeof messageSize;
+  className?: string;
 }
 
-const ErrorMessage: FC<Props> = ({ children, size = 'sm' }) => {
+const ErrorMessage: FC<Props> = ({ children, size = 'sm', className = '' }) => {
   const memoizedSize = useMemo(() => messageSize[size], [size]);
 
-  return <div className={`text-error ${memoizedSize}`}>{children}</div>;
+  return (
+    <div className={`text-error ${memoizedSize} ${className}`}>{children}</div>
+  );
 };
 
 export default memo(ErrorMessage);
