@@ -2,6 +2,7 @@ import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
+import CreateCommunityBox from '@components/CreateCommunityBox';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -17,9 +18,8 @@ const Gnb = () => {
     (state) => state.openContextMenuModal,
   );
 
-  const openCreateCommunityModal = useRootStore(
-    (state) => state.openCreateCommunityModal,
-  );
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
+
   const { communitiesQuery } = useCommunitiesQuery();
 
   const handleRightClickGnb: MouseEventHandler<HTMLDivElement> = useCallback(
@@ -39,6 +39,16 @@ const Gnb = () => {
       y: e.clientY,
       type: 'community',
       data: community,
+    });
+  };
+
+  const handleClickCreateCommunityButton = () => {
+    openCommonModal({
+      content: <CreateCommunityBox />,
+      overlayBackground: 'black',
+      x: '50%',
+      y: '50%',
+      transform: 'translate3d(-50%, -50%, 0)',
     });
   };
 
@@ -91,7 +101,7 @@ const Gnb = () => {
           )}
         </ul>
 
-        <button type="button" onClick={openCreateCommunityModal}>
+        <button type="button" onClick={handleClickCreateCommunityButton}>
           <span className="sr-only">커뮤니티 추가</span>
           <Avatar
             name="커뮤니티 추가"
