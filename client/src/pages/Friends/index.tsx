@@ -1,20 +1,17 @@
 import type { ReactNode } from 'react';
 
-import NormalUserSearchResultBox from '@components/NormalUserSearchResultBox';
 import Followers from '@layouts/Followers';
 import Followings from '@layouts/Followings';
 import UserSearch from '@layouts/UserSearch';
 import React, { useState } from 'react';
 
-// TODO: 네이밍 생각해보기
 const TAB = {
   FOLLOWINGS: 'followings',
   FOLLOWERS: 'followers',
   USER_SEARCH: 'user-search',
 } as const;
 
-// TODO: 필드 이름 수정하기
-const tabs = [
+const tabData = [
   {
     name: '팔로잉',
     tab: 'followings',
@@ -29,11 +26,10 @@ const tabs = [
   },
 ] as const;
 
-// TODO: 컴포넌트 이름 수정하기 (FollowingTab -> Followings)
 const TabPanel: Record<string, ReactNode> = {
   [TAB.FOLLOWINGS]: <Followings />,
   [TAB.FOLLOWERS]: <Followers />,
-  [TAB.USER_SEARCH]: <UserSearch Variant={NormalUserSearchResultBox} />,
+  [TAB.USER_SEARCH]: <UserSearch />,
 };
 
 const DEFAULT_TAB = TAB.FOLLOWINGS;
@@ -47,15 +43,15 @@ const Friends = () => {
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <ul className="flex gap-[45px]">
-          {tabs.map(({ name, tab: t }) => (
+          {tabData.map(({ name, tab: _tab }) => (
             <li
-              key={t}
+              key={_tab}
               className={`${
                 // 강제 포맷 방지용 주석
-                tab === t ? 'text-indigo' : 'text-placeholder'
+                tab === _tab ? 'text-indigo' : 'text-placeholder'
               } font-bold text-s20`}
             >
-              <button className="w-[100%]" onClick={() => setTab(t)}>
+              <button className="w-[100%]" onClick={() => setTab(_tab)}>
                 {name}
               </button>
             </li>
