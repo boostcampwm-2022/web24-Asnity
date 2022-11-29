@@ -1,7 +1,7 @@
 import type { CommunitySummary } from '@apis/community';
-import type { Store } from '@stores/rootStore';
 import type { MouseEventHandler, FC } from 'react';
 
+import AlertBox from '@components/AlertBox';
 import CommunityInviteBox from '@components/CommunityInviteBox';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import {
@@ -30,52 +30,54 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
       e.preventDefault();
     }, []);
 
-  const leaveCommunityMutation = useLeaveCommunityMutation();
   const setCommunities = useSetCommunitiesQuery();
 
   useCommunityUsersQuery(community._id);
 
-  const openAlertModal = useRootStore((state) => state.openAlertModal);
-  const closeAlertModal = useRootStore((state) => state.closeAlertModal);
-  const disableAlertModal = useRootStore((state) => state.disableAlertModal);
-  const enableAlertModal = useRootStore((state) => state.enableAlertModal);
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
+  const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const openCommonModal = useRootStore((state: Store) => state.openCommonModal);
+  const leaveCommunityMutation = useLeaveCommunityMutation({
+    onSuccess: () => {
+      setCommunities((prevCommunities) =>
+        prevCommunities?.filter(
+          (prevCommunity) => prevCommunity._id !== community._id,
+        ),
+      );
+
+      if (params?.communityId === community._id) {
+        navigate('/dms');
+      }
+      closeCommonModal();
+    },
+    onError: (error) => {
+      defaultErrorHandler(error);
+    },
+  });
 
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
   );
 
   const handleSubmitAlert = () => {
-    disableAlertModal();
-    leaveCommunityMutation
-      .mutateAsync(community._id)
-      .then(() => {
-        setCommunities((prevCommunities) =>
-          prevCommunities?.filter(
-            (prevCommunity) => prevCommunity._id !== community._id,
-          ),
-        );
-
-        if (params?.communityId === community._id) {
-          navigate('/dms');
-        }
-        closeAlertModal();
-      })
-      .catch((error) => {
-        defaultErrorHandler(error);
-      })
-      .finally(() => {
-        enableAlertModal();
-      });
+    leaveCommunityMutation.mutate(community._id);
   };
 
   const handleClickCommunityLeaveButton = () => {
     closeContextMenuModal();
-    openAlertModal({
-      description: `정말로 ${community.name} 커뮤니티에서 나가시겠습니까?`,
-      onCancel: closeAlertModal,
-      onSubmit: handleSubmitAlert,
+    openCommonModal({
+      content: (
+        <AlertBox
+          description={`정말로 ${community.name}커뮤니티에서 나가시겠습니까?`}
+          onCancel={closeCommonModal}
+          onSubmit={handleSubmitAlert}
+          disabled={leaveCommunityMutation.isLoading}
+        />
+      ),
+      overlayBackground: 'black',
+      x: '50%',
+      y: '50%',
+      transform: 'translate3d(-50%, -50%, 0)',
     });
   };
 
