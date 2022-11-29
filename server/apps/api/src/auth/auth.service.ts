@@ -37,7 +37,7 @@ export class AuthService {
     const refreshToken = await this.signToken.signRefreshToken(user._id);
 
     // DB에 refreshToken 업데이트
-    this.userRepository.updateOne({ _id: user._id }, { refreshToken });
+    this.userRepository.updateOne({ _id: user._id }, { status: 'ONLINE', refreshToken });
 
     return { accessToken, refreshToken };
   }
