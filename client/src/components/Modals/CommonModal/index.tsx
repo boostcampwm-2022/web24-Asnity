@@ -13,7 +13,7 @@ const OverlayBackground = {
 const CommonModal: FC = () => {
   const {
     isOpen,
-    content: Content,
+    content,
     overlayBackground,
     onCancel,
     transform,
@@ -57,7 +57,7 @@ const CommonModal: FC = () => {
         });
       }}
     >
-      {Content}
+      {content}
     </ReactModal>
   );
 };
