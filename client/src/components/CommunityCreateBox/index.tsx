@@ -25,7 +25,7 @@ const createCommunityFormDefaultValue = {
   communityDescription: '',
 };
 
-const CreateCommunityBox: FC = () => {
+const CommunityCreateBox: FC = () => {
   const navigate = useNavigate();
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
   const { invalidateCommunitiesQuery } = useCommunitiesQuery();
@@ -165,4 +165,4 @@ const CreateCommunityBox: FC = () => {
   );
 };
 
-export default CreateCommunityBox;
+export default CommunityCreateBox;

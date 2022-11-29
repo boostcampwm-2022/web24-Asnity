@@ -2,7 +2,7 @@ import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
-import CreateCommunityBox from '@components/CreateCommunityBox';
+import CommunityCreateBox from '@components/CommunityCreateBox';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -44,7 +44,7 @@ const Gnb = () => {
 
   const handleClickCreateCommunityButton = () => {
     openCommonModal({
-      content: <CreateCommunityBox />,
+      content: <CommunityCreateBox />,
       overlayBackground: 'black',
       x: '50%',
       y: '50%',
