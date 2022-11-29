@@ -7,5 +7,5 @@ export class DeleteChannelDto {
 
   @IsString()
   @IsNotEmpty()
-  user_id: string;
+  requestUserId: string;
 }
