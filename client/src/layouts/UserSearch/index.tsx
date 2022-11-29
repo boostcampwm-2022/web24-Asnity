@@ -1,7 +1,6 @@
-import type { User } from '@apis/user';
-import type { FC } from 'react';
-
+import ErrorMessage from '@components/ErrorMessage';
 import SearchInput from '@components/SearchInput';
+import UserSearchResult from '@components/UserSearchResultBox';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,11 +11,7 @@ interface UserSearchInput {
   filter: string;
 }
 
-interface Props {
-  Variant: FC<{ users?: User[]; isLoading: boolean; error: unknown }>;
-}
-
-const UserSearch: FC<Props> = ({ Variant }) => {
+const UserSearch = () => {
   const { register, handleSubmit } = useForm<UserSearchInput>();
 
   const [submittedFilter, setSubmittedFilter] = useState('');
@@ -47,11 +42,18 @@ const UserSearch: FC<Props> = ({ Variant }) => {
           </Button>
         </form>
       </div>
-      <Variant
-        users={usersQuery?.data}
-        isLoading={usersQuery.isFetching}
-        error={usersQuery.error}
-      />
+
+      <div className="w-full h-full flex justify-center items-center">
+        {usersQuery.isLoading && usersQuery.isFetching ? (
+          <div>로딩중...</div>
+        ) : usersQuery.isLoading ? (
+          <div>검색어를 입력해주세요</div>
+        ) : usersQuery.error ? (
+          <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
+        ) : (
+          <UserSearchResult users={usersQuery.data} />
+        )}
+      </div>
     </div>
   );
 };
