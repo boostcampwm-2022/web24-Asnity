@@ -44,7 +44,7 @@ export class AuthService {
 
   async signOut(userId: string) {
     try {
-      await this.userRepository.updateOne({ _id: userId }, { refreshToken: '' });
+      await this.userRepository.updateOne({ _id: userId }, { status: 'OFFLINE', refreshToken: '' });
     } catch (error) {
       throw new ForbiddenException('잘못된 접근입니다.');
     }
