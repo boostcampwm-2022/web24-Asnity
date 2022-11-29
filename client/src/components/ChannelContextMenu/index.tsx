@@ -1,3 +1,4 @@
+import type { JoinedChannel } from '@apis/channel';
 import type { FC } from 'react';
 
 import {
@@ -5,11 +6,19 @@ import {
   Cog6ToothIcon,
   UserPlusIcon,
 } from '@heroicons/react/20/solid';
+import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 
-export interface Props {}
+export interface Props {
+  channel: JoinedChannel;
+}
 
-const ChannelContextMenu: FC<Props> = () => {
+const ChannelContextMenu: FC<Props> = ({ channel }) => {
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
+  const closeContextMenuModal = useRootStore(
+    (state) => state.closeContextMenuModal,
+  );
+
   const handleClickChannelInviteButton = () => {};
 
   const handleClickChannelSettingsButton = () => {};
@@ -20,15 +29,17 @@ const ChannelContextMenu: FC<Props> = () => {
     <section className="w-[300px] p-[16px]">
       <h3 className="sr-only">채널 컨텍스트 메뉴</h3>
       <ul>
-        <li className="mb-[8px]">
-          <button
-            className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
-            onClick={handleClickChannelInviteButton}
-          >
-            <span>채널에 초대하기</span>
-            <UserPlusIcon className="w-6 h-6 pointer-events-none text-placeholder" />
-          </button>
-        </li>
+        {channel.isPrivate && (
+          <li className="mb-[8px]">
+            <button
+              className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
+              onClick={handleClickChannelInviteButton}
+            >
+              <span>채널에 초대하기</span>
+              <UserPlusIcon className="w-6 h-6 pointer-events-none text-placeholder" />
+            </button>
+          </li>
+        )}
         <li className="mb-[8px]">
           <button
             className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
