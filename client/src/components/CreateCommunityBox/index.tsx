@@ -1,4 +1,4 @@
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
@@ -11,8 +11,7 @@ import {
 } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import ReactModal from 'react-modal';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -26,30 +25,9 @@ const createCommunityFormDefaultValue = {
   communityDescription: '',
 };
 
-const modalContentStyle: CSSProperties = {
-  width: 350,
-  height: 300,
-  borderRadius: 10,
-  padding: 20,
-  left: '50%',
-  top: '50%',
-  transform: 'translate3d(-50%, -50%, 0)',
-};
-
-const modalOverlayStyle: CSSProperties = {
-  background: 'rgba(0, 0, 0, 0.5)',
-};
-
-interface Props {}
-
-ReactModal.setAppElement('#root');
-
-const CreateCommunityModal: FC<Props> = () => {
-  const { isOpen } = useRootStore((state) => state.createCommunityModal);
-  const closeCreateCommunityModal = useRootStore(
-    (state) => state.closeCreateCommunityModal,
-  );
+const CreateCommunityBox: FC = () => {
   const navigate = useNavigate();
+  const closeCommonModal = useRootStore((state) => state.closeCommonModal);
   const { invalidateCommunitiesQuery } = useCommunitiesQuery();
   const createCommunityMutation = useCreateCommunityMutation({
     onSuccess: ({ _id }) => {
@@ -77,7 +55,7 @@ const CreateCommunityModal: FC<Props> = () => {
 
   const handleCloseModal = () => {
     if (createCommunityMutation.isLoading) return; // Form 제출 처리중엔 취소할 수 없음.
-    closeCreateCommunityModal();
+    closeCommonModal();
     reset();
   };
 
@@ -90,14 +68,7 @@ const CreateCommunityModal: FC<Props> = () => {
   };
 
   return (
-    <ReactModal
-      isOpen={isOpen}
-      style={{
-        content: modalContentStyle,
-        overlay: modalOverlayStyle,
-      }}
-      onRequestClose={handleCloseModal}
-    >
+    <div className="w-[350px] h-[300px] p-[20px]">
       <form
         className="flex flex-col h-full items-center justify-center gap-y-[30px]"
         onSubmit={handleSubmit(handleSubmitCreateCommunityForm)}
@@ -182,7 +153,7 @@ const CreateCommunityModal: FC<Props> = () => {
           </Button>
           <Button
             type="submit"
-            color="success"
+            color="dark"
             width="50%"
             disabled={createCommunityMutation.isLoading}
           >
@@ -190,8 +161,8 @@ const CreateCommunityModal: FC<Props> = () => {
           </Button>
         </footer>
       </form>
-    </ReactModal>
+    </div>
   );
 };
 
-export default CreateCommunityModal;
+export default CreateCommunityBox;
