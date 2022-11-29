@@ -6,15 +6,14 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 const CommunityNav = () => {
-  const params = useParams() as { communityId: string };
-  const { communityId } = params;
+  const params = useParams() as { communityId: string; roomId?: string };
+  const { communityId, roomId } = params;
   const { communitiesQuery } = useCommunitiesQuery();
   const communitySummary = communitiesQuery.data?.find(
     ({ _id }) => _id === communityId,
   );
   const { joinedChannelsQuery } = useJoinedChannelsQuery(communityId);
 
-  const { roomId } = useParams();
   const [visible, setVisible] = useState(true);
 
   const toggleVisible = () => setVisible((prevVisible) => !prevVisible);
@@ -34,7 +33,7 @@ const CommunityNav = () => {
           <div className="flex gap-[8px]">
             <button onClick={toggleVisible}>
               <span className="sr-only">
-                {visible ? '채널 목록 접기' : '채널 목록 펼치기'}{' '}
+                {visible ? '채널 목록 접기' : '채널 목록 펼치기'}
               </span>
               <ChevronDownIcon
                 className={`w-[20px] h-[20px] fill-titleActive transition-[transform] ${rotateChevronIconClassnames}`}
@@ -48,31 +47,26 @@ const CommunityNav = () => {
           </button>
         </div>
         {joinedChannelsQuery.isLoading ? (
-          <div>loading...</div>
+          <div>로딩중...</div>
         ) : (
           <ul className="flex flex-col">
-            {joinedChannelsQuery.data?.map((channel) => (
-              <li
-                key={channel._id}
-                className={cn('flex items-center', {
-                  hidden: !visible && channel._id !== roomId,
-                  'text-placeholder hover:bg-offWhite': channel._id !== roomId,
-                  'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite':
-                    channel._id === roomId,
-                })}
-              >
-                <Link
-                  to={`/communities/${communityId}/channels/${channel._id}`}
-                  className="w-full py-[6px] pl-[40px]"
-                >
-                  <ChannelItem
-                    className="w-full"
-                    name={channel.name}
-                    isPrivate={channel.isPrivate}
-                  />
-                </Link>
-              </li>
-            ))}
+            {joinedChannelsQuery.data?.map((channel) => {
+              const itemClassnames = cn('flex items-center', {
+                hidden: !visible && channel._id !== roomId,
+                'text-placeholder hover:bg-offWhite': channel._id !== roomId,
+                'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite':
+                  channel._id === roomId,
+              });
+
+              return (
+                <ChannelItem
+                  key={channel._id}
+                  communityId={communityId}
+                  channel={channel}
+                  className={itemClassnames}
+                />
+              );
+            })}
           </ul>
         )}
       </div>

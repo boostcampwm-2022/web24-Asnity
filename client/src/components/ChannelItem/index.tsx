@@ -1,32 +1,29 @@
-import type { FC } from 'react';
+import type { JoinedChannel } from '@apis/channel';
+import type { ComponentPropsWithoutRef, FC } from 'react';
 
-import { HashtagIcon, LockClosedIcon } from '@heroicons/react/20/solid';
+import ChannelName from '@components/ChannelName';
 import React, { memo } from 'react';
+import { Link } from 'react-router-dom';
 
-interface Props {
-  name: string;
-  isPrivate?: boolean;
-  className?: string;
+export interface Props extends ComponentPropsWithoutRef<'li'> {
+  communityId: string;
+  channel: JoinedChannel;
 }
 
-const ChannelItem: FC<Props> = ({ name, isPrivate = true, className = '' }) => {
+const ChannelItem: FC<Props> = ({ channel, communityId, ...restProps }) => {
   return (
-    <div className={`flex items-center gap-[5px] select-none ${className}`}>
-      <div>
-        {isPrivate ? (
-          <>
-            <span className="sr-only">비공개 채널</span>
-            <LockClosedIcon className="w-5 h-5" />
-          </>
-        ) : (
-          <>
-            <span className="sr-only">공개 채널</span>
-            <HashtagIcon className="w-5 h-5" />
-          </>
-        )}
-      </div>
-      <div className="text-s16 w-full">{name}</div>
-    </div>
+    <li {...restProps}>
+      <Link
+        to={`/communities/${communityId}/channels/${channel._id}`}
+        className="w-full py-[6px] pl-[40px]"
+      >
+        <ChannelName
+          isPrivate={channel.isPrivate}
+          name={channel.name}
+          className="flex items-center gap-[5px] select-none w-full"
+        />
+      </Link>
+    </li>
   );
 };
 
