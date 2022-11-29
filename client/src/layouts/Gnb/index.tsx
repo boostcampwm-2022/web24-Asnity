@@ -2,6 +2,7 @@ import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
+import CommunityContextMenu from '@components/CommunityContextMenu';
 import CommunityCreateBox from '@components/CommunityCreateBox';
 import GnbItemContainer from '@components/GnbItemContainer';
 import { LOGO_IMG_URL } from '@constants/url';
@@ -35,10 +36,9 @@ const Gnb = () => {
     e.preventDefault();
 
     openContextMenuModal({
+      content: <CommunityContextMenu community={community} />,
       x: e.clientX,
       y: e.clientY,
-      type: 'community',
-      data: community,
     });
   };
 
