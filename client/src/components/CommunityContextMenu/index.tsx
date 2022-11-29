@@ -82,8 +82,7 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
   const handleClickUserInviteButton = () => {
     closeContextMenuModal();
     openCommonModal({
-      content: <CommunityInviteBox />,
-      data: { communityId: community._id },
+      content: <CommunityInviteBox communityId={community._id} />,
       overlayBackground: 'black',
       x: '50%',
       y: '50%',
