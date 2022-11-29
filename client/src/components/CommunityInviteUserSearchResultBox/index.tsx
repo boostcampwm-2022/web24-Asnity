@@ -46,9 +46,10 @@ const CommunityInviteUserSearchResultBox: React.FC<Props> = ({
 
       inviteCommunityMutation
         .mutateAsync({ communityId, userIds })
-        .then(async () => {
-          await invalidateCommunityUsersQuery();
-          toast.success('커뮤니티로 초대 성공!');
+        .then(() => {
+          invalidateCommunityUsersQuery().finally(() => {
+            toast.success('커뮤니티로 초대 성공!');
+          });
         })
         .catch((_error) => defaultErrorHandler(_error));
     };
