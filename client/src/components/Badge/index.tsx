@@ -1,3 +1,5 @@
+import type { FC } from 'react';
+
 import React from 'react';
 
 interface BadgeProps {
@@ -17,7 +19,7 @@ const background = {
   default: 'bg-label',
 };
 
-const Badge: React.FC<BadgeProps> = ({
+const Badge: FC<BadgeProps> = ({
   children,
   size = 'small',
   color = 'default',

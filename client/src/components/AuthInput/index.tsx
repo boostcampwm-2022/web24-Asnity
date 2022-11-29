@@ -2,6 +2,7 @@ import type {
   ChangeEventHandler,
   ComponentPropsWithRef,
   HTMLInputTypeAttribute,
+  FC,
 } from 'react';
 
 import cn from 'classnames';
@@ -15,7 +16,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
   placeholder?: string;
 }
 
-const AuthInput: React.FC<Props> = forwardRef(
+const AuthInput: FC<Props> = forwardRef(
   (
     {
       type = 'text',

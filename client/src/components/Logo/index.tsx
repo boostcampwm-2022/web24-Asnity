@@ -1,3 +1,5 @@
+import type { FC } from 'react';
+
 import logoUrl from '@icons/logo.svg';
 import React, { memo } from 'react';
 
@@ -13,7 +15,7 @@ export interface Props {
   size?: keyof typeof logoSize;
 }
 
-const Logo: React.FC<Props> = ({ size = 'md' }) => {
+const Logo: FC<Props> = ({ size = 'md' }) => {
   return (
     <div className="inline-flex">
       <img src={logoUrl} alt="" className={`${logoSize[size]}`} />

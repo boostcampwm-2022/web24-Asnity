@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, FC } from 'react';
 
 import React, { memo, useMemo } from 'react';
 
@@ -13,7 +13,7 @@ export interface Props {
   size?: keyof typeof messageSize;
 }
 
-const ErrorMessage: React.FC<Props> = ({ children, size = 'sm' }) => {
+const ErrorMessage: FC<Props> = ({ children, size = 'sm' }) => {
   const memoizedSize = useMemo(() => messageSize[size], [size]);
 
   return <div className={`text-error ${memoizedSize}`}>{children}</div>;

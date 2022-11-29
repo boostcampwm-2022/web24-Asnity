@@ -1,6 +1,6 @@
 import type { CommunitySummary } from '@apis/community';
 import type { Store } from '@stores/rootStore';
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, FC } from 'react';
 
 import CommunityInviteBox from '@components/CommunityInviteBox';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
@@ -22,7 +22,7 @@ interface Props {
   community: CommunitySummary;
 }
 
-const CommunityContextMenu: React.FC<Props> = ({ community }) => {
+const CommunityContextMenu: FC<Props> = ({ community }) => {
   const params = useParams();
   const navigate = useNavigate();
   const handleRightClickContextMenu: MouseEventHandler<HTMLDivElement> =

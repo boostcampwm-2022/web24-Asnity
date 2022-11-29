@@ -16,7 +16,7 @@ interface Props {
   Variant: FC<{ users?: User[]; isLoading: boolean; error: unknown }>;
 }
 
-const UserSearch: React.FC<Props> = ({ Variant }) => {
+const UserSearch: FC<Props> = ({ Variant }) => {
   const { register, handleSubmit } = useForm<UserSearchInput>();
 
   const [submittedFilter, setSubmittedFilter] = useState('');
