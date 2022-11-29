@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import { useUserQuery } from '@hooks/user';
-import { formatDate } from '@utils/date';
+import { dateStringToKRLocaleDateString } from '@utils/date';
 import React from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
@@ -32,13 +32,21 @@ const ChatItem: FC<Props> = ({ className = '', chat, isSystem = false }) => {
           <div>
             <div className="flex gap-2 items-center text-s16">
               <span
-                className={`font-bold ${isSystem ? 'text-primary' : 'text-indigo'
-                  }`}
+                className={
+                  /* format 방지용 */ `font-bold ${
+                    /* format 방지용 */ isSystem
+                    ? 'text-primary'
+                    : 'text-indigo'
+                  }`
+                }
               >
                 {userQuery.data.nickname}
               </span>
               <span className="text-placeholder">
-                {formatDate(createdAt, { hour: 'numeric', minute: 'numeric' })}
+                {dateStringToKRLocaleDateString(createdAt, {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                })}
               </span>
               {deletedAt.length ? (
                 <span className="text-label">(삭제됨)</span>
