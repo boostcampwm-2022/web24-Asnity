@@ -1,4 +1,9 @@
-import type { ReactNode, ComponentPropsWithoutRef, CSSProperties } from 'react';
+import type {
+  ReactNode,
+  ComponentPropsWithoutRef,
+  CSSProperties,
+  FC,
+} from 'react';
 
 import cn from 'classnames';
 import React from 'react';
@@ -29,7 +34,7 @@ export interface Props extends ComponentPropsWithoutRef<'button'> {
   className?: string;
 }
 
-const TextButton: React.FC<Props> = ({
+const TextButton: FC<Props> = ({
   children,
   size,
   color = 'default',

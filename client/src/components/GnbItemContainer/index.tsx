@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, FC } from 'react';
 
 import cn from 'classnames';
 import React, { useState, memo, useCallback } from 'react';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 // TODO: Tooltip 추가하기
-const GnbItemContainer: React.FC<Props> = ({
+const GnbItemContainer: FC<Props> = ({
   children,
   disableLeftFillBar = false,
   isActive = false,

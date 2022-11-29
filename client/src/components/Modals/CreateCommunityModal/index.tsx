@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
@@ -44,7 +44,7 @@ interface Props {}
 
 ReactModal.setAppElement('#root');
 
-const CreateCommunityModal: React.FC<Props> = () => {
+const CreateCommunityModal: FC<Props> = () => {
   const { isOpen } = useRootStore((state) => state.createCommunityModal);
   const closeCreateCommunityModal = useRootStore(
     (state) => state.closeCreateCommunityModal,

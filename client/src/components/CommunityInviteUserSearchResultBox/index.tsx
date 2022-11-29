@@ -1,5 +1,5 @@
 import type { User, UserUID } from '@apis/user';
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, FC } from 'react';
 
 import ErrorMessage from '@components/ErrorMessage';
 import UserItem from '@components/UserItem';
@@ -21,7 +21,7 @@ interface Props {
   error: unknown;
 }
 
-const CommunityInviteUserSearchResultBox: React.FC<Props> = ({
+const CommunityInviteUserSearchResultBox: FC<Props> = ({
   users,
   isLoading,
   error,
