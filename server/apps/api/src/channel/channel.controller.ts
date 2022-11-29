@@ -15,9 +15,9 @@ export class ChannelController {
   @Post()
   @UseGuards(JwtAccessGuard)
   async createChannel(@Body() createChannelDto: CreateChannelDto, @Req() req: any) {
-    const _id = req.user._id;
+    const requestUserId = req.user._id;
     try {
-      await this.channelService.createChannel({ ...createChannelDto, managerId: _id });
+      await this.channelService.createChannel({ ...createChannelDto, managerId: requestUserId });
       return responseForm(200, { message: '채널 생성 성공!' });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));

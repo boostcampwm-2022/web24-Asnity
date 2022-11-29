@@ -1,5 +1,5 @@
-export function getChannelToUserForm(communityId, channelId) {
+export function getChannelToUserForm(community_id, channel_id) {
   return {
-    [`communities.${communityId.toString()}.channels.${channelId.toString()}`]: new Date(),
+    [`communities.${community_id.toString()}.channels.${channel_id.toString()}`]: new Date(),
   };
 }

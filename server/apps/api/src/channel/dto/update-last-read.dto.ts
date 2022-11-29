@@ -5,13 +5,13 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class UpdateLastReadDto {
   @IsString()
   @IsOptional()
-  user_id: string;
+  requestUserId: string;
 
   @IsString()
   @IsNotEmpty()
   community_id: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   channel_id: string;
 }
