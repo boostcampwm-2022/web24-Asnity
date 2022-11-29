@@ -1,5 +1,5 @@
 import type { CommunitySummary } from '@apis/community';
-import type { MouseEventHandler, FC } from 'react';
+import type { FC } from 'react';
 
 import CommunityInviteBox from '@components/CommunityInviteBox';
 import CommunityLeaveBox from '@components/CommunityLeaveBox';
@@ -10,17 +10,13 @@ import {
 } from '@heroicons/react/20/solid';
 import { useCommunityUsersQuery } from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 interface Props {
   community: CommunitySummary;
 }
 
 const CommunityContextMenu: FC<Props> = ({ community }) => {
-  const handleRightClickContextMenu: MouseEventHandler<HTMLDivElement> =
-    useCallback((e) => {
-      e.preventDefault();
-    }, []);
   const openCommonModal = useRootStore((state) => state.openCommonModal);
 
   useCommunityUsersQuery(community._id);
@@ -52,12 +48,9 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
   };
 
   return (
-    <section
-      className="w-[300px] p-[16px]"
-      onContextMenu={handleRightClickContextMenu}
-    >
+    <section className="w-[300px] p-[16px]">
       <h3 className="sr-only">커뮤니티 컨텍스트 메뉴</h3>
-      <ul className="">
+      <ul>
         <li className="mb-[8px]">
           <button
             className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
