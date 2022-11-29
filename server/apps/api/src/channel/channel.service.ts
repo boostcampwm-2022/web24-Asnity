@@ -45,8 +45,11 @@ export class ChannelService {
   async modifyChannel(modifyChannelDto: ModifyChannelDto) {
     const { channel_id, requestUserId } = modifyChannelDto;
     // 채널의 관리자가 아니면 예외처리
-    const channel = await this.channelRepository.findOne({ _id: channel_id });
-    if (channel === undefined || requestUserId !== channel.managerId) {
+    const channel = await this.channelRepository.findOne({
+      _id: channel_id,
+      managerId: requestUserId,
+    });
+    if (channel === undefined) {
       throw new UnauthorizedException('채널 관리자가 아닙니다.');
     }
 
@@ -58,17 +61,17 @@ export class ChannelService {
     }
   }
 
-  async addUserToChannel(community_id, channel_id, newUserList) {
+  async addUserToChannel(community_id, channel_id, newUsers) {
     // 채널 도큐먼트의 유저 필드 업데이트
     try {
-      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', newUserList);
+      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', newUsers);
     } catch (error) {
       throw new BadRequestException('채널에 user 추가 중 오류 발생!');
     }
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     try {
       await Promise.all(
-        newUserList.map((userId) => {
+        newUsers.map((userId) => {
           this.userRepository.updateObject(
             { _id: userId },
             getChannelToUserForm(community_id, channel_id),
@@ -92,7 +95,7 @@ export class ChannelService {
     const channel = await this.channelRepository.findById(channel_id);
     if (requestUserId === channel.managerId) {
       if (channel.users.length > 1) {
-        throw new BadRequestException('관리자를 변경하고 채널을 이동하십시오!');
+        throw new BadRequestException('관리자를 변경하고 채널을 퇴장하십시오!');
       }
       // 관리자 혼자 채널에 존재하고 채널을 나갈 경우 채널 제거
       this.deleteChannel({ channel_id, requestUserId });
@@ -126,7 +129,7 @@ export class ChannelService {
       }),
     );
     // community 도큐먼트의 channels 필드 업데이트
-    this.communityRepository.deleteElementAtArr(
+    await this.communityRepository.deleteElementAtArr(
       { _id: channel.communityId },
       { channels: [channel_id] },
     );
@@ -143,9 +146,9 @@ export class ChannelService {
   }
 
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
-    const { community_id, channel_id, inviteUserList } = inviteChannelDto;
+    const { community_id, channel_id, inviteUsers } = inviteChannelDto;
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
-    await this.addUserToChannel(community_id, channel_id, inviteUserList);
+    await this.addUserToChannel(community_id, channel_id, inviteUsers);
   }
 
   async updateLastRead(updateLastReadDto: UpdateLastReadDto) {
