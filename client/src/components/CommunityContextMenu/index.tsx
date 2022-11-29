@@ -1,79 +1,38 @@
 import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler, FC } from 'react';
 
-import AlertBox from '@components/AlertBox';
 import CommunityInviteBox from '@components/CommunityInviteBox';
-import defaultErrorHandler from '@errors/defaultErrorHandler';
+import CommunityLeaveBox from '@components/CommunityLeaveBox';
 import {
   UserPlusIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/20/solid';
-import {
-  useLeaveCommunityMutation,
-  useSetCommunitiesQuery,
-} from '@hooks/community';
 import { useCommunityUsersQuery } from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React, { useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 interface Props {
   community: CommunitySummary;
 }
 
 const CommunityContextMenu: FC<Props> = ({ community }) => {
-  const params = useParams();
-  const navigate = useNavigate();
   const handleRightClickContextMenu: MouseEventHandler<HTMLDivElement> =
     useCallback((e) => {
       e.preventDefault();
     }, []);
-
-  const setCommunities = useSetCommunitiesQuery();
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
 
   useCommunityUsersQuery(community._id);
-
-  const openCommonModal = useRootStore((state) => state.openCommonModal);
-  const closeCommonModal = useRootStore((state) => state.closeCommonModal);
-
-  const leaveCommunityMutation = useLeaveCommunityMutation({
-    onSuccess: () => {
-      setCommunities((prevCommunities) =>
-        prevCommunities?.filter(
-          (prevCommunity) => prevCommunity._id !== community._id,
-        ),
-      );
-
-      if (params?.communityId === community._id) {
-        navigate('/dms');
-      }
-      closeCommonModal();
-    },
-    onError: (error) => {
-      defaultErrorHandler(error);
-    },
-  });
 
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
   );
 
-  const handleSubmitAlert = () => {
-    leaveCommunityMutation.mutate(community._id);
-  };
-
   const handleClickCommunityLeaveButton = () => {
     closeContextMenuModal();
     openCommonModal({
-      content: (
-        <AlertBox
-          description={`정말로 ${community.name}커뮤니티에서 나가시겠습니까?`}
-          onCancel={closeCommonModal}
-          onSubmit={handleSubmitAlert}
-          disabled={leaveCommunityMutation.isLoading}
-        />
-      ),
+      content: <CommunityLeaveBox community={community} />,
       overlayBackground: 'black',
       x: '50%',
       y: '50%',
