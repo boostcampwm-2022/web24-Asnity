@@ -10,5 +10,5 @@ export class InviteChannelDto {
   channel_id: string;
 
   @IsNotEmpty()
-  inviteUserList: string[];
+  inviteUsers: string[];
 }
