@@ -7,5 +7,5 @@ export class DeleteCommunityDto {
 
   @IsNotEmpty()
   @IsString()
-  managerId: string;
+  requestUserId: string;
 }
