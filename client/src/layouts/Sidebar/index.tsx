@@ -1,3 +1,5 @@
+import type { MouseEventHandler } from 'react';
+
 import UserProfile from '@components/UserProfile';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import useMyInfoQuery from '@hooks/useMyInfoQuery';
@@ -10,8 +12,14 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const myInfoQuery = useMyInfoQuery();
 
+  const handleRightClickSidebar: MouseEventHandler<HTMLDivElement> = (e) =>
+    e.preventDefault();
+
   return (
-    <div className="flex flex-col min-w-[320px] w-[320px] h-full bg-background border-r border-line">
+    <div
+      className="flex flex-col min-w-[320px] w-[320px] h-full bg-background border-r border-line"
+      onContextMenu={handleRightClickSidebar}
+    >
       <div className="flex-1">
         {pathname.startsWith('/dms') ? <DmNav /> : <CommunityNav />}
       </div>
