@@ -4,7 +4,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
 import { USER_STATUS } from '@constants/user';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'div'> {
   user: User;
@@ -34,4 +34,4 @@ const UserProfile: FC<Props> = ({ user: { nickname, profileUrl, status } }) => {
   );
 };
 
-export default UserProfile;
+export default memo(UserProfile);
