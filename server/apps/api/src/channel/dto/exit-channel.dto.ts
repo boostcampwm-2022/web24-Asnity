@@ -7,5 +7,5 @@ export class ExitChannelDto {
 
   @IsString()
   @IsNotEmpty()
-  user_id: string;
+  requestUserId: string;
 }

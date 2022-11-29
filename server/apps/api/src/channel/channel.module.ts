@@ -9,6 +9,7 @@ import { CommunityRepository } from '@repository/community.repository';
 import { CommunityModule } from '@community/community.module';
 import { UserRepository } from '@repository/user.repository';
 import { UserModule } from '@user/user.module';
+import { ChannelsController } from '@channel/channels.controller';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UserModule } from '@user/user.module';
     forwardRef(() => CommunityModule),
     UserModule,
   ],
-  controllers: [ChannelController],
+  controllers: [ChannelController, ChannelsController],
   providers: [ChannelService, ChannelRepository, CommunityRepository, UserRepository],
   exports: [MongooseModule],
 })

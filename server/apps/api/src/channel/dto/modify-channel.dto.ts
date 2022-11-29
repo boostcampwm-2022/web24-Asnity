@@ -1,10 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class ModifyChannelDto {
   @IsString()
-  @IsNotEmpty()
-  channelId: string;
+  @IsOptional()
+  channel_id: string;
 
   @IsString()
   @IsOptional()
@@ -12,7 +12,7 @@ export class ModifyChannelDto {
 
   @IsString()
   @IsOptional()
-  managerId: string;
+  requestUserId: string;
 
   @IsString()
   @IsOptional()
