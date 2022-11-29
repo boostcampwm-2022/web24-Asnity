@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import ChannelItem from '@components/ChannelItem';
+import ChannelName from '@components/ChannelName';
 import RoomMetadata from '@components/RoomMetadata';
 import { formatDate } from '@utils/date';
 import React from 'react';
@@ -24,10 +24,10 @@ const ChannelMetadata: FC<Props> = ({
     <RoomMetadata profileUrl={profileUrl} channelName={channelName}>
       <div className="flex flex-col justify-center h-full">
         <div className="flex items-center">
-          <ChannelItem
-            name={channelName}
+          <ChannelName
             isPrivate={isPrivate}
-            className="font-bold"
+            name={channelName}
+            className="flex items-center mr-[4px] font-bold"
           />
           의 시작이에요.
         </div>
