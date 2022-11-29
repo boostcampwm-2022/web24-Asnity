@@ -6,8 +6,12 @@ import UserList from '@components/UserList';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 
-const NormalUserSearchResultBox: FC<{ users?: User[] }> = ({ users }) => {
-  return users ? (
+export interface Props {
+  users: User[];
+}
+
+const UserSearchResult: FC<Props> = ({ users }) => {
+  return (
     <Scrollbars>
       {users.length ? (
         <UserList>
@@ -21,9 +25,7 @@ const NormalUserSearchResultBox: FC<{ users?: User[] }> = ({ users }) => {
         </div>
       )}
     </Scrollbars>
-  ) : (
-    <div />
   );
 };
 
-export default NormalUserSearchResultBox;
+export default UserSearchResult;
