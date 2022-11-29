@@ -36,6 +36,8 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
     });
   };
 
+  const handleClickCommunitySettingsButton = () => {};
+
   const handleClickUserInviteButton = () => {
     closeContextMenuModal();
     openCommonModal({
@@ -61,7 +63,10 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
           </button>
         </li>
         <li className="mb-[8px]">
-          <button className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]">
+          <button
+            className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
+            onClick={handleClickCommunitySettingsButton}
+          >
             <span>커뮤니티 설정하기</span>
             <Cog6ToothIcon className="w-6 h-6 pointer-events-none text-placeholder" />
           </button>
