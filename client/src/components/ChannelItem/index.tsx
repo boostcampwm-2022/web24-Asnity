@@ -1,3 +1,5 @@
+import type { FC } from 'react';
+
 import { HashtagIcon, LockClosedIcon } from '@heroicons/react/20/solid';
 import React, { memo } from 'react';
 
@@ -7,11 +9,7 @@ interface Props {
   className?: string;
 }
 
-const ChannelItem: React.FC<Props> = ({
-  name,
-  isPrivate = true,
-  className = '',
-}) => {
+const ChannelItem: FC<Props> = ({ name, isPrivate = true, className = '' }) => {
   return (
     <div className={`flex items-center gap-[5px] select-none ${className}`}>
       <div>

@@ -1,11 +1,12 @@
 import type { User } from '@apis/user';
+import type { FC } from 'react';
 
 import FollowerUserItem from '@components/FollowerUserItem';
 import UserList from '@components/UserList';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 
-const NormalUserSearchResultBox: React.FC<{ users?: User[] }> = ({ users }) => {
+const NormalUserSearchResultBox: FC<{ users?: User[] }> = ({ users }) => {
   return users ? (
     <Scrollbars>
       {users.length ? (

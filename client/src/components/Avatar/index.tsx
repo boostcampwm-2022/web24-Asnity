@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, FC } from 'react';
 
 import React, { memo } from 'react';
 
@@ -34,7 +34,7 @@ const getFirstLetter = (str: string) => {
   return firstLetter;
 };
 
-const Avatar: React.FC<AvatarProps> = ({
+const Avatar: FC<AvatarProps> = ({
   name,
   url,
   size,

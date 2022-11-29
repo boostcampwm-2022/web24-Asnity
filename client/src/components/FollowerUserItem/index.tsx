@@ -1,4 +1,5 @@
 import type { User } from '@apis/user';
+import type { FC } from 'react';
 
 import UserItem from '@components/UserItem';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
@@ -8,7 +9,7 @@ interface Props {
   user: User;
 }
 
-const FollowerUserItem: React.FC<Props> = ({ user }) => {
+const FollowerUserItem: FC<Props> = ({ user }) => {
   return (
     <UserItem
       user={user}

@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import CommunityContextMenu from '@components/CommunityContextMenu';
 import { useRootStore } from '@stores/rootStore';
@@ -13,7 +13,7 @@ interface Props {}
 
 ReactModal.setAppElement('#root');
 
-const ContextMenuModal: React.FC<Props> = () => {
+const ContextMenuModal: FC<Props> = () => {
   const { x, y, isOpen, data, type } = useRootStore(
     (state) => state.contextMenuModal,
   );

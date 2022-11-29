@@ -1,3 +1,5 @@
+import type { FC } from 'react';
+
 import Button from '@components/Button';
 import React from 'react';
 
@@ -8,7 +10,7 @@ interface Props {
   disabled?: boolean;
 }
 
-const AlertBox: React.FC<Props> = ({
+const AlertBox: FC<Props> = ({
   onSubmit,
   onCancel,
   description,

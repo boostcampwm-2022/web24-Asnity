@@ -1,5 +1,5 @@
 import type { User } from '@apis/user';
-import type { ComponentPropsWithoutRef } from 'react';
+import type { ComponentPropsWithoutRef, FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import Badge from '@components/Badge';
@@ -16,9 +16,7 @@ const STATUS_COLOR = {
   [USER_STATUS.AFK]: 'error',
 } as const;
 
-const UserProfile: React.FC<Props> = ({
-  user: { nickname, profileUrl, status },
-}) => {
+const UserProfile: FC<Props> = ({ user: { nickname, profileUrl, status } }) => {
   return (
     <div className="flex items-center gap-[11px] py-2 max-w-[220px]">
       <Badge color={STATUS_COLOR[status]}>

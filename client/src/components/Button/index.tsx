@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentPropsWithoutRef } from 'react';
+import type { FC, ReactNode, ComponentPropsWithoutRef } from 'react';
 
 import React, { useMemo } from 'react';
 
@@ -73,7 +73,7 @@ export interface Props extends ComponentPropsWithoutRef<'button'> {
   color?: ButtonColor;
 }
 
-const Button: React.FC<Props> = ({
+const Button: FC<Props> = ({
   children,
   outlined = false,
   size = 'sm',
