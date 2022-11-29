@@ -1,7 +1,11 @@
+import type { MouseEventHandler } from 'react';
+
+import ChannelContextMenu from '@components/ChannelContextMenu';
 import ChannelItem from '@components/ChannelItem';
 import ErrorMessage from '@components/ErrorMessage';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { useCommunitiesQuery, useJoinedChannelsQuery } from '@hooks/community';
+import { useRootStore } from '@stores/rootStore';
 import cn from 'classnames';
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
@@ -20,6 +24,17 @@ const CommunityNav = () => {
 
   const toggleVisible = () => setVisible((prevVisible) => !prevVisible);
   const rotateChevronIconClassnames = cn({ 'rotate-[-90deg]': !visible });
+  const openContextMenuModal = useRootStore(
+    (state) => state.openContextMenuModal,
+  );
+
+  const handleRightClickChannelItem: MouseEventHandler<HTMLLIElement> = (e) => {
+    openContextMenuModal({
+      x: e.clientX,
+      y: e.clientY,
+      content: <ChannelContextMenu />,
+    });
+  };
 
   return (
     <nav className="flex flex-col flex-1">
@@ -73,6 +88,7 @@ const CommunityNav = () => {
                   communityId={communityId}
                   channel={channel}
                   className={itemClassnames}
+                  onContextMenu={handleRightClickChannelItem}
                 />
               );
             })}
