@@ -107,4 +107,16 @@ export class ChannelsController {
       throw error;
     }
   }
+
+  @Get(':channel_id/users')
+  @UseGuards(JwtAccessGuard)
+  async getChannelUsers(@Param('channel_id') channel_id) {
+    try {
+      const users = await this.channelService.getChannelUsers(channel_id);
+      return responseForm(200, { users });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
 }

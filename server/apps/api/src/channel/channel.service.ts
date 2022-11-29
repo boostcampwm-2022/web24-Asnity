@@ -159,4 +159,9 @@ export class ChannelService {
       getChannelToUserForm(community_id, channel_id),
     );
   }
+
+  async getChannelUsers(channel_id) {
+    const channel = await this.channelRepository.findById(channel_id);
+    return channel.users;
+  }
 }
