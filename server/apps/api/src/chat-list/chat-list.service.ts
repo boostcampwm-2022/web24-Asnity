@@ -16,7 +16,7 @@ export class ChatListService {
     const { channel_id } = restoreMessageDto;
 
     const channel = await this.channelRepository.findById(channel_id);
-
+    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
     if (channel.chatLists.length === 0) {
       // chatList가 없는 경우 새로 생성
       const newChatList = await this.chatListRespository.create({
@@ -67,32 +67,42 @@ export class ChatListService {
     const { prev, next, channel_id } = getMessageDto;
     const channel = await this.channelRepository.findById(channel_id);
 
+    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
     // 채팅 리스트가 존재하지 않는 경우 아무것도 반환하지 않음
     if (channel.chatLists.length === 0) return;
 
     // 요청받은 chatList의 idx
     let chatListIdx = Number(prev ?? next);
-    if (chatListIdx === -1) chatListIdx = channel.chatLists.length - 1;
+    if (chatListIdx === -1) {
+      chatListIdx = channel.chatLists.length - 1;
+    }
 
     // 요청받은 chatList idx로 chatList 정보 찾기
     const chatListId = channel.chatLists[chatListIdx];
     const chatList = await this.chatListRespository.findById(chatListId);
 
-    return JSON.parse(JSON.stringify(chatList)).chat;
+    const chat = JSON.parse(JSON.stringify(chatList)).chat;
+
+    // chatListIdx === -1 : 채팅 처음 로딩 시
+    if (Number(prev ?? next) === -1)
+      return { prev: chatListIdx - 1 < 0 ? undefined : chatListIdx - 1, chat };
+    if (prev) return { prev: +prev - 1 < 0 ? undefined : +prev - 1, chat };
+    if (next) return { next: +next + 1 >= channel.chatLists.length ? undefined : +next + 1, chat };
   }
 
   async getUnreadMessagePoint(getUnreadMessagePointDto: GetUnreadMessagePointDto) {
     const { channel_id, requestUserId } = getUnreadMessagePointDto;
     const user = JSON.parse(JSON.stringify(await this.userRepository.findById(requestUserId)));
     const channel = await this.channelRepository.findById(channel_id);
+
+    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
     if (channel.chatLists.length === 0) return;
+
     const lastRead = new Date(user.communities[`${channel.communityId}`].channels[`${channel_id}`]);
     const unreadChatList = JSON.parse(
       JSON.stringify(await this.getUnreadChatList(channel.chatLists, lastRead)),
     );
-    const unreadChatId = await this.getUnreadChatId(unreadChatList.chat, lastRead);
-
-    return unreadChatId;
+    return await this.getUnreadChatId(unreadChatList.chat, lastRead);
   }
 
   async getUnreadChatList(chatLists, lastRead) {
