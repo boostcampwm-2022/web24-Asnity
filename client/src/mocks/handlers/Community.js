@@ -1,3 +1,4 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
@@ -9,46 +10,23 @@ import {
 } from '../utils/createContext';
 import { colorLog } from '../utils/logging';
 
-const BASE_URL = `${API_URL}/api`;
+const getCommunitiesEndPoint = API_URL + endPoint.getCommunities();
+const GetCommunities = rest.get(getCommunitiesEndPoint, (req, res, ctx) => {
+  const ERROR = false;
 
-const GetCommunities = rest.get(
-  `${BASE_URL}/user/communities`,
-  (req, res, ctx) => {
-    const ERROR = false;
+  const errorResponse = res(...createErrorContext(ctx));
 
-    const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(
+    ...createSuccessContext(ctx, 200, 500, communities),
+  );
 
-    const successResponse = res(
-      ...createSuccessContext(ctx, 200, 500, communities),
-    );
-
-    return ERROR ? errorResponse : successResponse;
-  },
-);
-
-const GetCommunity = rest.get(
-  `${BASE_URL}/communities/:communityId`,
-  (req, res, ctx) => {
-    const { communityId } = req.params;
-    const ERROR = false;
-
-    const errorResponse = res(...createErrorContext(ctx));
-    const successResponse = res(
-      ...createSuccessContext(
-        ctx,
-        200,
-        500,
-        communities.find((community) => community._id === communityId),
-      ),
-    );
-
-    return ERROR ? errorResponse : successResponse;
-  },
-);
+  return ERROR ? errorResponse : successResponse;
+});
 
 // 커뮤니티 생성
+const createCommunityEndPoint = API_URL + endPoint.createCommunity();
 const CreateCommunity = rest.post(
-  `${BASE_URL}/community`,
+  createCommunityEndPoint,
   async (req, res, ctx) => {
     const ERROR = false;
     const { name, description } = await req.json();
@@ -90,37 +68,37 @@ const CreateCommunity = rest.post(
   },
 );
 
-const LeaveCommunity = rest.delete(
-  `${BASE_URL}/community/:id/me`,
-  (req, res, ctx) => {
-    const { id } = req.params;
+const LeaveCommunityEndPoint = endPoint.leaveCommunity(':communityId');
+const LeaveCommunity = rest.delete(LeaveCommunityEndPoint, (req, res, ctx) => {
+  const { communityId } = req.params;
 
-    const ERROR = false;
-    const successDelay = 500;
+  const ERROR = false;
+  const successDelay = 500;
 
-    const successResponse = res(
-      ...createSuccessContext(ctx, 201, successDelay, {
-        message: '커뮤니티 퇴장 성공~',
-      }),
-    );
+  const successResponse = res(
+    ...createSuccessContext(ctx, 201, successDelay, {
+      message: '커뮤니티 퇴장 성공~',
+    }),
+  );
 
-    const errorResponse = res(...createErrorContext(ctx));
+  const errorResponse = res(...createErrorContext(ctx));
 
-    if (!ERROR) {
-      setTimeout(() => {
-        colorLog(`커뮤니티 ID ${id}에서 퇴장하였습니다.`);
-        const targetIdx = communities.findIndex(({ _id }) => _id === id);
+  if (!ERROR) {
+    setTimeout(() => {
+      colorLog(`커뮤니티 ID ${communityId}에서 퇴장하였습니다.`);
+      const targetIdx = communities.findIndex(({ _id }) => _id === communityId);
 
-        communities.splice(targetIdx, 1);
-      }, successDelay);
-    }
+      communities.splice(targetIdx, 1);
+    }, successDelay);
+  }
 
-    return ERROR ? errorResponse : successResponse;
-  },
-);
+  return ERROR ? errorResponse : successResponse;
+});
 
+const inviteCommunityEndPoint =
+  API_URL + endPoint.inviteCommunity(':communityId');
 const InviteCommunity = rest.post(
-  `${BASE_URL}/community/:id/participants`,
+  inviteCommunityEndPoint,
   async (req, res, ctx) => {
     const { users: userIds } = await req.json();
 
@@ -147,7 +125,6 @@ const InviteCommunity = rest.post(
 
 export default [
   GetCommunities,
-  GetCommunity,
   CreateCommunity,
   LeaveCommunity,
   InviteCommunity,
