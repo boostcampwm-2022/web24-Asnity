@@ -17,6 +17,6 @@ const endPoint = {
   getUsers: () => `/api/users`, // 사용할 때는 queryString 추가 전달 필요합니다.
   getCommunityUsers: (communityId: string) =>
     `/api/communities/${communityId}/users`,
-};
+} as const;
 
 export default endPoint;

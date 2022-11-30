@@ -1,3 +1,4 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
@@ -9,48 +10,30 @@ import {
   createSuccessContext,
 } from '../utils/createContext';
 
-const BASE_URL = `${API_URL}/api`;
+const getChannelEndPoint = API_URL + endPoint.getChannel(':channelId');
+const GetChannel = rest.get(getChannelEndPoint, (req, res, ctx) => {
+  const { channelId } = req.params;
+  const ERROR = false;
 
-// 채널 목록 가져오기
-const GetChannels = rest.get(
-  `${BASE_URL}/user/community/:communityId/channels`,
-  (req, res, ctx) => {
-    const ERROR = false;
+  const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(
+    ...createSuccessContext(ctx, 200, 500, {
+      ...channels.find((channel) => channel._id === channelId),
+      communityId: faker.datatype.uuid(),
+      type: 'Channel',
+      users: users.slice(3, 10).map((user) => user._id),
+      chatLists: [],
+      createdAt: '2022-11-25T17:32:09.085Z',
+      updatedAt: '2022-11-25T17:32:09.085Z',
+    }),
+  );
 
-    const errorResponse = res(...createErrorContext(ctx));
-    const successResponse = res(
-      ...createSuccessContext(ctx, 200, 500, channels),
-    );
+  return ERROR ? errorResponse : successResponse;
+});
 
-    return ERROR ? errorResponse : successResponse;
-  },
-);
-
-const GetChannel = rest.get(
-  `${BASE_URL}/channels/:channelId`,
-  (req, res, ctx) => {
-    const { channelId } = req.params;
-    const ERROR = false;
-
-    const errorResponse = res(...createErrorContext(ctx));
-    const successResponse = res(
-      ...createSuccessContext(ctx, 200, 500, {
-        ...channels.find((channel) => channel._id === channelId),
-        communityId: faker.datatype.uuid(),
-        type: 'Channel',
-        users: users.slice(3, 10).map((user) => user._id),
-        chatLists: [],
-        createdAt: '2022-11-25T17:32:09.085Z',
-        updatedAt: '2022-11-25T17:32:09.085Z',
-      }),
-    );
-
-    return ERROR ? errorResponse : successResponse;
-  },
-);
-
+const createChannelEndPoint = API_URL + endPoint.createChannel();
 const CreateChannel = rest.post(
-  `${BASE_URL}/channel`,
+  createChannelEndPoint,
   async (req, res, ctx) => {
     const { communityId, name, isPrivate, description, profileUrl, type } =
       await req.json();
@@ -81,4 +64,4 @@ const CreateChannel = rest.post(
   },
 );
 
-export default [GetChannels, GetChannel, CreateChannel];
+export default [GetChannel, CreateChannel];
