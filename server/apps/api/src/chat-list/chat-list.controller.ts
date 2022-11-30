@@ -41,7 +41,7 @@ export class ChatListController {
   @Get(':channel_id')
   @UseGuards(JwtAccessGuard)
   async getMessage(@Param('channel_id') channel_id, @Query() query: any, @Req() req: any) {
-    const requestUserId = req.user.id;
+    const requestUserId = req.user._id;
     try {
       const chatList = await this.chatListService.getMessage({
         ...query,
@@ -49,6 +49,22 @@ export class ChatListController {
         channel_id,
       });
       return responseForm(200, { chat: chatList });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
+  @Get(':channel_id/unread-message')
+  @UseGuards(JwtAccessGuard)
+  async getUnreadMessagePoint(@Param('channel_id') channel_id, @Req() req: any) {
+    const requestUserId = req.user._id;
+
+    try {
+      const unreadChatId = await this.chatListService.getUnreadMessagePoint({
+        requestUserId,
+        channel_id,
+      });
+      return responseForm(200, { unreadChatId });
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
