@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import ChannelItem from '@components/ChannelItem';
 import RoomMetadata from '@components/RoomMetadata';
 import { dateStringToKRLocaleDateString } from '@utils/date';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props {
   profileUrl?: string;
@@ -40,4 +40,4 @@ const ChannelMetadata: FC<Props> = ({
   );
 };
 
-export default ChannelMetadata;
+export default memo(ChannelMetadata);
