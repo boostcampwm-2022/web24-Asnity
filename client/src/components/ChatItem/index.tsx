@@ -4,7 +4,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 import Avatar from '@components/Avatar';
 import { useUserQuery } from '@hooks/user';
 import { dateStringToKRLocaleDateString } from '@utils/date';
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
   className?: string;
@@ -64,4 +64,4 @@ const ChatItem: FC<Props> = ({ className = '', chat, isSystem = false }) => {
   );
 };
 
-export default ChatItem;
+export default memo(ChatItem);
