@@ -1,5 +1,5 @@
 export const USER_STATUS = {
-  OFFLINE: 'offline',
-  ONLINE: 'online',
-  AFK: 'afk',
+  OFFLINE: 'OFFLINE',
+  ONLINE: 'ONLINE',
+  AFK: 'AFK',
 } as const;

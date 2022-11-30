@@ -6,7 +6,7 @@ export const createMockUser = () => ({
   _id: faker.datatype.uuid(),
   id: faker.internet.email(),
   nickname: faker.name.fullName(),
-  status: ['online', 'offline', 'afk'][getRandomInt(3)],
+  status: ['ONLINE', 'OFFLINE', 'AFK'][getRandomInt(3)],
   profileUrl: faker.image.avatar(),
   description: faker.lorem.sentence(),
 });
