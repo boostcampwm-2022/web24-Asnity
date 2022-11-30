@@ -1,3 +1,4 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
@@ -7,9 +8,9 @@ import {
   createSuccessContext,
 } from '../utils/createContext';
 
-const BASE_URL = `${API_URL}/api`;
+const getUsersEndPoint = API_URL + endPoint.getUsers();
 
-const GetUsers = rest.get(`${BASE_URL}/users`, (req, res, ctx) => {
+const GetUsers = rest.get(getUsersEndPoint, (req, res, ctx) => {
   const search = req.url.searchParams.get('search').toUpperCase();
 
   return res(
@@ -26,7 +27,8 @@ const GetUsers = rest.get(`${BASE_URL}/users`, (req, res, ctx) => {
   );
 });
 
-const GetUser = rest.get(`${BASE_URL}/users/:userId`, (req, res, ctx) => {
+// TODO: 없는 메서드인데, 컴포넌트에서 사용중 (삭제해야합니다.)
+const GetUser = rest.get(`${API_URL}/api/users/:userId`, (req, res, ctx) => {
   const ERROR = false;
 
   const errorResponse = res(...createErrorContext(ctx));
@@ -35,8 +37,10 @@ const GetUser = rest.get(`${BASE_URL}/users/:userId`, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
+const getCommunityUsersEndPoint =
+  API_URL + endPoint.getCommunityUsers(':communityId');
 const GetCommunityUsers = rest.get(
-  `${BASE_URL}/community/:communityId/participants`,
+  getCommunityUsersEndPoint,
   (req, res, ctx) => {
     const ERROR = false;
 
