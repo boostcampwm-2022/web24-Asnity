@@ -62,20 +62,17 @@ export class ChatListService {
 
   async getMessage(getMessageDto: GetMessageDto) {
     const { prev, next, channel_id } = getMessageDto;
-
     const channel = await this.channelRepository.findById(channel_id);
-    let chatListId;
-    if (prev === -1 && next === -1) {
-      if (channel.chatLists.length == 0) {
-        // 채팅 리스트가 존재하지 않는 경우 아무것도 반환하지 않음
-        return;
-      }
-      // 가장 최근 채팅 리스트 반환
-      chatListId = channel.chatLists[channel.chatLists.length - 1];
-    } else {
-      // 요청받은 채팅 리스트 반환
-      chatListId = channel.chatLists[prev ?? next];
-    }
+
+    // 채팅 리스트가 존재하지 않는 경우 아무것도 반환하지 않음
+    if (channel.chatLists.length === 0) return;
+
+    // 요청받은 chatList의 idx
+    let chatListIdx = Number(prev ?? next);
+    if (chatListIdx === -1) chatListIdx = channel.chatLists.length - 1;
+
+    // 요청받은 chatList idx로 chatList 정보 찾기
+    const chatListId = channel.chatLists[chatListIdx];
     const chatList = await this.chatListRespository.findById(chatListId);
 
     return JSON.parse(JSON.stringify(chatList)).chat;
