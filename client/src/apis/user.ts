@@ -73,14 +73,17 @@ export const getFollowers: GetFollowers = () => {
 export interface GetUsersParams {
   search: string;
 }
-export interface GetUsersResult {
-  users: User[];
-}
-
+export type GetUsersResult = User[];
 export type GetUsersResponse = SuccessResponse<GetUsersResult>;
+export type GetUsers = (params: GetUsersParams) => Promise<GetUsersResult>;
 
-export const GetUsers = (params: GetUsersParams): Promise<GetUsersResponse> =>
-  axios.get(`${API_URL}/api/users`, { params }).then((res) => res.data);
+export const getUsers: GetUsers = (params) => {
+  const endPoint = `${API_URL}/api/users`;
+
+  return tokenAxios
+    .get<GetUsersResponse>(endPoint, { params })
+    .then((response) => response.data.result);
+};
 
 export type GetUserResult = User;
 export type GetUserResponse = SuccessResponse<GetUserResult>;
