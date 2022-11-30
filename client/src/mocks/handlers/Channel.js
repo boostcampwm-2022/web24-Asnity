@@ -2,7 +2,7 @@ import { API_URL } from '@constants/url';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
-import { channels } from '../data/communities';
+import { channels, communities } from '../data/communities';
 import { me, users } from '../data/users';
 import {
   createErrorContext,
@@ -52,7 +52,8 @@ const GetChannel = rest.get(
 const CreateChannel = rest.post(
   `${BASE_URL}/channel`,
   async (req, res, ctx) => {
-    const { name, isPrivate, description, profileUrl, type } = await req.json();
+    const { communityId, name, isPrivate, description, profileUrl, type } =
+      await req.json();
 
     const ERROR = false;
 
@@ -72,7 +73,9 @@ const CreateChannel = rest.post(
       ...createSuccessContext(ctx, 200, 500, newChannel),
     );
 
-    channels.push(newChannel);
+    console.log(
+      communities.find((community) => community._id === communityId).channels,
+    );
 
     return ERROR ? errorResponse : successResponse;
   },
