@@ -82,6 +82,7 @@ const CreateCommunity = rest.post(
         managerId,
         profileUrl,
         description,
+        channels: [],
       });
     }
 
