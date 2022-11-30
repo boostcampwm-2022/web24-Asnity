@@ -33,3 +33,38 @@ export const getChannel: GetChannel = (channelId: string) => {
     .get<GetChannelResponse>(endPoint)
     .then((response) => response.data.result);
 };
+
+export interface CreateChannelResult extends JoinedChannel {}
+export type CreateChannelResponse = SuccessResponse<CreateChannelResult>;
+export interface CreateChannelRequest {
+  communityId: string;
+  name: string;
+  isPrivate: boolean;
+  description: string;
+  profileUrl: string;
+}
+export type CreateChannel = (
+  fields: CreateChannelRequest,
+) => Promise<CreateChannelResult>;
+
+export const createChannel: CreateChannel = ({
+  communityId,
+  name,
+  isPrivate,
+  description = '',
+  profileUrl = '',
+}) => {
+  const endPoint = `/api/channel`;
+  const type = 'Channel';
+
+  return tokenAxios
+    .post<CreateChannelResponse>(endPoint, {
+      communityId,
+      name,
+      isPrivate,
+      description,
+      profileUrl,
+      type,
+    })
+    .then((response) => response.data.result);
+};
