@@ -119,4 +119,17 @@ export class ChannelsController {
       throw error;
     }
   }
+
+  @Post(':channel_id')
+  @UseGuards(JwtAccessGuard)
+  async joinChannel(@Param('channel_id') channel_id, @Body() { community_id }, @Req() req: any) {
+    const requestUserId = req.user._id;
+    try {
+      await this.channelService.joinChannel({ requestUserId, channel_id, community_id });
+      return responseForm(200, { message: '채널 접속 성공!' });
+    } catch (error) {
+      this.logger.error(JSON.stringify(error.response));
+      throw error;
+    }
+  }
 }
