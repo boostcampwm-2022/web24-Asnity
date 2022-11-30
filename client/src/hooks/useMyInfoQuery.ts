@@ -1,4 +1,4 @@
-import type { MyInfoResult } from '@apis/user';
+import type { GetMyInfoResult } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getMyInfo } from '@apis/user';
@@ -7,7 +7,7 @@ import queryKeyCreator from 'src/queryKeyCreator';
 
 export const useMyInfoQuery = () => {
   const key = queryKeyCreator.me();
-  const query = useQuery<MyInfoResult, AxiosError>(key, getMyInfo, {});
+  const query = useQuery<GetMyInfoResult, AxiosError>(key, getMyInfo);
 
   return query;
 };
@@ -17,7 +17,7 @@ export default useMyInfoQuery;
 export const useMyInfo = () => {
   const queryClient = useQueryClient();
   const key = queryKeyCreator.me();
-  const me = queryClient.getQueryData<MyInfoResult>(key);
+  const me = queryClient.getQueryData<GetMyInfoResult>(key);
 
   return me;
 };
