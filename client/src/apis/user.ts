@@ -41,6 +41,7 @@ export const getFollowings: GetFollowings = () => {
     .get<GetFollowingsResponse>(endPoint)
     .then((res) => res.data.result);
 };
+
 export interface UpdateFollowingResult {
   message?: string;
 }
@@ -51,14 +52,18 @@ export const updateFollowing = (
 ): Promise<UpdateFollowingResponse> =>
   axios.post(`${API_URL}/api/user/following/${userId}`).then((res) => res.data);
 
-export interface GetFollowersResult {
-  followers: User[];
-}
-
+export type GetFollowersResult = User[];
 export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
+export type GetFollowers = () => Promise<GetFollowersResult>;
 
-export const getFollowers = (): Promise<GetFollowersResponse> =>
-  axios.get(`${API_URL}/api/user/followers`).then((res) => res.data);
+export const getFollowers: GetFollowers = () => {
+  const endPoint = `${API_URL}/api/user/followers`;
+
+  return tokenAxios
+    .get<GetFollowersResponse>(endPoint)
+    .then((res) => res.data.result);
+};
+
 export interface GetUsersParams {
   search: string;
 }
