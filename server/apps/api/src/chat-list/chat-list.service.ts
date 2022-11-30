@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { GetMessageDto, RestoreMessageDto } from '@chat-list/dto';
 import { ChannelRepository } from '@repository/channel.repository';
 import { ChatListRespository } from '@repository/chat-list.respository';
+import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-point.dto';
+import { UserRepository } from '@repository/user.repository';
 
 @Injectable()
 export class ChatListService {
   constructor(
     private readonly channelRepository: ChannelRepository,
     private readonly chatListRespository: ChatListRespository,
+    private readonly userRepository: UserRepository,
   ) {}
   async restoreMessage(restoreMessageDto: RestoreMessageDto) {
     const { channel_id } = restoreMessageDto;
@@ -76,5 +79,45 @@ export class ChatListService {
     const chatList = await this.chatListRespository.findById(chatListId);
 
     return JSON.parse(JSON.stringify(chatList)).chat;
+  }
+
+  async getUnreadMessagePoint(getUnreadMessagePointDto: GetUnreadMessagePointDto) {
+    const { channel_id, requestUserId } = getUnreadMessagePointDto;
+    const user = JSON.parse(JSON.stringify(await this.userRepository.findById(requestUserId)));
+    const channel = await this.channelRepository.findById(channel_id);
+    if (channel.chatLists.length === 0) return;
+    const lastRead = new Date(user.communities[`${channel.communityId}`].channels[`${channel_id}`]);
+    const unreadChatList = JSON.parse(
+      JSON.stringify(await this.getUnreadChatList(channel.chatLists, lastRead)),
+    );
+    const unreadChatId = await this.getUnreadChatId(unreadChatList.chat, lastRead);
+
+    return unreadChatId;
+  }
+
+  async getUnreadChatList(chatLists, lastRead) {
+    for (let i = chatLists.length - 1; i >= 0; i--) {
+      const chatList = await this.chatListRespository.findById(chatLists[i]);
+      console.log(new Date(chatList.firstChatTime));
+      console.log(lastRead);
+      if (new Date(chatList.firstChatTime) < lastRead) {
+        return chatList;
+      }
+    }
+  }
+
+  async getUnreadChatId(unreadChatList, lastRead) {
+    let L = 0;
+    let R = unreadChatList.length - 1;
+    let M;
+    while (L <= R) {
+      M = Math.floor((L + R) / 2);
+      if (new Date(unreadChatList[M].createdAt) < lastRead) {
+        L = M + 1;
+      } else {
+        R = M - 1;
+      }
+    }
+    return unreadChatList[M].id;
   }
 }
