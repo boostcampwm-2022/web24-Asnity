@@ -25,17 +25,6 @@ export const getCommunities: GetCommunities = () => {
     .then((response) => response.data.result);
 };
 
-export type GetCommunityResult = CommunitySummary;
-export type GetCommunity = (communityId: string) => Promise<GetCommunityResult>;
-export type GetCommunityResponse = SuccessResponse<GetCommunityResult>;
-export const getCommunity: GetCommunity = (communityId: string) => {
-  const endPoint = `/api/communities/${communityId}`;
-
-  return tokenAxios
-    .get<GetCommunityResponse>(endPoint)
-    .then((response) => response.data.result);
-};
-
 export interface CreateCommunityRequest {
   name: string;
   description: string;

@@ -3,7 +3,6 @@ import type {
   CreateCommunityResult,
   CreateCommunityRequest,
   GetCommunitiesResult,
-  GetCommunityResult,
   RemoveCommunityResult,
   LeaveCommunityResult,
   InviteCommunityResult,
@@ -17,7 +16,6 @@ import {
   getCommunities,
   leaveCommunity,
   removeCommunity,
-  getCommunity,
 } from '@apis/community';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -88,21 +86,6 @@ export const useSetCommunitiesQuery = () => {
   };
 
   return setCommunities;
-};
-
-export const useCommunityQuery = (communityId: string) => {
-  const queryClient = useQueryClient();
-
-  const key = queryKeyCreator.community.detail(communityId);
-  const query = useQuery<GetCommunityResult, AxiosError>(key, () =>
-    getCommunity(communityId),
-  );
-  const invalidate = useCallback(
-    () => queryClient.invalidateQueries(key),
-    [queryClient, key],
-  );
-
-  return { communityQuery: query, invalidateCommunityQuery: invalidate };
 };
 
 export const useCreateCommunityMutation = (
