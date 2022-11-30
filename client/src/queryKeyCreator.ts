@@ -28,6 +28,7 @@ const channelQueryKey = {
     [...channelQueryKey.all(), 'list', communityId] as const,
   detail: (channelId: string) =>
     [...channelQueryKey.all(), 'detail', channelId] as const,
+  createChannel: () => ['createChannel'] as const,
 };
 
 const queryKeyCreator = {
