@@ -3,7 +3,6 @@ import type { USER_STATUS } from '@constants/user';
 
 import { API_URL } from '@constants/url';
 import { tokenAxios } from '@utils/axios';
-import axios from 'axios';
 
 export type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
 
@@ -100,10 +99,8 @@ export const getUser: GetUser = (userId) => {
 export interface GetCommunityUsersResult {
   users: User[];
 }
-
 export type GetCommunityUsersResponse =
   SuccessResponse<GetCommunityUsersResult>;
-
 export type GetCommunityUsers = (communityId: string) => Promise<User[]>;
 
 export const getCommunityUsers: GetCommunityUsers = (communityId) => {
