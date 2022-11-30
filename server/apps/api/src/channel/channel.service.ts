@@ -11,6 +11,7 @@ import {
 } from '@channel/dto';
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Injectable()
 export class ChannelService {
@@ -162,18 +163,12 @@ export class ChannelService {
 
   async getChannelUsers(channel_id) {
     const channel = await this.channelRepository.findById(channel_id);
-    return channel.users;
-  }
-
-  async getChannelUsersStataus(channel_id) {
-    const channel = await this.channelRepository.findById(channel_id);
-    const userStatus = {};
-    await Promise.all(
+    const result = await Promise.all(
       channel.users.map(async (user_id) => {
         const user = await this.userRepository.findById(user_id);
-        userStatus[user_id] = user.status;
+        return getUserBasicInfo(user);
       }),
     );
-    return userStatus;
+    return result;
   }
 }
