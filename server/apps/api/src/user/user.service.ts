@@ -1,6 +1,7 @@
-import { BadRequestException, ConflictException, Injectable, Param } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { UserRepository } from '@repository/user.repository';
-import { FollowerDto, ModifyUserDto, getUserBasicInfo } from './dto';
+import { FollowerDto, ModifyUserDto } from './dto';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Injectable()
 export class UserService {
