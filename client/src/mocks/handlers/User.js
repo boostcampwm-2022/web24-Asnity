@@ -9,7 +9,7 @@ import {
 
 const BASE_URL = `${API_URL}/api`;
 
-const GetFilteredUsers = rest.get(`${BASE_URL}/users`, (req, res, ctx) => {
+const GetUsers = rest.get(`${BASE_URL}/users`, (req, res, ctx) => {
   const search = req.url.searchParams.get('search').toUpperCase();
 
   return res(
@@ -17,13 +17,11 @@ const GetFilteredUsers = rest.get(`${BASE_URL}/users`, (req, res, ctx) => {
     ctx.status(200),
     ctx.json({
       statusCode: 200,
-      result: {
-        users: users.filter(
-          (user) =>
-            user.id.toUpperCase().includes(search) ||
-            user.nickname.toUpperCase().includes(search),
-        ),
-      },
+      result: users.filter(
+        (user) =>
+          user.id.toUpperCase().includes(search) ||
+          user.nickname.toUpperCase().includes(search),
+      ),
     }),
   );
 });
@@ -54,4 +52,4 @@ const GetCommunityUsers = rest.get(
   },
 );
 
-export default [GetFilteredUsers, GetUser, GetCommunityUsers];
+export default [GetUsers, GetUser, GetCommunityUsers];
