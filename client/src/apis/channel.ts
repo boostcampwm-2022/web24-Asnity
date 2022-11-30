@@ -10,7 +10,7 @@ export interface JoinedChannel {
   isPrivate: boolean;
   profileUrl: string;
   description: string;
-  lastRead: boolean;
+  lastRead: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
   type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
 }
 
