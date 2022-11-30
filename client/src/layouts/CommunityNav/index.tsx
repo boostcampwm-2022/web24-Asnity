@@ -2,6 +2,7 @@ import type { JoinedChannel } from '@apis/channel';
 import type { MouseEventHandler } from 'react';
 
 import ChannelContextMenu from '@components/ChannelContextMenu';
+import ChannelCreateBox from '@components/ChannelCreateBox';
 import ChannelItem from '@components/ChannelItem';
 import ErrorMessage from '@components/ErrorMessage';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
@@ -28,6 +29,7 @@ const CommunityNav = () => {
   const openContextMenuModal = useRootStore(
     (state) => state.openContextMenuModal,
   );
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
 
   const handleRightClickChannelItem =
     (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
@@ -38,6 +40,16 @@ const CommunityNav = () => {
         content: <ChannelContextMenu channel={channel} />,
       });
     };
+
+  const handleClickChannelCreateButton = () => {
+    openCommonModal({
+      x: '50%',
+      y: '50%',
+      transform: 'translate3d(-50%, -50%, 0)',
+      overlayBackground: 'black',
+      content: <ChannelCreateBox communityId={communityId} />,
+    });
+  };
 
   return (
     <nav className="flex flex-col flex-1">
@@ -63,7 +75,7 @@ const CommunityNav = () => {
               참여중인 채널 ({joinedChannelsLength})
             </span>
           </div>
-          <button>
+          <button onClick={handleClickChannelCreateButton}>
             <span className="sr-only">채널 생성</span>
             <PlusIcon className="w-5 h-5 fill-titleActive" />
           </button>
