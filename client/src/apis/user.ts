@@ -1,10 +1,11 @@
 import type { SuccessResponse } from '@@types/apis/response';
+import type { USER_STATUS } from '@constants/user';
 
 import { API_URL } from '@constants/url';
 import { tokenAxios } from '@utils/axios';
 import axios from 'axios';
 
-export type UserStatus = 'online' | 'offline' | 'afk';
+export type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
 
 export interface User {
   _id: string;
