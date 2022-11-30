@@ -1,6 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 import type { JoinedChannel } from '@apis/channel';
-import type { User, UserUID } from '@apis/user';
+import type { UserUID } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
 
@@ -47,7 +47,7 @@ export interface CreateCommunityResult extends CommunitySummary {
   createdAt: string;
   updatedAt: string;
   channels: [];
-  users: Array<User['_id']>;
+  users: Array<UserUID>;
 }
 
 export type CreateCommunity = (
@@ -73,7 +73,7 @@ export interface RemoveCommunityResult {
 export type RemoveCommunity = (id: string) => Promise<RemoveCommunityResult>;
 
 export const removeCommunity: RemoveCommunity = (id) => {
-  const endPoint = `api/community/${id}`;
+  const endPoint = `/api/community/${id}`;
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
 };
@@ -85,7 +85,7 @@ export interface LeaveCommunityResult {
 export type LeaveCommunity = (id: string) => Promise<LeaveCommunityResult>;
 
 export const leaveCommunity: LeaveCommunity = (id) => {
-  const endPoint = `api/community/${id}/me`;
+  const endPoint = `/api/community/${id}/me`;
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
 };
@@ -104,7 +104,7 @@ export type InviteCommunity = (
 ) => Promise<InviteCommunityResult>;
 
 export const inviteCommunity: InviteCommunity = ({ communityId, userIds }) => {
-  const endPoint = `api/community/${communityId}/participants`;
+  const endPoint = `/api/community/${communityId}/participants`;
 
   return tokenAxios
     .post<SuccessResponse<InviteCommunityResult>>(endPoint, { users: userIds })
