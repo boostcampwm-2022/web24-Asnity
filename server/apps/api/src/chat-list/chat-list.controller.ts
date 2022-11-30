@@ -48,7 +48,7 @@ export class ChatListController {
         requestUserId,
         channel_id,
       });
-      return responseForm(200, { chat: chatList });
+      return responseForm(200, chatList);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
@@ -58,7 +58,6 @@ export class ChatListController {
   @UseGuards(JwtAccessGuard)
   async getUnreadMessagePoint(@Param('channel_id') channel_id, @Req() req: any) {
     const requestUserId = req.user._id;
-
     try {
       const unreadChatId = await this.chatListService.getUnreadMessagePoint({
         requestUserId,
