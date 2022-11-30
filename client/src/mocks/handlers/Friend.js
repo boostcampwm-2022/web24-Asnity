@@ -44,9 +44,7 @@ const GetFollowers = rest.get(`${BASE_URL}/user/followers`, (req, res, ctx) => {
     ctx.status(200),
     ctx.json({
       statusCode: 200,
-      result: {
-        followers: users,
-      },
+      result: users,
     }),
   );
 });
