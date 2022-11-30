@@ -13,7 +13,7 @@ import { ChannelRepository } from '@repository/channel.repository';
 import { getCommunityBasicInfo } from '@community/helper/getCommunityBasicInfo';
 import { getChannelBasicInfo } from '@channel/helper/getChannelBasicInfo';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
-import { getUserBasicInfo } from '@user/dto';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Injectable()
 export class CommunityService {

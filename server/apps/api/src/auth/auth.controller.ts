@@ -13,9 +13,9 @@ import { AuthService } from './auth.service';
 import { SignInDto, SignUpDto } from './dto';
 import { responseForm } from '@utils/responseForm';
 import { Response } from 'express';
-import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
 import { JwtAccessGuard, JwtRefreshGuard } from '@api/src/auth/guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Controller('api/user/auth')
 export class AuthController {
