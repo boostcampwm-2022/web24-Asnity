@@ -18,7 +18,7 @@ export type GetCommunitiesResult = CommunitySummary[];
 export type GetCommunities = () => Promise<GetCommunitiesResult>;
 
 export const getCommunities: GetCommunities = () => {
-  const endPoint = `/api/user/communities`;
+  const endPoint = `/api/communities`;
 
   return tokenAxios
     .get<SuccessResponse<GetCommunitiesResult>>(endPoint)
@@ -59,10 +59,12 @@ export interface RemoveCommunityResult {
   message: string;
 }
 
-export type RemoveCommunity = (id: string) => Promise<RemoveCommunityResult>;
+export type RemoveCommunity = (
+  communityId: string,
+) => Promise<RemoveCommunityResult>;
 
-export const removeCommunity: RemoveCommunity = (id) => {
-  const endPoint = `/api/community/${id}`;
+export const removeCommunity: RemoveCommunity = (communityId) => {
+  const endPoint = `/api/communities/${communityId}`;
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
 };
@@ -71,10 +73,12 @@ export interface LeaveCommunityResult {
   message: string;
 }
 
-export type LeaveCommunity = (id: string) => Promise<LeaveCommunityResult>;
+export type LeaveCommunity = (
+  communityId: string,
+) => Promise<LeaveCommunityResult>;
 
-export const leaveCommunity: LeaveCommunity = (id) => {
-  const endPoint = `/api/community/${id}/me`;
+export const leaveCommunity: LeaveCommunity = (communityId) => {
+  const endPoint = `/api/communities/${communityId}/me`;
 
   return tokenAxios.delete(endPoint).then((response) => response.data.result);
 };
@@ -93,7 +97,7 @@ export type InviteCommunity = (
 ) => Promise<InviteCommunityResult>;
 
 export const inviteCommunity: InviteCommunity = ({ communityId, userIds }) => {
-  const endPoint = `/api/community/${communityId}/participants`;
+  const endPoint = `/api/communities/${communityId}/users`;
 
   return tokenAxios
     .post<SuccessResponse<InviteCommunityResult>>(endPoint, { users: userIds })

@@ -75,6 +75,9 @@ export type GetUsersResult = User[];
 export type GetUsersResponse = SuccessResponse<GetUsersResult>;
 export type GetUsers = (params: GetUsersParams) => Promise<GetUsersResult>;
 
+/**
+ * 여러 유저 검색에 사용됨
+ */
 export const getUsers: GetUsers = (params) => {
   const endPoint = `/api/users`;
 
@@ -87,8 +90,11 @@ export type GetUserResult = User;
 export type GetUserResponse = SuccessResponse<GetUserResult>;
 export type GetUser = (userId: string) => Promise<GetUserResult>;
 
+/**
+ * 유저 한명의 정보 얻기
+ */
 export const getUser: GetUser = (userId) => {
-  const endPoint = `/api/users/${userId}`;
+  const endPoint = `/api/user/${userId}`;
 
   return tokenAxios
     .get<GetUserResponse>(endPoint)
@@ -103,7 +109,7 @@ export type GetCommunityUsersResponse =
 export type GetCommunityUsers = (communityId: string) => Promise<User[]>;
 
 export const getCommunityUsers: GetCommunityUsers = (communityId) => {
-  const endPoint = `/api/community/${communityId}/participants`;
+  const endPoint = `/api/communities/${communityId}/users`;
 
   return tokenAxios
     .get<GetCommunityUsersResponse>(endPoint)
