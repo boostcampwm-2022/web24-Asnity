@@ -164,4 +164,16 @@ export class ChannelService {
     const channel = await this.channelRepository.findById(channel_id);
     return channel.users;
   }
+
+  async getChannelUsersStataus(channel_id) {
+    const channel = await this.channelRepository.findById(channel_id);
+    const userStatus = {};
+    await Promise.all(
+      channel.users.map(async (user_id) => {
+        const user = await this.userRepository.findById(user_id);
+        userStatus[user_id] = user.status;
+      }),
+    );
+    return userStatus;
+  }
 }
