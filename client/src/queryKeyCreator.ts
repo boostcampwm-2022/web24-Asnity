@@ -31,6 +31,11 @@ const channelQueryKey = {
   createChannel: () => ['createChannel'] as const,
 };
 
+const chatQueryKey = {
+  all: () => ['chats'] as const,
+  list: (channelId: string) => [...chatQueryKey.all(), { channelId }] as const,
+};
+
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
@@ -43,6 +48,7 @@ const queryKeyCreator = {
   community: communityQueryKey,
   channel: channelQueryKey,
   user: userQueryKey,
+  chat: chatQueryKey,
 } as const;
 
 export default queryKeyCreator;
