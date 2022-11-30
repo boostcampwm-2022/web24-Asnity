@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    image: nayoungkwon/asnity-api:latest
+    container_name: api-container
+    ports:
+      - "3001:3001"
+    restart: "unless-stopped"
+  socket:
+    image: nayoungkwon/asnity-socket:latest
+    container_name: socket-container
+    ports:
+      - "8080:8080"
+    restart: "unless-stopped"
