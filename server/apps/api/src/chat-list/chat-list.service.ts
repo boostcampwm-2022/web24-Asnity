@@ -63,13 +63,19 @@ export class ChatListService {
   async getMessage(getMessageDto: GetMessageDto) {
     const { prev, next, channel_id } = getMessageDto;
 
-    if (prev === -1 && next === -1) {
-      // ToDO : 안읽은 메세지 찾기
-      return;
-    }
-
     const channel = await this.channelRepository.findById(channel_id);
-    const chatListId = channel.chatLists[prev ?? next];
+    let chatListId;
+    if (prev === -1 && next === -1) {
+      if (channel.chatLists.length == 0) {
+        // 채팅 리스트가 존재하지 않는 경우 아무것도 반환하지 않음
+        return;
+      }
+      // 가장 최근 채팅 리스트 반환
+      chatListId = channel.chatLists[channel.chatLists.length - 1];
+    } else {
+      // 요청받은 채팅 리스트 반환
+      chatListId = channel.chatLists[prev ?? next];
+    }
     const chatList = await this.chatListRespository.findById(chatListId);
 
     return JSON.parse(JSON.stringify(chatList)).chat;
