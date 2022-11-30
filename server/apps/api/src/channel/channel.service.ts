@@ -6,6 +6,7 @@ import {
   CreateChannelDto,
   DeleteChannelDto,
   InviteChannelDto,
+  JoinChannelDto,
   ModifyChannelDto,
   UpdateLastReadDto,
 } from '@channel/dto';
@@ -148,7 +149,6 @@ export class ChannelService {
 
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
     const { community_id, channel_id, users } = inviteChannelDto;
-    // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     await this.addUserToChannel(community_id, channel_id, users);
   }
 
@@ -170,5 +170,10 @@ export class ChannelService {
       }),
     );
     return result;
+  }
+
+  async joinChannel(joinChannelDto: JoinChannelDto) {
+    const { requestUserId, channel_id, community_id } = joinChannelDto;
+    await this.addUserToChannel(community_id, channel_id, [requestUserId]);
   }
 }
