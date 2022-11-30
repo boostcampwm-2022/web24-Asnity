@@ -18,13 +18,15 @@ export interface User {
 
 export type UserUID = User['_id'];
 
-export type MyInfoResult = User;
-
-type GetMyInfo = () => Promise<MyInfoResult>;
+export type GetMyInfoResult = User;
+export type GetMyInfoResponse = SuccessResponse<GetMyInfoResult>;
+export type GetMyInfo = () => Promise<GetMyInfoResult>;
 
 export const getMyInfo: GetMyInfo = () => {
-  return axios
-    .get(`${API_URL}/api/user/auth/me`)
+  const endPoint = `${API_URL}/api/user/auth/me`;
+
+  return tokenAxios
+    .get<GetMyInfoResponse>(endPoint)
     .then((response) => response.data.result);
 };
 
