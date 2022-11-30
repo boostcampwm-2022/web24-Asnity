@@ -46,11 +46,17 @@ export interface UpdateFollowingResult {
   message?: string;
 }
 export type UpdateFollowingResponse = SuccessResponse<UpdateFollowingResult>;
-
-export const updateFollowing = (
+export type UpdateFollowing = (
   userId: string,
-): Promise<UpdateFollowingResponse> =>
-  axios.post(`${API_URL}/api/user/following/${userId}`).then((res) => res.data);
+) => Promise<UpdateFollowingResult>;
+
+export const updateFollowing: UpdateFollowing = (userId) => {
+  const endPoint = `${API_URL}/api/user/following/${userId}`;
+
+  return tokenAxios
+    .post<UpdateFollowingResponse>(endPoint)
+    .then((res) => res.data.result);
+};
 
 export type GetFollowersResult = User[];
 export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
