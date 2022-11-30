@@ -1,7 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 
-import { API_URL } from '@constants/url';
-import axios from 'axios';
+import { publicAxios } from '@utils/axios';
 
 export interface SignUpRequest {
   id: string;
@@ -18,9 +17,9 @@ export type SignUp = (
 ) => Promise<SuccessResponse<SignUpResult>>;
 
 export const signUp: SignUp = ({ id, nickname, password }) => {
-  const endPoint = `${API_URL}/api/user/auth/signup`;
+  const endPoint = `/api/user/auth/signup`;
 
-  return axios
+  return publicAxios
     .post(endPoint, { id, nickname, password })
     .then((response) => response.data);
 };
@@ -40,9 +39,9 @@ export type SignIn = (
 ) => Promise<SuccessResponse<SignInResult>>;
 
 export const signIn: SignIn = ({ id, password }) => {
-  const endPoint = `${API_URL}/api/user/auth/signin`;
+  const endPoint = `/api/user/auth/signin`;
 
-  return axios
+  return publicAxios
     .post(endPoint, { id, password }, { withCredentials: true })
     .then((response) => response.data);
 };
@@ -56,9 +55,9 @@ export interface ReissueTokenResult {
 export type ReissueToken = () => Promise<SuccessResponse<ReissueTokenResult>>;
 
 export const reissueToken: ReissueToken = () => {
-  const endPoint = `${API_URL}/api/user/auth/refresh`;
+  const endPoint = `/api/user/auth/refresh`;
 
-  return axios
+  return publicAxios
     .post(endPoint, {}, { withCredentials: true })
     .then((response) => {
       return response.data;
