@@ -13,9 +13,7 @@ const GetFollowings = rest.get(
       ctx.status(200),
       ctx.json({
         statusCode: 200,
-        result: {
-          followings: users,
-        },
+        result: users,
       }),
     );
   },

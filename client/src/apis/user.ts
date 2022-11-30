@@ -30,14 +30,17 @@ export const getMyInfo: GetMyInfo = () => {
     .then((response) => response.data.result);
 };
 
-export interface GetFollowingsResult {
-  followings: User[];
-}
+export type GetFollowingsResult = User[];
 export type GetFollowingsResponse = SuccessResponse<GetFollowingsResult>;
+export type GetFollowings = () => Promise<GetFollowingsResult>;
 
-export const getFollowings = (): Promise<GetFollowingsResponse> =>
-  axios.get(`${API_URL}/api/user/followings`).then((res) => res.data);
+export const getFollowings: GetFollowings = () => {
+  const endPoint = `${API_URL}/api/user/followings`;
 
+  return tokenAxios
+    .get<GetFollowingsResponse>(endPoint)
+    .then((res) => res.data.result);
+};
 export interface UpdateFollowingResult {
   message?: string;
 }
