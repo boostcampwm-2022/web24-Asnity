@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
 import { channels } from '../data/communities';
-import { users } from '../data/users';
+import { me, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -49,4 +49,33 @@ const GetChannel = rest.get(
   },
 );
 
-export default [GetChannels, GetChannel];
+const CreateChannel = rest.post(
+  `${BASE_URL}/channel`,
+  async (req, res, ctx) => {
+    const { name, isPrivate, description, profileUrl, type } = await req.json();
+
+    const ERROR = false;
+
+    const newChannel = {
+      _id: crypto.randomUUID(),
+      managerId: me._id,
+      name,
+      isPrivate,
+      profileUrl,
+      description,
+      lastRead: true,
+      type,
+    };
+
+    const errorResponse = res(...createErrorContext(ctx));
+    const successResponse = res(
+      ...createSuccessContext(ctx, 200, 500, newChannel),
+    );
+
+    channels.push(newChannel);
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
+export default [GetChannels, GetChannel, CreateChannel];
