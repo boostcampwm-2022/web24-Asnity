@@ -1,9 +1,11 @@
-import UserProfile from '@components/UserProfile';
+import DirectMessageUserItem from '@components/DirectMessageUserItem';
 import useDirectMessagesQuery from '@hooks/useDirectMessagesQuery';
+import { useMyInfo } from '@hooks/useMyInfoQuery';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const DmNav = () => {
+  const myInfo = useMyInfo();
   const directMessagesQuery = useDirectMessagesQuery();
 
   return (
@@ -21,7 +23,13 @@ const DmNav = () => {
             {directMessagesQuery.data.map((directMessage) => (
               <li key={directMessage._id}>
                 <Link to={`/dms/${directMessage._id}`}>
-                  <UserProfile user={directMessage.user} />
+                  <DirectMessageUserItem
+                    userId={
+                      directMessage.users.filter(
+                        (uid) => uid !== myInfo?._id,
+                      )[0]
+                    }
+                  />
                 </Link>
               </li>
             ))}
