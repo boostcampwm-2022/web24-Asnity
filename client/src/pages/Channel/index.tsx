@@ -1,38 +1,12 @@
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatItem from '@components/ChatItem';
-import { faker } from '@faker-js/faker';
 import { useChannelQuery } from '@hooks/channel';
+import { useChatsInfiniteQuery } from '@hooks/chat';
+import useIsIntersecting from '@hooks/useIsIntersecting';
 import { useUserQuery } from '@hooks/user';
-import React from 'react';
+import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
-
-const chatList = [
-  {
-    _id: faker.datatype.uuid(),
-    content: faker.lorem.sentences(),
-    senderId: faker.datatype.uuid(),
-    updatedAt: '',
-    createdAt: new Date().toISOString(),
-    deletedAt: '',
-  },
-  {
-    _id: faker.datatype.uuid(),
-    content: faker.lorem.sentences(),
-    senderId: faker.datatype.uuid(),
-    updatedAt: 'updatedAt',
-    createdAt: new Date().toISOString(),
-    deletedAt: '',
-  },
-  {
-    _id: faker.datatype.uuid(),
-    content: faker.lorem.sentences(),
-    senderId: faker.datatype.uuid(),
-    updatedAt: '',
-    createdAt: new Date().toISOString(),
-    deletedAt: 'deletedAt',
-  },
-];
 
 const Channel = () => {
   const params = useParams();
@@ -42,7 +16,25 @@ const Channel = () => {
     enabled: !!channelQuery.data?.managerId,
   });
 
-  if (channelQuery.isLoading) return <div>loading...</div>;
+  // TODO: `any` 말고 적절한 타이핑 주기
+  const scrollbarContainerRef = useRef<any>(null);
+  const fetchPreviousRef = useRef<HTMLDivElement>(null);
+  const isFetchPreviousIntersecting =
+    useIsIntersecting<HTMLDivElement>(fetchPreviousRef);
+
+  const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
+
+  useEffect(() => {
+    if (
+      !isFetchPreviousIntersecting ||
+      !chatsInfiniteQuery.hasPreviousPage ||
+      chatsInfiniteQuery.isFetchingPreviousPage
+    )
+      return;
+    chatsInfiniteQuery.fetchPreviousPage();
+  }, [isFetchPreviousIntersecting]);
+
+  if (chatsInfiniteQuery.isLoading) return <div>loading</div>;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -53,23 +45,37 @@ const Channel = () => {
       </header>
       <div className="flex h-full">
         <div className="flex-1 min-w-[720px] max-w-[960px] h-full">
-          <Scrollbars>
-            {channelQuery.data && userQuery.data && (
-              <div className="p-8">
-                <ChannelMetadata
-                  profileUrl={channelQuery.data.profileUrl}
-                  channelName={channelQuery.data.name}
-                  isPrivate={channelQuery.data.isPrivate}
-                  createdAt={channelQuery.data.createdAt}
-                  managerName={userQuery.data.nickname}
-                />
-              </div>
-            )}
+          <div className="flex justify-center items-center font-ipSans text-s14">
+            {chatsInfiniteQuery.isFetchingPreviousPage &&
+              '지난 메시지 불러오는 중'}
+          </div>
+          <Scrollbars ref={scrollbarContainerRef}>
+            <div ref={fetchPreviousRef} />
             <div>
               <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-                {chatList.map((chat) => (
-                  <ChatItem key={chat._id} chat={chat} className="px-8" />
-                ))}
+                {chatsInfiniteQuery.data?.pages.map((page) =>
+                  page.chats.length ? (
+                    <Fragment key={page.chats[0].id}>
+                      {page.chats.map((chat) => (
+                        <ChatItem key={chat.id} chat={chat} className="px-8" />
+                      ))}
+                    </Fragment>
+                  ) : (
+                    <Fragment key={channelQuery.data?._id}>
+                      {channelQuery.data && userQuery.data && (
+                        <div className="p-8">
+                          <ChannelMetadata
+                            profileUrl={channelQuery.data.profileUrl}
+                            channelName={channelQuery.data.name}
+                            isPrivate={channelQuery.data.isPrivate}
+                            createdAt={channelQuery.data.createdAt}
+                            managerName={userQuery.data.nickname}
+                          />
+                        </div>
+                      )}
+                    </Fragment>
+                  ),
+                )}
               </ul>
             </div>
           </Scrollbars>
