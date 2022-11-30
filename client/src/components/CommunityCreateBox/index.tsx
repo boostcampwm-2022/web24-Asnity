@@ -54,7 +54,6 @@ const CommunityCreateBox: FC = () => {
   });
 
   const handleCloseModal = () => {
-    if (createCommunityMutation.isLoading) return; // Form 제출 처리중엔 취소할 수 없음.
     closeCommonModal();
     reset();
   };
@@ -148,6 +147,7 @@ const CommunityCreateBox: FC = () => {
             color="error"
             onClick={handleCloseModal}
             width="50%"
+            disabled={createCommunityMutation.isLoading}
           >
             취소하기
           </Button>
