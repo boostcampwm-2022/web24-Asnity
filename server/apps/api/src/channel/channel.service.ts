@@ -51,7 +51,7 @@ export class ChannelService {
       _id: channel_id,
       managerId: requestUserId,
     });
-    if (channel === undefined) {
+    if (!channel) {
       throw new UnauthorizedException('채널 관리자가 아닙니다.');
     }
 
