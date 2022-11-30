@@ -22,4 +22,8 @@ export class ModifyChannelDto {
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   isPrivate: boolean;
+
+  @IsString()
+  @IsOptional()
+  managerId: string;
 }
