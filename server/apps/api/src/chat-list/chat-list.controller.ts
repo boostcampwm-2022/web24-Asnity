@@ -6,13 +6,14 @@ import {
   LoggerService,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
-import { GetMessageDto, RestoreMessageDto } from '@chat-list/dto';
+import { RestoreMessageDto } from '@chat-list/dto';
 import { responseForm } from '@utils/responseForm';
 
 @Controller('api/chat')
@@ -39,15 +40,11 @@ export class ChatListController {
 
   @Get(':channel_id')
   @UseGuards(JwtAccessGuard)
-  async getMessage(
-    @Param('channel_id') channel_id,
-    @Body() getMessageDto: GetMessageDto,
-    @Req() req: any,
-  ) {
+  async getMessage(@Param('channel_id') channel_id, @Query() query: any, @Req() req: any) {
     const requestUserId = req.user.id;
     try {
       const chatList = await this.chatListService.getMessage({
-        ...getMessageDto,
+        ...query,
         requestUserId,
         channel_id,
       });
