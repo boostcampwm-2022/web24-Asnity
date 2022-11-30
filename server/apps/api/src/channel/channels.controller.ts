@@ -119,16 +119,4 @@ export class ChannelsController {
       throw error;
     }
   }
-
-  @Get(':channel_id/users/status')
-  @UseGuards(JwtAccessGuard)
-  async getChannelUsersStatus(@Param('channel_id') channel_id) {
-    try {
-      const userStatus = await this.channelService.getChannelUsersStataus(channel_id);
-      return responseForm(200, { userStatus });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
 }
