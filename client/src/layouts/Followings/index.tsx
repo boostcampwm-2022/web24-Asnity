@@ -24,9 +24,9 @@ const Followings = () => {
       <Scrollbars>
         {followingsQuery.isLoading ? (
           <div className="flex items-center justify-center">로딩중...</div>
-        ) : followingsQuery.data?.followings.length ? (
+        ) : followingsQuery.data?.length ? (
           <UserList>
-            {followingsQuery.data.followings.map((user) => (
+            {followingsQuery.data.map((user) => (
               <FollowingUserItem key={user._id} user={user} />
             ))}
           </UserList>

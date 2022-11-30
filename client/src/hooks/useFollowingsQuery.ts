@@ -1,36 +1,24 @@
-import type { GetFollowingsResponse, GetFollowingsResult } from '@apis/user';
+import type { GetFollowingsResult } from '@apis/user';
+import type { AxiosError } from 'axios';
 
 import { getFollowings } from '@apis/user';
 import { useQuery } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
-type FollowingsQueryData = {
-  statusCode: number;
-} & GetFollowingsResult;
-
 const useFollowingsQuery = (
   filter: string,
   options?: { suspense: boolean },
 ) => {
   const key = queryKeyCreator.followings();
-  const query = useQuery<
-    GetFollowingsResponse,
-    unknown,
-    FollowingsQueryData,
-    [string]
-  >(key, getFollowings, {
+  const query = useQuery<GetFollowingsResult, AxiosError>(key, getFollowings, {
     ...options,
-    select: (data) => {
-      const { statusCode, result } = data;
-      const followings = filter
-        ? result.followings.filter(({ nickname }) =>
+    select: (data) =>
+      filter
+        ? data.filter(({ nickname }) =>
             nickname.toUpperCase().includes(filter.toUpperCase()),
           )
-        : result.followings;
-
-      return { statusCode, ...result, followings };
-    },
+        : data,
   });
 
   return query;
