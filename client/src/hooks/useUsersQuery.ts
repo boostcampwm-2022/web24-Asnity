@@ -1,7 +1,7 @@
-import type { GetUsersResponse, User } from '@apis/user';
+import type { GetUsersResult } from '@apis/user';
 import type { AxiosError } from 'axios';
 
-import { GetUsers } from '@apis/user';
+import { getUsers } from '@apis/user';
 import { useQuery } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
@@ -11,14 +11,11 @@ const useUserSearchQuery = (
   options?: { suspense?: boolean; enabled?: boolean },
 ) => {
   const key = queryKeyCreator.userSearch(filter);
-  const query = useQuery<GetUsersResponse, AxiosError, User[]>(
+  const query = useQuery<GetUsersResult, AxiosError>(
     key,
-    () => GetUsers({ search: filter }),
+    () => getUsers({ search: filter }),
     {
       ...options,
-      select: (data) => {
-        return data.result.users;
-      },
       refetchOnWindowFocus: false,
     },
   );
