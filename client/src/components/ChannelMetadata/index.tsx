@@ -1,3 +1,4 @@
+import type { Channel } from '@apis/channel';
 import type { FC } from 'react';
 
 import ChannelName from '@components/ChannelName';
@@ -6,20 +7,16 @@ import { dateStringToKRLocaleDateString } from '@utils/date';
 import React, { memo } from 'react';
 
 interface Props {
-  profileUrl?: string;
-  channelName: string;
-  isPrivate: boolean;
-  createdAt: string;
-  managerName: string;
+  channel: Channel;
+  managerName?: string;
 }
 
 const ChannelMetadata: FC<Props> = ({
-  profileUrl,
-  managerName,
-  channelName,
-  isPrivate,
-  createdAt,
+  channel,
+  managerName = '(알수없음)',
 }) => {
+  const { profileUrl, name: channelName, isPrivate, createdAt } = channel;
+
   return (
     <RoomMetadata profileUrl={profileUrl} channelName={channelName}>
       <div className="flex flex-col justify-center h-full">

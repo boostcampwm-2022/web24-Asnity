@@ -1,12 +1,14 @@
-import DirectMessageUserItem from '@components/DirectMessageUserItem';
-import useDirectMessagesQuery from '@hooks/useDirectMessagesQuery';
+import UserProfile from '@components/UserProfile';
+import { faker } from '@faker-js/faker';
 import { useMyInfo } from '@hooks/useMyInfoQuery';
+import { useChannelUsersQuery } from '@hooks/user';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const DmNav = () => {
-  const myInfo = useMyInfo();
-  const directMessagesQuery = useDirectMessagesQuery();
+  // const myInfo = useMyInfo();
+  // TODO 현재 DM API 없는 관계로 임시로 channel의 사용자 목록 가져오는 API 사용함
+  const channelUsersQuery = useChannelUsersQuery('dm');
 
   return (
     <nav className="flex flex-col flex-1">
@@ -15,21 +17,15 @@ const DmNav = () => {
           <Link to="/dms">Direct Message</Link>
         </h2>
       </header>
-      {directMessagesQuery.isLoading ? (
+      {channelUsersQuery.isLoading ? (
         <div>loading...</div>
       ) : (
-        directMessagesQuery.data?.length && (
+        channelUsersQuery.data?.length && (
           <ul className="flex flex-col p-6 [&>*:hover]:rounded-md [&>*:hover]:bg-offWhite">
-            {directMessagesQuery.data.map((directMessage) => (
-              <li key={directMessage._id}>
-                <Link to={`/dms/${directMessage._id}`}>
-                  <DirectMessageUserItem
-                    userId={
-                      directMessage.users.filter(
-                        (uid) => uid !== myInfo?._id,
-                      )[0]
-                    }
-                  />
+            {channelUsersQuery.data.map((user) => (
+              <li key={user._id}>
+                <Link to={`/dms/${user._id}`}>
+                  <UserProfile user={user} />
                 </Link>
               </li>
             ))}
