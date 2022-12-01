@@ -20,6 +20,8 @@ const GetChannel = rest.get(getChannelEndPoint, (req, res, ctx) => {
     targetChannel = _channels.find(({ _id }) => _id === channelId);
   });
 
+  if (!targetChannel) targetChannel = communities[0].channels[0];
+
   const errorResponse = res(...createErrorContext(ctx));
   const successResponse = res(
     ...createSuccessContext(ctx, 200, 500, {
