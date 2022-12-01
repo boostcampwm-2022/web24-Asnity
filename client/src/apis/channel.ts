@@ -1,5 +1,5 @@
 import type { SuccessResponse } from '@@types/apis/response';
-import type { UserUID } from '@apis/user';
+import type { User, UserUID } from '@apis/user';
 
 import { tokenAxios } from '@utils/axios';
 
@@ -16,7 +16,7 @@ export interface JoinedChannel {
 
 export interface Channel extends JoinedChannel {
   communityId: string;
-  users: Array<UserUID>;
+  users: User[];
   chatLists: [];
   createdAt: string;
   updatedAt: string;
