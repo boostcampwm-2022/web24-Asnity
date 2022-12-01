@@ -17,8 +17,11 @@ export class ChannelController {
   async createChannel(@Body() createChannelDto: CreateChannelDto, @Req() req: any) {
     const requestUserId = req.user._id;
     try {
-      await this.channelService.createChannel({ ...createChannelDto, managerId: requestUserId });
-      return responseForm(200, { message: '채널 생성 성공!' });
+      const newChannel = await this.channelService.createChannel({
+        ...createChannelDto,
+        managerId: requestUserId,
+      });
+      return responseForm(200, newChannel);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
