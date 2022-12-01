@@ -1,29 +1,10 @@
-import type { User, GetChannelUsersResult } from '@apis/user';
+import type { GetChannelUsersResult, User } from '@apis/user';
 import type { AxiosError } from 'axios';
 
-import { getChannelUsers, getCommunityUsers, getUser } from '@apis/user';
+import { getChannelUsers, getCommunityUsers } from '@apis/user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
-
-export const useUserQuery = (
-  userId: string,
-  options?: {
-    enabled?: boolean;
-  },
-) => {
-  const queryClient = useQueryClient();
-  const key = queryKeyCreator.user.detail(userId);
-
-  const query = useQuery(key, () => getUser(userId), options);
-  const invalidate = useCallback(
-    () => queryClient.invalidateQueries(key),
-    [queryClient, key],
-  );
-
-  return { userQuery: query, invalidateUserQuery: invalidate };
-};
 
 export const useCommunityUsersQuery = (communityId: string) => {
   const key = queryKeyCreator.user.communityUsers(communityId);
