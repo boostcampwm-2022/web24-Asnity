@@ -43,8 +43,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  테스트:
-    if: github.event_name == "push"
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -90,7 +89,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAIL_WEBHOOK_URL }}
         if: failure()
-  nCloud_배포:
+  nCloudDeploy:
     if: github.event.pull_request.merged == true
     needs: build
     runs-on: ubuntu-latest
