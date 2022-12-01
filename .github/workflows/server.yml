@@ -5,15 +5,13 @@ on:
     branches: [ "main", "dev","dev-be" ]
     paths: 'server/**'
   pull_request:
-    branches:
-      - dev-be
+    branches: [ "main", "dev","dev-be" ]
+    paths: 'server/**'
     types:
       - closed
-    paths:
-      - "server/**"
 
 jobs:
-  빌드:
+  build:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +92,7 @@ jobs:
         if: failure()
   nCloud_배포:
     if: github.event.pull_request.merged == true
-    needs: [빌드, 테스트]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -109,7 +107,5 @@ jobs:
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket
-#            docker run --name api-container -p 3001:3001 ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api
-#            docker run --name socket-container -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket
             docker-compose up -d
             docker image prune -f
