@@ -42,6 +42,8 @@ export class ChannelService {
       // 공개 채널일 경우 : 채널 유저에 커뮤니티 사용자 모두 존재
       await this.addUserToChannel(community._id, channel._id, community.users);
     }
+
+    return getChannelBasicInfo(channel);
   }
 
   async modifyChannel(modifyChannelDto: ModifyChannelDto) {
@@ -86,8 +88,15 @@ export class ChannelService {
   }
 
   async getChannelInfo(channel_id) {
-    const channelInfo = await this.channelRepository.findOne({ _id: channel_id });
-    return getChannelBasicInfo(channelInfo);
+    const channel = await this.channelRepository.findOne({ _id: channel_id });
+    const users = await Promise.all(
+      channel.users.map(async (user_id) => {
+        const user = await this.userRepository.findById(user_id);
+        return getUserBasicInfo(user);
+      }),
+    );
+    channel['users'] = users as any;
+    return getChannelBasicInfo(channel);
   }
 
   async exitChannel(exitChannelDto: ExitChannelDto) {
