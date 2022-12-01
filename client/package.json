@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.ts --progress",
+    "dev:proxy": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.proxy.ts --progress",
     "dev:https": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.https.ts --progress",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.ts --progress",
     "analysis": "cross-env NODE_ENV=production webpack --config ./config/webpack.analysis.ts --progress",
