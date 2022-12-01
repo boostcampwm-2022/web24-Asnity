@@ -6,5 +6,6 @@ export const getUserBasicInfo = (user) => {
     status: user.status,
     profileUrl: user.profileUrl,
     description: user.description,
+    createdAt: user.createdAt,
   };
 };
