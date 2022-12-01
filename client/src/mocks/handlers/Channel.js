@@ -50,6 +50,7 @@ const CreateChannel = rest.post(
       description,
       lastRead: true,
       type,
+      users: [me._id],
     };
 
     const errorResponse = res(...createErrorContext(ctx));
