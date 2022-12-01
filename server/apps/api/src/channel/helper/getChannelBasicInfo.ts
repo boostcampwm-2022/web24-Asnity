@@ -1,6 +1,6 @@
 export const getChannelBasicInfo = (channel) => {
   return {
-    channel_id: channel._id,
+    _id: channel._id,
     name: channel.name,
     community_id: channel.community_id,
     managerId: channel.managerId,
