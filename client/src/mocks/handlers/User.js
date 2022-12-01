@@ -2,7 +2,7 @@ import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
-import { communityUsers, channelUsers, users } from '../data/users';
+import { communityUsers, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
