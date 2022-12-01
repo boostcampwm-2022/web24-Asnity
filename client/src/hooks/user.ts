@@ -1,7 +1,7 @@
 import type { User } from '@apis/user';
 import type { AxiosError } from 'axios';
 
-import { getCommunityUsers, getUser } from '@apis/user';
+import { getChannelUsers, getCommunityUsers } from '@apis/user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
@@ -43,4 +43,25 @@ export const useInvalidateCommunityUsersQuery = (communityId: string) => {
     queryClient.invalidateQueries(key);
 
   return { invalidateCommunityUsersQuery };
+};
+
+// TODO: `options` any 타입 바꾸기
+export const useChannelUsersQuery = (
+  channelId: string,
+  options?: {
+    select?: (
+      users: GetChannelUsersResult['users'],
+    ) => GetChannelUsersResult['users'];
+    enabled?: boolean;
+  },
+) => {
+  const key = queryKeyCreator.user.channelUsers(channelId);
+
+  const query = useQuery<GetChannelUsersResult['users'], AxiosError>(
+    key,
+    () => getChannelUsers(channelId),
+    options,
+  );
+
+  return query;
 };

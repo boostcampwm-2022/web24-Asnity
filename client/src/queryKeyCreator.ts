@@ -4,6 +4,8 @@ const userQueryKey = {
     [...userQueryKey.all(), 'detail', userId] as const,
   communityUsers: (communityId: string) =>
     [...userQueryKey.all(), { communityId }] as const,
+  channelUsers: (channelId: string) =>
+    [...userQueryKey.all(), { channelId }] as const,
 };
 
 const directMessageQueryKey = {
