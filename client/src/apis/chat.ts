@@ -11,7 +11,7 @@ export interface Chat {
   senderId: string;
   updatedAt: string;
   createdAt: string;
-  deletedAt: string;
+  deletedAt?: string;
 }
 
 export type GetChatsResult = {
