@@ -3,6 +3,7 @@ import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { UserRepository } from '@repository/user.repository';
 import { SignToken } from '@api/src/auth/helper/signToken';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Injectable()
 export class AuthService {
@@ -48,5 +49,10 @@ export class AuthService {
     } catch (error) {
       throw new ForbiddenException('잘못된 접근입니다.');
     }
+  }
+
+  async getMyInfo(userId: string) {
+    const myInfo = await this.userRepository.findById(userId);
+    return getUserBasicInfo(myInfo);
   }
 }

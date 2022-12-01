@@ -67,8 +67,10 @@ export class AuthController {
   @Get('me') // 자신의 유저 정보 제공
   @UseGuards(JwtAccessGuard)
   async getMyInfo(@Req() req: any) {
+    const userId = req.user._id;
     try {
-      return responseForm(200, getUserBasicInfo(req.user));
+      const myInfo = await this.authService.getMyInfo(userId);
+      return responseForm(200, getUserBasicInfo(myInfo));
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
       throw error;
