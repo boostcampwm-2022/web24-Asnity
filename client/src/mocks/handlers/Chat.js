@@ -32,7 +32,7 @@ const GetChats = rest.get(`${BASE_URL}/chat/:channelId`, (req, res, ctx) => {
   const successResponse = res(
     ...createSuccessContext(ctx, 200, 1000, {
       prev: newPrevCursor,
-      chats: Number.isInteger(newPrevCursor)
+      chat: Number.isInteger(newPrevCursor)
         ? [...Array(10)].map(createMockChat)
         : [],
     }),
