@@ -27,16 +27,6 @@ const GetUsers = rest.get(getUsersEndPoint, (req, res, ctx) => {
   );
 });
 
-// TODO: 없는 메서드인데, 컴포넌트에서 사용중 (삭제해야합니다.)
-const GetUser = rest.get(`${API_URL}/api/user/:userId`, (req, res, ctx) => {
-  const ERROR = false;
-
-  const errorResponse = res(...createErrorContext(ctx));
-  const successResponse = res(...createSuccessContext(ctx, 200, 500, users[0]));
-
-  return ERROR ? errorResponse : successResponse;
-});
-
 const getCommunityUsersEndPoint =
   API_URL + endPoint.getCommunityUsers(':communityId');
 const GetCommunityUsers = rest.get(
@@ -69,4 +59,4 @@ const GetChannelUsers = rest.get(getChannelUsersEndPoint, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
-export default [GetUsers, GetUser, GetCommunityUsers, GetChannelUsers];
+export default [GetUsers, GetCommunityUsers, GetChannelUsers];
