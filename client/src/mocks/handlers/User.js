@@ -56,18 +56,17 @@ const GetCommunityUsers = rest.get(
   },
 );
 
-const GetChannelUsers = rest.get(
-  `${BASE_URL}/channels/:channelId/users`,
-  (req, res, ctx) => {
-    const ERROR = false;
+const getChannelUsersEndPoint =
+  API_URL + endPoint.getChannelUsers(`:channelId`);
+const GetChannelUsers = rest.get(getChannelUsersEndPoint, (req, res, ctx) => {
+  const ERROR = false;
 
-    const errorResponse = res(...createErrorContext(ctx));
-    const successResponse = res(
-      ...createSuccessContext(ctx, 200, 500, { users: channelUsers }),
-    );
+  const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(
+    ...createSuccessContext(ctx, 200, 500, { users: channelUsers }),
+  );
 
-    return ERROR ? errorResponse : successResponse;
-  },
-);
+  return ERROR ? errorResponse : successResponse;
+});
 
 export default [GetUsers, GetUser, GetCommunityUsers, GetChannelUsers];
