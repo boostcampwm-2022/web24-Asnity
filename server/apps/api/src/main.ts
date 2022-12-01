@@ -3,7 +3,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ApiModule } from './api.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
-import { SentryInterceptor } from '../../webhook.interceptor';
+import { SentryInterceptor } from './webhook.interceptor';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
