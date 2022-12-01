@@ -31,12 +31,6 @@ jobs:
           context: .
           file: ./server/apps/api/Dockerfile
           push: true
-          secrets: |
-            "MONGODB_URL=${{ secrets.MONGODB_URL }}"
-            "SENTRY_DSN=${{ secrets.SENTRY_DSN}}"
-            "ERROR_SLACK_WEBHOOK=${{secrets.ERROR_SLACK_WEBHOOK}}"
-            "JWT_SECRET=${{secrets.JWT_SECRET}}"
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Socket Server 이미지 빌드 및 도커 허브 푸쉬
@@ -45,11 +39,6 @@ jobs:
           context: .
           file: ./server/apps/socket/Dockerfile
           push: true
-          secrets: |
-            "MONGODB_URL=${{ secrets.MONGODB_URL }}"
-            "SENTRY_DSN=${{ secrets.SENTRY_DSN}}"
-            "ERROR_SLACK_WEBHOOK=${{secrets.ERROR_SLACK_WEBHOOK}}"
-            "JWT_SECRET=${{secrets.JWT_SECRET}}"
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -116,5 +105,5 @@ jobs:
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket
-            docker-compose up -d
+            docker-compose --env-file ./asnity-config/server/prod.env up -d
             docker image prune -f
