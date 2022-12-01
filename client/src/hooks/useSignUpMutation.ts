@@ -1,4 +1,3 @@
-import type { SuccessResponse } from '@@types/apis/response';
 import type { SignUpRequest, SignUpResult } from '@apis/auth';
 import type { UseMutationOptions } from '@tanstack/react-query';
 
@@ -8,11 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import queryKeyCreator from '@/queryKeyCreator';
 
 const useSignUpMutation = (
-  options: UseMutationOptions<
-    SuccessResponse<SignUpResult>,
-    unknown,
-    SignUpRequest
-  >,
+  options: UseMutationOptions<SignUpResult, unknown, SignUpRequest>,
 ) => {
   const key = queryKeyCreator.signUp();
   const mutation = useMutation(key, signUp, {
