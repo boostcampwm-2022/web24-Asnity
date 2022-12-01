@@ -16,7 +16,6 @@ ENV JWT_SECRET ${JWT_SECRET}
 
 # 작업 디렉토리 생성
 WORKDIR /apps
-
 # 의존성 설치
 COPY /package*.json ./
 COPY /tsconfig.json ./
