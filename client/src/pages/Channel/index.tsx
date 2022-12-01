@@ -2,8 +2,13 @@ import ChannelMetadata from '@components/ChannelMetadata';
 import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
-import useIsIntersecting from '@hooks/useIsIntersecting';
-import React, { useRef, useEffect, Fragment } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  Fragment,
+  useCallback,
+} from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -11,13 +16,30 @@ const Channel = () => {
   const params = useParams();
   const roomId = params.roomId as string;
   const { channelQuery } = useChannelQuery(roomId);
-
-  const scrollbarContainerRef = useRef<Scrollbars>(null);
-  const fetchPreviousRef = useRef<HTMLDivElement>(null);
-  const isFetchPreviousIntersecting =
-    useIsIntersecting<HTMLDivElement>(fetchPreviousRef);
-
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
+
+  const [isFetchPreviousIntersecting, setIsFetchPreviousIntersecting] =
+    useState(false);
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const setFetchPreviousRef = useCallback((node: HTMLElement | null) => {
+    if (node) {
+      if (!observerRef.current) {
+        observerRef.current = new IntersectionObserver((entries) =>
+          setIsFetchPreviousIntersecting(
+            entries.some((entry) => entry.isIntersecting),
+          ),
+        );
+      }
+      observerRef.current.observe(node);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!chatsInfiniteQuery.isLoading) {
+      scrollbarContainerRef?.current?.scrollToBottom();
+    }
+  }, [chatsInfiniteQuery.isLoading]);
 
   useEffect(() => {
     if (
@@ -26,11 +48,17 @@ const Channel = () => {
       chatsInfiniteQuery.isFetchingPreviousPage
     )
       return;
-    chatsInfiniteQuery.fetchPreviousPage();
+
+    chatsInfiniteQuery.fetchPreviousPage().then(() => {
+      if (scrollbarContainerRef?.current) {
+        /* TODO: 새로 불러와도 스크롤 안 움직인 것처럼 만들기 */
+        scrollbarContainerRef.current.scrollTop(10);
+      }
+    });
   }, [isFetchPreviousIntersecting]);
 
   if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
-    return <div>loading</div>;
+    return <div></div>;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -45,8 +73,11 @@ const Channel = () => {
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
           </div>
-          <Scrollbars ref={scrollbarContainerRef}>
-            <div ref={fetchPreviousRef} />
+          <Scrollbars
+            ref={scrollbarContainerRef}
+            className="w-full h-full overflow-y-scroll"
+          >
+            <div ref={setFetchPreviousRef} />
             <div>
               <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
                 {chatsInfiniteQuery.data &&
@@ -87,9 +118,7 @@ const Channel = () => {
             </div>
           </Scrollbars>
         </div>
-        <div className="flex w-72 h-full border-l border-line">
-          온라인, 오프라인
-        </div>
+        <div className="flex w-72 h-full border-l border-line"></div>
       </div>
     </div>
   );
