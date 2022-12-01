@@ -100,18 +100,3 @@ export const getCommunityUsers: GetCommunityUsers = (communityId) => {
     .get<GetCommunityUsersResponse>(endPoint)
     .then((response) => response.data.result.users);
 };
-
-export interface GetChannelUsersResult {
-  users: User[];
-}
-
-export type GetChannelUsersResponse = SuccessResponse<GetChannelUsersResult>;
-export type GetChannelUsers = (channelId: string) => Promise<User[]>;
-
-export const getChannelUsers: GetChannelUsers = (channelId) => {
-  const endPoint = `/api/channels/${channelId}/users`;
-
-  return tokenAxios
-    .get<GetChannelUsersResponse>(endPoint)
-    .then((response) => response.data.result.users);
-};
