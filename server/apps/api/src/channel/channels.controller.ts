@@ -108,18 +108,6 @@ export class ChannelsController {
     }
   }
 
-  @Get(':channel_id/users')
-  @UseGuards(JwtAccessGuard)
-  async getChannelUsers(@Param('channel_id') channel_id) {
-    try {
-      const users = await this.channelService.getChannelUsers(channel_id);
-      return responseForm(200, { users });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
-  }
-
   @Post(':channel_id')
   @UseGuards(JwtAccessGuard)
   async joinChannel(@Param('channel_id') channel_id, @Body() { community_id }, @Req() req: any) {

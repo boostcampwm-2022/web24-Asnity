@@ -170,17 +170,6 @@ export class ChannelService {
     );
   }
 
-  async getChannelUsers(channel_id) {
-    const channel = await this.channelRepository.findById(channel_id);
-    const result = await Promise.all(
-      channel.users.map(async (user_id) => {
-        const user = await this.userRepository.findById(user_id);
-        return getUserBasicInfo(user);
-      }),
-    );
-    return result;
-  }
-
   async joinChannel(joinChannelDto: JoinChannelDto) {
     const { requestUserId, channel_id, community_id } = joinChannelDto;
     await this.addUserToChannel(community_id, channel_id, [requestUserId]);
