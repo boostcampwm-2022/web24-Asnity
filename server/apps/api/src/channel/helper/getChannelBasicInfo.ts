@@ -8,6 +8,7 @@ export const getChannelBasicInfo = (channel) => {
     type: channel.type,
     isPrivate: channel.isPrivate,
     users: channel.users,
+    createdAt: channel.createdAt,
     deletedAt: channel.deletedAt,
   };
 };
