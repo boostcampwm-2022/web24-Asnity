@@ -31,11 +31,11 @@ jobs:
           context: .
           file: ./server/apps/api/Dockerfile
           push: true
-          build_args: |
-            MONGODB_URL=${{secrets.MONGODB_URL}}
-            SENTRY_DSN=${{secrets.SENTRY_DSN}}
-            ERROR_SLACK_WEBHOOK=${{secrets.ERROR_SLACK_WEBHOOK}}
-            JWT_SECRET=${{secrets.JWT_SECRET}}
+          build-args: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            ERROR_SLACK_WEBHOOK=${{ secrets.ERROR_SLACK_WEBHOOK }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -45,8 +45,8 @@ jobs:
           context: .
           file: ./server/apps/socket/Dockerfile
           push: true
-          build_args: |
-            MONGODB_URL=${{secrets.MONGODB_URL}}
+          build-args: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
