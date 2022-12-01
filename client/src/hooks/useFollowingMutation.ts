@@ -1,4 +1,4 @@
-import type { GetFollowingsResult, User } from '@apis/user';
+import type { User, Followings } from '@apis/user';
 
 import { updateFollowing } from '@apis/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,11 +12,10 @@ const useFollowingMutation = (userId: string) => {
     onMutate: async (deleted: User) => {
       await queryClient.cancelQueries(key);
 
-      const previousFollowings =
-        queryClient.getQueryData<GetFollowingsResult>(key);
+      const previousFollowings = queryClient.getQueryData<Followings>(key);
 
       if (previousFollowings) {
-        queryClient.setQueryData<GetFollowingsResult>(
+        queryClient.setQueryData<Followings>(
           key,
           previousFollowings.filter(
             (following) => following._id !== deleted._id,
@@ -27,10 +26,7 @@ const useFollowingMutation = (userId: string) => {
     },
     onError: (err, variables, context) => {
       if (context?.previousFollowings)
-        queryClient.setQueryData<GetFollowingsResult>(
-          key,
-          context.previousFollowings,
-        );
+        queryClient.setQueryData<Followings>(key, context.previousFollowings);
     },
     onSettled: () => {
       queryClient.invalidateQueries(key);

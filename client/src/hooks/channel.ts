@@ -4,7 +4,7 @@ import type {
   GetChannelResult,
   JoinedChannel,
 } from '@apis/channel';
-import type { GetCommunitiesResult } from '@apis/community';
+import type { CommunitySummaries } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -51,11 +51,12 @@ export const useSetChannelsQuery = () => {
   const queryClient = useQueryClient();
   const key = queryKeyCreator.community.all();
 
+  // TODO: 네이밍
   const addChannelToCommunity = (
     communityId: string,
     channel: JoinedChannel,
   ) => {
-    queryClient.setQueryData<GetCommunitiesResult>(key, (communities) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
 
