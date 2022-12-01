@@ -2,7 +2,7 @@ import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
-import { communityUsers, users } from '../data/users';
+import { communityUsers, channelUsers, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -56,4 +56,18 @@ const GetCommunityUsers = rest.get(
   },
 );
 
-export default [GetUsers, GetUser, GetCommunityUsers];
+const GetChannelUsers = rest.get(
+  `${BASE_URL}/channels/:channelId/users`,
+  (req, res, ctx) => {
+    const ERROR = false;
+
+    const errorResponse = res(...createErrorContext(ctx));
+    const successResponse = res(
+      ...createSuccessContext(ctx, 200, 500, { users: channelUsers }),
+    );
+
+    return ERROR ? errorResponse : successResponse;
+  },
+);
+
+export default [GetUsers, GetUser, GetCommunityUsers, GetChannelUsers];
