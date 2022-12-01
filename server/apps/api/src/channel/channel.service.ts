@@ -42,8 +42,7 @@ export class ChannelService {
       // 공개 채널일 경우 : 채널 유저에 커뮤니티 사용자 모두 존재
       await this.addUserToChannel(community._id, channel._id, community.users);
     }
-
-    return getChannelBasicInfo(channel);
+    return this.getChannelInfo(channel._id);
   }
 
   async modifyChannel(modifyChannelDto: ModifyChannelDto) {
