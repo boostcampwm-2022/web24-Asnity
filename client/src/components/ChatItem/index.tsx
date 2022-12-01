@@ -22,7 +22,7 @@ const ChatItem: FC<Props> = ({
   },
   isSystem = false,
 }) => {
-  const { content, updatedAt, createdAt, deletedAt } = chat;
+  const { content, createdAt } = chat;
 
   return (
     <li className={className}>
@@ -49,15 +49,15 @@ const ChatItem: FC<Props> = ({
                 minute: 'numeric',
               })}
             </span>
-            {deletedAt.length ? (
+            {chat?.deletedAt?.length ? (
               <span className="text-label">(삭제됨)</span>
-            ) : updatedAt.length ? (
+            ) : chat?.updatedAt.length ? (
               <span className="text-label">(수정됨)</span>
             ) : (
               ''
             )}
           </div>
-          <div>{deletedAt.length ? '삭제된 메시지입니다' : content}</div>
+          <div>{chat?.deletedAt ? '삭제된 메시지입니다' : content}</div>
         </div>
       </div>
     </li>
