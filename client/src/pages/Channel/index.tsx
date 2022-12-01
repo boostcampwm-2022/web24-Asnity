@@ -1,10 +1,11 @@
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatItem from '@components/ChatItem';
+import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
 import useIsIntersecting from '@hooks/useIsIntersecting';
 import { useUserQuery } from '@hooks/user';
-import React, { useRef, useEffect, Fragment } from 'react';
+import React, { useRef, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -16,23 +17,27 @@ const Channel = () => {
     enabled: !!channelQuery.data?.managerId,
   });
 
-  // TODO: `any` 말고 적절한 타이핑 주기
-  const scrollbarContainerRef = useRef<any>(null);
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
   const fetchPreviousRef = useRef<HTMLDivElement>(null);
-  const isFetchPreviousIntersecting =
-    useIsIntersecting<HTMLDivElement>(fetchPreviousRef);
-
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
 
-  useEffect(() => {
+  console.log('hasPrevPage?', chatsInfiniteQuery.hasPreviousPage);
+  useIsIntersecting<HTMLDivElement>(fetchPreviousRef, () => {
+    console.log('hasPrevPage?', chatsInfiniteQuery.hasPreviousPage);
+    console.log(
+      'isFetchingPreviousPage?',
+      chatsInfiniteQuery.isFetchingPreviousPage,
+    );
     if (
-      !isFetchPreviousIntersecting ||
-      !chatsInfiniteQuery.hasPreviousPage ||
-      chatsInfiniteQuery.isFetchingPreviousPage
-    )
-      return;
-    chatsInfiniteQuery.fetchPreviousPage();
-  }, [isFetchPreviousIntersecting]);
+      chatsInfiniteQuery.hasPreviousPage &&
+      !chatsInfiniteQuery.isFetchingPreviousPage
+    ) {
+      chatsInfiniteQuery.fetchPreviousPage().catch((error) => {
+        defaultErrorHandler(error);
+      });
+      scrollbarContainerRef.current?.scrollToBottom();
+    }
+  });
 
   if (chatsInfiniteQuery.isLoading) return <div>loading</div>;
 

@@ -35,8 +35,8 @@ const ChatItem: FC<Props> = ({ className = '', chat, isSystem = false }) => {
                 className={
                   /* format 방지용 */ `font-bold ${
                     /* format 방지용 */ isSystem
-                    ? 'text-primary'
-                    : 'text-indigo'
+                      ? 'text-primary'
+                      : 'text-indigo'
                   }`
                 }
               >
