@@ -110,7 +110,7 @@ export class CommunitiesController {
   @Patch(':community_id/settings')
   @UseGuards(JwtAccessGuard)
   async modifyCommunitySetting(
-    @Param(':community_id') community_id: string,
+    @Param('community_id') community_id: string,
     @Body() modifyCommunityDto: ModifyCommunityDto,
     @Req() req: any,
   ) {
