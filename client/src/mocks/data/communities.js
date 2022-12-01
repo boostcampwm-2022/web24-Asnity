@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import { chancify } from '../utils/rand';
+import { channelUsers } from './users';
 
 export const createMockChannel = () => ({
   _id: faker.datatype.uuid(),
@@ -11,6 +12,7 @@ export const createMockChannel = () => ({
   description: faker.lorem.sentence(1),
   lastRead: chancify(() => true, 50, false),
   type: 'Channel',
+  users: channelUsers,
 });
 
 export const channels = [...Array(10)].map(createMockChannel);
