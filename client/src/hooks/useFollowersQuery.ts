@@ -1,4 +1,4 @@
-import type { GetFollowersResult } from '@apis/user';
+import type { Followers } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getFollowers } from '@apis/user';
@@ -8,7 +8,7 @@ import queryKeyCreator from '@/queryKeyCreator';
 
 const useFollowersQuery = (filter: string, options?: { suspense: boolean }) => {
   const key = queryKeyCreator.followers();
-  const query = useQuery<GetFollowersResult, AxiosError>(key, getFollowers, {
+  const query = useQuery<Followers, AxiosError>(key, getFollowers, {
     ...options,
     select: (data) =>
       filter
