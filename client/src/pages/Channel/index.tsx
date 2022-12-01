@@ -12,8 +12,7 @@ const Channel = () => {
   const roomId = params.roomId as string;
   const { channelQuery } = useChannelQuery(roomId);
 
-  // TODO: `any` 말고 적절한 타이핑 주기
-  const scrollbarContainerRef = useRef<any>(null);
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
   const fetchPreviousRef = useRef<HTMLDivElement>(null);
   const isFetchPreviousIntersecting =
     useIsIntersecting<HTMLDivElement>(fetchPreviousRef);
