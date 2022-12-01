@@ -34,9 +34,10 @@ const getFirstLetter = (str: string) => {
   return firstLetter;
 };
 
+// TODO: url 바꿔야함
 const Avatar: FC<AvatarProps> = ({
   name,
-  url,
+  url = 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png',
   size,
   variant,
   className = '',
@@ -48,10 +49,14 @@ const Avatar: FC<AvatarProps> = ({
     >
       {children}
       {!children &&
-        (url ? (
+        (url.length ? (
           <img
             className="block object-cover h-full"
-            src={url}
+            src={
+              url === 'url'
+                ? 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'
+                : url
+            }
             alt={`${name}의 프로필 이미지`}
           />
         ) : (
