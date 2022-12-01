@@ -45,7 +45,7 @@ jobs:
           context: .
           file: ./server/apps/socket/Dockerfile
           push: true
-          secrets: |
+          secrets: | 
             "MONGODB_URL=${{secrets.MONGODB_URL}}"
             "SENTRY_DSN=${{secrets.SENTRY_DSN}}"
             "ERROR_SLACK_WEBHOOK=${{secrets.ERROR_SLACK_WEBHOOK}}"
