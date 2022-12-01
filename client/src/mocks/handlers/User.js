@@ -18,11 +18,13 @@ const GetUsers = rest.get(getUsersEndPoint, (req, res, ctx) => {
     ctx.status(200),
     ctx.json({
       statusCode: 200,
-      result: users.filter(
-        (user) =>
-          user.id.toUpperCase().includes(search) ||
-          user.nickname.toUpperCase().includes(search),
-      ),
+      result: {
+        users: users.filter(
+          (user) =>
+            user.id.toUpperCase().includes(search) ||
+            user.nickname.toUpperCase().includes(search),
+        ),
+      },
     }),
   );
 });
