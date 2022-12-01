@@ -3,6 +3,10 @@ FROM node:18-alpine
 
 MAINTAINER NayoungKwon
 
+# 환경변수 설정
+ARG MONGODB_URL
+ENV MONGODB_URL=$MONGODB_URL
+
 # yarn 설치
 #RUN npm install -g yarn
 
