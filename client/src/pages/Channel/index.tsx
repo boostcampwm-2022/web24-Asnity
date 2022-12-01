@@ -3,7 +3,7 @@ import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
 import useIsIntersecting from '@hooks/useIsIntersecting';
-import { useUserQuery } from '@hooks/user';
+import { useChannelUsersQuery } from '@hooks/user';
 import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
@@ -12,9 +12,7 @@ const Channel = () => {
   const params = useParams();
   const roomId = params.roomId as string;
   const { channelQuery } = useChannelQuery(roomId);
-  const { userQuery } = useUserQuery(channelQuery.data?.managerId as string, {
-    enabled: !!channelQuery.data?.managerId,
-  });
+  const channelUsersQuery = useChannelUsersQuery(roomId);
 
   // TODO: `any` 말고 적절한 타이핑 주기
   const scrollbarContainerRef = useRef<any>(null);
@@ -34,7 +32,12 @@ const Channel = () => {
     chatsInfiniteQuery.fetchPreviousPage();
   }, [isFetchPreviousIntersecting]);
 
-  if (chatsInfiniteQuery.isLoading) return <div>loading</div>;
+  if (
+    channelQuery.isLoading ||
+    channelUsersQuery.isLoading ||
+    chatsInfiniteQuery.isLoading
+  )
+    return <div>loading</div>;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -57,19 +60,28 @@ const Channel = () => {
                   page.chats.length ? (
                     <Fragment key={page.chats[0].id}>
                       {page.chats.map((chat) => (
-                        <ChatItem key={chat.id} chat={chat} className="px-8" />
+                        <ChatItem
+                          key={chat.id}
+                          chat={chat}
+                          className="px-8"
+                          user={channelUsersQuery.data?.find(
+                            (user) => user._id === chat.senderId,
+                          )}
+                        />
                       ))}
                     </Fragment>
                   ) : (
                     <Fragment key={channelQuery.data?._id}>
-                      {channelQuery.data && userQuery.data && (
+                      {channelQuery.data && channelUsersQuery.data && (
                         <div className="p-8">
                           <ChannelMetadata
-                            profileUrl={channelQuery.data.profileUrl}
-                            channelName={channelQuery.data.name}
-                            isPrivate={channelQuery.data.isPrivate}
-                            createdAt={channelQuery.data.createdAt}
-                            managerName={userQuery.data.nickname}
+                            channel={channelQuery.data}
+                            managerName={
+                              channelUsersQuery.data?.find(
+                                (user) =>
+                                  user._id === channelQuery.data.managerId,
+                              )?.nickname
+                            }
                           />
                         </div>
                       )}
