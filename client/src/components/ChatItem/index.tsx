@@ -52,7 +52,9 @@ const ChatItem: FC<Props> = ({
             {chat?.deletedAt?.length ? (
               <span className="text-label">(삭제됨)</span>
             ) : chat?.updatedAt.length ? (
-              <span className="text-label">(수정됨)</span>
+              chat.createdAt !== chat.updatedAt && (
+                <span className="text-label">(수정됨)</span>
+              )
             ) : (
               ''
             )}
