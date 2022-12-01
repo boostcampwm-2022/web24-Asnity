@@ -11,7 +11,7 @@ const useUserSearchQuery = (
   options?: { suspense?: boolean; enabled?: boolean },
 ) => {
   const key = queryKeyCreator.userSearch(filter);
-  const query = useQuery<GetUsersResult, AxiosError>(
+  const query = useQuery<GetUsersResult['users'], AxiosError>(
     key,
     () => getUsers({ search: filter }),
     {
