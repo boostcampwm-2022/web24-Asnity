@@ -5,7 +5,6 @@ export const getChannelBasicInfo = (channel) => {
     community_id: channel.community_id,
     managerId: channel.managerId,
     description: channel.description,
-    profileUrl: channel.profileUrl,
     type: channel.type,
     isPrivate: channel.isPrivate,
     users: channel.users,
