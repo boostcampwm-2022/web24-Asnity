@@ -21,6 +21,8 @@ export class ChannelController {
         ...createChannelDto,
         managerId: requestUserId,
       });
+      delete newChannel.users;
+
       return responseForm(200, newChannel);
     } catch (error) {
       this.logger.error(JSON.stringify(error.response));
