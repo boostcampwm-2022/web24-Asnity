@@ -77,9 +77,11 @@ export const getFollowers: GetFollowers = () => {
 export interface GetUsersParams {
   search: string;
 }
-export type GetUsersResult = User[];
+export type GetUsersResult = {
+  users: User[];
+};
 export type GetUsersResponse = SuccessResponse<GetUsersResult>;
-export type GetUsers = (params: GetUsersParams) => Promise<GetUsersResult>;
+export type GetUsers = (params: GetUsersParams) => Promise<User[]>;
 
 /**
  * 여러 유저 검색에 사용됨
@@ -89,7 +91,7 @@ export const getUsers: GetUsers = (params) => {
 
   return tokenAxios
     .get<GetUsersResponse>(endPoint, { params })
-    .then((response) => response.data.result);
+    .then((response) => response.data.result.users);
 };
 
 export interface GetCommunityUsersResult {
