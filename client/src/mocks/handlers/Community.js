@@ -17,7 +17,7 @@ const GetCommunities = rest.get(getCommunitiesEndPoint, (req, res, ctx) => {
   const errorResponse = res(...createErrorContext(ctx));
 
   const successResponse = res(
-    ...createSuccessContext(ctx, 200, 500, communities),
+    ...createSuccessContext(ctx, 200, 500, { communities }),
   );
 
   return ERROR ? errorResponse : successResponse;

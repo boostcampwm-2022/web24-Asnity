@@ -13,16 +13,20 @@ export interface CommunitySummary {
   channels: JoinedChannel[];
 }
 
-export type GetCommunitiesResult = CommunitySummary[];
+export type CommunitySummaries = CommunitySummary[];
 
-export type GetCommunities = () => Promise<GetCommunitiesResult>;
+export type GetCommunitiesResult = {
+  communities: CommunitySummary[];
+};
+
+export type GetCommunities = () => Promise<CommunitySummaries>;
 
 export const getCommunities: GetCommunities = () => {
   const endPoint = `/api/communities`;
 
   return tokenAxios
     .get<SuccessResponse<GetCommunitiesResult>>(endPoint)
-    .then((response) => response.data.result);
+    .then((response) => response.data.result.communities);
 };
 
 export interface CreateCommunityRequest {
