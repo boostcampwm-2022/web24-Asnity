@@ -15,7 +15,7 @@ export interface Chat {
 }
 
 export type GetChatsResult = {
-  chat: Chat[];
+  chat?: Chat[];
   prev?: number;
 };
 
