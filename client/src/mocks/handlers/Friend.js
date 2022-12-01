@@ -11,7 +11,9 @@ const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
     ctx.status(200),
     ctx.json({
       statusCode: 200,
-      result: users,
+      result: {
+        followings: users,
+      },
     }),
   );
 });
@@ -40,7 +42,9 @@ const GetFollowers = rest.get(getFollowersEndPoint, (req, res, ctx) => {
     ctx.status(200),
     ctx.json({
       statusCode: 200,
-      result: users,
+      result: {
+        followers: users,
+      },
     }),
   );
 });
