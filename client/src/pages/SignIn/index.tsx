@@ -29,7 +29,7 @@ const SignIn = () => {
 
   const signInMutation = useSignInMutation({
     onSuccess: (data) => {
-      setAccessToken(data.result.accessToken);
+      setAccessToken(data.accessToken);
       navigate('/dms');
     },
     onError: (error) => {
