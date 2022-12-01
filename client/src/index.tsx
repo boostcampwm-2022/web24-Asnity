@@ -8,11 +8,11 @@ import { injectStyle } from 'react-toastify/dist/inject-style';
 import App from './App';
 import './index.css';
 
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = require('./mocks/browsers');
-//
-//   worker.start();
-// }
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browsers');
+
+  worker.start();
+}
 
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
