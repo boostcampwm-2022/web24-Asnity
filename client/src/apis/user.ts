@@ -12,6 +12,7 @@ export interface User {
   status: UserStatus;
   profileUrl: string;
   description: string;
+  createdAt: string;
 }
 
 export type UserUID = User['_id'];
