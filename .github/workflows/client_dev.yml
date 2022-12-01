@@ -1,0 +1,31 @@
+on:
+  pull_request:
+    branches:
+      - dev-fe
+    types:
+      - closed
+
+jobs:
+  pull_nCloud_client-dev:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: execute remot ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCLOUD_REMOTE_IP }}
+          username: ${{ secrets.NCLOUD_REMOTE_SSH_ID }}
+          password: ${{ secrets.NCLOUD_REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.NCLOUD_REMOTE_SSH_PORT }}
+          script: |
+            cd web24-Asnity
+            git stash
+            git pull origin dev-fe
+            ls -al
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            yarn install
+            rm -rf /usr/build
+            yarn client build
+            cp -r ./client/build /usr
