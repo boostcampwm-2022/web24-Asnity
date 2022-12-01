@@ -28,16 +28,19 @@ export const getMyInfo: GetMyInfo = () => {
     .then((response) => response.data.result);
 };
 
-export type GetFollowingsResult = User[];
+type Followings = User[];
+export interface GetFollowingsResult {
+  followings: Followings;
+}
 export type GetFollowingsResponse = SuccessResponse<GetFollowingsResult>;
-export type GetFollowings = () => Promise<GetFollowingsResult>;
+export type GetFollowings = () => Promise<Followings>;
 
 export const getFollowings: GetFollowings = () => {
   const endPoint = `/api/user/followings`;
 
   return tokenAxios
     .get<GetFollowingsResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((res) => res.data.result.followings);
 };
 
 export interface UpdateFollowingResult {
