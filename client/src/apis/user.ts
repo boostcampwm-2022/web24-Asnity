@@ -59,16 +59,19 @@ export const updateFollowing: UpdateFollowing = (userId) => {
     .then((res) => res.data.result);
 };
 
-export type GetFollowersResult = User[];
+type Followers = User[];
+export type GetFollowersResult = {
+  followers: Followers;
+};
 export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
-export type GetFollowers = () => Promise<GetFollowersResult>;
+export type GetFollowers = () => Promise<Followers>;
 
 export const getFollowers: GetFollowers = () => {
   const endPoint = `/api/user/followers`;
 
   return tokenAxios
     .get<GetFollowersResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((res) => res.data.result.followers);
 };
 
 export interface GetUsersParams {
