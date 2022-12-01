@@ -116,5 +116,5 @@ jobs:
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket
-            docker-compose --env-file ./asnity-config/server/prod.env up -d
+            docker-compose up -d
             docker image prune -f
