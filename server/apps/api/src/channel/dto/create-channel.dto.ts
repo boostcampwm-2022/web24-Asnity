@@ -20,10 +20,6 @@ export class CreateChannelDto {
   description: string;
 
   @IsString()
-  @IsOptional()
-  profileUrl: string;
-
-  @IsString()
   @IsNotEmpty()
   type: 'Channel' | 'DM';
 

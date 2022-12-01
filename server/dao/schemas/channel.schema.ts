@@ -32,10 +32,6 @@ export class Channel {
   @IsString()
   description: string;
 
-  @Prop({ default: 'default channel profile' })
-  @IsString()
-  profileUrl: string;
-
   @Prop()
   @IsIn(CHANNEL_TYPE)
   type: string;
