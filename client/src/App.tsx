@@ -18,6 +18,8 @@ import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
+  Outlet,
 } from 'react-router-dom';
 
 const router = createBrowserRouter(
@@ -28,10 +30,45 @@ const router = createBrowserRouter(
         <Route element={<Home />}>
           <Route path="dms" element={<DM />}>
             <Route index element={<Friends />} />
-            <Route path=":roomId" element={<DMRoom />} />
+            <Route
+              path=":roomId"
+              element={
+                <>
+                  <Outlet />
+                  {/* TODO: roomId가 올바른지 검증하기 */}
+                </>
+              }
+            >
+              <Route index element={<DMRoom />} />
+            </Route>
           </Route>
-          <Route path="communities/:communityId" element={<Community />}>
-            <Route path="channels/:roomId" element={<Channel />} />
+          {/* TODO: communities/ 로 이동했을 때 리다이렉트할 url 정하기 */}
+          <Route path="communities">
+            <Route
+              path=":communityId"
+              element={
+                <>
+                  <Outlet />
+                  {/* TODO: communityId가 올바른지 검증하기 */}
+                </>
+              }
+            >
+              <Route index element={<Community />} />
+              <Route path="channels">
+                <Route index element={<Navigate to="/dms" replace />} />
+                <Route
+                  path=":roomId"
+                  element={
+                    <>
+                      <Outlet />
+                      {/* TODO: roomId가 올바른지 검증하기 */}
+                    </>
+                  }
+                >
+                  <Route index element={<Channel />} />
+                </Route>
+              </Route>
+            </Route>
           </Route>
         </Route>
       </Route>
