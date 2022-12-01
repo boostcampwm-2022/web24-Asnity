@@ -28,7 +28,7 @@ const GetUsers = rest.get(getUsersEndPoint, (req, res, ctx) => {
 });
 
 // TODO: 없는 메서드인데, 컴포넌트에서 사용중 (삭제해야합니다.)
-const GetUser = rest.get(`${API_URL}/api/users/:userId`, (req, res, ctx) => {
+const GetUser = rest.get(`${API_URL}/api/user/:userId`, (req, res, ctx) => {
   const ERROR = false;
 
   const errorResponse = res(...createErrorContext(ctx));
