@@ -53,7 +53,7 @@ const Channel = () => {
                 {chatsInfiniteQuery.data &&
                   channelQuery.data &&
                   chatsInfiniteQuery.data.pages.map((page) =>
-                    page.chat.length ? (
+                    page.chat?.length ? (
                       <Fragment key={page.chat[0].id}>
                         {page.chat.map((chat) => (
                           <ChatItem
