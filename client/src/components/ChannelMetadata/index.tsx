@@ -15,10 +15,10 @@ const ChannelMetadata: FC<Props> = ({
   channel,
   managerName = '(알수없음)',
 }) => {
-  const { profileUrl, name: channelName, isPrivate, createdAt } = channel;
+  const { name: channelName, isPrivate, createdAt } = channel;
 
   return (
-    <RoomMetadata profileUrl={profileUrl} channelName={channelName}>
+    <RoomMetadata channelName={channelName}>
       <div className="flex flex-col justify-center h-full">
         <div className="flex items-center">
           <ChannelName
@@ -30,7 +30,10 @@ const ChannelMetadata: FC<Props> = ({
         </div>
         <div>
           <span className="font-bold">@{managerName}</span>님이 이 채널을{' '}
-          {dateStringToKRLocaleDateString(createdAt)}에 생성했습니다.
+          {dateStringToKRLocaleDateString(
+            createdAt || new Date().toISOString(),
+          )}
+          에 생성했습니다.
         </div>
       </div>
     </RoomMetadata>
