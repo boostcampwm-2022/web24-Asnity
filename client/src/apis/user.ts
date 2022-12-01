@@ -86,21 +86,6 @@ export const getUsers: GetUsers = (params) => {
     .then((response) => response.data.result);
 };
 
-export type GetUserResult = User;
-export type GetUserResponse = SuccessResponse<GetUserResult>;
-export type GetUser = (userId: string) => Promise<GetUserResult>;
-
-/**
- * 유저 한명의 정보 얻기
- */
-export const getUser: GetUser = (userId) => {
-  const endPoint = `/api/user/${userId}`;
-
-  return tokenAxios
-    .get<GetUserResponse>(endPoint)
-    .then((response) => response.data.result);
-};
-
 export interface GetCommunityUsersResult {
   users: User[];
 }

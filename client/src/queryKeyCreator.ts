@@ -1,7 +1,5 @@
 const userQueryKey = {
   all: () => ['users'] as const,
-  detail: (userId: string) =>
-    [...userQueryKey.all(), 'detail', userId] as const,
   communityUsers: (communityId: string) =>
     [...userQueryKey.all(), { communityId }] as const,
   channelUsers: (channelId: string) =>
