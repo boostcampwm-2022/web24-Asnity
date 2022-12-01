@@ -108,15 +108,13 @@ export class ChatListService {
   async getUnreadChatList(chatLists, lastRead) {
     for (let i = chatLists.length - 1; i >= 0; i--) {
       const chatList = await this.chatListRespository.findById(chatLists[i]);
-      console.log(new Date(chatList.firstChatTime));
-      console.log(lastRead);
       if (new Date(chatList.firstChatTime) < lastRead) {
         return chatList;
       }
     }
   }
 
-  async getUnreadChatId(unreadChatList, lastRead) {
+  getUnreadChatId(unreadChatList, lastRead) {
     let L = 0;
     let R = unreadChatList.length - 1;
     let M;
