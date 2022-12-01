@@ -52,15 +52,15 @@ const CommunityNav = () => {
   };
 
   return (
-    <nav className="flex flex-col flex-1">
-      <header className="flex items-center px-[22px] w-full h-header border-b border-line font-ipSans text-title select-none tracking-tighter">
+    <nav className="flex flex-col flex-1 h-full">
+      <header className="flex shrink-0 items-center px-[22px] w-full h-header border-b border-line font-ipSans text-title select-none tracking-tighter">
         <h2>
           <Link to={`/communities/${communityId}`}>
             {communitySummary?.name}
           </Link>
         </h2>
       </header>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full h-full">
         <div className="flex justify-between items-center py-[16px] px-[12px]">
           <div className="flex gap-[8px]">
             <button onClick={toggleVisible}>
@@ -83,7 +83,7 @@ const CommunityNav = () => {
         {joinedChannelsQuery.isLoading ? (
           <div>로딩중...</div>
         ) : joinedChannelsQuery.error ? (
-          <ErrorMessage size="lg" className="flex justify-center mt-[30px]">
+          <ErrorMessage size="lg" className="flex justify-center items-center">
             채널 목록을 불러오는데
             <br /> 오류가 발생했습니다.
           </ErrorMessage>
