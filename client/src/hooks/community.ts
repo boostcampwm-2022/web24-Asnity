@@ -2,7 +2,6 @@ import type { JoinedChannel } from '@apis/channel';
 import type {
   CreateCommunityResult,
   CreateCommunityRequest,
-  GetCommunitiesResult,
   RemoveCommunityResult,
   LeaveCommunityResult,
   InviteCommunityResult,
@@ -56,10 +55,10 @@ export const useJoinedChannelsQuery = (id: string) => {
 interface SetCommunities {
   (
     callback: (
-      communities?: GetCommunitiesResult,
-    ) => GetCommunitiesResult | undefined,
+      communities?: CommunitySummaries,
+    ) => CommunitySummaries | undefined,
   ): void;
-  (communities: GetCommunitiesResult): void;
+  (communities: CommunitySummaries): void;
 }
 
 /**
@@ -80,7 +79,7 @@ export const useSetCommunitiesQuery = () => {
   const key = queryKeyCreator.community.all();
 
   const setCommunities: SetCommunities = (cb) => {
-    queryClient.setQueryData<GetCommunitiesResult>(key, (communities) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       if (typeof cb === 'function') return cb(communities);
       return cb;
     });
