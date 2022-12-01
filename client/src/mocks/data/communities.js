@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 
 import { chancify } from '../utils/rand';
-import { channelUsers } from './users';
+import { channelUsers, users } from './users';
 
 export const createMockChannel = () => ({
   _id: faker.datatype.uuid(),
-  managerId: faker.datatype.uuid(),
+  managerId: users[0]._id,
   name: faker.name.jobType(),
   isPrivate: chancify(() => true, 50, false),
   profileUrl: chancify(() => faker.image.avatar(), 50),
@@ -13,6 +13,7 @@ export const createMockChannel = () => ({
   lastRead: chancify(() => true, 50, false),
   type: 'Channel',
   users: channelUsers,
+  createdAt: new Date().toISOString(),
 });
 
 export const channels = [...Array(10)].map(createMockChannel);
