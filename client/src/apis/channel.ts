@@ -8,18 +8,14 @@ export interface JoinedChannel {
   managerId: UserUID;
   name: string;
   isPrivate: boolean;
-  profileUrl: string;
   description: string;
   lastRead: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
   type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
+  createdAt: string;
 }
 
 export interface Channel extends JoinedChannel {
-  communityId: string;
   users: User[];
-  chatLists: [];
-  createdAt: string;
-  updatedAt: string;
 }
 
 export type GetChannelResult = Channel;
@@ -43,6 +39,7 @@ export interface CreateChannelRequest {
   description: string;
   profileUrl: string;
 }
+
 export type CreateChannel = (
   fields: CreateChannelRequest,
 ) => Promise<CreateChannelResult>;

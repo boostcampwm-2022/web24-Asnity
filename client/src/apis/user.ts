@@ -29,7 +29,7 @@ export const getMyInfo: GetMyInfo = () => {
     .then((response) => response.data.result);
 };
 
-type Followings = User[];
+export type Followings = User[];
 export interface GetFollowingsResult {
   followings: Followings;
 }
@@ -52,6 +52,8 @@ export type UpdateFollowing = (
   userId: string,
 ) => Promise<UpdateFollowingResult>;
 
+// 유저를 팔로우한다.
+// 유저가 팔로잉 상태라면 언팔로우 한다. (toggle)
 export const updateFollowing: UpdateFollowing = (userId) => {
   const endPoint = `/api/user/following/${userId}`;
 
@@ -60,7 +62,7 @@ export const updateFollowing: UpdateFollowing = (userId) => {
     .then((res) => res.data.result);
 };
 
-type Followers = User[];
+export type Followers = User[];
 export type GetFollowersResult = {
   followers: Followers;
 };

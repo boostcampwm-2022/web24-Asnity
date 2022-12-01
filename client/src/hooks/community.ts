@@ -6,6 +6,7 @@ import type {
   RemoveCommunityResult,
   LeaveCommunityResult,
   InviteCommunityResult,
+  CommunitySummaries,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
@@ -25,7 +26,7 @@ export const useCommunitiesQuery = () => {
   const queryClient = useQueryClient();
 
   const key = queryKeyCreator.community.all();
-  const query = useQuery<GetCommunitiesResult, AxiosError>(key, getCommunities);
+  const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
   const invalidate = useCallback(() => {
     return queryClient.invalidateQueries(key);
   }, [queryClient, key]);
@@ -39,7 +40,7 @@ export const useCommunitiesQuery = () => {
  */
 export const useJoinedChannelsQuery = (id: string) => {
   const key = queryKeyCreator.community.all();
-  const query = useQuery<GetCommunitiesResult, AxiosError, JoinedChannel[]>(
+  const query = useQuery<CommunitySummaries, AxiosError, JoinedChannel[]>(
     key,
     getCommunities,
     {
