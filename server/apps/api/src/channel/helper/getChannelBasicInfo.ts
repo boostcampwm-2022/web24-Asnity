@@ -10,5 +10,6 @@ export const getChannelBasicInfo = (channel) => {
     users: channel.users,
     createdAt: channel.createdAt,
     deletedAt: channel.deletedAt,
+    lastRead: channel.lastRead,
   };
 };
