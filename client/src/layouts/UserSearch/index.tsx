@@ -1,38 +1,40 @@
-import type { FormEvent } from 'react';
-
-import FollowerUserItem from '@components/FollowerUserItem';
+import ErrorMessage from '@components/ErrorMessage';
 import SearchInput from '@components/SearchInput';
-import UserList from '@components/UserList';
+import UserSearchResult from '@components/UserSearchResult';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
+import { useForm } from 'react-hook-form';
 
 import Button from '@/components/Button';
 
-// TODO: `handleKeyDown` 이벤트 핸들러 네이밍 명확하게 지어야함
+interface UserSearchInput {
+  filter: string;
+}
+
 const UserSearch = () => {
+  const { register, handleSubmit } = useForm<UserSearchInput>();
+
   const [submittedFilter, setSubmittedFilter] = useState('');
   const usersQuery = useUsersQuery(submittedFilter, {
     enabled: !!submittedFilter,
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const filter =
-      (new FormData(e.currentTarget).get('user-search') as string) ?? '';
-
-    if (filter.length === 0) return;
-
-    setSubmittedFilter(filter);
+  const handleSubmitUserSearchForm = (data: UserSearchInput) => {
+    if (data.filter.trim()) {
+      setSubmittedFilter(data.filter);
+    }
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-[20px]">
       <div className="w-full p-8">
-        <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+        <form
+          onSubmit={handleSubmit(handleSubmitUserSearchForm)}
+          className="flex gap-2 items-center"
+        >
           <SearchInput
-            name="user-search"
-            placeholder="검색하기"
+            {...register('filter')}
+            placeholder="닉네임이나 이메일로 검색하기"
             className="flex-1"
           />
           <Button color="dark" size="sm">
@@ -40,19 +42,18 @@ const UserSearch = () => {
           </Button>
         </form>
       </div>
-      <Scrollbars>
-        {usersQuery.data?.users.length ? (
-          <UserList>
-            {usersQuery.data.users.map((user) => (
-              <FollowerUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
+
+      <div className="w-full h-full flex justify-center items-center">
+        {usersQuery.isLoading && usersQuery.isFetching ? (
+          <div>로딩중...</div>
+        ) : usersQuery.isLoading ? (
+          <div>검색어를 입력해주세요</div>
+        ) : usersQuery.error ? (
+          <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
         ) : (
-          <div className="flex justify-center items-center">
-            검색된 사용자가 없습니다
-          </div>
+          <UserSearchResult users={usersQuery.data} />
         )}
-      </Scrollbars>
+      </div>
     </div>
   );
 };

@@ -1,15 +1,16 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { users } from '../data/users';
 
-const BASE_URL = `${API_URL}/api`;
 const devCookies = {
   refreshTokenKey: 'dev_refreshToken',
 };
 
 // 회원가입
-const SignUp = rest.post(`${BASE_URL}/user/auth/signup`, (req, res, ctx) => {
+const signUpEndPoint = API_URL + endPoint.signUp();
+const SignUp = rest.post(signUpEndPoint, (req, res, ctx) => {
   // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
   const ERROR = true;
 
@@ -39,7 +40,8 @@ const SignUp = rest.post(`${BASE_URL}/user/auth/signup`, (req, res, ctx) => {
 
 // 로그인
 // 응답 json 데이터로 Access token, 쿠키로 Refresh token을 받는다.
-const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
+const signInEndPoint = API_URL + endPoint.signIn();
+const SignIn = rest.post(signInEndPoint, (req, res, ctx) => {
   // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
   const ERROR = false;
 
@@ -70,66 +72,63 @@ const SignIn = rest.post(`${BASE_URL}/user/auth/signin`, (req, res, ctx) => {
 });
 
 // 토큰 재발급
-const ReissueToken = rest.post(
-  `${BASE_URL}/user/auth/refresh`,
-  (req, res, ctx) => {
-    // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
-    const existsRefreshToken = !!req.cookies[devCookies.refreshTokenKey];
+const reissueTokenEndPoint = API_URL + endPoint.reissueToken();
+const ReissueToken = rest.post(reissueTokenEndPoint, (req, res, ctx) => {
+  // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
+  const existsRefreshToken = !!req.cookies[devCookies.refreshTokenKey];
 
-    const ERROR = !existsRefreshToken || false;
-    const isUnknownError = true;
+  const ERROR = !existsRefreshToken || false;
+  const isUnknownError = true;
 
-    const successResponse = res(
-      ctx.status(200),
-      ctx.delay(1000),
-      ctx.json({
-        statusCode: 200,
-        result: {
-          accessToken: 'accessToken',
-        },
-      }),
-    );
+  const successResponse = res(
+    ctx.status(200),
+    ctx.delay(1000),
+    ctx.json({
+      statusCode: 200,
+      result: {
+        accessToken: 'accessToken',
+      },
+    }),
+  );
 
-    const unAuthErrorResponse = res(
-      ctx.status(401),
-      ctx.delay(1000),
-      ctx.json({
-        statusCode: 401,
-        message: 'Unauthorized',
-        error: '',
-      }),
-    );
+  const unAuthErrorResponse = res(
+    ctx.status(401),
+    ctx.delay(1000),
+    ctx.json({
+      statusCode: 401,
+      message: 'Unauthorized',
+      error: '',
+    }),
+  );
 
-    const unknownErrorResponse = res(
-      ctx.status(502),
-      ctx.delay(1000),
-      ctx.json({
-        statusCode: 502,
-        message: 'Unknown',
-        error: '',
-      }),
-    );
+  const unknownErrorResponse = res(
+    ctx.status(502),
+    ctx.delay(1000),
+    ctx.json({
+      statusCode: 502,
+      message: 'Unknown',
+      error: '',
+    }),
+  );
 
-    const errorResponse = isUnknownError
-      ? unknownErrorResponse
-      : unAuthErrorResponse;
+  const errorResponse = isUnknownError
+    ? unknownErrorResponse
+    : unAuthErrorResponse;
 
-    return ERROR ? errorResponse : successResponse;
-  },
-);
+  return ERROR ? errorResponse : successResponse;
+});
 
-export const GetMyInfo = rest.get(
-  `${BASE_URL}/user/auth/me`,
-  (req, res, ctx) => {
-    return res(
-      ctx.delay(300),
-      ctx.status(200),
-      ctx.json({
-        statusCode: 200,
-        result: users[0],
-      }),
-    );
-  },
-);
+const getMyInfoEndPoint = API_URL + endPoint.getMyInfo();
+
+export const GetMyInfo = rest.get(getMyInfoEndPoint, (req, res, ctx) => {
+  return res(
+    ctx.delay(300),
+    ctx.status(200),
+    ctx.json({
+      statusCode: 200,
+      result: users[0],
+    }),
+  );
+});
 
 export default [SignUp, SignIn, GetMyInfo, ReissueToken];

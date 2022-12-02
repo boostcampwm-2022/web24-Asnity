@@ -1,46 +1,42 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { users } from '../data/users';
 
-const BASE_URL = `${API_URL}/api`;
+const getFollowingsEndPoint = API_URL + endPoint.getFollowings();
+const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
+  return res(
+    ctx.delay(),
+    ctx.status(200),
+    ctx.json({
+      statusCode: 200,
+      result: {
+        followings: users,
+      },
+    }),
+  );
+});
 
-const GetFollowings = rest.get(
-  `${BASE_URL}/user/followings`,
-  (req, res, ctx) => {
-    return res(
-      ctx.delay(),
-      ctx.status(200),
-      ctx.json({
-        statusCode: 200,
-        result: {
-          followings: users,
-        },
-      }),
-    );
-  },
-);
+const toggleFollowingEndPoint = API_URL + endPoint.toggleFollowing(':userId');
+const UpdateFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
+  const { userId } = req.params;
+  const idx = users.findIndex((user) => user._id === userId);
 
-const UpdateFollowing = rest.post(
-  `${BASE_URL}/user/following/:userId`,
-  (req, res, ctx) => {
-    const { userId } = req.params;
-    const idx = users.findIndex((user) => user._id === userId);
+  users.splice(idx, 1);
 
-    users.splice(idx, 1);
+  return res(
+    ctx.delay(),
+    ctx.status(200),
+    ctx.json({
+      statusCode: 200,
+      result: {},
+    }),
+  );
+});
 
-    return res(
-      ctx.delay(),
-      ctx.status(200),
-      ctx.json({
-        statusCode: 200,
-        result: {},
-      }),
-    );
-  },
-);
-
-const GetFollowers = rest.get(`${BASE_URL}/user/followers`, (req, res, ctx) => {
+const getFollowersEndPoint = API_URL + endPoint.getFollowers();
+const GetFollowers = rest.get(getFollowersEndPoint, (req, res, ctx) => {
   return res(
     ctx.delay(),
     ctx.status(200),

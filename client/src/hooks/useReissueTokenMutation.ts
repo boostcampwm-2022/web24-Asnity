@@ -1,4 +1,4 @@
-import type { ErrorResponse, SuccessResponse } from '@@types/apis/response';
+import type { ErrorResponse } from '@@types/apis/response';
 import type { ReissueTokenResult } from '@apis/auth';
 import type { UseMutationResult } from '@tanstack/react-query';
 
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import queryKeyCreator from '@/queryKeyCreator';
 
 type UseReissueTokenMutationResult = UseMutationResult<
-  SuccessResponse<ReissueTokenResult>,
+  ReissueTokenResult,
   unknown,
   void,
   unknown
@@ -36,7 +36,7 @@ const useReissueTokenMutation: UseReissueTokenMutation = (
   const key = queryKeyCreator.reissueToken();
   const mutation = useMutation(key, reissueToken, {
     onSuccess: (data) => {
-      setAccessToken(data.result.accessToken);
+      setAccessToken(data.accessToken);
     },
     onError: (error) => {
       if (!(error instanceof AxiosError)) {

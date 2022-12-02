@@ -1,4 +1,5 @@
 import { API_URL } from '@constants/url';
+import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
 import { users } from '../data/users';
@@ -11,9 +12,15 @@ const GetDirectMessages = rest.get(
       ctx.status(200),
       ctx.json({
         statusCode: 200,
-        result: [...users.slice(0, 5)].map((user, idx) => ({
-          _id: idx,
-          user,
+        result: [...users.slice(5, 10)].map((user) => ({
+          _id: faker.datatype.uuid(),
+          name: '',
+          users: [users[0]._id, user._id],
+          profileUrl: '',
+          description: '',
+          managerId: [user._id],
+          isPrivate: true,
+          type: 'DM',
         })),
       }),
     );

@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, FC } from 'react';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 export interface AvatarProps {
   size: 'small' | 'medium';
@@ -34,9 +34,10 @@ const getFirstLetter = (str: string) => {
   return firstLetter;
 };
 
-const Avatar: React.FC<AvatarProps> = ({
+// TODO: url 바꿔야함
+const Avatar: FC<AvatarProps> = ({
   name,
-  url,
+  url = 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png',
   size,
   variant,
   className = '',
@@ -48,10 +49,14 @@ const Avatar: React.FC<AvatarProps> = ({
     >
       {children}
       {!children &&
-        (url ? (
+        (url.length ? (
           <img
-            className="object-cover"
-            src={url}
+            className="block object-cover h-full"
+            src={
+              url === 'url'
+                ? 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'
+                : url
+            }
             alt={`${name}의 프로필 이미지`}
           />
         ) : (
@@ -61,4 +66,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export default Avatar;
+export default memo(Avatar);

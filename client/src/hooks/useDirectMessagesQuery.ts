@@ -7,8 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import queryKeyCreator from '@/queryKeyCreator';
 
 const useDirectMessagesQuery = () => {
+  const key = queryKeyCreator.directMessage.list();
+
   const query = useQuery<GetDirectMessagesResult, AxiosError>(
-    queryKeyCreator.directMessage.list(),
+    key,
     getDirectMessages,
   );
 

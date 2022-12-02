@@ -1,1 +1,117 @@
-# socket workflow 작성 공간
+name: Server CI/CD
+
+on:
+  push:
+    branches: [ "main", "dev","dev-be" ]
+    paths: 'server/**'
+  pull_request:
+    branches: [ "main", "dev","dev-be" ]
+    paths: 'server/**'
+    types:
+      - closed
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: DockerHub 로그인
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: API Server 이미지 빌드 및 도커 허브 푸쉬
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/apps/api/Dockerfile
+          push: true
+          build-args: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            ERROR_SLACK_WEBHOOK=${{ secrets.ERROR_SLACK_WEBHOOK }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Socket Server 이미지 빌드 및 도커 허브 푸쉬
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/apps/socket/Dockerfile
+          push: true
+          build-args: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v2
+
+      - name: Node v.18 설치
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Yarn 설치
+        run: npm install yarn
+
+      - name: yarn으로 패키지 설치
+        run: yarn install
+
+      - name: 테스트 수행과 테스트 결과 xml파일로 생성
+        run: yarn server-test | tee ./coverage.txt
+
+      - name: 테스트 결과를 담은 xml 파일을 레포트로 변환
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: test-results
+          path: server/junit.xml
+          fail-on-error: 'false'
+          reporter: jest-junit        # Format of test results
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 테스트 코멘트 작성
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-path: ./coverage.txt
+          coverage-summary-path: ./server/coverage/coverage-final.json
+          junitxml-path: ./server/junit.xml
+      - name: build 실패 시 Slack 알림
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 백엔드 빌드 실패 알림
+          fields: repo, message, commit, author, action, eventName, ref, workflow, job, took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAIL_WEBHOOK_URL }}
+        if: failure()
+  nCloudDeploy:
+    if: github.event.pull_request.merged == true
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: execute remot ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCLOUD_REMOTE_IP }}
+          username: ${{ secrets.NCLOUD_REMOTE_SSH_ID }}
+          password: ${{ secrets.NCLOUD_REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.NCLOUD_REMOTE_SSH_PORT }}
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket
+            docker-compose up -d
+            docker image prune -f

@@ -15,4 +15,32 @@ export class ChannelRepository {
   async findOne(condition: any) {
     return await this.channelModel.findOne(condition);
   }
+
+  async updateOne(filter, updateField) {
+    return await this.channelModel.updateOne(filter, updateField);
+  }
+
+  async deleteElementAtArr(filter, removeElement) {
+    return await this.channelModel.updateOne(filter, {
+      $pullAll: removeElement,
+    });
+  }
+
+  async findById(_id: string) {
+    return await this.channelModel.findById(_id);
+  }
+
+  async findOr(conditions: any) {
+    return await this.channelModel.find({ $or: conditions });
+  }
+
+  async findAndUpdateOne(filter, updateField) {
+    return await this.channelModel.findOneAndUpdate(filter, updateField, { new: true });
+  }
+
+  async addArrAtArr(filter, attribute, appendArr) {
+    const addArr = {};
+    addArr[attribute] = { $each: appendArr };
+    return await this.channelModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
+  }
 }

@@ -3,6 +3,7 @@ import { SignInDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { UserRepository } from '@repository/user.repository';
 import { SignToken } from '@api/src/auth/helper/signToken';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 @Injectable()
 export class AuthService {
@@ -37,16 +38,21 @@ export class AuthService {
     const refreshToken = await this.signToken.signRefreshToken(user._id);
 
     // DB에 refreshToken 업데이트
-    this.userRepository.updateOne({ _id: user._id }, { refreshToken });
+    this.userRepository.updateOne({ _id: user._id }, { status: 'ONLINE', refreshToken });
 
     return { accessToken, refreshToken };
   }
 
   async signOut(userId: string) {
     try {
-      await this.userRepository.updateOne({ _id: userId }, { refreshToken: '' });
+      await this.userRepository.updateOne({ _id: userId }, { status: 'OFFLINE', refreshToken: '' });
     } catch (error) {
       throw new ForbiddenException('잘못된 접근입니다.');
     }
+  }
+
+  async getMyInfo(userId: string) {
+    const myInfo = await this.userRepository.findById(userId);
+    return getUserBasicInfo(myInfo);
   }
 }

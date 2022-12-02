@@ -1,9 +1,9 @@
 import type { SuccessResponse } from '@@types/apis/response';
+import type { USER_STATUS } from '@constants/user';
 
-import { API_URL } from '@constants/url';
-import axios from 'axios';
+import { tokenAxios } from '@utils/axios';
 
-export type UserStatus = 'online' | 'offline' | 'afk';
+export type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
 
 export interface User {
   _id: string;
@@ -12,52 +12,102 @@ export interface User {
   status: UserStatus;
   profileUrl: string;
   description: string;
+  createdAt: string;
 }
 
-export type MyInfoResult = User;
+export type UserUID = User['_id'];
 
-type GetMyInfo = () => Promise<MyInfoResult>;
+export type GetMyInfoResult = User;
+export type GetMyInfoResponse = SuccessResponse<GetMyInfoResult>;
+export type GetMyInfo = () => Promise<GetMyInfoResult>;
 
 export const getMyInfo: GetMyInfo = () => {
-  return axios
-    .get(`${API_URL}/api/user/auth/me`)
+  const endPoint = `/api/user/auth/me`;
+
+  return tokenAxios
+    .get<GetMyInfoResponse>(endPoint)
     .then((response) => response.data.result);
 };
 
+export type Followings = User[];
 export interface GetFollowingsResult {
-  followings: User[];
+  followings: Followings;
 }
 export type GetFollowingsResponse = SuccessResponse<GetFollowingsResult>;
+export type GetFollowings = () => Promise<Followings>;
 
-export const getFollowings = (): Promise<GetFollowingsResponse> =>
-  axios.get(`${API_URL}/api/user/followings`).then((res) => res.data);
+export const getFollowings: GetFollowings = () => {
+  const endPoint = `/api/user/followings`;
+
+  return tokenAxios
+    .get<GetFollowingsResponse>(endPoint)
+    .then((res) => res.data.result.followings);
+};
 
 export interface UpdateFollowingResult {
   message?: string;
 }
 export type UpdateFollowingResponse = SuccessResponse<UpdateFollowingResult>;
-
-export const updateFollowing = (
+export type UpdateFollowing = (
   userId: string,
-): Promise<UpdateFollowingResponse> =>
-  axios.post(`${API_URL}/api/user/following/${userId}`).then((res) => res.data);
+) => Promise<UpdateFollowingResult>;
 
-export interface GetFollowersResult {
-  followers: User[];
-}
+// 유저를 팔로우한다.
+// 유저가 팔로잉 상태라면 언팔로우 한다. (toggle)
+export const updateFollowing: UpdateFollowing = (userId) => {
+  const endPoint = `/api/user/following/${userId}`;
 
+  return tokenAxios
+    .post<UpdateFollowingResponse>(endPoint)
+    .then((res) => res.data.result);
+};
+
+export type Followers = User[];
+export type GetFollowersResult = {
+  followers: Followers;
+};
 export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
+export type GetFollowers = () => Promise<Followers>;
 
-export const getFollowers = (): Promise<GetFollowersResponse> =>
-  axios.get(`${API_URL}/api/user/followers`).then((res) => res.data);
+export const getFollowers: GetFollowers = () => {
+  const endPoint = `/api/user/followers`;
+
+  return tokenAxios
+    .get<GetFollowersResponse>(endPoint)
+    .then((res) => res.data.result.followers);
+};
+
 export interface GetUsersParams {
   search: string;
 }
-export interface GetUsersResult {
+export type GetUsersResult = {
+  users: User[];
+};
+export type GetUsersResponse = SuccessResponse<GetUsersResult>;
+export type GetUsers = (params: GetUsersParams) => Promise<User[]>;
+
+/**
+ * 여러 유저 검색에 사용됨
+ */
+export const getUsers: GetUsers = (params) => {
+  const endPoint = `/api/users`;
+
+  return tokenAxios
+    .get<GetUsersResponse>(endPoint, { params })
+    .then((response) => response.data.result.users);
+};
+
+export interface GetCommunityUsersResult {
   users: User[];
 }
+export type GetCommunityUsersResponse =
+  SuccessResponse<GetCommunityUsersResult>;
+export type GetCommunityUsers = (communityId: string) => Promise<User[]>;
 
-export type GetUsersResponse = SuccessResponse<GetUsersResult>;
+export const getCommunityUsers: GetCommunityUsers = (communityId) => {
+  const endPoint = `/api/communities/${communityId}/users`;
 
-export const GetUsers = (params: GetUsersParams): Promise<GetUsersResponse> =>
-  axios.get(`${API_URL}/api/users`, { params }).then((res) => res.data);
+  return tokenAxios
+    .get<GetCommunityUsersResponse>(endPoint)
+    .then((response) => response.data.result.users);
+};

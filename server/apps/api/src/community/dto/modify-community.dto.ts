@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ModifyCommunityDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   community_id: string;
 
@@ -20,4 +20,8 @@ export class ModifyCommunityDto {
   @IsOptional()
   @IsString()
   profileUrl: string;
+
+  @IsOptional()
+  @IsString()
+  requestUserId: string;
 }

@@ -1,4 +1,5 @@
 import type { User } from '@apis/user';
+import type { FC } from 'react';
 
 import UserItem from '@components/UserItem';
 import {
@@ -13,7 +14,7 @@ interface Props {
   user: User;
 }
 
-const FollowingUserItem: React.FC<Props> = ({ user }) => {
+const FollowingUserItem: FC<Props> = ({ user }) => {
   const followingMutation = useFollowingMutation(user._id);
   const { mutate: updateFollowing } = followingMutation;
 

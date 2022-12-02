@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ChannelController } from './channel.controller';
 import { ChannelService } from './channel.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,14 +9,27 @@ import { CommunityRepository } from '@repository/community.repository';
 import { CommunityModule } from '@community/community.module';
 import { UserRepository } from '@repository/user.repository';
 import { UserModule } from '@user/user.module';
+import { ChannelsController } from '@channel/channels.controller';
+import { ChatListModule } from '@chat-list/chat-list.module';
+import { ChatListService } from '@chat-list/chat-list.service';
+import { ChatListRespository } from '@repository/chat-list.respository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Channel.name, schema: ChannelSchema }]),
-    CommunityModule,
+    forwardRef(() => CommunityModule),
     UserModule,
+    forwardRef(() => ChatListModule),
   ],
-  controllers: [ChannelController],
-  providers: [ChannelService, ChannelRepository, CommunityRepository, UserRepository],
+  controllers: [ChannelController, ChannelsController],
+  providers: [
+    ChannelService,
+    ChannelRepository,
+    CommunityRepository,
+    UserRepository,
+    ChatListService,
+    ChatListRespository,
+  ],
+  exports: [MongooseModule],
 })
 export class ChannelModule {}

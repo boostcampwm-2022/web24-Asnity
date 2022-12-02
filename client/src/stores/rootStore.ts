@@ -1,14 +1,16 @@
-import type { ModalSlice } from '@stores/modalSlice';
+import type { CommonModalSlice } from '@stores/commonModalSlice';
+import type { ContextMenuModalSlice } from '@stores/contextMenuModalSlice';
 
+import { commonModalSlice } from '@stores/commonModalSlice';
+import { contextMenuModalSlice } from '@stores/contextMenuModalSlice';
 import store from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { createModalSlice } from './modalSlice';
+export type Store = ContextMenuModalSlice & CommonModalSlice;
 
-export type Store = ModalSlice;
-
-export const useStore = store<Store>()(
+export const useRootStore = store<Store>()(
   devtools((...a) => ({
-    ...createModalSlice(...a),
+    ...contextMenuModalSlice(...a),
+    ...commonModalSlice(...a),
   })),
 );
