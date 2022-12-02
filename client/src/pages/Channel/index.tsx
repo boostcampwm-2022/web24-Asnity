@@ -2,48 +2,21 @@ import ChannelMetadata from '@components/ChannelMetadata';
 import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  Fragment,
-  useCallback,
-} from 'react';
+import useSetIntersectingRef from '@hooks/useSetIntersectingRef';
+import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
 const Channel = () => {
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
+
   const params = useParams();
   const roomId = params.roomId as string;
   const { channelQuery } = useChannelQuery(roomId);
+
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
-
-  const [isFetchPreviousIntersecting, setIsFetchPreviousIntersecting] =
-    useState(false);
-  const scrollbarContainerRef = useRef<Scrollbars>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const setFetchPreviousRef = useCallback((node: HTMLElement | null) => {
-    if (node) {
-      if (!observerRef.current) {
-        observerRef.current = new IntersectionObserver((entries) =>
-          setIsFetchPreviousIntersecting(
-            entries.some((entry) => entry.isIntersecting),
-          ),
-        );
-      }
-      observerRef.current.observe(node);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!chatsInfiniteQuery.isLoading) {
-      scrollbarContainerRef?.current?.scrollToBottom();
-    }
-  }, [chatsInfiniteQuery.isLoading]);
-
-  useEffect(() => {
+  const setFetchPreviousRef = useSetIntersectingRef(() => {
     if (
-      !isFetchPreviousIntersecting ||
       !chatsInfiniteQuery.hasPreviousPage ||
       chatsInfiniteQuery.isFetchingPreviousPage
     )
@@ -55,10 +28,16 @@ const Channel = () => {
         scrollbarContainerRef.current.scrollTop(10);
       }
     });
-  }, [isFetchPreviousIntersecting]);
+  });
+
+  useEffect(() => {
+    if (!chatsInfiniteQuery.isLoading) {
+      scrollbarContainerRef?.current?.scrollToBottom();
+    }
+  }, [chatsInfiniteQuery.isLoading]);
 
   if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
-    return <div></div>;
+    return <div>loading...</div>;
 
   return (
     <div className="w-full h-full flex flex-col">
