@@ -13,6 +13,8 @@ import {
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
+import { ChatListService } from '@chat-list/chat-list.service';
+import { BOT_ID } from '@utils/def';
 
 @Injectable()
 export class ChannelService {
@@ -20,6 +22,7 @@ export class ChannelService {
     private readonly channelRepository: ChannelRepository,
     private readonly communityRepository: CommunityRepository,
     private readonly userRepository: UserRepository,
+    private readonly chatListService: ChatListService,
   ) {}
 
   async createChannel(createChannelDto: CreateChannelDto) {
@@ -42,6 +45,15 @@ export class ChannelService {
       // 공개 채널일 경우 : 채널 유저에 커뮤니티 사용자 모두 존재
       await this.addUserToChannel(community._id, channel._id, community.users);
     }
+    const user = await this.userRepository.findById(managerId);
+    // TODO: 봇 메세지 content 수정 필요
+    await this.chatListService.restoreMessage({
+      channel_id: channel.id,
+      type: 'TEXT',
+      content: `${user.nickname}님이 이 채널을 ${new Date()}에 생성했습니다.`,
+      senderId: BOT_ID,
+    });
+
     return getChannelBasicInfo(channel);
   }
 
