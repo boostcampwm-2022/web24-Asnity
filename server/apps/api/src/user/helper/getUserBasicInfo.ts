@@ -7,6 +7,6 @@ export const getUserBasicInfo = (user) => {
     profileUrl: user.profileUrl,
     description: user.description,
     createdAt: user.createdAt,
-    deletedAt: user.deletedAt,
+    updatedAt: user.updatedAt,
   };
 };
