@@ -10,15 +10,26 @@ import { CommunityModule } from '@community/community.module';
 import { UserRepository } from '@repository/user.repository';
 import { UserModule } from '@user/user.module';
 import { ChannelsController } from '@channel/channels.controller';
+import { ChatListModule } from '@chat-list/chat-list.module';
+import { ChatListService } from '@chat-list/chat-list.service';
+import { ChatListRespository } from '@repository/chat-list.respository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Channel.name, schema: ChannelSchema }]),
     forwardRef(() => CommunityModule),
     UserModule,
+    forwardRef(() => ChatListModule),
   ],
   controllers: [ChannelController, ChannelsController],
-  providers: [ChannelService, ChannelRepository, CommunityRepository, UserRepository],
+  providers: [
+    ChannelService,
+    ChannelRepository,
+    CommunityRepository,
+    UserRepository,
+    ChatListService,
+    ChatListRespository,
+  ],
   exports: [MongooseModule],
 })
 export class ChannelModule {}
