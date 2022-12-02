@@ -7,6 +7,6 @@ export const getCommunityBasicInfo = (community, channels) => {
     description: community.description,
     channels,
     createdAt: community.createdAt,
-    deletedAt: community.deletedAt,
+    updatedAt: community.updatedAt,
   };
 };
