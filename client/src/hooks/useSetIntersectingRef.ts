@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 /**
- *
+ * ## `useSetIntersectingRef` TODO: 적절한 이름이 필요함
  * @param onIntersection 관찰되는 요소가 화면에 보이면 실행되는 콜백 함수
  * @returns 관찰하려는 요소에 붙이는 callback ref
  * 반환값을 요소의 `ref` 속성에 붙이면 파라미터에 전달한 콜백이 실행됩니다.
