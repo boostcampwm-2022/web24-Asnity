@@ -7,6 +7,7 @@
     "dev": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.ts --progress",
     "dev:proxy": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.proxy.ts --progress",
     "dev:https": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.https.ts --progress",
+    "build:dev": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod:dev.ts --progress",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.ts --progress",
     "analysis": "cross-env NODE_ENV=production webpack --config ./config/webpack.analysis.ts --progress",
     "test": "jest"
@@ -21,6 +22,7 @@
     "react-custom-scrollbars-2": "^4.5.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.39.4",
+    "react-loader-spinner": "^5.3.4",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.4.3",
     "react-toastify": "^9.1.1",
