@@ -6,7 +6,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
-const useFollowersQuery = (filter: string, options?: { suspense: boolean }) => {
+const useFollowersQuery = (
+  filter?: string,
+  options?: { suspense: boolean },
+) => {
   const key = queryKeyCreator.followers();
   const query = useQuery<Followers, AxiosError>(key, getFollowers, {
     ...options,
