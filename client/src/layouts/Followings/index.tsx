@@ -6,6 +6,13 @@ import useFollowingsQuery from '@hooks/useFollowingsQuery';
 import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 
+/**
+ *
+ * @returns 검색 인풋과 팔로잉 목록을 렌더링하는 컴포넌트.
+ * 기본적으로는 사용자의 모든 팔로잉 목록을 렌더링하나,
+ * 사용자가 검색 인풋에 검색어를 입력하면 해당 값으로 필터링된 팔로잉 목록을 렌더링한다.
+ */
+
 const Followings = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
