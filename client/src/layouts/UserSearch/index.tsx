@@ -1,6 +1,6 @@
 import ErrorMessage from '@components/ErrorMessage';
+import FollowerUserSearchResult from '@components/FollowerUserSearchResult';
 import SearchInput from '@components/SearchInput';
-import UserSearchResult from '@components/UserSearchResult';
 import useUsersQuery from '@hooks/useUsersQuery';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -51,7 +51,7 @@ const UserSearch = () => {
         ) : usersQuery.error ? (
           <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
         ) : (
-          <UserSearchResult users={usersQuery.data} />
+          <FollowerUserSearchResult users={usersQuery.data} />
         )}
       </div>
     </div>
