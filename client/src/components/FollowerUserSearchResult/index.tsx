@@ -46,7 +46,7 @@ const FollowerUserSearchResult: FC<Props> = ({ users }) => {
     <Scrollbars>
       <UserList>
         {users.map((user) => {
-          const isFollower = !!followingsQuery.data?.find(
+          const isFollowing = !!followingsQuery.data?.find(
             (f) => f._id === user._id,
           );
 
@@ -55,10 +55,10 @@ const FollowerUserSearchResult: FC<Props> = ({ users }) => {
               key={user._id}
               user={user}
               left={
-                isFollower && <div className="text-placeholder">팔로잉</div>
+                isFollowing && <div className="text-placeholder">팔로잉</div>
               }
               right={
-                isFollower ? (
+                isFollowing ? (
                   <div></div>
                 ) : (
                   <div className="flex gap-4">
