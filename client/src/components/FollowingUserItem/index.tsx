@@ -1,12 +1,13 @@
 import type { User } from '@apis/user';
 import type { FC } from 'react';
 
+import FollowingUserContextMenu from '@components/FollowingUserContextMenu';
 import UserItem from '@components/UserItem';
 import {
   EllipsisHorizontalIcon,
   ChatBubbleLeftIcon,
 } from '@heroicons/react/20/solid';
-import useFollowingMutation from '@hooks/useFollowingMutation';
+import { useRootStore } from '@stores/rootStore';
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -15,8 +16,18 @@ interface Props {
 }
 
 const FollowingUserItem: FC<Props> = ({ user }) => {
-  const followingMutation = useFollowingMutation(user._id);
-  const { mutate: updateFollowing } = followingMutation;
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
+
+  const handleMoreButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
+    e,
+  ) => {
+    openCommonModal({
+      content: <FollowingUserContextMenu user={user} />,
+      overlayBackground: 'transparent',
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
 
   return (
     <UserItem
@@ -32,7 +43,7 @@ const FollowingUserItem: FC<Props> = ({ user }) => {
           </Link>
           <button
             className="p-2 rounded-full border border-line"
-            onClick={() => updateFollowing(user)}
+            onClick={handleMoreButtonClick}
           >
             <span className="sr-only">더보기</span>
             <EllipsisHorizontalIcon className="w-6 h-6 fill-indigo" />
