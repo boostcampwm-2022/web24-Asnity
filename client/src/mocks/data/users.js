@@ -15,3 +15,5 @@ export const users = [...Array(30)].map(createMockUser);
 export const me = users.at(0);
 export const communityUsers = users.slice(0, 10);
 export const channelUsers = users.slice(0, 10);
+export const followings = users.slice(2, 5);
+export const followers = users.slice(2, 7);
