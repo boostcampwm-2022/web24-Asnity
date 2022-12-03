@@ -2,7 +2,7 @@ import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
-import { users } from '../data/users';
+import { users, followers, followings } from '../data/users';
 
 const getFollowingsEndPoint = API_URL + endPoint.getFollowings();
 const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
@@ -12,7 +12,7 @@ const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
     ctx.json({
       statusCode: 200,
       result: {
-        followings: users,
+        followings,
       },
     }),
   );
@@ -21,10 +21,14 @@ const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
 const toggleFollowingEndPoint = API_URL + endPoint.toggleFollowing(':userId');
 const UpdateFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
   const { userId } = req.params;
-  const idx = users.findIndex((user) => user._id === userId);
+  const idx = followings.findIndex((user) => user._id === userId);
 
-  users.splice(idx, 1);
+  // 팔로잉 목록에 없으면 팔로잉 목록에 추가
+  if (idx === -1) followings.push(users.find((user) => user._id === userId));
+  // 팔로잉 목록에 있으면 팔로잉 목록에서 삭제
+  else followings.splice(idx, 1);
 
+  console.log(followings);
   return res(
     ctx.delay(),
     ctx.status(200),
@@ -43,7 +47,7 @@ const GetFollowers = rest.get(getFollowersEndPoint, (req, res, ctx) => {
     ctx.json({
       statusCode: 200,
       result: {
-        followers: users,
+        followers,
       },
     }),
   );
