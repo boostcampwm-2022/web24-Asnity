@@ -1,10 +1,9 @@
-import FollowingUserItem from '@components/FollowingUserItem';
+import ErrorMessage from '@components/ErrorMessage';
+import FollowingUserSearchResult from '@components/FollowingUserSearchResult';
 import SearchInput from '@components/SearchInput';
-import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowingsQuery from '@hooks/useFollowingsQuery';
 import React, { useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
 
 /**
  *
@@ -28,19 +27,15 @@ const Followings = () => {
           placeholder="검색하기"
         />
       </div>
-      <Scrollbars>
+      <div className="flex justify-center items-center w-full h-full">
         {followingsQuery.isLoading ? (
-          <div className="flex items-center justify-center">로딩중...</div>
-        ) : followingsQuery.data?.length ? (
-          <UserList>
-            {followingsQuery.data.map((user) => (
-              <FollowingUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
+          <div>로딩중...</div>
+        ) : followingsQuery.isError ? (
+          <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
         ) : (
-          '일치하는 사용자가 없습니다.'
+          <FollowingUserSearchResult users={followingsQuery.data} />
         )}
-      </Scrollbars>
+      </div>
     </div>
   );
 };
