@@ -1,4 +1,5 @@
 import ChannelMetadata from '@components/ChannelMetadata';
+import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
@@ -52,55 +53,57 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex-1 min-w-[720px] h-full">
+        <div className="flex flex-col relative flex-1 min-w-[720px] max-w-[960px] h-full py-4">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
           </div>
+          <div ref={setFetchPreviousRef} />
           <Scrollbars
+            className="max-h-[90%] grow shrink"
             ref={scrollbarContainerRef}
-            className="w-full h-full overflow-y-scroll"
           >
-            <div ref={setFetchPreviousRef} />
-            <div>
-              <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-                {chatsInfiniteQuery.data &&
-                  channelQuery.data &&
-                  chatsInfiniteQuery.data.pages.map((page) =>
-                    page.chat?.length ? (
-                      <Fragment key={page.chat[0].id}>
-                        {page.chat.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            className="px-8"
-                            user={channelQuery.data.users.find(
-                              (user) => user._id === chat.senderId,
-                            )}
+            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
+              {chatsInfiniteQuery.data &&
+                channelQuery.data &&
+                chatsInfiniteQuery.data.pages.map((page) =>
+                  page.chat?.length ? (
+                    <Fragment key={page.chat[0].id}>
+                      {page.chat.map((chat) => (
+                        <ChatItem
+                          key={chat.id}
+                          chat={chat}
+                          className="px-2"
+                          user={channelQuery.data.users.find(
+                            (user) => user._id === chat.senderId,
+                          )}
+                        />
+                      ))}
+                    </Fragment>
+                  ) : (
+                    <Fragment key={channelQuery.data._id}>
+                      {channelQuery.data && channelQuery.data.users && (
+                        <div className="p-8">
+                          <ChannelMetadata
+                            channel={channelQuery.data}
+                            managerName={
+                              channelQuery.data.users.find(
+                                (user) =>
+                                  user._id === channelQuery.data.managerId,
+                              )?.nickname
+                            }
                           />
-                        ))}
-                      </Fragment>
-                    ) : (
-                      <Fragment key={channelQuery.data._id}>
-                        {channelQuery.data && channelQuery.data.users && (
-                          <div className="p-8">
-                            <ChannelMetadata
-                              channel={channelQuery.data}
-                              managerName={
-                                channelQuery.data.users.find(
-                                  (user) =>
-                                    user._id === channelQuery.data.managerId,
-                                )?.nickname
-                              }
-                            />
-                          </div>
-                        )}
-                      </Fragment>
-                    ),
-                  )}
-              </ul>
-            </div>
+                        </div>
+                      )}
+                    </Fragment>
+                  ),
+                )}
+            </ul>
           </Scrollbars>
+          <ChatForm
+            className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
+            editMode
+          />
         </div>
         <div className="flex w-80 h-full border-l border-line">
           {channelQuery.data && (
