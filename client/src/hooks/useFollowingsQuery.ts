@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import queryKeyCreator from '@/queryKeyCreator';
 
 const useFollowingsQuery = (
-  filter: string,
+  filter?: string,
   options?: { suspense: boolean },
 ) => {
   const key = queryKeyCreator.followings.all();
