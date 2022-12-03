@@ -1,37 +1,16 @@
-import type { User, Followings } from '@apis/user';
+import type { UpdateFollowingResult } from '@apis/user';
+import type { UseMutationOptions } from '@tanstack/react-query';
 
 import { updateFollowing } from '@apis/user';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
-const useFollowingMutation = (userId: string) => {
-  const key = queryKeyCreator.followings();
-  const queryClient = useQueryClient();
-  const mutation = useMutation(() => updateFollowing(userId), {
-    onMutate: async (deleted: User) => {
-      await queryClient.cancelQueries(key);
-
-      const previousFollowings = queryClient.getQueryData<Followings>(key);
-
-      if (previousFollowings) {
-        queryClient.setQueryData<Followings>(
-          key,
-          previousFollowings.filter(
-            (following) => following._id !== deleted._id,
-          ),
-        );
-      }
-      return { previousFollowings };
-    },
-    onError: (err, variables, context) => {
-      if (context?.previousFollowings)
-        queryClient.setQueryData<Followings>(key, context.previousFollowings);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(key);
-    },
-  });
+const useFollowingMutation = (
+  options?: UseMutationOptions<UpdateFollowingResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.followings.toggleFollowing();
+  const mutation = useMutation(key, updateFollowing, { ...options });
 
   return mutation;
 };
