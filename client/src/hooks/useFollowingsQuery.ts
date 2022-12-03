@@ -10,7 +10,7 @@ const useFollowingsQuery = (
   filter: string,
   options?: { suspense: boolean },
 ) => {
-  const key = queryKeyCreator.followings();
+  const key = queryKeyCreator.followings.all();
   const query = useQuery<Followings, AxiosError>(key, getFollowings, {
     ...options,
     select: (data) =>
