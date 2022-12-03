@@ -29,12 +29,11 @@ export const getMyInfo: GetMyInfo = () => {
     .then((response) => response.data.result);
 };
 
-export type Followings = User[];
 export interface GetFollowingsResult {
-  followings: Followings;
+  followings: User[];
 }
 export type GetFollowingsResponse = SuccessResponse<GetFollowingsResult>;
-export type GetFollowings = () => Promise<Followings>;
+export type GetFollowings = () => Promise<User[]>;
 
 export const getFollowings: GetFollowings = () => {
   const endPoint = `/api/user/followings`;
@@ -62,12 +61,11 @@ export const updateFollowing: UpdateFollowing = (userId) => {
     .then((res) => res.data.result);
 };
 
-export type Followers = User[];
 export type GetFollowersResult = {
-  followers: Followers;
+  followers: User[];
 };
 export type GetFollowersResponse = SuccessResponse<GetFollowersResult>;
-export type GetFollowers = () => Promise<Followers>;
+export type GetFollowers = () => Promise<User[]>;
 
 export const getFollowers: GetFollowers = () => {
   const endPoint = `/api/user/followers`;
