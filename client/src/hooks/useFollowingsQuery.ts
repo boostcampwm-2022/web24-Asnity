@@ -2,7 +2,8 @@ import type { Followings } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getFollowings } from '@apis/user';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -25,3 +26,15 @@ const useFollowingsQuery = (
 };
 
 export default useFollowingsQuery;
+
+export const useInvalidateFollowingsQuery = () => {
+  const key = queryKeyCreator.followings.all();
+
+  const queryClient = useQueryClient();
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return invalidate;
+};
