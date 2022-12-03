@@ -1,16 +1,21 @@
-import FollowingUserItem from '@components/FollowingUserItem';
+import ErrorMessage from '@components/ErrorMessage';
+import FollowingUserSearchResult from '@components/FollowingUserSearchResult';
 import SearchInput from '@components/SearchInput';
-import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
-import useFollowingsQuery from '@hooks/useFollowingsQuery';
+import usefollowingsQuery from '@hooks/useFollowingsQuery';
 import React, { useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
 
+/**
+ *
+ * @returns 검색 인풋과 팔로잉 목록을 렌더링하는 컴포넌트.
+ * 기본적으로는 사용자의 모든 팔로잉 목록을 렌더링하나,
+ * 사용자가 검색 인풋에 검색어를 입력하면 해당 값으로 필터링된 팔로잉 목록을 렌더링한다.
+ */
 const Followings = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
-  const followingsQuery = useFollowingsQuery(debouncedFilter);
+  const followingsQuery = usefollowingsQuery(debouncedFilter);
 
   return (
     <div className="flex flex-col h-full">
@@ -21,19 +26,15 @@ const Followings = () => {
           placeholder="검색하기"
         />
       </div>
-      <Scrollbars>
+      <div className="flex justify-center items-center w-full h-full">
         {followingsQuery.isLoading ? (
-          <div className="flex items-center justify-center">로딩중...</div>
-        ) : followingsQuery.data?.length ? (
-          <UserList>
-            {followingsQuery.data.map((user) => (
-              <FollowingUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
+          <div>로딩중...</div>
+        ) : followingsQuery.isError ? (
+          <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
         ) : (
-          '일치하는 사용자가 없습니다.'
+          <FollowingUserSearchResult users={followingsQuery.data} />
         )}
-      </Scrollbars>
+      </div>
     </div>
   );
 };
