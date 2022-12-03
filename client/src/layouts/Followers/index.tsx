@@ -1,11 +1,16 @@
-import FollowerUserItem from '@components/FollowerUserItem';
+import ErrorMessage from '@components/ErrorMessage';
+import FollowerUserSearchResult from '@components/FollowerUserSearchResult';
 import SearchInput from '@components/SearchInput';
-import UserList from '@components/UserList';
 import useDebouncedValue from '@hooks/useDebouncedValue';
 import useFollowersQuery from '@hooks/useFollowersQuery';
 import React, { useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
 
+/**
+ *
+ * @returns 검색 인풋과 팔로워 목록을 렌더링하는 컴포넌트.
+ * 기본적으로는 사용자의 모든 팔로워 목록을 렌더링하나,
+ * 사용자가 검색 인풋에 검색어를 입력하면 해당 값으로 필터링된 팔로워 목록을 렌더링한다.
+ */
 const Followers = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
@@ -21,19 +26,15 @@ const Followers = () => {
           placeholder="검색하기"
         />
       </div>
-      <Scrollbars>
+      <div className="flex justify-center items-center w-full h-full">
         {followersQuery.isLoading ? (
-          <div className="flex items-center justify-center">로딩중...</div>
-        ) : followersQuery.data?.length ? (
-          <UserList>
-            {followersQuery.data.map((user) => (
-              <FollowerUserItem key={user._id} user={user} />
-            ))}
-          </UserList>
+          <div>로딩중...</div>
+        ) : followersQuery.isError ? (
+          <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
         ) : (
-          '일치하는 사용자가 없습니다.'
+          <FollowerUserSearchResult users={followersQuery.data} />
         )}
-      </Scrollbars>
+      </div>
     </div>
   );
 };
