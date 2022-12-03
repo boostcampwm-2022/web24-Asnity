@@ -1,4 +1,4 @@
-import type { Followings } from '@apis/user';
+import type { User } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getFollowings } from '@apis/user';
@@ -12,7 +12,7 @@ const useFollowingsQuery = (
   options?: { suspense: boolean },
 ) => {
   const key = queryKeyCreator.followings.all();
-  const query = useQuery<Followings, AxiosError>(key, getFollowings, {
+  const query = useQuery<User[], AxiosError>(key, getFollowings, {
     ...options,
     select: (data) =>
       filter
