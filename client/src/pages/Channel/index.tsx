@@ -3,6 +3,7 @@ import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
 import useSetIntersectingRef from '@hooks/useSetIntersectingRef';
+import ChannelUserStatus from '@pages/ChannelUserStatus';
 import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
@@ -37,7 +38,11 @@ const Channel = () => {
   }, [chatsInfiniteQuery.isLoading]);
 
   if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
-    return <div>loading...</div>;
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        채팅을 불러오는 중이에요...
+      </div>
+    );
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -47,7 +52,7 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex-1 min-w-[720px] max-w-[960px] h-full">
+        <div className="flex-1 min-w-[720px] h-full">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
@@ -97,7 +102,11 @@ const Channel = () => {
             </div>
           </Scrollbars>
         </div>
-        <div className="flex w-72 h-full border-l border-line"></div>
+        <div className="flex w-80 h-full border-l border-line">
+          {channelQuery.data && (
+            <ChannelUserStatus users={channelQuery.data.users} />
+          )}
+        </div>
       </div>
     </div>
   );
