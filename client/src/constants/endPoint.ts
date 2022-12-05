@@ -4,6 +4,7 @@ const endPoint = {
   reissueToken: () => `/api/user/auth/refresh` as const,
   createChannel: () => `/api/channel` as const,
   getChannel: (channelId: string) => `/api/channels/${channelId}` as const,
+  leaveChannel: (channelId: string) => `/api/channels/${channelId}/me` as const,
   getCommunities: () => `/api/communities` as const,
   createCommunity: () => `/api/community` as const,
   removeCommunity: (communityId: string) =>
