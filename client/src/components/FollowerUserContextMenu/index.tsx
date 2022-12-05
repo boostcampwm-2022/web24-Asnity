@@ -38,6 +38,7 @@ const FollowerUserContextMenu: FC<Props> = ({ user }) => {
           <button
             className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
             onClick={handleUnfollowButtonClick}
+            disabled={followingMutation.isLoading}
           >
             <span>팔로잉하기</span>
             <UserPlusIcon className="w-6 h-6 pointer-events-none" />
