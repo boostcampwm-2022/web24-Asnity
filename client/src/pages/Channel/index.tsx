@@ -63,7 +63,7 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex flex-col relative flex-1 min-w-[960px] max-w-[1080px] h-full py-4">
+        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full py-4">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
@@ -110,10 +110,7 @@ const Channel = () => {
                 )}
             </ul>
           </Scrollbars>
-          <ChatForm
-            className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
-            editMode
-          />
+          <ChatForm className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6" />
         </div>
         <div className="flex grow w-80 h-full border-l border-line">
           {channelQuery.data && (
