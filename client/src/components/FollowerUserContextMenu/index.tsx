@@ -31,7 +31,7 @@ const FollowerUserContextMenu: FC<Props> = ({ user }) => {
   };
 
   return (
-    <section className="w-[300px] p-[16px] rounded-[10px] border border-line">
+    <section className="w-[300px] p-[16px]">
       <h3 className="sr-only">팔로잉 컨텍스트 메뉴</h3>
       <ul>
         <li>
