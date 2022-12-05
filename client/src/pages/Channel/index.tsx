@@ -1,11 +1,13 @@
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
+import Spinner from '@components/Spinner';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
+import { useChannelUsersMapQuery } from '@hooks/user';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
-import React, { useRef, useEffect, Fragment } from 'react';
+import React, { useRef, Fragment, useLayoutEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -35,16 +37,21 @@ const Channel = () => {
     },
   );
 
-  useEffect(() => {
+  const { channelUsersMapQuery } = useChannelUsersMapQuery(roomId);
+
+  useLayoutEffect(() => {
     if (!chatsInfiniteQuery.isLoading) {
-      scrollbarContainerRef?.current?.scrollToBottom();
+      scrollbarContainerRef.current?.scrollToBottom();
     }
   }, [chatsInfiniteQuery.isLoading]);
 
-  if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
+  const isLoading = channelQuery.isLoading || chatsInfiniteQuery.isLoading;
+
+  if (isLoading)
     return (
       <div className="w-full h-full flex justify-center items-center">
-        채팅을 불러오는 중이에요...
+        <span className="sr-only">로딩중</span>
+        <Spinner />
       </div>
     );
 
