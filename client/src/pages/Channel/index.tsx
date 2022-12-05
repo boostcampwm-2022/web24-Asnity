@@ -63,7 +63,7 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex flex-col relative flex-1 min-w-[720px] max-w-[960px] h-full py-4">
+        <div className="flex flex-col relative flex-1 min-w-[960px] max-w-[1080px] h-full py-4">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
@@ -83,7 +83,7 @@ const Channel = () => {
                         <ChatItem
                           key={chat.id}
                           chat={chat}
-                          className="px-2"
+                          className="px-5 py-3 tracking-tighter"
                           user={channelQuery.data.users.find(
                             (user) => user._id === chat.senderId,
                           )}
@@ -115,7 +115,7 @@ const Channel = () => {
             editMode
           />
         </div>
-        <div className="flex w-80 h-full border-l border-line">
+        <div className="flex grow w-80 h-full border-l border-line">
           {channelQuery.data && (
             <ChannelUserStatus users={channelQuery.data.users} />
           )}
