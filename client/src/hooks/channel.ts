@@ -3,12 +3,16 @@ import type {
   CreateChannelResult,
   GetChannelResult,
   JoinedChannel,
+  LeaveChannelResult,
 } from '@apis/channel';
 import type { CommunitySummaries } from '@apis/community';
-import type { UseMutationOptions } from '@tanstack/react-query';
+import type {
+  MutationOptions,
+  UseMutationOptions,
+} from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { createChannel, getChannel } from '@apis/channel';
+import { leaveChannel, createChannel, getChannel } from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
@@ -70,5 +74,11 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  return { addChannelToCommunity };
+export const useLeaveChannelMutation = (
+  options?: MutationOptions<LeaveChannelResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.leaveChannel();
+  const mutation = useMutation(key, leaveChannel, { ...options });
+
+  return mutation;
 };
