@@ -6,34 +6,19 @@ import { ConfigModule } from '@nestjs/config';
 import { ChannelModule } from '@channel/channel.module';
 import { CommunityModule } from '@community/community.module';
 import { UserModule } from '@user/user.module';
-import * as winston from 'winston';
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from '@auth/auth.module';
 import { ChatListModule } from '@chat-list/chat-list.module';
-import { mongoDbServerModule } from '@api/test/mongo-server.module';
+import { mongoDbServerModule } from '@api/modules/mongo-server.module';
+import { importWinstonModule } from '@api/modules/Winstone.module';
+import { importConfigModule } from '@api/modules/Config.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: `config/${process.env.NODE_ENV}.env`,
-    }),
+    importConfigModule(),
     process.env.NODE_ENV != 'test'
       ? MongooseModule.forRoot(process.env.MONGODB_URL)
       : mongoDbServerModule(),
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.Console({
-          level: process.env.NODE_ENV === 'prod' ? 'info' : 'silly',
-          format: winston.format.combine(
-            winston.format.colorize({ all: true }),
-            winston.format.simple(),
-            winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('Asnity', { prettyPrint: true }),
-          ),
-        }),
-      ],
-    }),
+    importWinstonModule(),
     UserModule,
     ChannelModule,
     CommunityModule,
