@@ -14,7 +14,7 @@ interface Props {
  * @param users 사용자의 목록
  * @returns 키가 `UserStatus`고 값이 사용자의 목록인 객체. 단 OFFLINE과 AFK는 OFFLINE으로 본류된다.
  */
-const sortUserByStatus = (users: User[]) =>
+const groupUserByStatus = (users: User[]) =>
   users.reduce((acc, cur) => {
     const status =
       cur.status === USER_STATUS.OFFLINE
@@ -25,7 +25,7 @@ const sortUserByStatus = (users: User[]) =>
   }, Object.values(USER_STATUS).reduce((_acc, _cur) => ({ ..._acc, [_cur]: [] }), {}) as Record<UserStatus, User[]>);
 
 const ChannelUserStatus: FC<Props> = ({ users }) => {
-  const sortedUserByStatus = useMemo(() => sortUserByStatus(users), [users]);
+  const groupedUserByStatus = useMemo(() => groupUserByStatus(users), [users]);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -34,10 +34,10 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
           <div className="flex flex-col gap-2 border-b border-line">
             <h2 className="p-2 rounded-md text-s18 font-bold">온라인</h2>
             <div className="flex justify-center items-center min-h-[100px]">
-              {sortedUserByStatus.ONLINE.length ? (
+              {groupedUserByStatus.ONLINE.length ? (
                 <div className="w-full">
                   <ul>
-                    {sortedUserByStatus.ONLINE.map((user) => (
+                    {groupedUserByStatus.ONLINE.map((user) => (
                       <li key={user._id}>
                         <UserProfile user={user} />
                       </li>
@@ -52,10 +52,10 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
           <div className="flex flex-col gap-2 border-b border-line">
             <h2 className="p-2 rounded-md text-s18 font-bold">오프라인</h2>
             <div className="flex justify-center items-center min-h-[100px]">
-              {sortedUserByStatus.OFFLINE.length ? (
+              {groupedUserByStatus.OFFLINE.length ? (
                 <div className="w-full">
                   <ul>
-                    {sortedUserByStatus.OFFLINE.map((user) => (
+                    {groupedUserByStatus.OFFLINE.map((user) => (
                       <li key={user._id}>
                         <UserProfile user={user} />
                       </li>
