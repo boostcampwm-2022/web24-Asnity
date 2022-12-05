@@ -3,7 +3,7 @@ import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
-import useSetIntersectingRef from '@hooks/useSetIntersectingRef';
+import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -17,20 +17,23 @@ const Channel = () => {
   const { channelQuery } = useChannelQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
-  const setFetchPreviousRef = useSetIntersectingRef(() => {
-    if (
-      !chatsInfiniteQuery.hasPreviousPage ||
-      chatsInfiniteQuery.isFetchingPreviousPage
-    )
-      return;
+  const intersectionObservable = useIntersectionObservable(
+    (entry, observer) => {
+      observer.unobserve(entry.target);
+      if (
+        !chatsInfiniteQuery.hasPreviousPage ||
+        chatsInfiniteQuery.isFetchingPreviousPage
+      )
+        return;
 
-    chatsInfiniteQuery.fetchPreviousPage().then(() => {
-      if (scrollbarContainerRef?.current) {
-        /* TODO: 새로 불러와도 스크롤 안 움직인 것처럼 만들기 */
-        scrollbarContainerRef.current.scrollTop(10);
-      }
-    });
-  });
+      chatsInfiniteQuery.fetchPreviousPage().then(() => {
+        if (scrollbarContainerRef?.current) {
+          /* TODO: 새로 불러와도 스크롤 안 움직인 것처럼 만들기 */
+          scrollbarContainerRef.current.scrollTop(10);
+        }
+      });
+    },
+  );
 
   useEffect(() => {
     if (!chatsInfiniteQuery.isLoading) {
@@ -58,11 +61,11 @@ const Channel = () => {
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
           </div>
-          <div ref={setFetchPreviousRef} />
           <Scrollbars
             className="max-h-[90%] grow shrink"
             ref={scrollbarContainerRef}
           >
+            <div ref={intersectionObservable} />
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
               {chatsInfiniteQuery.data &&
                 channelQuery.data &&
