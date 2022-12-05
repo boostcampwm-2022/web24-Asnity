@@ -12,6 +12,7 @@ import SignIn from '@pages/SignIn';
 import SignUp from '@pages/SignUp';
 import UnAuthorizedLayer from '@pages/UnAuthorizedLayer';
 import UnknownError from '@pages/UnknownError';
+import communitiesLoader from '@routes/communitiesLoader';
 import React from 'react';
 import {
   RouterProvider,
@@ -22,12 +23,14 @@ import {
   Outlet,
 } from 'react-router-dom';
 
+import queryClient from './queryClient';
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Root />} />
       <Route element={<AuthorizedLayer />}>
-        <Route element={<Home />}>
+        <Route element={<Home />} loader={communitiesLoader(queryClient)}>
           <Route path="dms" element={<DM />}>
             <Route index element={<Friends />} />
             <Route
