@@ -65,3 +65,16 @@ export const createChannel: CreateChannel = ({
     })
     .then((response) => response.data.result);
 };
+
+export interface LeaveChannelResult {
+  message: string;
+}
+export type LeaveChannelResponse = SuccessResponse<LeaveChannelResult>;
+export type LeaveChannel = (channelId: string) => Promise<LeaveChannelResult>;
+export const leaveChannel: LeaveChannel = (channelId) => {
+  const endPoint = `/api/channels/${channelId}/me`;
+
+  return tokenAxios
+    .delete<LeaveChannelResponse>(endPoint)
+    .then((res) => res.data.result);
+};
