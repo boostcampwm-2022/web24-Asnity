@@ -3,23 +3,31 @@ import type { FC } from 'react';
 
 import UserProfile from '@components/UserProfile';
 import { USER_STATUS } from '@constants/user';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface Props {
   users: User[];
 }
 
+/**
+ *
+ * @param users 사용자의 목록
+ * @returns 키가 `UserStatus`고 값이 사용자의 목록인 객체. 단 OFFLINE과 AFK는 OFFLINE으로 본류된다.
+ */
+const sortUserByStatus = (users: User[]) =>
+  users.reduce((acc, cur) => {
+    const status =
+      cur.status === USER_STATUS.ONLINE
+        ? USER_STATUS.ONLINE
+        : USER_STATUS.OFFLINE;
+
+    return { ...acc, [status]: [...acc[status], cur] };
+  }, Object.values(USER_STATUS).reduce((_acc, _cur) => ({ ..._acc, [_cur]: [] }), {}) as Record<UserStatus, User[]>);
+
 const ChannelUserStatus: FC<Props> = ({ users }) => {
-  const sorted = users.reduce(
-    (acc, cur) => ({
-      ...acc,
-      [cur.status]: [...acc[cur.status], cur],
-    }),
-    Object.values(USER_STATUS).reduce(
-      (_acc, _cur) => ({ ..._acc, [_cur]: [] }),
-      {},
-    ) as { [key in UserStatus]: User[] },
-  );
+  const sortedUserByStatus = useMemo(() => sortUserByStatus(users), [users]);
+
+  console.log(users);
 
   return (
     <div className="w-full h-full overflow-auto no-display-scrollbar">
@@ -27,10 +35,10 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
         <div className="flex flex-col gap-2 border-b border-line">
           <h2 className="p-2 rounded-md text-s18 font-bold">온라인</h2>
           <div className="flex justify-center items-center min-h-[100px]">
-            {sorted.ONLINE.length ? (
+            {sortedUserByStatus.ONLINE.length ? (
               <div className="w-full">
                 <ul>
-                  {sorted.ONLINE.map((user) => (
+                  {sortedUserByStatus.ONLINE.map((user) => (
                     <li key={user._id}>
                       <UserProfile user={user} />
                     </li>
@@ -45,10 +53,10 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
         <div className="flex flex-col gap-2 border-b border-line">
           <h2 className="p-2 rounded-md text-s18 font-bold">오프라인</h2>
           <div className="flex justify-center items-center min-h-[100px]">
-            {sorted.OFFLINE.length ? (
+            {sortedUserByStatus.OFFLINE.length ? (
               <div className="w-full">
                 <ul>
-                  {sorted.OFFLINE.map((user) => (
+                  {sortedUserByStatus.OFFLINE.map((user) => (
                     <li key={user._id}>
                       <UserProfile user={user} />
                     </li>
@@ -57,24 +65,6 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
               </div>
             ) : (
               <div>현재 오프라인 사용자가 없어요</div>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 border-b border-line">
-          <h2 className="p-2 rounded-md text-s18 font-bold">자리 비움</h2>
-          <div className="flex justify-center items-center min-h-[100px]">
-            {sorted.AFK.length ? (
-              <div className="w-full">
-                <ul>
-                  {sorted.AFK.map((user) => (
-                    <li key={user._id}>
-                      <UserProfile user={user} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <div>현재 자리 비운 사용자가 없어요</div>
             )}
           </div>
         </div>
