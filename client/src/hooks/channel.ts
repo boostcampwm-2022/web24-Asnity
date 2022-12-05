@@ -74,6 +74,28 @@ export const useSetChannelsQuery = () => {
     });
   };
 
+  const deleteChannelFromCommunity = (
+    communityId: string,
+    channelId: string,
+  ) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
+      const newCommunities = communities?.map((community) => {
+        if (community._id !== communityId) return community;
+        return {
+          ...community,
+          channels: community.channels.filter(
+            (channel) => channel._id !== channelId,
+          ),
+        };
+      });
+
+      return newCommunities;
+    });
+  };
+
+  return { addChannelToCommunity, deleteChannelFromCommunity };
+};
+
 export const useLeaveChannelMutation = (
   options?: MutationOptions<LeaveChannelResult, unknown, unknown>,
 ) => {
