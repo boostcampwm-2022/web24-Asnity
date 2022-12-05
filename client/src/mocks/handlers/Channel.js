@@ -16,8 +16,10 @@ const GetChannel = rest.get(getChannelEndPoint, (req, res, ctx) => {
 
   let targetChannel;
 
-  communities.forEach(({ channels: _channels }) => {
+  communities.some(({ channels: _channels }) => {
     targetChannel = _channels.find(({ _id }) => _id === channelId);
+
+    return !!targetChannel;
   });
 
   if (!targetChannel) targetChannel = communities[0].channels[0];
