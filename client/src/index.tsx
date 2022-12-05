@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 
 import App from './App';
+import queryClient from './queryClient';
 import './index.css';
 
 if (process.env.NODE_ENV === 'development') {
@@ -14,7 +15,6 @@ if (process.env.NODE_ENV === 'development') {
   worker.start();
 }
 
-const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
