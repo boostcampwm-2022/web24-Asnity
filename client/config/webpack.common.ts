@@ -58,7 +58,7 @@ const config: Configuration = {
         PUBLIC_URL: process.env.PUBLIC_URL,
       },
     }),
-    new webpack.EnvironmentPlugin(['API_URL', 'PUBLIC_URL']),
+    new webpack.EnvironmentPlugin(['API_URL', 'PUBLIC_URL', 'SOCKET_URL']),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(isTruthy),
 };
