@@ -1,6 +1,7 @@
 import type { JoinedChannel } from '@apis/channel';
 import type { FC } from 'react';
 
+import ChannelLeaveBox from '@components/ChannelLeaveBox';
 import {
   ArrowRightOnRectangleIcon,
   Cog6ToothIcon,
@@ -23,7 +24,16 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
 
   const handleClickChannelSettingsButton = () => {};
 
-  const handleClickChannelLeaveButton = () => {};
+  const handleClickChannelLeaveButton = () => {
+    closeContextMenuModal();
+    openCommonModal({
+      content: <ChannelLeaveBox channel={channel} />,
+      overlayBackground: 'black',
+      x: '50%',
+      y: '50%',
+      transform: 'translate3d(-50%, -50%, 0)',
+    });
+  };
 
   return (
     <section className="w-[300px] p-[16px]">
