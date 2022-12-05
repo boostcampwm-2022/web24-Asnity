@@ -29,6 +29,7 @@ const channelQueryKey = {
   detail: (channelId: string) =>
     [...channelQueryKey.all(), 'detail', channelId] as const,
   createChannel: () => ['createChannel'] as const,
+  leaveChannel: () => ['leaveChannel'] as const,
 };
 
 const chatQueryKey = {
