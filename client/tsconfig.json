@@ -19,6 +19,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@errors/*": ["src/errors/*"],
       "@utils/*": ["src/utils/*"],
+      "@routes/*": ["src/routes/*"],
       "@@types/*": ["src/types/*"],
       "@/*": ["src/*"]
     }
