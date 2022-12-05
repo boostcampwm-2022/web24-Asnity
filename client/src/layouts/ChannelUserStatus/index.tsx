@@ -27,8 +27,6 @@ const sortUserByStatus = (users: User[]) =>
 const ChannelUserStatus: FC<Props> = ({ users }) => {
   const sortedUserByStatus = useMemo(() => sortUserByStatus(users), [users]);
 
-  console.log(users);
-
   return (
     <div className="w-full h-full overflow-auto no-display-scrollbar">
       <div className="flex flex-col flex-1 p-4 gap-3">
