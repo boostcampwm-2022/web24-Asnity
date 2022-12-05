@@ -28,42 +28,44 @@ const ChannelUserStatus: FC<Props> = ({ users }) => {
   const sortedUserByStatus = useMemo(() => sortUserByStatus(users), [users]);
 
   return (
-    <div className="w-full h-full overflow-auto no-display-scrollbar">
-      <div className="flex flex-col flex-1 p-4 gap-3">
-        <div className="flex flex-col gap-2 border-b border-line">
-          <h2 className="p-2 rounded-md text-s18 font-bold">온라인</h2>
-          <div className="flex justify-center items-center min-h-[100px]">
-            {sortedUserByStatus.ONLINE.length ? (
-              <div className="w-full">
-                <ul>
-                  {sortedUserByStatus.ONLINE.map((user) => (
-                    <li key={user._id}>
-                      <UserProfile user={user} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <div>현재 온라인 사용자가 없어요</div>
-            )}
+    <div className="relative w-full h-full overflow-hidden">
+      <div className="absolute w-full h-full overflow-auto no-display-scrollbar">
+        <div className="flex flex-col flex-1 p-4 gap-3">
+          <div className="flex flex-col gap-2 border-b border-line">
+            <h2 className="p-2 rounded-md text-s18 font-bold">온라인</h2>
+            <div className="flex justify-center items-center min-h-[100px]">
+              {sortedUserByStatus.ONLINE.length ? (
+                <div className="w-full">
+                  <ul>
+                    {sortedUserByStatus.ONLINE.map((user) => (
+                      <li key={user._id}>
+                        <UserProfile user={user} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div>현재 온라인 사용자가 없어요</div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col gap-2 border-b border-line">
-          <h2 className="p-2 rounded-md text-s18 font-bold">오프라인</h2>
-          <div className="flex justify-center items-center min-h-[100px]">
-            {sortedUserByStatus.OFFLINE.length ? (
-              <div className="w-full">
-                <ul>
-                  {sortedUserByStatus.OFFLINE.map((user) => (
-                    <li key={user._id}>
-                      <UserProfile user={user} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <div>현재 오프라인 사용자가 없어요</div>
-            )}
+          <div className="flex flex-col gap-2 border-b border-line">
+            <h2 className="p-2 rounded-md text-s18 font-bold">오프라인</h2>
+            <div className="flex justify-center items-center min-h-[100px]">
+              {sortedUserByStatus.OFFLINE.length ? (
+                <div className="w-full">
+                  <ul>
+                    {sortedUserByStatus.OFFLINE.map((user) => (
+                      <li key={user._id}>
+                        <UserProfile user={user} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div>현재 오프라인 사용자가 없어요</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
