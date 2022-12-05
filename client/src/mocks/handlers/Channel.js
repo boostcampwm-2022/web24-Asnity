@@ -68,4 +68,22 @@ const CreateChannel = rest.post(
   },
 );
 
-export default [GetChannel, CreateChannel];
+const leaveChannelEndPoint = API_URL + endPoint.leaveChannel(':channelId');
+const LeaveChannel = rest.delete(leaveChannelEndPoint, (req, res, ctx) => {
+  const { channelId } = req.params;
+  const ERROR = false;
+
+  const errorResponse = res(...createErrorContext(ctx));
+  const successRespose = res(
+    ...createSuccessContext(ctx, 200, 500, {
+      statusCode: 200,
+      result: {
+        message: '채널 퇴장 성공!',
+      },
+    }),
+  );
+
+  return ERROR ? errorResponse : successRespose;
+});
+
+export default [GetChannel, CreateChannel, LeaveChannel];
