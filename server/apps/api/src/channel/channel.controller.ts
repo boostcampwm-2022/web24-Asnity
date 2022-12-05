@@ -1,5 +1,4 @@
-import { Body, Controller, Inject, LoggerService, Post, Req, UseGuards } from '@nestjs/common';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ChannelService } from '@channel/channel.service';
 import { JwtAccessGuard } from '@auth/guard';
 import { CreateChannelDto } from '@channel/dto';
