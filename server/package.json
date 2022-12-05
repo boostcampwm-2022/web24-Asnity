@@ -72,6 +72,7 @@
     "jest-junit": "^14.0.1",
     "mongodb-memory-server": "^8.10.1",
     "mongoose": "^6.7.2",
+    "morgan": "^1.10.0",
     "nest-raven": "^9.0.0",
     "nest-winston": "^1.8.0",
     "prettier": "^2.3.2",

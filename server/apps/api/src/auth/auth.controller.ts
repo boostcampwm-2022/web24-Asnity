@@ -32,21 +32,15 @@ export class AuthController {
 
   @Post('signin') // 로그인
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
-    try {
-      const { refreshToken, accessToken } = await this.authService.signIn(signInDto);
-      // refreshToken 쿠키에 구워줌
-      res.cookie('refreshToken', refreshToken, {
-        path: '/api/user/auth/refresh',
-        httpOnly: true,
-        secure: false,
-        maxAge: 360000000, // 100시간 만료
-      });
-
-      return responseForm(200, { message: '로그인 성공!', accessToken });
-    } catch (error) {
-      this.logger.error(JSON.stringify(error.response));
-      throw error;
-    }
+    const { refreshToken, accessToken } = await this.authService.signIn(signInDto);
+    // refreshToken 쿠키에 구워줌
+    res.cookie('refreshToken', refreshToken, {
+      path: '/api/user/auth/refresh',
+      httpOnly: true,
+      secure: false,
+      maxAge: 360000000, // 100시간 만료
+    });
+    return responseForm(200, { message: '로그인 성공!', accessToken });
   }
 
   @Post('refresh') // AccessToken 재발행
