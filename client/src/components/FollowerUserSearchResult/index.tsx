@@ -19,16 +19,17 @@ interface Props {
  * @returns 팔로워 목록을 렌더링하는 컴포넌트
  */
 const FollowerUserSearchResult: FC<Props> = ({ users }) => {
-  const openCommonModal = useRootStore((state) => state.openCommonModal);
+  const openContextMenuModal = useRootStore(
+    (state) => state.openContextMenuModal,
+  );
 
   const followingsQuery = useFollowingsQuery();
 
   const handleMoreButtonClick: (
     user: User,
   ) => React.MouseEventHandler<HTMLButtonElement> = (user) => (e) => {
-    openCommonModal({
+    openContextMenuModal({
       content: <FollowerUserContextMenu user={user} />,
-      overlayBackground: 'transparent',
       x: e.clientX,
       y: e.clientY,
     });
