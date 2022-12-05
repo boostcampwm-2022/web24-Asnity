@@ -17,9 +17,9 @@ interface Props {
 const sortUserByStatus = (users: User[]) =>
   users.reduce((acc, cur) => {
     const status =
-      cur.status === USER_STATUS.ONLINE
-        ? USER_STATUS.ONLINE
-        : USER_STATUS.OFFLINE;
+      cur.status === USER_STATUS.OFFLINE
+        ? USER_STATUS.OFFLINE
+        : USER_STATUS.ONLINE;
 
     return { ...acc, [status]: [...acc[status], cur] };
   }, Object.values(USER_STATUS).reduce((_acc, _cur) => ({ ..._acc, [_cur]: [] }), {}) as Record<UserStatus, User[]>);
