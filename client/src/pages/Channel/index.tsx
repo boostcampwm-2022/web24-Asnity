@@ -3,7 +3,7 @@ import ChatItem from '@components/ChatItem';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery } from '@hooks/chat';
 import useSetIntersectingRef from '@hooks/useSetIntersectingRef';
-import ChannelUserStatus from '@pages/ChannelUserStatus';
+import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
