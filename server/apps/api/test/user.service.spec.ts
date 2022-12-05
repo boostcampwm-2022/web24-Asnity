@@ -6,7 +6,7 @@ import { followerDtoMock, user1, user1Modify, user2 } from '@mock/user.mock';
 import { User } from '@schemas/user.schema';
 import * as _ from 'lodash';
 import { BadRequestException, ConflictException } from '@nestjs/common';
-import { getUserBasicInfo } from '@user/dto/user-basic-info.dto';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 
 describe('[User Service]', () => {
   let userService: UserService;
