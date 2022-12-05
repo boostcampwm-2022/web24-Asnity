@@ -1,9 +1,9 @@
 import { ObjectId } from 'bson';
 import { FollowerDto } from '@user/dto/follower.dto';
-
+// _id: new ObjectId('63734af9e62b37012c73e399'),
 export const user1 = {
   name: '',
-  _id: new ObjectId('63734af9e62b37012c73e399'),
+
   id: 'test_ny@naver.com',
   password:
     '$argon2id$v=19$m=65536,t=3,p=4$BvMvPrYTKubH8gvHVDe8zw$DTCW9ha7Wsp/jTqrWUmR56w1Z83pWaVN4afaYScvOQY',
@@ -18,10 +18,10 @@ export const user1 = {
   followers: ['63739b643969101c3fec8849'],
   communities: [],
 } as any;
-
+// _id: new ObjectId('63734e98384f478a32c3a1cc');
 export const user2 = {
   name: '',
-  _id: new ObjectId('63734e98384f478a32c3a1cc'),
+
   id: 'test_asmi@naver.com',
   password:
     '$argon2id$v=19$m=65536,t=3,p=4$gSUGguog1qo9SEZ4Q18iLA$psu/sCkJqMJ0LYQYv7OoatTZwa7/LdYS1vb4GucjCbk',
