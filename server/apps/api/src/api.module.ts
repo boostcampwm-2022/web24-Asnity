@@ -10,6 +10,7 @@ import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { AuthModule } from '@auth/auth.module';
 import { ChatListModule } from '@chat-list/chat-list.module';
+import { mongoDbServerModule } from '@api/test/mongo-server.module';
 
 @Module({
   imports: [
@@ -17,7 +18,9 @@ import { ChatListModule } from '@chat-list/chat-list.module';
       isGlobal: true,
       envFilePath: `config/${process.env.NODE_ENV}.env`,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL),
+    process.env.NODE_ENV != 'test'
+      ? MongooseModule.forRoot(process.env.MONGODB_URL)
+      : mongoDbServerModule(),
     WinstonModule.forRoot({
       transports: [
         new winston.transports.Console({

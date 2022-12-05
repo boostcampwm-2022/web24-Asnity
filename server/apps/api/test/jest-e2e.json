@@ -1,9 +1,27 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "../../..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "roots": [
+    "."
+  ],
+  "moduleNameMapper": {
+    "@app/(.*)": "<rootDir>/src/$1",
+    "@schemas/(.*)": "<rootDir>/dao/schemas/$1",
+    "@repository/(.*)": "<rootDir>/dao/repository/$1",
+    "@utils/(.*)": "<rootDir>/utils/$1",
+    "@custom_pipe/(.*)": "<rootDir>/custom_pipe/$1",
+    "@user/(.*)": "<rootDir>/apps/api/src/user/$1",
+    "@channel/(.*)": "<rootDir>/apps/api/src/channel/$1",
+    "@community/(.*)": "<rootDir>/apps/api/src/community/$1",
+    "@chat-list/(.*)": "<rootDir>/apps/api/src/chat-list/$1",
+    "@api/(.*)": "<rootDir>/apps/api/$1",
+    "@auth/(.*)": "<rootDir>/apps/api/src/auth/$1",
+    "@mock/(.*)": "<rootDir>/__mock__/$1",
+    "@socketInterface/*": "<rootDir>/../shared/socket/$1"
   }
 }
