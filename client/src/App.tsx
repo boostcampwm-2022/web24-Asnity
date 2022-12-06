@@ -1,3 +1,4 @@
+import ChannelLayer from '@layouts/ChannelLayer';
 import CommunityLayer from '@layouts/CommunityLayer';
 import AccessDenied from '@pages/AccessDenied';
 import AuthorizedLayer from '@pages/AuthorizedLayer';
@@ -43,22 +44,13 @@ const router = createBrowserRouter(
               <Route index element={<DMRoom />} />
             </Route>
           </Route>
-          {/* TODO: communities/ 로 이동했을 때 리다이렉트할 url 정하기 */}
           <Route path="communities">
             <Route index element={<Navigate to="/dms" replace />} />
             <Route path=":communityId" element={<CommunityLayer />}>
               <Route index element={<Community />} />
               <Route path="channels">
                 <Route index element={<Navigate to="/dms" replace />} />
-                <Route
-                  path=":roomId"
-                  element={
-                    <>
-                      <Outlet />
-                      {/* TODO: roomId가 올바른지 검증하기 */}
-                    </>
-                  }
-                >
+                <Route path=":roomId" element={<ChannelLayer />}>
                   <Route index element={<Channel />} />
                 </Route>
               </Route>
