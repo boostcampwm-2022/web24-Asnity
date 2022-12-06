@@ -1,21 +1,29 @@
+import type { User } from '@apis/user';
+
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
 import Spinner from '@components/Spinner';
 import { useChannelQuery } from '@hooks/channel';
-import { useChatsInfiniteQuery } from '@hooks/chat';
+import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
+import { useMyInfo } from '@hooks/useMyInfoQuery';
 import { useChannelUsersMapQuery } from '@hooks/user';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
+import { useSocketStore } from '@stores/socketStore';
 import React, { useRef, Fragment, useLayoutEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
+
+import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
 
   const params = useParams();
+  const communityId = params.communityId as string;
   const roomId = params.roomId as string;
+  const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const { channelQuery } = useChannelQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
@@ -38,6 +46,43 @@ const Channel = () => {
   );
 
   const { channelUsersMapQuery } = useChannelUsersMapQuery(roomId);
+  const { addChatsQueryData } = useSetChatsQuery(roomId);
+
+  // 메세지 보내기:
+  const socket = useSocketStore((state) => state.sockets[communityId]);
+
+  const handleSubmitChat = (content: string) => {
+    const id = crypto.randomUUID();
+    const createdAt = new Date();
+    const newChat = { id, content, createdAt, senderId: myInfo._id };
+
+    addChatsQueryData({ id, content, createdAt, senderId: myInfo._id });
+    socket.emit(
+      SOCKET_EVENTS.SEND_CHAT,
+      sendChatPayload({
+        ...newChat,
+        channelId: roomId,
+      }),
+    );
+
+    if (!scrollbarContainerRef.current) {
+      return;
+    }
+
+    const { clientHeight, scrollHeight, scrollTop } =
+      scrollbarContainerRef.current.getValues();
+
+    /** 스크롤 바닥부터 50px 사이에 있다면 바닥에 닿은 것으로 간주한다. */
+    const offset = 50;
+    const isScrollTouchedBottom =
+      clientHeight + scrollTop + offset >= scrollHeight;
+
+    if (isScrollTouchedBottom) {
+      setTimeout(() => {
+        scrollbarContainerRef.current?.scrollToBottom();
+      });
+    }
+  };
 
   useLayoutEffect(() => {
     if (!chatsInfiniteQuery.isLoading) {
@@ -110,7 +155,10 @@ const Channel = () => {
                 )}
             </ul>
           </Scrollbars>
-          <ChatForm className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6" />
+          <ChatForm
+            className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
+            handleSubmitChat={handleSubmitChat}
+          />
         </div>
         <div className="flex grow w-80 h-full border-l border-line">
           {channelQuery.data && (
