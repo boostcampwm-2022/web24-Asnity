@@ -2,6 +2,7 @@ import type { CommunitySummary } from '@apis/community';
 import type { MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
+import Badge from '@components/Badge';
 import CommunityContextMenu from '@components/CommunityContextMenu';
 import CommunityCreateBox from '@components/CommunityCreateBox';
 import ErrorIcon from '@components/ErrorIcon';
@@ -103,12 +104,29 @@ const Gnb = () => {
                         to={`/communities/${_id}`}
                         onContextMenu={handleRightClickCommunityLink(community)}
                       >
-                        <Avatar
-                          name={name}
-                          size="small"
-                          variant="rectangle"
-                          url={profileUrl}
-                        />
+                        {community.channels.some(
+                          (channel) => channel.lastRead,
+                        ) ? (
+                          <Badge
+                            vertical="top"
+                            horizontal="left"
+                            color="primary"
+                          >
+                            <Avatar
+                              name={name}
+                              size="small"
+                              variant="rectangle"
+                              url={profileUrl}
+                            />
+                          </Badge>
+                        ) : (
+                          <Avatar
+                            name={name}
+                            size="small"
+                            variant="rectangle"
+                            url={profileUrl}
+                          />
+                        )}
                       </Link>
                     </GnbItemContainer>
                   </li>
