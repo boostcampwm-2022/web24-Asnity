@@ -15,7 +15,7 @@ interface Props extends ComponentPropsWithoutRef<'textarea'> {
   editMode?: boolean;
   initialValue?: string;
   handleCancelEdit?: () => void;
-  handleSubmitChat?: (chat: string, e: FormEvent) => void;
+  handleSubmitChat?: (content: string, e: FormEvent) => void;
 }
 
 const ChatForm: FC<Props> = ({
@@ -62,6 +62,7 @@ const ChatForm: FC<Props> = ({
     if (!value.trim() || !isDirty) return;
 
     handleSubmitChat?.(value, e);
+    setValue(initialValue);
   };
 
   const handleCancelForm = () => {
