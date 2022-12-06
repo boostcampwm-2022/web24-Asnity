@@ -23,11 +23,15 @@ export const useChatsInfiniteQuery = (channelId: string) => {
 };
 
 type AddChatsQueryData = ({
+  id,
   content,
   senderId,
+  createdAt,
 }: {
+  id: string;
   content: string;
   senderId: string;
+  createdAt: Date;
 }) => void;
 
 /**
@@ -37,17 +41,22 @@ export const useSetChatsQuery = (channelId: string) => {
   const key = queryKeyCreator.chat.list(channelId);
   const queryClient = useQueryClient();
 
-  const addChatsQueryData: AddChatsQueryData = ({ content, senderId }) => {
+  const addChatsQueryData: AddChatsQueryData = ({
+    id,
+    content,
+    senderId,
+    createdAt,
+  }) => {
     queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
       return produce(data, (draft: InfiniteData<GetChatsResult>) => {
         draft.pages.at(-1)?.chat?.push({
-          id: crypto.randomUUID(),
-          type: 'TEXT',
-          createdAt: new Date().toISOString(),
-          updatedAt: '',
-          deletedAt: '',
+          id,
           content,
           senderId,
+          createdAt: createdAt.toISOString(),
+          updatedAt: '',
+          deletedAt: '',
+          type: 'TEXT',
         });
       });
     });
