@@ -6,7 +6,7 @@ import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserPlusIcon } from '@heroicons/react/20/solid';
 import { useInviteCommunityMutation } from '@hooks/community';
 import {
-  useCommunityUsersQuery,
+  useCommunityUsersMapQuery,
   useInvalidateCommunityUsersQuery,
 } from '@hooks/user';
 import React from 'react';
@@ -19,7 +19,7 @@ interface Props {
 }
 
 const CommunityInviteUserSearchResult: FC<Props> = ({ users, communityId }) => {
-  const { communityUsersQuery } = useCommunityUsersQuery(communityId);
+  const communityUsersMap = useCommunityUsersMapQuery(communityId);
   const inviteCommunityMutation = useInviteCommunityMutation();
   const { invalidateCommunityUsersQuery } =
     useInvalidateCommunityUsersQuery(communityId);
@@ -55,9 +55,7 @@ const CommunityInviteUserSearchResult: FC<Props> = ({ users, communityId }) => {
       <ul>
         {users.map((user) => {
           /** 이미 커뮤니티에 포함된 사용자라면, true */
-          const disabled = communityUsersQuery.data?.some(
-            ({ _id }) => _id === user._id,
-          );
+          const disabled = !!communityUsersMap.data?.[user._id];
 
           return (
             <UserItem
