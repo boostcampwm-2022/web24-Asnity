@@ -4,6 +4,7 @@ import { ChannelRepository } from '@repository/channel.repository';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-point.dto';
 import { UserRepository } from '@repository/user.repository';
+import { makeChat } from '@chat-list/helper/makeChat';
 
 @Injectable()
 export class ChatListService {
@@ -16,51 +17,30 @@ export class ChatListService {
     const { channel_id } = restoreMessageDto;
 
     const channel = await this.channelRepository.findById(channel_id);
-    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
-    if (channel.chatLists.length === 0) {
-      // chatList가 없는 경우 새로 생성
+    const chatLists = await this.chatListRespository.findById(channel.chatLists.at(-1));
+    const chatNum = (channel.chatLists.length - 1) * 100 + chatLists.chat.length;
+
+    if (chatNum % 100 === 0) {
+      // chatList가 꽉 찼을 경우 새로운 chatList 생성
       const newChatList = await this.chatListRespository.create({
-        chat: [this.makeChat(0, restoreMessageDto)],
+        chat: [makeChat(chatNum, restoreMessageDto)],
       });
-      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'chatLists', [
+      await this.channelRepository.addArrAtArr({ _id: channel._id }, 'chatLists', [
         newChatList._id.toString(),
       ]);
       return;
     }
 
-    const chatLists = await this.chatListRespository.findById(channel.chatLists.at(-1));
-    const chatNum = (channel.chatLists.length - 1) * 100 + chatLists.chat.length;
-
-    if (chatNum % 100 === 0) {
-      // chatList가 꽉 찼을 때
-      const newChatList = await this.chatListRespository.create({
-        chat: [this.makeChat(chatNum, restoreMessageDto)],
-      });
-      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'chatLists', [
-        newChatList._id.toString(),
-      ]);
-    } else {
-      await this.chatListRespository.addArrAtArr({ _id: chatLists._id }, 'chat', [
-        this.makeChat(chatNum, restoreMessageDto),
-      ]);
-      if (chatNum % 100 === 99) {
-        await this.chatListRespository.updateOne(
-          { _id: chatLists._id },
-          { lastChatTime: new Date() },
-        );
-      }
+    await this.chatListRespository.addArrAtArr({ _id: chatLists._id }, 'chat', [
+      makeChat(chatNum, restoreMessageDto),
+    ]);
+    // chatList의 마지막 메세지일 경우 lastChatTime 업데이트
+    if (chatNum % 100 === 99) {
+      await this.chatListRespository.updateOne(
+        { _id: chatLists._id },
+        { lastChatTime: new Date() },
+      );
     }
-  }
-
-  makeChat(chatNum, restoreMessageDto) {
-    return {
-      id: chatNum,
-      type: restoreMessageDto.type,
-      content: restoreMessageDto.content,
-      senderId: restoreMessageDto.senderId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
   }
 
   async getMessage(getMessageDto: GetMessageDto) {
