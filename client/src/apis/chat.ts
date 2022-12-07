@@ -1,5 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 
+import endPoint from '@constants/endPoint';
 import { tokenAxios } from '@utils/axios';
 
 export type ChatType = 'TEXT' | 'IMAGE';
@@ -26,9 +27,9 @@ export type GetChats = (
 ) => Promise<GetChatsResult>;
 
 export const getChats: GetChats = (channelId, prev) => {
-  const endPoint = `/api/chat/${channelId}`;
+  const _endPoint = endPoint.getChats(channelId);
 
   return tokenAxios
-    .get<GetChatsResponse>(endPoint, { params: { prev } })
+    .get<GetChatsResponse>(_endPoint, { params: { prev } })
     .then((response) => response.data.result);
 };

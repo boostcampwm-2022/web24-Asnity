@@ -1,3 +1,4 @@
+import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
@@ -7,10 +8,10 @@ import {
   createSuccessContext,
 } from '../utils/createContext';
 
-const BASE_URL = `${API_URL}/api`;
-
 const MAX_PREVIOUS_PAGE = 2;
-const GetChats = rest.get(`${BASE_URL}/chat/:channelId`, (req, res, ctx) => {
+
+const getChannelEndPoint = API_URL + endPoint.getChats(':channelId');
+const GetChats = rest.get(getChannelEndPoint, (req, res, ctx) => {
   // const { channelId } = req.params;
   const prev = Number(req.url.searchParams.get('prev'));
   // const nextCursor = req.url.searchParams.get('next');
