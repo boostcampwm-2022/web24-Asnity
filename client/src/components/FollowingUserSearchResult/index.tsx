@@ -54,7 +54,7 @@ const FollowingUserSearchResult: FC<Props> = ({ users }) => {
               key={user._id}
               user={user}
               left={
-                isFollowers && <div className="text-placeholder">팔로워</div>
+                isFollowers && <div className="text-placeholder">맞팔로우</div>
               }
               right={
                 <div className="flex gap-4">

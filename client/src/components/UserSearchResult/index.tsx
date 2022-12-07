@@ -57,9 +57,15 @@ const UserSearchResult: FC<Props> = ({ users }) => {
               user={user}
               left={
                 <div className="flex gap-2 text-placeholder">
-                  {isFollowing && <div>팔로잉</div>}
-                  {isFollowing && isFollower && '•'}
-                  {isFollower && <div>팔로워</div>}
+                  {isFollowing && isFollower ? (
+                    <div>맞팔로우</div>
+                  ) : isFollowing ? (
+                    <div>팔로잉</div>
+                  ) : isFollower ? (
+                    <div>팔로워</div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               }
               right={
