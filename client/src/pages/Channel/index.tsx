@@ -50,6 +50,7 @@ const Channel = () => {
 
   const { addChatsQueryData } = useSetChatsQuery();
   const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
+  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
   // 메세지 보내기:
   const socket = useSocketStore((state) => state.sockets[communityId]);
@@ -83,7 +84,10 @@ const Channel = () => {
   };
 
   useEffect(() => {
-    setChatScrollbar(scrollbarContainerRef.current);
+    if (scrollbarContainerRef.current !== chatScrollbar) {
+      // 비교 연산 없으면 채널간 이동에서 딜레이가 매우 많이 생긴다.
+      setChatScrollbar(scrollbarContainerRef.current);
+    }
 
     if (!chatsInfiniteQuery.isLoading) {
       scrollbarContainerRef.current?.scrollToBottom();
