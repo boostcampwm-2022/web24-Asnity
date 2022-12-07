@@ -35,7 +35,7 @@ const router = createBrowserRouter(
         <Route
           element={<Home />}
           loader={communitiesLoader(queryClient)}
-          errorElement={<Navigate to="/unknown-error" />}
+          errorElement={<Navigate to="/" />}
         >
           <Route path="dms" element={<DM />}>
             <Route index element={<Friends />} />
