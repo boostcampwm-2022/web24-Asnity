@@ -2,7 +2,7 @@ import type { User } from '@apis/user';
 
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
-import ChatItem from '@components/ChatItem';
+import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
@@ -123,18 +123,12 @@ const Channel = () => {
                 channelQuery.data &&
                 chatsInfiniteQuery.data.pages.map((page) =>
                   page.chat?.length ? (
-                    <Fragment key={page.chat[0].id}>
-                      {page.chat.map((chat) => (
-                        <ChatItem
-                          key={chat.id}
-                          chat={chat}
-                          className="px-5 py-3 tracking-tighter"
-                          user={channelQuery.data.users.find(
-                            (user) => user._id === chat.senderId,
-                          )}
-                        />
-                      ))}
-                    </Fragment>
+                    <li key={page.chat[0].id}>
+                      <ChatList
+                        users={channelQuery.data.users}
+                        chats={page.chat}
+                      />
+                    </li>
                   ) : (
                     <Fragment key={channelQuery.data._id}>
                       {channelQuery.data && channelQuery.data.users && (
