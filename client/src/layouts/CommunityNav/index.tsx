@@ -12,6 +12,7 @@ import cn from 'classnames';
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
+// TODO: 이름은 `CommunityNav`인데 내용은 채널들의 네비게이션이라 `ChannelNav`로 바꿔도 좋을듯
 const CommunityNav = () => {
   const params = useParams() as { communityId: string; roomId?: string };
   const { communityId, roomId } = params;
@@ -33,13 +34,13 @@ const CommunityNav = () => {
 
   const handleRightClickChannelItem =
     (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
-    (e) => {
-      openContextMenuModal({
-        x: e.clientX,
-        y: e.clientY,
-        content: <ChannelContextMenu channel={channel} />,
-      });
-    };
+      (e) => {
+        openContextMenuModal({
+          x: e.clientX,
+          y: e.clientY,
+          content: <ChannelContextMenu channel={channel} />,
+        });
+      };
 
   const handleClickChannelCreateButton = () => {
     openCommonModal({

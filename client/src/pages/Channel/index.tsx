@@ -8,7 +8,10 @@ import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import React, { useRef, useEffect, Fragment } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
-
+// TODO: 채널 페이지 입장시 setQueryData로 lastRead false로 날리기
+// 현재 문제: gnb에서 커뮤니티는 자기 채널 목록 중 하나라도 lastread가 true면 뱃지 띄워줘서
+// 이 데이터를 setQueryData로 고치면 채널 다 lastread false 되었을 때 뱃지도 사라지겠네
+// 라고 생각했는데 채널 페이지에서 가져오는 채널 데이터는 다른 엔드포인트 뚫어서 사용하고 있음
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
 
