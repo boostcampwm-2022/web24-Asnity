@@ -51,3 +51,19 @@ export const useChannelUsersMapQuery = (channelId: string) => {
 
   return { channelUsersMapQuery: query };
 };
+
+export type CommunityUsersMap = Record<UserUID, User>;
+export const useCommunityUsersMapQuery = (communityId: string) => {
+  const key = queryKeyCreator.user.communityUsers(communityId);
+
+  const query = useQuery<User[], AxiosError, CommunityUsersMap>(
+    key,
+    () => getCommunityUsers(communityId),
+    {
+      select: (users) =>
+        users.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
