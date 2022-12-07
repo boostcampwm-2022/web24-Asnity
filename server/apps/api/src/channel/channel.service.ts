@@ -47,18 +47,25 @@ export class ChannelService {
       await this.addUserToChannel(community._id, channel._id, community.users);
     }
     const user = await this.userRepository.findById(managerId);
-    // TODO: 봇 메세지 content 수정 필요
+
+    // 봇 메세지 생성
+    const dateForm = new Date().toLocaleDateString('ko', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
     const botMessage = {
       channel_id: channel.id,
       type: 'TEXT',
-      content: `${user.nickname}님이 이 채널을 ${new Date()}에 생성했습니다.`,
+      content: `${user.nickname}님이 이 채널을 ${dateForm}에 생성했습니다.`,
       senderId: BOT_ID,
     };
-
     const newChatList = await this.chatListRepository.create({
       chat: [makeChat(0, botMessage)],
     });
-
+    // 채널의 chatList에 봇 메세지 추가
     await this.channelRepository.addArrAtArr({ _id: channel._id }, 'chatLists', [
       newChatList._id.toString(),
     ]);
