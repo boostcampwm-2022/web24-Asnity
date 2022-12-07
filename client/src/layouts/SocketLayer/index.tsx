@@ -31,7 +31,7 @@ const SocketLayer = () => {
   useEffect(() => {
     const newSockets = communityIds.reduce((acc, communityId) => {
       acc[communityId] =
-        sockets[communityId] ?? io(`${SOCKET_URL}/commu-${communityId}`);
+        sockets[communityId] ?? io(`${SOCKET_URL}/socket/commu-${communityId}`);
       return acc;
     }, {} as Sockets);
 
