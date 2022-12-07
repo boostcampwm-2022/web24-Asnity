@@ -15,7 +15,11 @@ import { Join, NewMessage, ModifyMessage } from '@socketInterface/index';
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
+import { RestoreMessageDto } from '@chat-list/dto';
+import { requestApiServer } from './axios/request-api-server';
 //TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
+
+const storeMessageURL = '/api/chat';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -43,16 +47,30 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
+  @UseFilters(new WsCatchAllFilter())
   @SubscribeMessage('new-message') // socket.on('new-message', ({}) => {})
-  newMessageEvent(@MessageBody() data: NewMessage, @ConnectedSocket() socket: SocketWithAuth) {
+  async newMessageEvent(
+    @MessageBody() data: NewMessage,
+    @ConnectedSocket() socket: SocketWithAuth,
+  ) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { id, channelId, user_id, message, time } = data;
     this.logger.log(
-      `new message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: [${time}] ${message}`,
+      `\nnew message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: [${time}] ${message}`,
     );
-    console.log(socket.user);
-    // community.emit('new-message', { message: message }); // community에 전체 broad casting
+    const restoreMessageDto: RestoreMessageDto = {
+      channel_id: channelId,
+      type: 'TEXT',
+      content: message,
+      senderId: socket.user._id,
+    };
+    const apiUrl = `${storeMessageURL}/${channelId}`;
+    await requestApiServer({
+      path: apiUrl,
+      accessToken: socket.user.accessToken,
+      data: restoreMessageDto,
+    });
     community.to(channelId).emit('new-message', data);
   }
 
@@ -65,7 +83,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const communityName = socket.nsp.name;
     const { channelId, user_id, message, messageId } = data;
     this.logger.log(
-      `modify message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}\n\torigin id : ${messageId}`,
+      `\nmodify message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}\n\torigin id : ${messageId}`,
     );
     community.to(channelId).emit('modify-message', data);
     // TODO : db에 message data 수정을 여기서할지 논의하기
@@ -92,8 +110,13 @@ const createTokenMiddleware = (jwtService: JwtService) => (socket: SocketWithAut
   const token = socket.handshake.auth.token || socket.handshake.headers['token'];
 
   try {
-    const payload = jwtService.verify(token.split(' ')[1]);
-    socket.user = { _id: payload._id, nickname: payload.nickname };
+    const accessToken = token.split(' ')[1];
+    const payload = jwtService.verify(accessToken);
+    socket.user = {
+      _id: payload._id,
+      nickname: payload.nickname,
+      accessToken,
+    };
     next();
   } catch (error) {
     next(new WsException('Unauthorized'));

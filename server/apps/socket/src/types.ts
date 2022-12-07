@@ -4,7 +4,7 @@ interface JwtToken {
   user: {
     _id: string;
     nickname: string;
+    accessToken: string;
   };
-  unAuthorized?: boolean;
 }
 export type SocketWithAuth = Socket & JwtToken;
