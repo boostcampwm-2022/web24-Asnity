@@ -1,22 +1,34 @@
+import type { User } from '@apis/user';
+
 import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
+import Spinner from '@components/Spinner';
 import { useChannelQuery } from '@hooks/channel';
-import { useChatsInfiniteQuery } from '@hooks/chat';
+import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
+import { useMyInfo } from '@hooks/useMyInfoQuery';
+import { useChannelUsersMapQuery } from '@hooks/user';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
-import React, { useRef, useEffect, Fragment } from 'react';
+import { useSocketStore } from '@stores/socketStore';
+import React, { useRef, Fragment, useLayoutEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
+
+import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
+
 // TODO: 채널 페이지 입장시 setQueryData로 lastRead false로 날리기
 // 현재 문제: gnb에서 커뮤니티는 자기 채널 목록 중 하나라도 lastread가 true면 뱃지 띄워줘서
 // 이 데이터를 setQueryData로 고치면 채널 다 lastread false 되었을 때 뱃지도 사라지겠네
 // 라고 생각했는데 채널 페이지에서 가져오는 채널 데이터는 다른 엔드포인트 뚫어서 사용하고 있음
+
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
 
   const params = useParams();
+  const communityId = params.communityId as string;
   const roomId = params.roomId as string;
+  const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const { channelQuery } = useChannelQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
@@ -38,16 +50,58 @@ const Channel = () => {
     },
   );
 
-  useEffect(() => {
+  const { channelUsersMapQuery } = useChannelUsersMapQuery(roomId);
+  const { addChatsQueryData } = useSetChatsQuery(roomId);
+
+  // 메세지 보내기:
+  const socket = useSocketStore((state) => state.sockets[communityId]);
+
+  const handleSubmitChat = (content: string) => {
+    const id = crypto.randomUUID();
+    const createdAt = new Date();
+    const newChat = { id, content, createdAt, senderId: myInfo._id };
+
+    addChatsQueryData({ id, content, createdAt, senderId: myInfo._id });
+    socket.emit(
+      SOCKET_EVENTS.SEND_CHAT,
+      sendChatPayload({
+        ...newChat,
+        channelId: roomId,
+      }),
+    );
+
+    if (!scrollbarContainerRef.current) {
+      return;
+    }
+
+    const { clientHeight, scrollHeight, scrollTop } =
+      scrollbarContainerRef.current.getValues();
+
+    /** 스크롤 바닥부터 50px 사이에 있다면 바닥에 닿은 것으로 간주한다. */
+    const offset = 50;
+    const isScrollTouchedBottom =
+      clientHeight + scrollTop + offset >= scrollHeight;
+
+    if (isScrollTouchedBottom) {
+      setTimeout(() => {
+        scrollbarContainerRef.current?.scrollToBottom();
+      });
+    }
+  };
+
+  useLayoutEffect(() => {
     if (!chatsInfiniteQuery.isLoading) {
-      scrollbarContainerRef?.current?.scrollToBottom();
+      scrollbarContainerRef.current?.scrollToBottom();
     }
   }, [chatsInfiniteQuery.isLoading]);
 
-  if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
+  const isLoading = channelQuery.isLoading || chatsInfiniteQuery.isLoading;
+
+  if (isLoading)
     return (
       <div className="w-full h-full flex justify-center items-center">
-        채팅을 불러오는 중이에요...
+        <span className="sr-only">로딩중</span>
+        <Spinner />
       </div>
     );
 
@@ -59,7 +113,7 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex flex-col relative flex-1 min-w-[720px] max-w-[960px] h-full py-4">
+        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full py-4">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
@@ -79,7 +133,7 @@ const Channel = () => {
                         <ChatItem
                           key={chat.id}
                           chat={chat}
-                          className="px-2"
+                          className="px-5 py-3 tracking-tighter"
                           user={channelQuery.data.users.find(
                             (user) => user._id === chat.senderId,
                           )}
@@ -108,10 +162,10 @@ const Channel = () => {
           </Scrollbars>
           <ChatForm
             className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
-            editMode
+            handleSubmitChat={handleSubmitChat}
           />
         </div>
-        <div className="flex w-80 h-full border-l border-line">
+        <div className="flex grow w-80 h-full border-l border-line">
           {channelQuery.data && (
             <ChannelUserStatus users={channelQuery.data.users} />
           )}
