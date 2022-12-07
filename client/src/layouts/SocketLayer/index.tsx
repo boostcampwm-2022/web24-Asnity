@@ -1,8 +1,12 @@
+import type { ReceiveChatHandler } from '@/socketEvents';
 import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
+import { useSetChatsQuery } from '@hooks/chat';
+import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
+import { isScrollTouchedBottom } from '@utils/scrollValues';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { io } from 'socket.io-client';
@@ -13,11 +17,16 @@ const SocketLayer = () => {
   const firstEffect = useRef(true);
   const sockets = useSocketStore((state) => state.sockets);
   const setSockets = useSocketStore((state) => state.setSockets);
+  const socketArr = useMemo(() => Object.values(sockets), [sockets]);
   const communitySummaries = useLoaderData() as CommunitySummaries;
   const communityIds = useMemo(
     () => communitySummaries.map((communitySummary) => communitySummary._id),
     [communitySummaries],
   );
+
+  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
+
+  const { addChatsQueryData } = useSetChatsQuery();
 
   useEffect(() => {
     const newSockets = communityIds.reduce((acc, communityId) => {
@@ -49,6 +58,38 @@ const SocketLayer = () => {
       });
     }
   }, [communityIds]);
+
+  useEffect(() => {
+    if (firstEffect.current) return undefined;
+
+    const handleReceiveChat: ReceiveChatHandler = ({
+      id,
+      channelId,
+      time: createdAt,
+      message: content,
+      user_id: senderId,
+    }) => {
+      addChatsQueryData({ id, content, channelId, senderId, createdAt });
+
+      if (chatScrollbar && isScrollTouchedBottom(chatScrollbar, 50)) {
+        setTimeout(() => {
+          chatScrollbar?.scrollToBottom();
+        });
+      }
+    };
+
+    // 이벤트 on
+    socketArr.forEach((socket) => {
+      socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
+    });
+
+    // 이벤트 off
+    return () => {
+      socketArr.forEach((socket) => {
+        socket.off(SOCKET_EVENTS.RECEIVE_CHAT);
+      });
+    };
+  }, [sockets, chatScrollbar]);
 
   return <></>;
 };
