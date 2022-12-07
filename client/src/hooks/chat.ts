@@ -52,6 +52,8 @@ export const useSetChatsQuery = () => {
     const key = queryKeyCreator.chat.list(channelId);
 
     queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
       return produce(data, (draft: InfiniteData<GetChatsResult>) => {
         draft.pages.at(-1)?.chat?.push({
           id,
