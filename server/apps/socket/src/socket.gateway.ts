@@ -47,7 +47,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
-  @UseFilters(new WsCatchAllFilter())
   @SubscribeMessage('new-message') // socket.on('new-message', ({}) => {})
   async newMessageEvent(
     @MessageBody() data: NewMessage,
