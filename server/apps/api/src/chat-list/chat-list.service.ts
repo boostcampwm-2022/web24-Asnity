@@ -47,10 +47,6 @@ export class ChatListService {
     const { prev, next, channel_id } = getMessageDto;
     const channel = await this.channelRepository.findById(channel_id);
 
-    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
-    // 채팅 리스트가 존재하지 않는 경우 아무것도 반환하지 않음
-    if (channel.chatLists.length === 0) return;
-
     // 요청받은 chatList의 idx
     let chatListIdx = Number(prev ?? next);
     if (chatListIdx === -1) {
@@ -72,11 +68,9 @@ export class ChatListService {
 
   async getUnreadMessagePoint(getUnreadMessagePointDto: GetUnreadMessagePointDto) {
     const { channel_id, requestUserId } = getUnreadMessagePointDto;
+
     const user = JSON.parse(JSON.stringify(await this.userRepository.findById(requestUserId)));
     const channel = await this.channelRepository.findById(channel_id);
-
-    // TODO: channel 생성 할 때 chat 추가 하는 로직 구현 시, 없앨 로직
-    if (channel.chatLists.length === 0) return;
 
     const lastRead = new Date(user.communities[`${channel.communityId}`].channels[`${channel_id}`]);
     const unreadChatList = JSON.parse(
