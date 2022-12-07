@@ -56,7 +56,7 @@ export class CommunitiesController {
 
   @Delete(':community_id/me')
   @UseGuards(JwtAccessGuard)
-  async exitUserInCommunity(@Param(':community_id') community_id: string, @Req() req: any) {
+  async exitUserInCommunity(@Param('community_id') community_id: string, @Req() req: any) {
     const requestUserId = req.user._id;
     const requestUserAboutCommunityDto: RequestUserAboutCommunityDto = {
       community_id,
