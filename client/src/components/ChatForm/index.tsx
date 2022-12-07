@@ -58,7 +58,6 @@ const ChatForm: FC<Props> = ({
 
   const handleSubmitForm: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-
     if (!value.trim() || !isDirty) return;
 
     handleSubmitChat?.(value, e);
@@ -70,6 +69,8 @@ const ChatForm: FC<Props> = ({
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    if (e.nativeEvent.isComposing) return;
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       submitButtonRef.current?.click();
