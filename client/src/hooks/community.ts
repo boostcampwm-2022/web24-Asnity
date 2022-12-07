@@ -43,6 +43,20 @@ export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
   );
 };
 
+export const useCommunitiesMapQuery = () => {
+  const key = queryKeyCreator.community.all();
+  const query = useQuery<CommunitySummaries, AxiosError, CommunitiesMap>(
+    key,
+    getCommunities,
+    {
+      select: (communities) =>
+        communities.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
 export const useCommunitiesQuery = () => {
   const queryClient = useQueryClient();
 
