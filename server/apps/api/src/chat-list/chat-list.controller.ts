@@ -15,7 +15,7 @@ export class ChatListController {
     @Body() restoreMessageDto: RestoreMessageDto,
     @Req() req: any,
   ) {
-    const requestUserId = req.user_id;
+    const requestUserId = req.user._id;
     await this.chatListService.restoreMessage({
       ...restoreMessageDto,
       channel_id,
