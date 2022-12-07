@@ -1,4 +1,6 @@
-export const makeChat = (chatNum, restoreMessageDto) => {
+import { RestoreMessageDto } from '@chat-list/dto';
+
+export const makeChat = (chatNum: number, restoreMessageDto: RestoreMessageDto) => {
   return {
     id: chatNum,
     type: restoreMessageDto.type,
