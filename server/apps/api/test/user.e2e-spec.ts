@@ -10,68 +10,133 @@ import { UserModule } from '@user/user.module';
 import { UserSchema } from '@schemas/user.schema';
 import { User } from '@schemas/user.schema';
 import { JwtAccessGuard } from '@auth/guard';
-import { ValidationPipe } from '@nestjs/common';
+import { ConflictException, ValidationPipe } from '@nestjs/common';
 import { UserService } from '@user/user.service';
-import { followerDtoMock, user1, user2 } from '@mock/user.mock';
+import {
+  followerDtoMock,
+  initTestUser1,
+  initTestUser2,
+  user1,
+  user1Modify,
+  user2,
+} from '@mock/user.mock';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
+import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
+import { ObjectId } from 'bson';
 
 describe('User E2E Test', () => {
-  let app;
-  let userModel;
-  let mongod;
-  let userService;
+  let app, userModel, mongod, user1;
+  const jwtMock = { user: { _id: new ObjectId('63734e98384f478a32c3a1cc'), nickname: 'hello' } };
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [importConfigModule(), mongoDbServerModule(), importWinstonModule(), UserModule],
     })
       .overrideGuard(JwtAccessGuard)
-      .useValue({})
+      .useValue(jwtMock)
       .compile();
 
     mongod = await moduleRef.get(getConnectionToken());
     userModel = mongod.model(User.name, UserSchema);
-    userService = moduleRef.get(UserService);
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
   it('should be defined', () => {
-    expect(userService).toBeDefined();
+    expect(userModel).toBeDefined();
   });
 
-  it('팔로잉 정상 동작', async () => {
-    const user1M = await userModel.create(user1);
-    const user2M = await userModel.create(user2);
-    const result = await userService.toggleFollowing({ myId: user1M._id, followId: user2M._id });
-    expect(result).toEqual({
-      message: '팔로우 신청 완료',
+  describe('Post /api/user/following/:id', () => {
+    beforeEach(async () => {
+      user1 = await userModel.create(initTestUser1);
+      // jwtMock =
+    });
+
+    it('팔로잉 정상 동작', async () => {
+      const user2 = await userModel.create(initTestUser2);
+      console.log(user2);
+      await request(app.getHttpServer())
+        .post(`/api/user/following/${user2._id}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result).toBeDefined();
+          expect(res.body.result).toEqual({
+            message: '팔로우 신청 완료',
+          });
+        });
+    });
+
+    it('언팔로잉 정상 동작', async () => {
+      const user2 = await userModel.create(initTestUser2);
+      await request(app.getHttpServer()).post(`/api/user/following/${user2._id}`);
+
+      request(app.getHttpServer())
+        .post(`/api/user/following/${user2._id}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result).toBeDefined();
+          expect(res.body.result).toEqual({
+            message: '언팔로우 완료',
+          });
+        });
+    });
+
+    // it('팔로우 하지 않았으나 상대방이 팔로우 한 경우 에러', async () => {
+    //   jest
+    //     .spyOn(userRepository, 'findById')
+    //     .mockResolvedValueOnce(user1)
+    //     .mockResolvedValueOnce(user2Append);
+    //
+    //   try {
+    //     await userService.toggleFollowing(followerDtoMock);
+    //   } catch (e) {
+    //     expect(e).toBeInstanceOf(ConflictException);
+    //     expect(e.message).toBe('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
+    //   }
+    // });
+
+    // it('팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않은 경우 에러', async () => {
+    //   jest
+    //     .spyOn(userRepository, 'findById')
+    //     .mockResolvedValueOnce(user1Append)
+    //     .mockResolvedValueOnce(user2);
+    //
+    //   try {
+    //     await userService.toggleFollowing(followerDtoMock);
+    //   } catch (e) {
+    //     expect(e).toBeInstanceOf(ConflictException);
+    //     expect(e.message).toBe(
+    //       '갱신 이상! (팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않음)',
+    //     );
+    //   }
+    // });
+  });
+
+  describe('Get /api/user/followers ', () => {
+    it('팔로워 정보 정상 동작', async () => {
+      const user2 = await userModel.create(initTestUser2);
+      return request(app.getHttpServer())
+        .get('/api/user/followers')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result).toBeDefined();
+          expect(res.body.result).toEqual([getUserBasicInfo(user1), getUserBasicInfo(user2)]);
+        });
     });
   });
-  it('GET /users', async () => {
-    const user1M = await userModel.create(user1);
-    const user2M = await userModel.create(user2);
-    return request(app.getHttpServer())
-      .get('/api/users?search=test')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.result).toBeDefined();
-        expect(res.body.result).toHaveProperty('users');
-      });
-  });
-
-  it('guart test ', async () => {
-    const user2M = await userModel.create(user2);
-    return request(app.getHttpServer())
-      .get('/api/user/followers')
-      .expect(200)
-      .expect((res) => {
-        console.log(res.body);
-        expect(res.body.result).toBeDefined();
-        // expect(res.body.result).toHaveProperty('users');
-      });
+  describe('Get /api/users ', () => {
+    // it('팔로잉 정상 동작', async () => {
+    //   const user2 = await userModel.create(initTestUser2);
+    //   return request(app.getHttpServer())
+    //     .get('/api/users?search=test')
+    //     .expect(200)
+    //     .expect((res) => {
+    //       expect(res.body.result).toBeDefined();
+    //       expect(res.body.result).toEqual([getUserBasicInfo(user1), getUserBasicInfo(user2)]);
+    //     });
+    // });
   });
 
   afterEach(async () => {
