@@ -1,4 +1,3 @@
-import type { ReceiveChatHandler } from '@/socketEvents';
 import type { User } from '@apis/user';
 
 import ChannelMetadata from '@components/ChannelMetadata';
@@ -11,9 +10,10 @@ import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import { useMyInfo } from '@hooks/useMyInfoQuery';
 import { useChannelUsersMapQuery } from '@hooks/user';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
+import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
-import React, { useRef, Fragment, useLayoutEffect, useEffect } from 'react';
+import React, { useRef, Fragment, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -29,6 +29,7 @@ const Channel = () => {
   const { channelQuery } = useChannelQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
+
   const intersectionObservable = useIntersectionObservable(
     (entry, observer) => {
       observer.unobserve(entry.target);
@@ -47,8 +48,8 @@ const Channel = () => {
     },
   );
 
-  const { channelUsersMapQuery } = useChannelUsersMapQuery(roomId);
   const { addChatsQueryData } = useSetChatsQuery();
+  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
 
   // 메세지 보내기:
   const socket = useSocketStore((state) => state.sockets[communityId]);
@@ -74,10 +75,6 @@ const Channel = () => {
       }),
     );
 
-    if (!scrollbarContainerRef.current) {
-      return;
-    }
-
     if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
       setTimeout(() => {
         scrollbarContainerRef.current?.scrollToBottom();
@@ -85,39 +82,13 @@ const Channel = () => {
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    setChatScrollbar(scrollbarContainerRef.current);
+
     if (!chatsInfiniteQuery.isLoading) {
       scrollbarContainerRef.current?.scrollToBottom();
     }
-  }, [chatsInfiniteQuery.isLoading]);
-
-  useEffect(() => {
-    const handleReceiveChat: ReceiveChatHandler = ({
-      id,
-      channelId,
-      time: createdAt,
-      message: content,
-      user_id: senderId,
-    }) => {
-      addChatsQueryData({ id, channelId, content, createdAt, senderId });
-
-      // 현재 보고있는 채널로 채팅이 온 경우 + 스크롤바가 바닥에 닿아있는 경우 -> 채팅이 오면 스크롤바를 맨 아래로 내린다.
-      if (
-        channelId === roomId &&
-        isScrollTouchedBottom(scrollbarContainerRef?.current, 50)
-      ) {
-        setTimeout(() => {
-          scrollbarContainerRef.current?.scrollToBottom();
-        });
-      }
-    };
-
-    socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
-
-    return () => {
-      socket.off(SOCKET_EVENTS.RECEIVE_CHAT);
-    };
-  }, [socket, roomId]);
+  }, [roomId, chatsInfiniteQuery.isLoading]);
 
   const isLoading = channelQuery.isLoading || chatsInfiniteQuery.isLoading;
 
