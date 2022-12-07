@@ -1,8 +1,14 @@
 import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
+import { ModifyCommunityDto } from '@community/dto';
 
 export const communityDto1 = {
   name: 'asnity commu',
-  managerId: '63734af9e62b37012c73e399',
   description: 'test description',
   profileUrl: 'test profileUrl',
 } as CreateCommunityDto;
+
+export const modifyCommunityDto1 = {
+  name: 'asnity',
+  description: 'change description',
+  profileUrl: 'change profileUrl',
+} as ModifyCommunityDto;
