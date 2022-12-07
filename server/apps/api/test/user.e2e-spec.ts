@@ -1,41 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getConnectionToken, getModelToken, MongooseModule } from '@nestjs/mongoose';
+import { getConnectionToken } from '@nestjs/mongoose';
 import * as request from 'supertest';
-import {
-  mongoDbServerCleanup,
-  mongoDbServerModule,
-  mongoDbServerStop,
-} from '@api/modules/mongo-server.module';
+import { mongoDbServerModule, mongoDbServerStop } from '@api/modules/mongo-server.module';
 import { UserModule } from '@user/user.module';
 import { UserSchema } from '@schemas/user.schema';
 import { User } from '@schemas/user.schema';
-import { JwtAccessGuard } from '@auth/guard';
-import { ConflictException, ValidationPipe } from '@nestjs/common';
-import { UserService } from '@user/user.service';
-import {
-  followerDtoMock,
-  initTestUser1,
-  initTestUser2,
-  user1,
-  user1Modify,
-  user2,
-} from '@mock/user.mock';
+import { ValidationPipe } from '@nestjs/common';
+import { initTestUser1, initTestUser2 } from '@mock/user.mock';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
-import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
-import { ObjectId } from 'bson';
+import { followingURL, signupURL, singinURL } from '@api/test/urls/urls';
 
 describe('User E2E Test', () => {
   let app, userModel, mongod, user1;
-  const jwtMock = { user: { _id: new ObjectId('63734e98384f478a32c3a1cc'), nickname: 'hello' } };
+  let accessToken;
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [importConfigModule(), mongoDbServerModule(), importWinstonModule(), UserModule],
-    })
-      .overrideGuard(JwtAccessGuard)
-      .useValue(jwtMock)
-      .compile();
+    }).compile();
 
     mongod = await moduleRef.get(getConnectionToken());
     userModel = mongod.model(User.name, UserSchema);
@@ -44,22 +27,34 @@ describe('User E2E Test', () => {
     await app.init();
   });
 
+  beforeEach(async () => {
+    await request(app.getHttpServer())
+      .post(signupURL)
+      .send({
+        id: initTestUser1.id,
+        password: initTestUser1.password,
+        nickname: initTestUser1.nickname,
+      })
+      .then(async () => {
+        user1 = await userModel.findOne({ id: initTestUser1.id });
+      });
+    accessToken = (
+      await request(app.getHttpServer())
+        .post(singinURL)
+        .send({ id: user1.id, password: initTestUser1.password })
+    ).body.result.accessToken;
+  });
+
   it('should be defined', () => {
     expect(userModel).toBeDefined();
   });
 
   describe('Post /api/user/following/:id', () => {
-    beforeEach(async () => {
-      user1 = await userModel.create(initTestUser1);
-      // jwtMock =
-    });
-
     it('팔로잉 정상 동작', async () => {
       const user2 = await userModel.create(initTestUser2);
-      console.log(user2);
       await request(app.getHttpServer())
-        .post(`/api/user/following/${user2._id}`)
-        .expect(200)
+        .post(`${followingURL}/${user2._id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
           expect(res.body.result).toBeDefined();
           expect(res.body.result).toEqual({
@@ -70,11 +65,13 @@ describe('User E2E Test', () => {
 
     it('언팔로잉 정상 동작', async () => {
       const user2 = await userModel.create(initTestUser2);
-      await request(app.getHttpServer()).post(`/api/user/following/${user2._id}`);
+      await request(app.getHttpServer())
+        .post(`${followingURL}/${user2._id}`)
+        .set('Authorization', `Bearer ${accessToken}`);
 
-      request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post(`/api/user/following/${user2._id}`)
-        .expect(200)
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
           expect(res.body.result).toBeDefined();
           expect(res.body.result).toEqual({
@@ -82,61 +79,88 @@ describe('User E2E Test', () => {
           });
         });
     });
-
-    // it('팔로우 하지 않았으나 상대방이 팔로우 한 경우 에러', async () => {
-    //   jest
-    //     .spyOn(userRepository, 'findById')
-    //     .mockResolvedValueOnce(user1)
-    //     .mockResolvedValueOnce(user2Append);
-    //
-    //   try {
-    //     await userService.toggleFollowing(followerDtoMock);
-    //   } catch (e) {
-    //     expect(e).toBeInstanceOf(ConflictException);
-    //     expect(e.message).toBe('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
-    //   }
-    // });
-
-    // it('팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않은 경우 에러', async () => {
-    //   jest
-    //     .spyOn(userRepository, 'findById')
-    //     .mockResolvedValueOnce(user1Append)
-    //     .mockResolvedValueOnce(user2);
-    //
-    //   try {
-    //     await userService.toggleFollowing(followerDtoMock);
-    //   } catch (e) {
-    //     expect(e).toBeInstanceOf(ConflictException);
-    //     expect(e.message).toBe(
-    //       '갱신 이상! (팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않음)',
-    //     );
-    //   }
-    // });
   });
 
   describe('Get /api/user/followers ', () => {
     it('팔로워 정보 정상 동작', async () => {
-      const user2 = await userModel.create(initTestUser2);
-      return request(app.getHttpServer())
+      let user2;
+      await request(app.getHttpServer())
+        .post(signupURL)
+        .send({
+          id: initTestUser2.id,
+          password: initTestUser2.password,
+          nickname: initTestUser2.nickname,
+        })
+        .then(async () => {
+          user2 = await userModel.findOne({ id: initTestUser2.id });
+        });
+      const user2AccessToken = (
+        await request(app.getHttpServer())
+          .post(singinURL)
+          .send({ id: user2.id, password: initTestUser2.password })
+      ).body.result.accessToken;
+
+      await request(app.getHttpServer())
+        .post(`${followingURL}/${user1._id}`)
+        .set('Authorization', `Bearer ${user2AccessToken}`);
+
+      await request(app.getHttpServer())
         .get('/api/user/followers')
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((res) => {
-          expect(res.body.result).toBeDefined();
-          expect(res.body.result).toEqual([getUserBasicInfo(user1), getUserBasicInfo(user2)]);
+          expect(res.body.result.followers).toBeDefined();
+          expect(res.body.result.followers[0]['_id']).toEqual(user2._id.toString());
         });
     });
   });
+
+  describe('Get /api/user/followings ', () => {
+    it('팔로워 정보 정상 동작', async () => {
+      const user2 = await userModel.create(initTestUser2);
+      await request(app.getHttpServer())
+        .post(`${followingURL}/${user2._id}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      await request(app.getHttpServer())
+        .get('/api/user/followings')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result.followings).toBeDefined();
+          expect(res.body.result.followings[0]['_id']).toEqual(user2._id.toString());
+        });
+    });
+  });
+
+  describe('Patch /api/user/settings ', () => {
+    it('팔로워 정보 정상 동작', async () => {
+      const changedDescription = 'change description';
+      await request(app.getHttpServer())
+        .patch('/api/user/settings')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ description: changedDescription })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result).toBeDefined();
+          expect(res.body.result.message).toEqual('사용자 정보 변경 완료');
+        });
+      const newUser1 = await userModel.findById(user1._id);
+      expect(newUser1.description).toEqual(changedDescription);
+    });
+  });
+
   describe('Get /api/users ', () => {
-    // it('팔로잉 정상 동작', async () => {
-    //   const user2 = await userModel.create(initTestUser2);
-    //   return request(app.getHttpServer())
-    //     .get('/api/users?search=test')
-    //     .expect(200)
-    //     .expect((res) => {
-    //       expect(res.body.result).toBeDefined();
-    //       expect(res.body.result).toEqual([getUserBasicInfo(user1), getUserBasicInfo(user2)]);
-    //     });
-    // });
+    it('사용자 검색 정상 동작', async () => {
+      const user2 = await userModel.create(initTestUser2);
+      return request(app.getHttpServer())
+        .get('/api/users?search=test')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.result.users).toBeDefined();
+          expect(res.body.result.users.length).toEqual(2);
+        });
+    });
   });
 
   afterEach(async () => {
