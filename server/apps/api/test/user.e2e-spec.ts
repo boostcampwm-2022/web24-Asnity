@@ -6,7 +6,7 @@ import { UserModule } from '@user/user.module';
 import { UserSchema } from '@schemas/user.schema';
 import { User } from '@schemas/user.schema';
 import { ValidationPipe } from '@nestjs/common';
-import { initTestUser1, initTestUser2 } from '@mock/user.mock';
+import { initTestUser1, initTestUser2, user1Modify } from '@mock/user.mock';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { followingURL, signupURL, singinURL } from '@api/test/urls/urls';
@@ -23,7 +23,6 @@ describe('User E2E Test', () => {
     mongod = await moduleRef.get(getConnectionToken());
     userModel = mongod.model(User.name, UserSchema);
     app = moduleRef.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
@@ -135,18 +134,17 @@ describe('User E2E Test', () => {
 
   describe('Patch /api/user/settings ', () => {
     it('팔로워 정보 정상 동작', async () => {
-      const changedDescription = 'change description';
       await request(app.getHttpServer())
         .patch('/api/user/settings')
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({ description: changedDescription })
+        .send(user1Modify)
         .expect(200)
         .expect((res) => {
           expect(res.body.result).toBeDefined();
           expect(res.body.result.message).toEqual('사용자 정보 변경 완료');
         });
       const newUser1 = await userModel.findById(user1._id);
-      expect(newUser1.description).toEqual(changedDescription);
+      expect(newUser1.description).toEqual(user1Modify.description);
     });
   });
 
