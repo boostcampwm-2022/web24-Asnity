@@ -13,20 +13,21 @@ interface Props {
 const ChatList: FC<Props> = ({ pages, users }) => {
   return (
     <>
-      {pages.map(
-        (page) =>
-          page.chat?.length && (
-            <Fragment key={page.chat[0].id}>
-              {page.chat.map((chat) => (
-                <ChatItem
-                  key={chat.id}
-                  chat={chat}
-                  className="px-5 py-3 tracking-tighter"
-                  user={users[chat.senderId]}
-                />
-              ))}
-            </Fragment>
-          ),
+      {pages.map((page) =>
+        page.chat?.length ? (
+          <Fragment key={page.chat[0].id}>
+            {page.chat.map((chat) => (
+              <ChatItem
+                key={chat.id}
+                chat={chat}
+                className="px-5 py-3 tracking-tighter"
+                user={users[chat.senderId]}
+              />
+            ))}
+          </Fragment>
+        ) : (
+          <></>
+        ),
       )}
     </>
   );
