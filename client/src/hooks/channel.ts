@@ -1,4 +1,5 @@
 import type {
+  Channel,
   CreateChannelRequest,
   CreateChannelResult,
   GetChannelResult,
@@ -6,6 +7,7 @@ import type {
   LeaveChannelResult,
 } from '@apis/channel';
 import type { CommunitySummaries } from '@apis/community';
+import type { UsersMap } from '@hooks/user';
 import type {
   MutationOptions,
   UseMutationOptions,
@@ -31,6 +33,35 @@ export const useChannelQuery = (channelId: string) => {
   );
 
   return { channelQuery: query, invalidateChannelQuery: invalidate };
+};
+
+// TODO: 적절한 이름 짓기
+export type UsersNormalizedChannel = Omit<Channel, 'users'> & {
+  users: UsersMap;
+};
+
+/**
+ *
+ * @param channelId 채널 id
+ * @returns `users`가 `UsersMap`인 `Channel` 객체
+ */
+export const useUsersNormalizedChannelQuery = (channelId: string) => {
+  const key = queryKeyCreator.channel.detail(channelId);
+  const query = useQuery<GetChannelResult, AxiosError, UsersNormalizedChannel>(
+    key,
+    () => getChannel(channelId),
+    {
+      select: (channel) => ({
+        ...channel,
+        users: channel.users.reduce(
+          (acc, cur) => ({ ...acc, [cur._id]: cur }),
+          {},
+        ),
+      }),
+    },
+  );
+
+  return query;
 };
 
 export const useCreateChannelMutation = (
