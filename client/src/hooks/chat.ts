@@ -24,11 +24,13 @@ export const useChatsInfiniteQuery = (channelId: string) => {
 
 type AddChatsQueryData = ({
   id,
+  channelId,
   content,
   senderId,
   createdAt,
 }: {
   id: string;
+  channelId: string;
   content: string;
   senderId: string;
   createdAt: Date;
@@ -37,16 +39,18 @@ type AddChatsQueryData = ({
 /**
  * - addChatsQueryData: 쿼리의 가장 마지막 페이지에 새로운 채팅 데이터를 추가
  */
-export const useSetChatsQuery = (channelId: string) => {
-  const key = queryKeyCreator.chat.list(channelId);
+export const useSetChatsQuery = () => {
   const queryClient = useQueryClient();
 
   const addChatsQueryData: AddChatsQueryData = ({
     id,
+    channelId,
     content,
     senderId,
     createdAt,
   }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
     queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
       return produce(data, (draft: InfiniteData<GetChatsResult>) => {
         draft.pages.at(-1)?.chat?.push({
