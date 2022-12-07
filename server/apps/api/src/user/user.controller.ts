@@ -39,6 +39,6 @@ export class UserController {
   async modifyUserSetting(@Body() modifyUserDto: ModifyUserDto, @Req() req: any) {
     const _id = req.user._id;
     await this.userService.modifyUser({ ...modifyUserDto, _id });
-    return responseForm(200, {});
+    return responseForm(200, { message: '사용자 정보 변경 완료' });
   }
 }
