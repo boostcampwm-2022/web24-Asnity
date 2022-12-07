@@ -26,6 +26,9 @@ export class CommunityService {
   async getCommunities(_id: string) {
     const communitiesInfo = [];
     const user = await this.userRepository.findById(_id);
+    if (user.communities === undefined || Object.keys(user.communities).length == 0) {
+      return { communities: communitiesInfo };
+    }
     await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
@@ -229,8 +232,11 @@ export class CommunityService {
       { users: [requestUserId] },
     );
     // user가 속한 해당 community의 channel doc 에서 삭제하기
+    if (user.communities.get(community_id).channels === undefined) {
+      return;
+    }
     await Promise.all(
-      Object.keys(user.communities[community_id].channels).map((channel_id) =>
+      Array.from(user.communities.get(community_id).channels.keys()).map((channel_id) =>
         this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUserId] }),
       ),
     );
