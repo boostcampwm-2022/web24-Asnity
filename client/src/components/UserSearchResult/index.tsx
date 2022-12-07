@@ -6,7 +6,7 @@ import UserItem from '@components/UserItem';
 import UserList from '@components/UserList';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
 import { useFollowersMapQuery } from '@hooks/useFollowersQuery';
-import useFollowingsQuery from '@hooks/useFollowingsQuery';
+import { useFollowingsMapQuery } from '@hooks/useFollowingsQuery';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -23,7 +23,7 @@ const UserSearchResult: FC<Props> = ({ users }) => {
   const openCommonModal = useRootStore((state) => state.openCommonModal);
 
   const followersMapQuery = useFollowersMapQuery();
-  const followingsQuery = useFollowingsQuery();
+  const followingsMapQuery = useFollowingsMapQuery();
 
   const handleMoreButtonClick: (
     user: User,
@@ -48,9 +48,7 @@ const UserSearchResult: FC<Props> = ({ users }) => {
     <Scrollbars>
       <UserList>
         {users.map((user) => {
-          const isFollowing = !!followingsQuery.data?.find(
-            (f) => f._id === user._id,
-          );
+          const isFollowing = !!followingsMapQuery.data?.[user._id];
           const isFollower = !!followersMapQuery.data?.[user._id];
 
           return (
