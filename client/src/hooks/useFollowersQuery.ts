@@ -25,3 +25,14 @@ const useFollowersQuery = (
 };
 
 export default useFollowersQuery;
+
+export type FollowersMap = Record<User['id'], User>;
+export const useFollowersMapQuery = () => {
+  const key = queryKeyCreator.followers();
+  const query = useQuery<User[], AxiosError, FollowersMap>(key, getFollowers, {
+    select: (followers) =>
+      followers.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+  });
+
+  return query;
+};
