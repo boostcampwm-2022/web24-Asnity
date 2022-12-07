@@ -27,6 +27,21 @@ const useFollowingsQuery = (
 
 export default useFollowingsQuery;
 
+export type FollowingsMap = Record<User['id'], User>;
+export const useFollowingsMapQuery = () => {
+  const key = queryKeyCreator.followings.all();
+  const query = useQuery<User[], AxiosError, FollowingsMap>(
+    key,
+    getFollowings,
+    {
+      select: (followings) =>
+        followings.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
 export const useInvalidateFollowingsQuery = () => {
   const key = queryKeyCreator.followings.all();
 

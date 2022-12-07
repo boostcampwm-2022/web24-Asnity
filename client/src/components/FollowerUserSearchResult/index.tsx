@@ -5,7 +5,7 @@ import FollowerUserContextMenu from '@components/FollowerUserContextMenu';
 import UserItem from '@components/UserItem';
 import UserList from '@components/UserList';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
-import useFollowingsQuery from '@hooks/useFollowingsQuery';
+import { useFollowingsMapQuery } from '@hooks/useFollowingsQuery';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -23,7 +23,7 @@ const FollowerUserSearchResult: FC<Props> = ({ users }) => {
     (state) => state.openContextMenuModal,
   );
 
-  const followingsQuery = useFollowingsQuery();
+  const followingsMapQuery = useFollowingsMapQuery();
 
   const handleMoreButtonClick: (
     user: User,
@@ -47,9 +47,7 @@ const FollowerUserSearchResult: FC<Props> = ({ users }) => {
     <Scrollbars>
       <UserList>
         {users.map((user) => {
-          const isFollowing = !!followingsQuery.data?.find(
-            (f) => f._id === user._id,
-          );
+          const isFollowing = !!followingsMapQuery.data?.[user._id];
 
           return (
             <UserItem
