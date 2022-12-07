@@ -5,7 +5,7 @@ import FollowerUserContextMenu from '@components/FollowerUserContextMenu';
 import UserItem from '@components/UserItem';
 import UserList from '@components/UserList';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
-import useFollowersQuery from '@hooks/useFollowersQuery';
+import { useFollowersMapQuery } from '@hooks/useFollowersQuery';
 import useFollowingsQuery from '@hooks/useFollowingsQuery';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
@@ -22,7 +22,7 @@ interface Props {
 const UserSearchResult: FC<Props> = ({ users }) => {
   const openCommonModal = useRootStore((state) => state.openCommonModal);
 
-  const followersQuery = useFollowersQuery();
+  const followersMapQuery = useFollowersMapQuery();
   const followingsQuery = useFollowingsQuery();
 
   const handleMoreButtonClick: (
@@ -51,9 +51,7 @@ const UserSearchResult: FC<Props> = ({ users }) => {
           const isFollowing = !!followingsQuery.data?.find(
             (f) => f._id === user._id,
           );
-          const isFollower = !!followersQuery.data?.find(
-            (f) => f._id === user._id,
-          );
+          const isFollower = !!followersMapQuery.data?.[user._id];
 
           return (
             <UserItem
