@@ -4,21 +4,27 @@ import { JwtAccessGuard } from '@auth/guard';
 import { RestoreMessageDto } from '@chat-list/dto';
 import { responseForm } from '@utils/responseForm';
 
-@Controller('api/chat')
+@Controller('api/channels')
 export class ChatListController {
   constructor(private chatListService: ChatListService) {}
 
-  @Post(':channel_id')
+  @Post(':channel_id/message')
   @UseGuards(JwtAccessGuard)
   async restoreMessage(
     @Param('channel_id') channel_id,
     @Body() restoreMessageDto: RestoreMessageDto,
+    @Req() req: any,
   ) {
-    await this.chatListService.restoreMessage({ ...restoreMessageDto, channel_id });
+    const requestUserId = req.user_id;
+    await this.chatListService.restoreMessage({
+      ...restoreMessageDto,
+      channel_id,
+      senderId: requestUserId,
+    });
     return responseForm(200, { message: '채팅 저장 성공!' });
   }
 
-  @Get(':channel_id')
+  @Get(':channel_id/message')
   @UseGuards(JwtAccessGuard)
   async getMessage(@Param('channel_id') channel_id, @Query() query: any, @Req() req: any) {
     const requestUserId = req.user._id;
