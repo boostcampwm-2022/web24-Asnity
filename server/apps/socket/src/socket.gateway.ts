@@ -23,7 +23,7 @@ const storeMessageURL = '/api/chat';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
-  namespace: /.+/,
+  namespace: /\/socket\/commu-.+/,
   cors: {
     origin: '*', //['http://localhost:80'],
   },
@@ -36,13 +36,12 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('join') // socket.on('join', ({}) => {})
   joinEvent(@MessageBody() data: Join, @ConnectedSocket() socket: SocketWithAuth) {
-    // console.log(socket.handshake.headers);
     const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { channels } = data;
     // channel 별로 join 하는 로직
     community.socketsJoin(channels);
-    console.log(
+    this.logger.log(
       `This socket which ns is '${communityName}' join rooms : ` + Array.from(socket.rooms),
     );
   }
