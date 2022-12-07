@@ -4,6 +4,7 @@ import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
 import Spinner from '@components/Spinner';
+import { faker } from '@faker-js/faker';
 import { useChannelQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
@@ -55,7 +56,7 @@ const Channel = () => {
   const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const handleSubmitChat = (content: string) => {
-    const id = crypto.randomUUID();
+    const id = faker.datatype.uuid();
     const createdAt = new Date();
     const newChat = { id, content, createdAt, senderId: myInfo._id };
 
