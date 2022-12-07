@@ -48,7 +48,7 @@ const Channel = () => {
   );
 
   const { channelUsersMapQuery } = useChannelUsersMapQuery(roomId);
-  const { addChatsQueryData } = useSetChatsQuery(roomId);
+  const { addChatsQueryData } = useSetChatsQuery();
 
   // 메세지 보내기:
   const socket = useSocketStore((state) => state.sockets[communityId]);
@@ -58,7 +58,13 @@ const Channel = () => {
     const createdAt = new Date();
     const newChat = { id, content, createdAt, senderId: myInfo._id };
 
-    addChatsQueryData({ id, content, createdAt, senderId: myInfo._id });
+    addChatsQueryData({
+      id,
+      channelId: roomId,
+      content,
+      createdAt,
+      senderId: myInfo._id,
+    });
 
     socket.emit(
       SOCKET_EVENTS.SEND_CHAT,
@@ -84,6 +90,34 @@ const Channel = () => {
       scrollbarContainerRef.current?.scrollToBottom();
     }
   }, [chatsInfiniteQuery.isLoading]);
+
+  useEffect(() => {
+    const handleReceiveChat: ReceiveChatHandler = ({
+      id,
+      channelId,
+      time: createdAt,
+      message: content,
+      user_id: senderId,
+    }) => {
+      addChatsQueryData({ id, channelId, content, createdAt, senderId });
+
+      // 현재 보고있는 채널로 채팅이 온 경우 + 스크롤바가 바닥에 닿아있는 경우 -> 채팅이 오면 스크롤바를 맨 아래로 내린다.
+      if (
+        channelId === roomId &&
+        isScrollTouchedBottom(scrollbarContainerRef?.current, 50)
+      ) {
+        setTimeout(() => {
+          scrollbarContainerRef.current?.scrollToBottom();
+        });
+      }
+    };
+
+    socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.RECEIVE_CHAT);
+    };
+  }, [socket, roomId]);
 
   const isLoading = channelQuery.isLoading || chatsInfiniteQuery.isLoading;
 
