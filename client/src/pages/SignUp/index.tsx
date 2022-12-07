@@ -26,7 +26,7 @@ const signUpFormDefaultValues = {
 };
 
 const SignUp = () => {
-  const { control, handleSubmit, watch, reset } = useForm<SignUpFormFields>({
+  const { control, handleSubmit, watch } = useForm<SignUpFormFields>({
     mode: 'all',
     defaultValues: signUpFormDefaultValues,
   });
@@ -38,7 +38,7 @@ const SignUp = () => {
   const signUpMutation = useSignUpMutation({
     onSuccess: () => {
       toast.success('회원가입에 성공했습니다.');
-      reset();
+      navigate('/sign-in');
     },
     onError: (error) => {
       defaultErrorHandler(error);
