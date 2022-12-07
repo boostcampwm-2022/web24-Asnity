@@ -20,6 +20,7 @@ const endPoint = {
   getUsers: () => `/api/users`, // 사용할 때는 queryString 추가 전달 필요합니다 as const.
   getCommunityUsers: (communityId: string) =>
     `/api/communities/${communityId}/users` as const,
+  getChats: (channelId: string) => `/api/channels/${channelId}/message`,
 } as const;
 
 export default endPoint;
