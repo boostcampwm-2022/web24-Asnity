@@ -1,7 +1,7 @@
 import type { User } from '@apis/user';
 
 import ChatForm from '@components/ChatForm';
-import ChatItem from '@components/ChatItem';
+import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import { faker } from '@faker-js/faker';
 import { useUsersNormalizedChannelQuery } from '@hooks/channel';
@@ -12,7 +12,7 @@ import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
-import React, { useRef, Fragment, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -121,25 +121,12 @@ const Channel = () => {
           >
             <div ref={intersectionObservable} />
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-              {chatsInfiniteQuery.data &&
-                normalizedChannelQuery.data &&
-                chatsInfiniteQuery.data.pages.map(
-                  (page) =>
-                    page.chat?.length && (
-                      <Fragment key={page.chat[0].id}>
-                        {page.chat.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            className="px-5 py-3 tracking-tighter"
-                            user={
-                              normalizedChannelQuery.data.users[chat.senderId]
-                            }
-                          />
-                        ))}
-                      </Fragment>
-                    ),
-                )}
+              {chatsInfiniteQuery.data && normalizedChannelQuery.data && (
+                <ChatList
+                  pages={chatsInfiniteQuery.data.pages}
+                  users={normalizedChannelQuery.data.users}
+                />
+              )}
             </ul>
           </Scrollbars>
           <ChatForm
