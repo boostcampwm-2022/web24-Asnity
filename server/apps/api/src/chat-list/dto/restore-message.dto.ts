@@ -16,6 +16,6 @@ export class RestoreMessageDto {
   content: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   senderId: string;
 }
