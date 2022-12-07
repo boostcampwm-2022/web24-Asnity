@@ -1,3 +1,4 @@
+import type { ReceiveChatHandler } from '@/socketEvents';
 import type { User } from '@apis/user';
 
 import ChannelMetadata from '@components/ChannelMetadata';
@@ -11,7 +12,8 @@ import { useMyInfo } from '@hooks/useMyInfoQuery';
 import { useChannelUsersMapQuery } from '@hooks/user';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useSocketStore } from '@stores/socketStore';
-import React, { useRef, Fragment, useLayoutEffect } from 'react';
+import { isScrollTouchedBottom } from '@utils/scrollValues';
+import React, { useRef, Fragment, useLayoutEffect, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
@@ -57,6 +59,7 @@ const Channel = () => {
     const newChat = { id, content, createdAt, senderId: myInfo._id };
 
     addChatsQueryData({ id, content, createdAt, senderId: myInfo._id });
+
     socket.emit(
       SOCKET_EVENTS.SEND_CHAT,
       sendChatPayload({
@@ -69,15 +72,7 @@ const Channel = () => {
       return;
     }
 
-    const { clientHeight, scrollHeight, scrollTop } =
-      scrollbarContainerRef.current.getValues();
-
-    /** 스크롤 바닥부터 50px 사이에 있다면 바닥에 닿은 것으로 간주한다. */
-    const offset = 50;
-    const isScrollTouchedBottom =
-      clientHeight + scrollTop + offset >= scrollHeight;
-
-    if (isScrollTouchedBottom) {
+    if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
       setTimeout(() => {
         scrollbarContainerRef.current?.scrollToBottom();
       });
