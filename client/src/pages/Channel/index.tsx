@@ -1,6 +1,5 @@
 import type { User } from '@apis/user';
 
-import ChannelMetadata from '@components/ChannelMetadata';
 import ChatForm from '@components/ChatForm';
 import ChatItem from '@components/ChatItem';
 import Spinner from '@components/Spinner';
@@ -122,37 +121,22 @@ const Channel = () => {
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
               {chatsInfiniteQuery.data &&
                 channelQuery.data &&
-                chatsInfiniteQuery.data.pages.map((page) =>
-                  page.chat?.length ? (
-                    <Fragment key={page.chat[0].id}>
-                      {page.chat.map((chat) => (
-                        <ChatItem
-                          key={chat.id}
-                          chat={chat}
-                          className="px-5 py-3 tracking-tighter"
-                          user={channelQuery.data.users.find(
-                            (user) => user._id === chat.senderId,
-                          )}
-                        />
-                      ))}
-                    </Fragment>
-                  ) : (
-                    <Fragment key={channelQuery.data._id}>
-                      {channelQuery.data && channelQuery.data.users && (
-                        <div className="p-8">
-                          <ChannelMetadata
-                            channel={channelQuery.data}
-                            managerName={
-                              channelQuery.data.users.find(
-                                (user) =>
-                                  user._id === channelQuery.data.managerId,
-                              )?.nickname
-                            }
+                chatsInfiniteQuery.data.pages.map(
+                  (page) =>
+                    page.chat?.length && (
+                      <Fragment key={page.chat[0].id}>
+                        {page.chat.map((chat) => (
+                          <ChatItem
+                            key={chat.id}
+                            chat={chat}
+                            className="px-5 py-3 tracking-tighter"
+                            user={channelQuery.data.users.find(
+                              (user) => user._id === chat.senderId,
+                            )}
                           />
-                        </div>
-                      )}
-                    </Fragment>
-                  ),
+                        ))}
+                      </Fragment>
+                    ),
                 )}
             </ul>
           </Scrollbars>
