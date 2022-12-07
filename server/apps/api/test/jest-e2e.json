@@ -16,7 +16,7 @@
     "@utils/(.*)": "<rootDir>/utils/$1",
     "@custom_pipe/(.*)": "<rootDir>/custom_pipe/$1",
     "@user/(.*)": "<rootDir>/apps/api/src/user/$1",
-    "@channel/(.*)": "<rootDir>/apps/api/src/channel/$1",
+    "@channel/(.*)": "<rootDir>/apps/api/src/channel/$.1",
     "@community/(.*)": "<rootDir>/apps/api/src/community/$1",
     "@chat-list/(.*)": "<rootDir>/apps/api/src/chat-list/$1",
     "@api/(.*)": "<rootDir>/apps/api/$1",
