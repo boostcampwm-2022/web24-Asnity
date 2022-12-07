@@ -7,7 +7,7 @@ import type Scrollbars from 'react-custom-scrollbars-2';
 export const isScrollTouchedBottom = (
   $scrollbar: Nullable<Scrollbars>,
   offset = 0,
-) => {
+): $scrollbar is Scrollbars => {
   if (!$scrollbar) return false;
 
   const { clientHeight, scrollHeight, scrollTop } = $scrollbar.getValues();
