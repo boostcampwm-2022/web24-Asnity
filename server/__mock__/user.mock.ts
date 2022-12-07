@@ -3,9 +3,10 @@ import { FollowerDto } from '@user/dto/follower.dto';
 // _id: new ObjectId('63734af9e62b37012c73e399'),
 export const initTestUser1 = {
   name: '',
+  _id: new ObjectId('63734e98384f478a32c3a1cc'),
   id: 'test@gmail.com',
   password: 'hi12341234',
-  nickname: 'testUser1',
+  nickname: 'test1',
 };
 
 export const initTestUser2 = {
