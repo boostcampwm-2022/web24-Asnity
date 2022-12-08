@@ -30,16 +30,17 @@ const ChatItem: FC<Props> = ({
         <div className="pt-1">
           <Avatar
             variant="rectangle"
-            size="small"
-            url={user.profileUrl}
+            size="sm"
+            profileUrl={user.profileUrl}
             name={user.nickname}
           />
         </div>
         <div>
           <div className="flex gap-2 items-center text-s16">
             <span
-              className={`font-bold ${isSystem ? 'text-primary' : 'text-indigo'
-                }`}
+              className={`font-bold ${
+                isSystem ? 'text-primary' : 'text-indigo'
+              }`}
             >
               {user.nickname}
             </span>

@@ -71,8 +71,8 @@ const Gnb = () => {
             <Link to="/dms">
               <Avatar
                 name="Direct Message"
-                size="small"
-                url={LOGO_IMG_URL}
+                size="sm"
+                profileUrl={LOGO_IMG_URL}
                 variant="rectangle"
               />
             </Link>
@@ -105,9 +105,9 @@ const Gnb = () => {
                       >
                         <Avatar
                           name={name}
-                          size="small"
+                          size="sm"
                           variant="rectangle"
-                          url={profileUrl}
+                          profileUrl={profileUrl}
                         />
                       </Link>
                     </GnbItemContainer>
@@ -124,7 +124,7 @@ const Gnb = () => {
                 <span className="sr-only">커뮤니티 추가</span>
                 <Avatar
                   name="커뮤니티 추가"
-                  size="small"
+                  size="sm"
                   variant="circle"
                   className="transition-all mx-auto hover:bg-primary hover:border-primary hover:text-offWhite"
                 >
