@@ -1,12 +1,12 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class InviteChannelDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   community_id: string;
 
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   channel_id: string;
 
   @IsNotEmpty()

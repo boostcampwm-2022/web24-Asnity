@@ -1,18 +1,18 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class ModifyChannelDto {
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
+  requestUserId: string;
+
+  @IsMongoId()
+  @IsNotEmpty()
   channel_id: string;
 
   @IsString()
   @IsOptional()
   name: string;
-
-  @IsString()
-  @IsOptional()
-  requestUserId: string;
 
   @IsString()
   @IsOptional()
@@ -23,7 +23,7 @@ export class ModifyChannelDto {
   @Transform(({ value }) => value === 'true')
   isPrivate: boolean;
 
-  @IsString()
+  @IsMongoId()
   @IsOptional()
   managerId: string;
 }

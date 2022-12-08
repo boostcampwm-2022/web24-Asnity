@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class ExitChannelDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   channel_id: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   requestUserId: string;
 }
