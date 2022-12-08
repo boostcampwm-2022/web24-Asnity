@@ -20,7 +20,9 @@ interface Props {
  * @returns 사용자 목록을 렌더링하는 컴포넌트
  */
 const UserSearchResult: FC<Props> = ({ users }) => {
-  const openCommonModal = useRootStore((state) => state.openCommonModal);
+  const openContextMenuModal = useRootStore(
+    (state) => state.openContextMenuModal,
+  );
 
   const followersMapQuery = useFollowersMapQuery();
   const followingsMapQuery = useFollowingsMapQuery();
@@ -28,9 +30,8 @@ const UserSearchResult: FC<Props> = ({ users }) => {
   const handleMoreButtonClick: (
     user: User,
   ) => React.MouseEventHandler<HTMLButtonElement> = (user) => (e) => {
-    openCommonModal({
+    openContextMenuModal({
       content: <FollowerUserContextMenu user={user} />,
-      overlayBackground: 'transparent',
       contentWrapperStyle: {
         borderRadius: 16,
         left: e.clientX,
