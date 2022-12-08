@@ -1,6 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 
-import { publicAxios } from '@utils/axios';
+import { publicAxios, tokenAxios } from '@utils/axios';
 
 export interface SignUpRequest {
   id: string;
@@ -55,10 +55,14 @@ export type SignOut = () => Promise<SignOutResult>;
 export const signOut: SignOut = () => {
   const endPoint = `/api/user/auth/signout`;
 
-  return publicAxios
-    .post<SuccessResponse<SignOutResult>>(endPoint, undefined, {
-      withCredentials: true,
-    })
+  return tokenAxios
+    .post<SuccessResponse<SignOutResult>>(
+      endPoint,
+      {},
+      {
+        withCredentials: true,
+      },
+    )
     .then((response) => response.data.result);
 };
 
