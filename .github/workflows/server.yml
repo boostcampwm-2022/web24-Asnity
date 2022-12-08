@@ -71,16 +71,6 @@ jobs:
       - name: 테스트 수행과 테스트 결과 xml파일로 생성
         run: yarn server-test | tee ./coverage.txt
 
-      - name: 테스트 결과를 담은 xml 파일을 레포트로 변환
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
-        with:
-          name: test-results
-          path: server/junit.xml
-          fail-on-error: 'false'
-          reporter: jest-junit        # Format of test results
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: 테스트 코멘트 작성
         uses: MishaKav/jest-coverage-comment@main
         with:
