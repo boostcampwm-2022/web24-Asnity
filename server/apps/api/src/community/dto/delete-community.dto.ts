@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class DeleteCommunityDto {
   @IsNotEmpty()
-  @IsString()
+  @IsMongoId()
   community_id: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsMongoId()
   requestUserId: string;
 }
