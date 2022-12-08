@@ -46,6 +46,7 @@ const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
   signIn: () => ['signIn'] as const,
+  signOut: () => ['signOut'] as const,
   followings: followingQueryKey,
   followers: (): [string] => ['followers'],
   reissueToken: () => ['reissueToken'] as const,
