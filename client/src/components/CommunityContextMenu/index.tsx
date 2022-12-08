@@ -30,9 +30,11 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
     openCommonModal({
       content: <CommunityLeaveBox community={community} />,
       overlayBackground: 'black',
-      left: '50%',
-      top: '50%',
-      transform: 'translate3d(-50%, -50%, 0)',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
     });
   };
 
@@ -43,9 +45,11 @@ const CommunityContextMenu: FC<Props> = ({ community }) => {
     openCommonModal({
       content: <CommunityInviteBox communityId={community._id} />,
       overlayBackground: 'black',
-      left: '50%',
-      top: '50%',
-      transform: 'translate3d(-50%, -50%, 0)',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
     });
   };
 

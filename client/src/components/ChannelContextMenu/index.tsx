@@ -29,9 +29,11 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
     openCommonModal({
       content: <ChannelLeaveBox channel={channel} />,
       overlayBackground: 'black',
-      left: '50%',
-      top: '50%',
-      transform: 'translate3d(-50%, -50%, 0)',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
     });
   };
 

@@ -31,8 +31,11 @@ const UserSearchResult: FC<Props> = ({ users }) => {
     openCommonModal({
       content: <FollowerUserContextMenu user={user} />,
       overlayBackground: 'transparent',
-      x: e.clientX,
-      y: e.clientY,
+      contentWrapperStyle: {
+        borderRadius: 16,
+        left: e.clientX,
+        top: e.clientY,
+      },
     });
   };
 
