@@ -3,10 +3,10 @@ import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
-import { faker } from '@faker-js/faker';
 import { useSetChatsQuery } from '@hooks/chat';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
+import { useTokenStore } from '@stores/tokenStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { io } from 'socket.io-client';
 import { joinChannelsPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 const SocketLayer = () => {
+  const accessToken = useTokenStore((state) => state.accessToken);
   const firstEffect = useRef(true);
   const sockets = useSocketStore((state) => state.sockets);
   const setSockets = useSocketStore((state) => state.setSockets);
@@ -33,7 +34,10 @@ const SocketLayer = () => {
     const newSockets = communityIds.reduce((acc, communityId) => {
       acc[communityId] =
         sockets[communityId] ??
-        io({ path: `${SOCKET_URL}/socket/commu-${communityId}` });
+        io({
+          path: `${SOCKET_URL}/socket/commu-${communityId}`,
+          auth: { token: `Bearer ${accessToken}` },
+        });
       return acc;
     }, {} as Sockets);
 
@@ -101,6 +105,12 @@ const SocketLayer = () => {
     // 이벤트 on
     socketArr.forEach((socket) => {
       socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
+
+      socket.on(SOCKET_EVENTS.INVALID_TOKEN, (err) => {
+        if ('message' in err) {
+          console.error(err.message); // Not Authorized
+        }
+      });
     });
 
     // 이벤트 off
@@ -109,6 +119,7 @@ const SocketLayer = () => {
 
       socketArr.forEach((socket) => {
         socket.off(SOCKET_EVENTS.RECEIVE_CHAT);
+        socket.off(SOCKET_EVENTS.INVALID_TOKEN);
       });
     };
   }, [sockets, chatScrollbar]);
