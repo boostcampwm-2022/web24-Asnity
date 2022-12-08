@@ -71,6 +71,36 @@ const SignIn = rest.post(signInEndPoint, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
+const signOutEndPoint = API_URL + endPoint.signOut();
+const SignOut = rest.post(signOutEndPoint, (req, res, ctx) => {
+  // 응답 메세지 성공-실패를 토글하려면 이 값을 바꿔주세요.
+  const ERROR = false;
+
+  const successResponse = res(
+    ctx.cookie(devCookies.refreshTokenKey, '.', { maxAge: -1 }),
+    ctx.status(200),
+    ctx.delay(500),
+    ctx.json({
+      statusCode: 200,
+      result: {
+        message: '로그아웃 성공!!',
+      },
+    }),
+  );
+
+  const errorResponse = res(
+    ctx.status(400),
+    ctx.delay(500),
+    ctx.json({
+      statusCode: 400,
+      message: 'Unknown Error',
+      error: '',
+    }),
+  );
+
+  return ERROR ? errorResponse : successResponse;
+});
+
 // 토큰 재발급
 const reissueTokenEndPoint = API_URL + endPoint.reissueToken();
 const ReissueToken = rest.post(reissueTokenEndPoint, (req, res, ctx) => {
@@ -131,4 +161,4 @@ export const GetMyInfo = rest.get(getMyInfoEndPoint, (req, res, ctx) => {
   );
 });
 
-export default [SignUp, SignIn, GetMyInfo, ReissueToken];
+export default [SignUp, SignIn, SignOut, GetMyInfo, ReissueToken];
