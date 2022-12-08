@@ -8,11 +8,27 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
-export const useCommunityUsersQuery = (communityId: string) => {
+export const useCommunityUsersQuery = (
+  communityId: string,
+  filter?: string,
+  options?: {
+    enabled?: boolean;
+  },
+) => {
   const key = queryKeyCreator.user.communityUsers(communityId);
 
-  const query = useQuery<User[], AxiosError>(key, () =>
-    getCommunityUsers(communityId),
+  const query = useQuery<User[], AxiosError>(
+    key,
+    () => getCommunityUsers(communityId),
+    {
+      ...options,
+      select: (communityUsers) =>
+        filter
+          ? communityUsers.filter(({ nickname }) =>
+              nickname.toUpperCase().includes(filter.toUpperCase()),
+            )
+          : communityUsers,
+    },
   );
 
   return { communityUsersQuery: query };
