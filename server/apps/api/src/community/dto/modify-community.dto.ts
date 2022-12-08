@@ -1,16 +1,20 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ModifyCommunityDto {
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty()
+  @IsMongoId()
   community_id: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  requestUserId: string;
 
   @IsOptional()
   @IsString()
   name: string;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   managerId: string;
 
   @IsOptional()
@@ -20,8 +24,4 @@ export class ModifyCommunityDto {
   @IsOptional()
   @IsString()
   profileUrl: string;
-
-  @IsOptional()
-  @IsString()
-  requestUserId: string;
 }
