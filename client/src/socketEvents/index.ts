@@ -2,6 +2,7 @@ export const SOCKET_EVENTS = {
   JOIN_CHANNEL: 'join',
   SEND_CHAT: 'new-message',
   RECEIVE_CHAT: 'new-message',
+  INVALID_TOKEN: 'connect_error',
 } as const;
 
 export const joinChannelsPayload = (channelIds: string[]) => ({
