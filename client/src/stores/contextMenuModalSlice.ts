@@ -5,8 +5,10 @@ import { immer } from 'zustand/middleware/immer';
 
 export interface ContextMenuModal {
   isOpen: boolean;
-  x: number | string;
-  y: number | string;
+  top: number | string;
+  right: number | string;
+  bottom: number | string;
+  left: number | string;
   transform?: string;
   content?: ReactNode;
 }
@@ -28,8 +30,10 @@ export interface ContextMenuModalSlice {
 
 const initialContextMenuModalValue = {
   isOpen: false,
-  x: 0,
-  y: 0,
+  top: '',
+  right: '',
+  bottom: '',
+  left: '',
   transform: undefined,
   content: undefined,
 } as const;

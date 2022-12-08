@@ -36,16 +36,16 @@ const CommunityNav = () => {
     (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
     (e) => {
       openContextMenuModal({
-        x: e.clientX,
-        y: e.clientY,
+        left: e.clientX,
+        top: e.clientY,
         content: <ChannelContextMenu channel={channel} />,
       });
     };
 
   const handleClickChannelCreateButton = () => {
     openCommonModal({
-      x: '50%',
-      y: '50%',
+      left: '50%',
+      top: '50%',
       transform: 'translate3d(-50%, -50%, 0)',
       overlayBackground: 'black',
       content: <ChannelCreateBox communityId={communityId} />,

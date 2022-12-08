@@ -1,7 +1,7 @@
 import type { CSSProperties, FC } from 'react';
 
 import { useRootStore } from '@stores/rootStore';
-import React, { useMemo } from 'react';
+import React from 'react';
 import ReactModal from 'react-modal';
 
 const OverlayBackground = {
@@ -17,30 +17,28 @@ const CommonModal: FC = () => {
     overlayBackground,
     onCancel,
     transform,
-    x = 1,
-    y = 1,
+    top = '',
+    right = '',
+    bottom = '',
+    left = '',
   } = useRootStore((state) => state.commonModal);
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const overlayStyle: CSSProperties = useMemo(
-    () => ({
-      background: OverlayBackground[overlayBackground],
-    }),
-    [overlayBackground],
-  );
+  const overlayStyle: CSSProperties = {
+    background: OverlayBackground[overlayBackground],
+  };
 
-  const contentStyle: CSSProperties = useMemo(
-    () => ({
-      width: 'max-content',
-      height: 'max-content',
-      padding: 0,
-      border: 0,
-      top: y,
-      left: x,
-      transform,
-    }),
-    [x, y, transform],
-  );
+  const contentStyle: CSSProperties = {
+    width: 'max-content',
+    height: 'max-content',
+    padding: 0,
+    border: 0,
+    top,
+    left,
+    right,
+    bottom,
+    transform,
+  };
 
   return (
     <ReactModal
