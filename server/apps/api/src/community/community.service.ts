@@ -23,9 +23,9 @@ export class CommunityService {
     private readonly channelRepository: ChannelRepository,
   ) {}
 
-  async getCommunities(_id: string) {
+  async getCommunities(requestUserId: string) {
     const communitiesInfo = [];
-    const user = await this.userRepository.findById(_id);
+    const user = await this.userRepository.findById(requestUserId);
     if (user.communities === undefined || Object.keys(user.communities).length == 0) {
       return { communities: communitiesInfo };
     }
@@ -151,7 +151,7 @@ export class CommunityService {
     if (community.managerId != modifyCommunityDto.requestUserId) {
       throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
     }
-    const { managerId, community_id, ...updateField } = modifyCommunityDto;
+    const { community_id, ...updateField } = modifyCommunityDto;
     // TODO: 꼭 기다려줘야하는지 생각해보기
     return await this.communityRepository.updateOne({ _id: community_id }, updateField);
   }
