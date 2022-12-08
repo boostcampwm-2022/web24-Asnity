@@ -56,12 +56,14 @@ export class ChannelService {
       hour: 'numeric',
       minute: 'numeric',
     });
+
     const botMessage = {
       channel_id: channel.id,
       type: 'TEXT',
       content: `${user.nickname}님이 이 채널을 ${dateForm}에 생성했습니다.`,
       senderId: BOT_ID,
-    };
+    } as const;
+
     const newChatList = await this.chatListRepository.create({
       chat: [makeChat(0, botMessage)],
     });
