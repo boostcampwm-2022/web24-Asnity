@@ -31,13 +31,14 @@ const SocketLayer = () => {
   const { addChatsQueryData } = useSetChatsQuery();
 
   useEffect(() => {
+    const opts = {
+      auth: { token: `Bearer ${accessToken}` },
+    };
+
     const newSockets = communityIds.reduce((acc, communityId) => {
       acc[communityId] =
         sockets[communityId] ??
-        io({
-          path: `${SOCKET_URL}/socket/commu-${communityId}`,
-          auth: { token: `Bearer ${accessToken}` },
-        });
+        io(`${SOCKET_URL}/socket/commu-${communityId}`, opts);
       return acc;
     }, {} as Sockets);
 
