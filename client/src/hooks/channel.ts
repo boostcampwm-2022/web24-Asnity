@@ -135,3 +135,12 @@ export const useLeaveChannelMutation = (
 
   return mutation;
 };
+
+export const useInviteChannelMutation = (
+  options?: MutationOptions<InviteChannelResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.inviteChannel();
+  const mutation = useMutation(key, inviteChannel, { ...options });
+
+  return mutation;
+};
