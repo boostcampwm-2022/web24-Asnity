@@ -14,8 +14,10 @@ ReactModal.setAppElement('#root');
 
 const ContextMenuModal: FC<Props> = () => {
   const {
-    x = 1,
-    y = 1,
+    top = '',
+    right = '',
+    bottom = '',
+    left = '',
     isOpen,
     content,
     transform,
@@ -30,8 +32,10 @@ const ContextMenuModal: FC<Props> = () => {
     height: 'max-content',
     borderRadius: 10,
     padding: 0,
-    left: x,
-    top: y,
+    top,
+    right,
+    bottom,
+    left,
     transform,
   };
 
