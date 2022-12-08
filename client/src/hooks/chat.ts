@@ -47,6 +47,7 @@ type UpdateChatToWittenChat = ({
 }) => void;
 
 type UpdateChatToFailedChat = UpdateChatToWittenChat;
+type RemoveChatQueryData = UpdateChatToWittenChat;
 
 /**
  * - addChatsQueryData: 쿼리의 가장 마지막 페이지에 새로운 채팅 데이터를 추가
@@ -86,7 +87,7 @@ export const useSetChatsQuery = () => {
    * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시키고,
    * 채팅 쿼리 데이터 배열의 맨 뒤로 보낸다.
    */
-  const updateChatToWittenChat: UpdateChatToWittenChat = ({
+  const updateChatToWrittenChat: UpdateChatToWittenChat = ({
     id,
     channelId,
   }) => {
@@ -102,7 +103,7 @@ export const useSetChatsQuery = () => {
 
         const targetIndex = chatList.findIndex((chat) => chat.id === id);
 
-        if (targetIndex) {
+        if (targetIndex !== -1) {
           const [targetChat] = chatList.splice(targetIndex, 1);
 
           chatList.push({ ...targetChat, written: true }); // 보낸 채팅이 DB에 저장되었음을 나타낸다.
@@ -135,5 +136,33 @@ export const useSetChatsQuery = () => {
     });
   };
 
-  return { addChatsQueryData, updateChatToWittenChat, updateChatToFailedChat };
+  /**
+   * 타겟 메세지를 쿼리 상태에서 지웁니다.
+   */
+  const removeChatQueryData: RemoveChatQueryData = ({ id, channelId }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages.at(-1)?.chat;
+
+        if (!chatList) return;
+
+        const targetIndex = chatList.findIndex((chat) => chat.id === id);
+
+        if (targetIndex !== -1) {
+          chatList.splice(targetIndex, 1); // 채팅 지우기
+        }
+      });
+    });
+  };
+
+  return {
+    addChatsQueryData,
+    updateChatToWrittenChat,
+    updateChatToFailedChat,
+    removeChatQueryData,
+  };
 };
