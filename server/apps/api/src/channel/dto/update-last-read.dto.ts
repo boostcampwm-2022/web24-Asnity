@@ -1,17 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
-@Injectable()
 export class UpdateLastReadDto {
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   requestUserId: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   community_id: string;
 
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   channel_id: string;
 }
