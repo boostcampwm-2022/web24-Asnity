@@ -13,15 +13,9 @@ interface Props {}
 ReactModal.setAppElement('#root');
 
 const ContextMenuModal: FC<Props> = () => {
-  const {
-    top = '',
-    right = '',
-    bottom = '',
-    left = '',
-    isOpen,
-    content,
-    transform,
-  } = useRootStore((state) => state.contextMenuModal);
+  const { contentWrapperStyle, isOpen, content } = useRootStore(
+    (state) => state.contextMenuModal,
+  );
 
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
@@ -30,13 +24,8 @@ const ContextMenuModal: FC<Props> = () => {
   const modalContentStyle: CSSProperties = {
     width: 'max-content',
     height: 'max-content',
-    borderRadius: 10,
     padding: 0,
-    top,
-    right,
-    bottom,
-    left,
-    transform,
+    ...contentWrapperStyle,
   };
 
   return (
