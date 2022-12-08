@@ -3,7 +3,7 @@ import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { communities } from '../data/communities';
-import { me } from '../data/users';
+import { me, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -88,4 +88,33 @@ const LeaveChannel = rest.delete(leaveChannelEndPoint, (req, res, ctx) => {
   return ERROR ? errorResponse : successRespose;
 });
 
-export default [GetChannel, CreateChannel, LeaveChannel];
+const inviteChannelEndPoint = API_URL + endPoint.inviteChannel(':channelId');
+const InviteChannel = rest.post(
+  inviteChannelEndPoint,
+  async (req, res, ctx) => {
+    const { channelId } = req.params;
+    /* eslint-disable camelcase */
+    const { community_id, userIds } = await req.json();
+
+    const ERROR = false;
+
+    communities
+      .find((community) => community._id === community_id)
+      .channels.find((channel) => channel._id === channelId)
+      .users.push(users.find((user) => user._id === userIds[0]));
+
+    const errorResponse = res(...createErrorContext(ctx));
+    const successRespose = res(
+      ...createSuccessContext(ctx, 200, 500, {
+        statusCode: 200,
+        result: {
+          message: '채널 초대 성공!',
+        },
+      }),
+    );
+
+    return ERROR ? errorResponse : successRespose;
+  },
+);
+
+export default [GetChannel, CreateChannel, LeaveChannel, InviteChannel];
