@@ -21,6 +21,7 @@
       "@schemas/*": ["dao/schemas/*"],
       "@repository/*": ["dao/repository/*"],
       "@utils/*": ["utils/*"],
+      "@custom/*": ["custom/*"],
       "@custom_pipe/*": ["custom_pipe/*"],
       "@auth/*": ["apps/api/src/auth/*"],
       "@user/*": ["apps/api/src/user/*"],
