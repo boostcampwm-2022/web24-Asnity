@@ -117,7 +117,7 @@ const Gnb = () => {
             )}
             {communitiesQuery.data && (
               <button
-                className="shrink-0 justify-center w-full"
+                className="flex shrink-0 justify-center w-full"
                 type="button"
                 onClick={handleClickCreateCommunityButton}
               >
