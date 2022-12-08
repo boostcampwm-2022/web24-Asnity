@@ -31,9 +31,7 @@ export class ChannelService {
     // 자신이 속한 커뮤니티 찾기
     const community = await this.communityRepository.findById(communityId);
     // 채널 생성
-    const channel = await this.channelRepository.create({
-      ...createChannelDto,
-    });
+    const channel = await this.channelRepository.create(createChannelDto);
     // community 도큐먼트의 channel 필드 업데이트
     await this.communityRepository.addArrAtArr({ _id: community.id }, 'channels', [
       channel._id.toString(),
