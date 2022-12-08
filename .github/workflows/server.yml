@@ -50,6 +50,15 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-socket:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Slack Merge bot 실행
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: Backend dev PR merge!
+          fields: repo,commit,message,author
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }}
+        if: always()
   Test:
     runs-on: ubuntu-latest
     steps:
