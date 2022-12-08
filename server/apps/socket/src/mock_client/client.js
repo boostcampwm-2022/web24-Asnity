@@ -3,12 +3,12 @@ import { io } from 'socket.io-client';
 const port = 8080;
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNDE1OTYwLCJleHAiOjE2NzA0MTY4NjB9.iAiuTofbrlZZD6FFIddH45NF91vapWsV6V-yeTHqY4k';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNDc3MjY1LCJleHAiOjE2NzA0NzgxNjV9._XlBanHCSOZXBWlYVlVmnIVKEY88-jH1d_yBGorPxIY';
 const accessToken2 =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg0NWNiMTU0NDRmMGEyMGRlNTYxMDUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY2OTY1MTM1NywiZXhwIjoxNjY5NjUyMjU3fQ.T3OGoF2hz4ew1iw2c4TA1tldHgTwDxkEyUFBkfUqeHo';
 const opt = {
   auth: {
-    token: `Bearer ${accessToken2}`,
+    token: `Bearer ${accessToken}`,
   },
 };
 try {

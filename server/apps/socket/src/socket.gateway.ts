@@ -19,7 +19,7 @@ import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
 //TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
 
-const storeMessageURL = '/api/chat';
+const storeMessageURL = (channelId) => `/api/channels/${channelId}/message`;
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -63,7 +63,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       content: message,
       senderId: socket.user._id,
     };
-    const apiUrl = `${storeMessageURL}/${channelId}`;
+    const apiUrl = storeMessageURL(channelId);
     await requestApiServer({
       path: apiUrl,
       accessToken: socket.user.accessToken,
