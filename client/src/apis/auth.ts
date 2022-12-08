@@ -45,7 +45,22 @@ export const signIn: SignIn = ({ id, password }) => {
     )
     .then((response) => response.data.result);
 };
-// 이후 DM 페이지에서 액세스 토큰으로 다시 유저 정보 요청해야함
+
+export interface SignOutResult {
+  message: string;
+}
+
+export type SignOut = () => Promise<SignOutResult>;
+
+export const signOut: SignOut = () => {
+  const endPoint = `/api/user/auth/signout`;
+
+  return publicAxios
+    .post<SuccessResponse<SignOutResult>>(endPoint, undefined, {
+      withCredentials: true,
+    })
+    .then((response) => response.data.result);
+};
 
 export interface ReissueTokenResult {
   accessToken: string;
