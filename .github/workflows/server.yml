@@ -78,7 +78,7 @@ jobs:
         run: yarn install
 
       - name: 테스트 수행과 테스트 결과 xml파일로 생성
-        run: yarn server-test | tee ./coverage.txt
+        run: JWT_SECRET=${{ secrets.JWT_SECRET }} yarn server-test | tee ./coverage.txt
 
       - name: 테스트 코멘트 작성
         uses: MishaKav/jest-coverage-comment@main
