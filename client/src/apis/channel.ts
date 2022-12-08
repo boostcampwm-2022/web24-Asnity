@@ -78,3 +78,31 @@ export const leaveChannel: LeaveChannel = (channelId) => {
     .delete<LeaveChannelResponse>(endPoint)
     .then((res) => res.data.result);
 };
+
+export interface InviteChannelRequest {
+  channelId: string;
+  communityId: string;
+  userIds: Array<UserUID>;
+}
+export interface InviteChannelResult {
+  message: string;
+}
+export type InviteChannelResponse = SuccessResponse<InviteChannelResult>;
+export type InviteChannel = (
+  fields: InviteChannelRequest,
+) => Promise<InviteChannelResult>;
+
+export const inviteChannel: InviteChannel = ({
+  channelId,
+  communityId,
+  userIds,
+}) => {
+  const endPoint = `/api/channels/${channelId}/users`;
+
+  return tokenAxios
+    .post<InviteChannelResponse>(endPoint, {
+      community_id: communityId,
+      userIds,
+    })
+    .then((response) => response.data.result);
+};
