@@ -1,19 +1,12 @@
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class AppendUsersToCommunityDto {
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty()
+  @IsMongoId()
   community_id: string;
 
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty()
+  @IsMongoId()
   requestUserId: string;
 
   @IsNotEmpty()
