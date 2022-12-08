@@ -1,12 +1,17 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateCommunityDto {
   @IsNotEmpty()
   @IsString()
+  @Length(2, 20)
   name: string;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
+  requestUserId: string;
+
+  @IsOptional()
+  @IsMongoId()
   managerId: string;
 
   @IsOptional()
