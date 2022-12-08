@@ -56,7 +56,7 @@ describe('Community E2E Test', () => {
   it('should be defined', () => {
     expect(communityModel).toBeDefined();
   });
-
+  // TODO: url refactoring 검토
   describe('Post /api/community ', () => {
     it('커뮤니티 추가', async () => {
       await request(app.getHttpServer())
