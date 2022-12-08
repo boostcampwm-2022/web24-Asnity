@@ -49,12 +49,12 @@ type UpdateChatToWittenChat = ({
 type UpdateChatToFailedChat = UpdateChatToWittenChat;
 type RemoveChatQueryData = UpdateChatToWittenChat;
 
-/**
- * - addChatsQueryData: 쿼리의 가장 마지막 페이지에 새로운 채팅 데이터를 추가
- */
 export const useSetChatsQuery = () => {
   const queryClient = useQueryClient();
 
+  /**
+   * - 쿼리 데이터의 가장 마지막 페이지, 마지막 인덱스에 새로운 채팅 데이터를 추가한다.
+   */
   const addChatsQueryData: AddChatsQueryData = ({
     id,
     channelId,
@@ -84,8 +84,7 @@ export const useSetChatsQuery = () => {
   };
 
   /**
-   * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시키고,
-   * 채팅 쿼리 데이터 배열의 맨 뒤로 보낸다.
+   * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시킨다,
    */
   const updateChatToWrittenChat: UpdateChatToWittenChat = ({
     id,
@@ -101,13 +100,9 @@ export const useSetChatsQuery = () => {
 
         if (!chatList) return;
 
-        const targetIndex = chatList.findIndex((chat) => chat.id === id);
+        const targetChat = chatList.find((chat) => chat.id === id);
 
-        if (targetIndex !== -1) {
-          const [targetChat] = chatList.splice(targetIndex, 1);
-
-          chatList.push({ ...targetChat, written: true }); // 보낸 채팅이 DB에 저장되었음을 나타낸다.
-        }
+        if (targetChat) targetChat.written = true;
       });
     });
   };
