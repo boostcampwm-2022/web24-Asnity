@@ -4,9 +4,11 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
+import { useSetChatsQuery } from '@hooks/chat';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
 import React, { memo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
   className?: string;
@@ -24,8 +26,11 @@ const ChatItem: FC<Props> = ({
   },
   isSystem = false,
 }) => {
-  const { content, createdAt, updatedAt, deletedAt, written } = chat;
+  const params = useParams();
+  const roomId = params.roomId as string;
+  const { content, createdAt, updatedAt, deletedAt, written, id } = chat;
   const [isHover, setIsHover] = useState(false);
+  const { removeChatQueryData } = useSetChatsQuery();
 
   const isUpdated = updatedAt && updatedAt !== createdAt;
   const isDeleted = !!deletedAt;
@@ -37,6 +42,9 @@ const ChatItem: FC<Props> = ({
   const failedChatControlButtonsClassnames = `flex items-center px-3 rounded`;
   const handleMouseEnter = () => setIsHover(true);
   const handleMouseLeave = () => setIsHover(false);
+  const handleClickDiscardButton = () => {
+    removeChatQueryData({ channelId: roomId, id });
+  };
 
   return (
     chat && (
@@ -80,20 +88,13 @@ const ChatItem: FC<Props> = ({
               )}
               <div className="flex justify-end grow gap-2 text-s14">
                 {isFailedToSendChat && isHover && (
-                  <>
-                    <button
-                      type="button"
-                      className={`${failedChatControlButtonsClassnames} bg-secondary hover:bg-secondary-dark text-offWhite`}
-                    >
-                      재전송
-                    </button>
-                    <button
-                      type="button"
-                      className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
-                    >
-                      지우기
-                    </button>
-                  </>
+                  <button
+                    type="button"
+                    className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
+                    onClick={handleClickDiscardButton}
+                  >
+                    지우기
+                  </button>
                 )}
               </div>
             </div>
