@@ -1,3 +1,4 @@
+import FullScreenSpinner from '@components/FullScreenSpinner';
 import { useMyInfo } from '@hooks/useMyInfoQuery';
 import useReissueTokenMutation from '@hooks/useReissueTokenMutation';
 import { useTokenStore } from '@stores/tokenStore';
@@ -26,7 +27,7 @@ const AuthorizedLayer = () => {
     reissueTokenMutation.mutate();
   }, []);
 
-  if (!user && !accessToken) return <div>로딩중...</div>; // Spinner 넣기
+  if (!user && !accessToken) return <FullScreenSpinner />;
   return <Outlet />;
 };
 

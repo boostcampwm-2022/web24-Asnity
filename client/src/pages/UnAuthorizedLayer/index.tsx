@@ -1,3 +1,4 @@
+import FullScreenSpinner from '@components/FullScreenSpinner';
 import { useMyInfo } from '@hooks/useMyInfoQuery';
 import useReissueTokenMutation from '@hooks/useReissueTokenMutation';
 import { useTokenStore } from '@stores/tokenStore';
@@ -30,7 +31,7 @@ const UnAuthorizedLayer = () => {
 
   if (user || accessToken) return <Navigate to="/" replace />;
   if (location.state?.alreadyTriedReissueToken) return <Outlet />;
-  if (isTryingReissueToken) return <div>로딩중...</div>;
+  if (isTryingReissueToken) return <FullScreenSpinner />;
   return <Outlet />;
 };
 
