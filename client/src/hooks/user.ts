@@ -31,7 +31,7 @@ export const useInvalidateCommunityUsersQuery = (communityId: string) => {
 export type UsersMap = Record<UserUID, User>;
 
 export const useChannelUsersMapQuery = (channelId: string) => {
-  const key = queryKeyCreator.user.channelUsers(channelId);
+  const key = queryKeyCreator.channel.detail(channelId);
   const query = useQuery<Channel, AxiosError, UsersMap>(
     key,
     () => getChannel(channelId),
