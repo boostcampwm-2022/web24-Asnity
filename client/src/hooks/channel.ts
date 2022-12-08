@@ -3,6 +3,7 @@ import type {
   CreateChannelRequest,
   CreateChannelResult,
   GetChannelResult,
+  InviteChannelResult,
   JoinedChannel,
   LeaveChannelResult,
 } from '@apis/channel';
@@ -14,25 +15,37 @@ import type {
 } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { leaveChannel, createChannel, getChannel } from '@apis/channel';
+import {
+  inviteChannel,
+  leaveChannel,
+  createChannel,
+  getChannel,
+} from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
 export const useChannelQuery = (channelId: string) => {
-  const queryClient = useQueryClient();
   const key = queryKeyCreator.channel.detail(channelId);
 
   const query = useQuery<GetChannelResult, AxiosError>(key, () =>
     getChannel(channelId),
   );
-  const invalidate = useCallback(
+
+  return { channelQuery: query };
+};
+
+export const useInvalidateChannelQuery = (channelId: string) => {
+  const queryClient = useQueryClient();
+  const key = queryKeyCreator.channel.detail(channelId);
+
+  const invalidte = useCallback(
     () => queryClient.invalidateQueries(key),
     [queryClient, key],
   );
 
-  return { channelQuery: query, invalidateChannelQuery: invalidate };
+  return invalidte;
 };
 
 // TODO: 적절한 이름 짓기
