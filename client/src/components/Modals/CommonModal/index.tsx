@@ -15,25 +15,23 @@ const CommonModal: FC = () => {
     useRootStore((state) => state.commonModal);
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const overlayStyle: CSSProperties = {
+  const modalOverlayStyle: CSSProperties = {
     background: OverlayBackground[overlayBackground],
   };
 
-  const contentStyle: CSSProperties = {
+  const modalContentStyle: CSSProperties = {
     width: 'max-content',
     height: 'max-content',
     padding: 0,
-    border: 0,
+    top: '',
+    left: '',
     ...contentWrapperStyle,
   };
 
   return (
     <ReactModal
       isOpen={isOpen}
-      style={{
-        overlay: overlayStyle,
-        content: contentStyle,
-      }}
+      style={{ content: modalContentStyle, overlay: modalOverlayStyle }}
       onRequestClose={onCancel ?? closeCommonModal}
       overlayRef={(ref) => {
         if (!ref) return;

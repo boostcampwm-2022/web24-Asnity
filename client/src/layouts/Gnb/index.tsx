@@ -45,8 +45,11 @@ const Gnb = () => {
 
     openContextMenuModal({
       content: <CommunityContextMenu community={community} />,
-      left: e.clientX,
-      top: e.clientY,
+      contentWrapperStyle: {
+        left: e.clientX,
+        top: e.clientY,
+        borderRadius: 16,
+      },
     });
   };
 
@@ -54,9 +57,11 @@ const Gnb = () => {
     openCommonModal({
       content: <CommunityCreateBox />,
       overlayBackground: 'black',
-      left: '50%',
-      top: '50%',
-      transform: 'translate3d(-50%, -50%, 0)',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
     });
   };
 

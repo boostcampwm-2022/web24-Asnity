@@ -30,8 +30,11 @@ const FollowingUserSearchResult: FC<Props> = ({ users }) => {
   ) => React.MouseEventHandler<HTMLButtonElement> = (user) => (e) => {
     openContextMenuModal({
       content: <FollowingUserContextMenu user={user} />,
-      left: e.clientX,
-      top: e.clientY,
+      contentWrapperStyle: {
+        borderRadius: 16,
+        left: e.clientX,
+        top: e.clientY,
+      },
     });
   };
 
