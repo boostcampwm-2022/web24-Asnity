@@ -48,7 +48,8 @@ const Channel = () => {
     },
   );
 
-  const { addChatsQueryData } = useSetChatsQuery();
+  const { addChatsQueryData, updateChatToFailedChat, updateChatToWittenChat } =
+    useSetChatsQuery();
   const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
@@ -66,14 +67,24 @@ const Channel = () => {
       content,
       createdAt,
       senderId: myInfo._id,
+      written: -1, // Optimistic Updates중임을 나타냄.
     });
 
+    // https://socket.io/docs/v3/emitting-events/#acknowledgements
     socket.emit(
       SOCKET_EVENTS.SEND_CHAT,
       sendChatPayload({
         ...newChat,
         channelId: roomId,
       }),
+      ({ written }: { written: boolean }) => {
+        if (written) {
+          updateChatToWittenChat({ id, channelId: roomId });
+          return;
+        }
+
+        updateChatToFailedChat({ id, channelId: roomId });
+      },
     );
 
     if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
