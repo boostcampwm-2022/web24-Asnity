@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class JoinChannelDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   requestUserId: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   channel_id: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   community_id: string;
 }
