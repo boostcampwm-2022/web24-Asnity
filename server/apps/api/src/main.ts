@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { WINSTON_MODULE_NEST_PROVIDER, WinstonLogger } from 'nest-winston';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ApiModule } from './api.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
@@ -17,7 +17,11 @@ async function bootstrap() {
   app.use(morgan(':method :url :status - :response-time ms :date[iso]'));
   app.use(cookieParser());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      validateCustomDecorators: true,
+    }),
+  );
   app.useGlobalInterceptors(new SentryInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
   if (process.env.NODE_ENV == 'prod') {
     Sentry.init({
