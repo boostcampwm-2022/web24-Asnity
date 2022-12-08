@@ -1,5 +1,5 @@
 import type { User } from '@apis/user';
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 
 import UserActionBox from '@components/UserActionBox';
 import UserProfile from '@components/UserProfile';
@@ -14,11 +14,14 @@ export interface Props {
 const MyPanel: FC<Props> = ({ me }) => {
   const openModal = useRootStore((state) => state.openCommonModal);
 
-  const handleClickMyPanel = () => {
+  const handleClickMyPanel: MouseEventHandler<HTMLDivElement> = (e) => {
+    const { x, height } = e.currentTarget.getBoundingClientRect();
+
     openModal({
-      content: <UserActionBox />,
-      x: 20,
-      y: 20,
+      content: <UserActionBox user={me} />,
+      overlayBackground: 'transparent',
+      left: x - 10,
+      bottom: height + 10,
     });
   };
 
