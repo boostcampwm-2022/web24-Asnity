@@ -25,8 +25,12 @@ const ContextMenuModal: FC<Props> = () => {
     width: 'max-content',
     height: 'max-content',
     padding: 0,
+    top: '',
+    left: '',
     ...contentWrapperStyle,
   };
+
+  console.log(modalContentStyle);
 
   return (
     <ReactModal
