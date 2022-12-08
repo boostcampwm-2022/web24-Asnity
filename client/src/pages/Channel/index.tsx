@@ -48,7 +48,7 @@ const Channel = () => {
     },
   );
 
-  const { addChatsQueryData, updateChatToFailedChat, updateChatToWittenChat } =
+  const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
     useSetChatsQuery();
   const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
@@ -79,7 +79,7 @@ const Channel = () => {
       }),
       ({ written }: { written: boolean }) => {
         if (written) {
-          updateChatToWittenChat({ id, channelId: roomId });
+          updateChatToWrittenChat({ id, channelId: roomId });
           return;
         }
 
