@@ -1,6 +1,7 @@
 const endPoint = {
   signUp: () => `/api/user/auth/signup` as const,
   signIn: () => `/api/user/auth/signin` as const,
+  signOut: () => `/api/user/auth/signout` as const,
   reissueToken: () => `/api/user/auth/refresh` as const,
   createChannel: () => `/api/channel` as const,
   getChannel: (channelId: string) => `/api/channels/${channelId}` as const,
