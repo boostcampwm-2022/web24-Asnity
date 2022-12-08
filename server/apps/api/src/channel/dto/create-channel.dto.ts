@@ -1,8 +1,8 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsBoolean, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateChannelDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   communityId: string;
 
@@ -11,13 +11,13 @@ export class CreateChannelDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
+  @IsMongoId()
+  @IsOptional()
+  requestUserId: string;
+
+  @IsMongoId()
   @IsOptional()
   managerId: string;
-
-  @IsString()
-  @IsOptional()
-  description: string;
 
   @IsString()
   @IsNotEmpty()
@@ -27,6 +27,10 @@ export class CreateChannelDto {
   @IsNotEmpty()
   @Transform(({ value }) => value === 'true')
   isPrivate: boolean;
+
+  @IsString()
+  @IsOptional()
+  description: string;
 
   @IsOptional()
   users: string[];
