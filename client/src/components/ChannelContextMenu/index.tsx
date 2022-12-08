@@ -1,6 +1,7 @@
 import type { JoinedChannel } from '@apis/channel';
 import type { FC } from 'react';
 
+import ChannelInviteBox from '@components/ChannelInviteBox';
 import ChannelLeaveBox from '@components/ChannelLeaveBox';
 import {
   ArrowRightOnRectangleIcon,
@@ -20,9 +21,18 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
     (state) => state.closeContextMenuModal,
   );
 
-  const handleClickChannelInviteButton = () => {};
+  const handleClickChannelInviteButton = () => {
+    closeContextMenuModal();
+    openCommonModal({
+      content: <ChannelInviteBox channelId={channel._id} />,
+      overlayBackground: 'black',
+      x: '50%',
+      y: '50%',
+      transform: 'translate3d(-50%, -50%, 0)',
+    });
+  };
 
-  const handleClickChannelSettingsButton = () => {};
+  const handleClickChannelSettingsButton = () => { };
 
   const handleClickChannelLeaveButton = () => {
     closeContextMenuModal();
