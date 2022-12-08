@@ -20,8 +20,11 @@ const MyPanel: FC<Props> = ({ me }) => {
     openModal({
       content: <UserActionBox user={me} />,
       overlayBackground: 'transparent',
-      left: x - 10,
-      bottom: height + 10,
+      contentWrapperStyle: {
+        borderRadius: 16,
+        left: x - 10,
+        bottom: height + 10,
+      },
     });
   };
 
