@@ -65,14 +65,14 @@ const Avatar: FC<Props> = ({
   status = 'OFFLINE',
 }) => {
   return (
-    <div className="relative">
+    <div className={`relative ${SCALE[size]}`}>
       {badge && (
         <div
           className={`w-[20px] h-[20px] absolute right-0 bottom-0 border border-offWhite rounded-full z-50 ${BADGE_POSITION[badgePosition]} ${BADGE_COLOR[status]}`}
         />
       )}
       <div
-        className={`flex justify-center items-center ${SCALE[size]} border border-line ${ROUNDED[variant]} text-s24 italic font-bold overflow-hidden select-none ${className}`}
+        className={`flex h-full w-full justify-center items-center border border-line ${ROUNDED[variant]} text-s24 italic font-bold overflow-hidden select-none ${className}`}
       >
         {children}
         {!children &&
