@@ -11,17 +11,8 @@ const OverlayBackground = {
 } as const;
 
 const CommonModal: FC = () => {
-  const {
-    isOpen,
-    content,
-    overlayBackground,
-    onCancel,
-    transform,
-    top = '',
-    right = '',
-    bottom = '',
-    left = '',
-  } = useRootStore((state) => state.commonModal);
+  const { isOpen, content, overlayBackground, onCancel, contentWrapperStyle } =
+    useRootStore((state) => state.commonModal);
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
   const overlayStyle: CSSProperties = {
@@ -33,11 +24,7 @@ const CommonModal: FC = () => {
     height: 'max-content',
     padding: 0,
     border: 0,
-    top,
-    left,
-    right,
-    bottom,
-    transform,
+    ...contentWrapperStyle,
   };
 
   return (
