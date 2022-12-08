@@ -1,4 +1,5 @@
 import { IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class CreateCommunityDto {
   @IsNotEmpty()
@@ -6,12 +7,9 @@ export class CreateCommunityDto {
   @Length(2, 20)
   name: string;
 
-  @IsOptional()
   @IsMongoId()
-  requestUserId: string;
-
-  @IsOptional()
-  @IsMongoId()
+  @IsNotEmpty()
+  @Expose({ name: 'requestUserId' })
   managerId: string;
 
   @IsOptional()
