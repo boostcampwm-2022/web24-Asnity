@@ -13,6 +13,10 @@ export interface Chat {
   updatedAt: string;
   createdAt: string;
   deletedAt?: string;
+  written?: boolean | -1;
+  // -1: Optimistic Updates 중
+  // true: DB 쓰기에 성공
+  // false: DB 쓰기에 실패
 }
 
 export type GetChatsResult = {
