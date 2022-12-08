@@ -2,7 +2,7 @@ import type { SignOutResult } from '@apis/auth';
 import type { UseMutationOptions } from '@tanstack/react-query';
 
 import { signOut } from '@apis/auth';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -15,4 +15,14 @@ export const useSignOutMutation = (
   });
 
   return mutation;
+};
+
+export const useSetMyInfoQueryData = () => {
+  const key = queryKeyCreator.me();
+  const queryClient = useQueryClient();
+  const removeMyInfoQueryData = () => {
+    queryClient.setQueryData(key, () => null);
+  };
+
+  return { removeMyInfoQueryData };
 };
