@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { WsException } from '@nestjs/websockets';
 
-export const requestApiServer = async ({ path, accessToken, data }) => {
+export const requestApiServer = async ({ method, path, accessToken, data }) => {
+  if (process.env.NODE_ENV === 'dev') {
+    return true;
+  }
   const apiUrl = 'http://localhost:' + (process.env.NODE_ENV == 'dev' ? 3000 : 3001) + path;
   try {
     const response = await axios({
-      method: 'post',
+      method,
       url: apiUrl,
       headers: {
         'Content-Type': 'application/json',
