@@ -3,6 +3,8 @@ import { CommunityService } from '@api/src/community/community.service';
 import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
+import { userToManagerPipe } from '@custom/pipe/userToManger.pipe';
+import { CreateCommunityDto } from '@community/dto';
 
 @Controller('api/community')
 export class CommunityController {
@@ -10,10 +12,7 @@ export class CommunityController {
 
   @Post()
   @UseGuards(JwtAccessGuard)
-  async crateCommunity(@ReceivedData() createCommunityDto) {
-    createCommunityDto['managerId'] = createCommunityDto.requestUserId;
-    delete createCommunityDto.requestUserId;
-
+  async crateCommunity(@ReceivedData(userToManagerPipe) createCommunityDto: CreateCommunityDto) {
     const result = await this.communityService.createCommunity(createCommunityDto);
     return responseForm(200, result);
   }
