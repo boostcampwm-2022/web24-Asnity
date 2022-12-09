@@ -3,8 +3,8 @@ import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
+import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQuery } from '@hooks/chat';
-import { useMyInfo } from '@hooks/useMyInfoQuery';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
@@ -16,7 +16,7 @@ import { io } from 'socket.io-client';
 import { joinChannelsPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 const SocketLayer = () => {
-  const myInfo = useMyInfo();
+  const myInfo = useMyInfoQueryData();
   const accessToken = useTokenStore((state) => state.accessToken);
   const firstEffect = useRef(true);
   const sockets = useSocketStore((state) => state.sockets);

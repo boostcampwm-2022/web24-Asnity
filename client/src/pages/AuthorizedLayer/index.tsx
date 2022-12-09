@@ -1,5 +1,5 @@
 import FullScreenSpinner from '@components/FullScreenSpinner';
-import { useMyInfo } from '@hooks/useMyInfoQuery';
+import { useMyInfoQueryData } from '@hooks/auth';
 import useReissueTokenMutation from '@hooks/useReissueTokenMutation';
 import { useTokenStore } from '@stores/tokenStore';
 import React, { useEffect } from 'react';
@@ -12,7 +12,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
  * - 토큰 갱신 요청시, 알 수 없는 에러가 발생하면 **`/unknown-error`** 로 리다이렉트 된다.
  */
 const AuthorizedLayer = () => {
-  const user = useMyInfo();
+  const user = useMyInfoQueryData();
 
   const accessToken = useTokenStore((state) => state.accessToken);
   const navigate = useNavigate();
