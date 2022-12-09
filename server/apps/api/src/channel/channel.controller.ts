@@ -4,6 +4,7 @@ import { JwtAccessGuard } from '@auth/guard';
 import { CreateChannelDto } from '@channel/dto';
 import { responseForm } from '@utils/responseForm';
 import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
+import { userToManagerPipe } from '@custom/pipe/userToManger.pipe';
 
 @Controller('api/channel')
 export class ChannelController {
@@ -11,10 +12,7 @@ export class ChannelController {
 
   @Post()
   @UseGuards(JwtAccessGuard)
-  async createChannel(@ReceivedData() createChannelDto: CreateChannelDto) {
-    createChannelDto['managerId'] = createChannelDto.requestUserId;
-    delete createChannelDto.requestUserId;
-
+  async createChannel(@ReceivedData(userToManagerPipe) createChannelDto: CreateChannelDto) {
     const newChannel = await this.channelService.createChannel(createChannelDto);
 
     delete newChannel.users;
