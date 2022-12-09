@@ -4,7 +4,7 @@ const port = 8080;
 const url = 'http://localhost'; //49.50.167.202';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNTcyMjc0LCJleHAiOjE2NzA1NzMxNzR9.OzrbH5xFaOXJZjvYwLmAoY95jb6kJDEo0qkjKU7dlJU';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDVhOWNhYTIwZGVlZmQ1Yzc2NWUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY3MDU4NzQ2NywiZXhwIjoxNjcwNTg4MzY3fQ.cmD3b_f5l0IkrNs85XpUzBXRRKEFBVWdkiSB6XxXIXs';
 const accessToken2 =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg0NWNiMTU0NDRmMGEyMGRlNTYxMDUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY2OTY1MTM1NywiZXhwIjoxNjY5NjUyMjU3fQ.T3OGoF2hz4ew1iw2c4TA1tldHgTwDxkEyUFBkfUqeHo';
 const opt = {
@@ -14,20 +14,14 @@ const opt = {
 };
 try {
   const helloSocket = io(`${url}:${port}/socket/commu-hello`, opt);
-  // console.log(helloSocket);
   const worldSocket = io(`${url}:${port}/socket/commu-world`, opt); // 다른 namesapce
 
   // console.log(helloSocket.connected); // 연결되었는지 true, false로 나옴
 
   // 처음 연결 후 channel 배열을 전달해야함
-  const result = helloSocket.emit('join', { channels: ['639086392258e789af7d736e', 'b', 'c'] });
+  const result = helloSocket.emit('join', { channels: ['a', 'b', 'c'] });
   worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
-  // console.log(result);
-  // // console.log(helloSocket);
-  // // message listen
-  const hello = (c) => {
-    console.log(c);
-  };
+
   helloSocket.on('new-message', ({ channelId, user_id, message, time }) => {
     console.log(
       `new message channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`,
@@ -58,7 +52,7 @@ try {
       time: new Date(),
     },
     (c) => {
-      console.log(c);
+      console.log(c.written, ' this is hello');
     },
   );
 
@@ -71,7 +65,7 @@ try {
       time: new Date(),
     },
     (c) => {
-      console.log(c, 'this is world');
+      console.log(c.written, ' this is world');
     },
   );
 
