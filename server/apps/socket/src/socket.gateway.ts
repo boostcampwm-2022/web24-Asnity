@@ -11,15 +11,15 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Logger, UseFilters } from '@nestjs/common';
-import { Join, NewMessage, ModifyMessage } from '@socketInterface/index';
+import { Join, NewMessage, ModifyMessage, InviteChannel } from '@socketInterface/index';
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
 import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
+import { joinChannelInUsersURL, storeMessageURL } from './axios/request-api-urls';
+import { InviteChannelDto } from '@channel/dto';
 //TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
-
-const storeMessageURL = (channelId) => `/api/channels/${channelId}/message`;
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -54,7 +54,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const communityName = socket.nsp.name;
     const { id, channelId, user_id, message, time } = data;
     this.logger.log(
-      `New message. [NS] : ${communityName}, [channel] : ${channelId} [From] ${user_id},[MSG][${time}]:${message}`,
+      `New message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG][${time}]:${message}`,
     );
     const restoreMessageDto: RestoreMessageDto = {
       channel_id: channelId,
@@ -63,16 +63,55 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       senderId: socket.user._id,
     };
     const apiUrl = storeMessageURL(channelId);
-    const result = await requestApiServer({
-      path: apiUrl,
-      accessToken: socket.user.accessToken,
-      data: restoreMessageDto,
-    });
+    const result =
+      process.env.NODE_ENV == 'dev'
+        ? true
+        : await requestApiServer({
+            path: apiUrl,
+            accessToken: socket.user.accessToken,
+            data: restoreMessageDto,
+          });
     if (result) {
       socket.to(channelId).emit('new-message', data);
     }
 
     const written = result;
+    return { written };
+  }
+
+  @SubscribeMessage('invite-users-to-channel')
+  async inviteChannel(
+    @MessageBody() data: InviteChannel,
+    @ConnectedSocket() socket: SocketWithAuth,
+  ) {
+    const community = socket.nsp;
+    const communityName = socket.nsp.name;
+    const { channel_id, users } = data;
+    this.logger.log(
+      `Invite Users to Channel.\t[NS] : ${communityName},\t[channel] : ${channel_id}\t[users] ${users}`,
+    );
+
+    const apiUrl = joinChannelInUsersURL(channel_id);
+    const result =
+      process.env.NODE_ENV == 'dev'
+        ? true
+        : await requestApiServer({
+            path: apiUrl,
+            accessToken: socket.user.accessToken,
+            data,
+          });
+    if (result) {
+      Array.from(socket.nsp.sockets.values()).forEach((otherSocket: SocketWithAuth) => {
+        if (users.includes(otherSocket.user._id)) {
+          otherSocket.join(channel_id);
+          // community.in(otherSocket.id).socketsJoin('room1');
+          console.log(otherSocket);
+          otherSocket.emit('invited-to-channel', result);
+        }
+      });
+    }
+
+    const written = result ? true : false;
     return { written };
   }
 
@@ -85,7 +124,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const communityName = socket.nsp.name;
     const { channelId, user_id, message, messageId } = data;
     this.logger.log(
-      `Modify message. [NS] : ${communityName}, [channel] : ${channelId} [From] ${user_id}, [MSG] : ${message}, [Origin id] : ${messageId}`,
+      `Modify message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG] : ${message},\t[Origin id] : ${messageId}`,
     );
     community.to(channelId).emit('modify-message', data);
     // TODO : db에 message data 수정을 여기서할지 논의하기

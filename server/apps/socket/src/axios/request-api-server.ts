@@ -16,13 +16,14 @@ export const requestApiServer = async ({ path, accessToken, data }) => {
     });
     if (
       response.status >= 300 ||
+      response.data?.statusCode > 300 ||
       response.data?.name?.match(/error/i) ||
       response.data?.message?.match(/error/i)
     ) {
       // throw new WsException('API Server 요청 중 에러가 발생했습니다.');
       return false;
     }
-    return true;
+    return response.data.result ?? true;
   } catch (error) {
     // throw new WsException('API Server 요청 중 에러가 발생했습니다.');
     return false;
