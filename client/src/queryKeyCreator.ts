@@ -5,6 +5,17 @@ const userQueryKey = {
     [...userQueryKey.all(), { communityId }] as const,
 };
 
+const followingQueryKey = {
+  all: () => ['followings'] as const,
+  list: () => [...followingQueryKey.all(), 'list'] as const,
+  toggleFollowing: () => ['toggleFollowing'] as const,
+};
+
+const followerQueryKey = {
+  all: () => ['followers'] as const,
+  list: () => [...followerQueryKey.all(), 'list'] as const,
+};
+
 const directMessageQueryKey = {
   all: ['directMessages'] as const,
   list: () => [...directMessageQueryKey.all] as const,
@@ -27,8 +38,8 @@ const channelQueryKey = {
   detail: (channelId: string) =>
     [...channelQueryKey.all(), 'detail', channelId] as const,
   createChannel: () => ['createChannel'] as const,
-  inviteChannel: () => ['inviteChannel'] as const,
   leaveChannel: () => ['leaveChannel'] as const,
+  inviteChannel: () => ['inviteChannel'] as const,
 };
 
 const chatQueryKey = {
@@ -36,29 +47,18 @@ const chatQueryKey = {
   list: (channelId: string) => [...chatQueryKey.all(), channelId] as const,
 };
 
-const followingQueryKey = {
-  all: () => ['followings'] as const,
-  list: () => [...followingQueryKey.all(), 'list'] as const,
-  toggleFollowing: () => ['toggleFollowing'] as const,
-};
-
-const followerQueryKey = {
-  all: () => ['followers'] as const,
-  list: () => [...followerQueryKey.all(), 'list'] as const,
-};
-
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
   signIn: () => ['signIn'] as const,
   signOut: () => ['signOut'] as const,
+  reissueToken: () => ['reissueToken'] as const,
+  user: userQueryKey,
   following: followingQueryKey,
   follower: followerQueryKey,
-  reissueToken: () => ['reissueToken'] as const,
   directMessage: directMessageQueryKey,
   community: communityQueryKey,
   channel: channelQueryKey,
-  user: userQueryKey,
   chat: chatQueryKey,
 } as const;
 
