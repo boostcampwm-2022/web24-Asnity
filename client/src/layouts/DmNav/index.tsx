@@ -1,7 +1,6 @@
 import Spinner from '@components/Spinner';
 import UserProfile from '@components/UserProfile';
 import { useChannelQuery } from '@hooks/channel';
-// import { useMyInfo } from '@hooks/useMyInfoQuery';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { Link } from 'react-router-dom';
