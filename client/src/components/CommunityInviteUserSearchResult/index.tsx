@@ -21,7 +21,7 @@ interface Props {
 const CommunityInviteUserSearchResult: FC<Props> = ({ users, communityId }) => {
   const communityUsersMap = useCommunityUsersMapQuery(communityId);
   const inviteCommunityMutation = useInviteCommunityMutation();
-  const { invalidateCommunityUsersQuery } =
+  const invalidateCommunityUsersQuery =
     useInvalidateCommunityUsersQuery(communityId);
 
   const handleClickCommunityInviteButton =

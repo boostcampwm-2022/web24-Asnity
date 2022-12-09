@@ -144,7 +144,7 @@ export const useCommunityUsersQuery = (
     },
   );
 
-  return { communityUsersQuery: query };
+  return query;
 };
 
 export const useInvalidateCommunityUsersQuery = (communityId: string) => {
@@ -154,7 +154,7 @@ export const useInvalidateCommunityUsersQuery = (communityId: string) => {
   const invalidateCommunityUsersQuery = () =>
     queryClient.invalidateQueries(key);
 
-  return { invalidateCommunityUsersQuery };
+  return invalidateCommunityUsersQuery;
 };
 
 export type UsersMap = Record<UserUID, User>;
@@ -178,7 +178,7 @@ export const useChannelUsersMapQuery = (channelId: string) => {
     },
   );
 
-  return { channelUsersMapQuery: query };
+  return query;
 };
 
 export type CommunityUsersMap = Record<UserUID, User>;
