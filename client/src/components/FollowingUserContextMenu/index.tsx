@@ -3,8 +3,8 @@ import type { FC } from 'react';
 
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserMinusIcon } from '@heroicons/react/20/solid';
-import useFollowingMutation from '@hooks/useFollowingMutation';
 import { useInvalidateFollowingsQuery } from '@hooks/useFollowingsQuery';
+import { useFollowingMutation } from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 

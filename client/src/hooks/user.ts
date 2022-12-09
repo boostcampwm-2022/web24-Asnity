@@ -1,10 +1,21 @@
 import type { Channel } from '@apis/channel';
-import type { User, UserUID, GetUsersResult } from '@apis/user';
+import type {
+  User,
+  UserUID,
+  GetUsersResult,
+  UpdateFollowingResult,
+} from '@apis/user';
+import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
 import { getChannel } from '@apis/channel';
-import { getCommunityUsers, getUsers, getFollowers } from '@apis/user';
-import { useQueryClient, useQuery } from '@tanstack/react-query';
+import {
+  getCommunityUsers,
+  getUsers,
+  getFollowers,
+  updateFollowing,
+} from '@apis/user';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -52,6 +63,15 @@ export const useFollowersMapQuery = () => {
   });
 
   return query;
+};
+
+export const useFollowingMutation = (
+  options?: UseMutationOptions<UpdateFollowingResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.followings.toggleFollowing();
+  const mutation = useMutation(key, updateFollowing, { ...options });
+
+  return mutation;
 };
 
 export const useCommunityUsersQuery = (
