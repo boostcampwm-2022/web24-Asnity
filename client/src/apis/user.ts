@@ -40,7 +40,7 @@ export const getFollowings: GetFollowings = () => {
 
   return tokenAxios
     .get<GetFollowingsResponse>(endPoint)
-    .then((res) => res.data.result.followings);
+    .then((response) => response.data.result.followings);
 };
 
 export interface ToggleFollowingResult {
@@ -58,7 +58,7 @@ export const toggleFollowing: ToggleFollowing = (userId) => {
 
   return tokenAxios
     .post<ToggleFollowingResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((response) => response.data.result);
 };
 
 export type GetFollowersResult = {
@@ -72,7 +72,7 @@ export const getFollowers: GetFollowers = () => {
 
   return tokenAxios
     .get<GetFollowersResponse>(endPoint)
-    .then((res) => res.data.result.followers);
+    .then((response) => response.data.result.followers);
 };
 
 export interface GetUsersParams {
