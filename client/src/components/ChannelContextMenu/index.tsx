@@ -8,6 +8,7 @@ import {
   Cog6ToothIcon,
   UserPlusIcon,
 } from '@heroicons/react/20/solid';
+import { usePrefetchChannelQuery } from '@hooks/channel';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 
@@ -20,6 +21,10 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
   const closeContextMenuModal = useRootStore(
     (state) => state.closeContextMenuModal,
   );
+
+  const prefetchChannelQuery = usePrefetchChannelQuery(channel._id);
+
+  prefetchChannelQuery();
 
   const handleClickChannelInviteButton = () => {
     closeContextMenuModal();
