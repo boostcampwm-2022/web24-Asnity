@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { responseForm } from '@utils/responseForm';
-import { ObjectIdValidationPipe } from '@custom_pipe/mongodbObjectIdValidation.pipe';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { FollowerDto, ModifyUserDto } from './dto';
+import { ObjectIdValidationPipe } from '@custom/pipe/mongodbObjectIdValidation.pipe';
 
 @Controller('api/user')
 export class UserController {
