@@ -1,13 +1,30 @@
-import type { SignOutResult, SignInRequest, SignInResult } from '@apis/auth';
+import type {
+  SignOutResult,
+  SignInRequest,
+  SignInResult,
+  SignUpRequest,
+  SignUpResult,
+} from '@apis/auth';
 import type { GetMyInfoResult } from '@apis/user';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { signOut, signIn } from '@apis/auth';
+import { signOut, signIn, signUp } from '@apis/auth';
 import { getMyInfo } from '@apis/user';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
+
+export const useSignUpMutation = (
+  options: UseMutationOptions<SignUpResult, unknown, SignUpRequest>,
+) => {
+  const key = queryKeyCreator.signUp();
+  const mutation = useMutation(key, signUp, {
+    ...options,
+  });
+
+  return mutation;
+};
 
 export const useSignInMutation = (
   options: UseMutationOptions<SignInResult, unknown, SignInRequest>,
