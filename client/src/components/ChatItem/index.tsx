@@ -4,7 +4,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
-import { useSetChatsQuery } from '@hooks/chat';
+import { useSetChatsQueryData } from '@hooks/chat';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
 import React, { memo, useState } from 'react';
@@ -30,7 +30,7 @@ const ChatItem: FC<Props> = ({
   const roomId = params.roomId as string;
   const { content, createdAt, updatedAt, deletedAt, written, id } = chat;
   const [isHover, setIsHover] = useState(false);
-  const { removeChatQueryData } = useSetChatsQuery();
+  const { removeChatQueryData } = useSetChatsQueryData();
 
   const isUpdated = updatedAt && updatedAt !== createdAt;
   const isDeleted = !!deletedAt;
@@ -65,9 +65,8 @@ const ChatItem: FC<Props> = ({
           <div className="grow">
             <div className="flex gap-2 items-center text-s16 mb-2">
               <span
-                className={`font-bold ${
-                  isSystem ? 'text-primary' : 'text-indigo'
-                } ${contentClassnames}`}
+                className={`font-bold ${isSystem ? 'text-primary' : 'text-indigo'
+                  } ${contentClassnames}`}
               >
                 {user.nickname}
               </span>
