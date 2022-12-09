@@ -1,5 +1,6 @@
 const userQueryKey = {
   all: () => ['users'] as const,
+  list: (filter: string) => [...userQueryKey.all(), { filter }],
   communityUsers: (communityId: string) =>
     [...userQueryKey.all(), { communityId }] as const,
   channelUsers: (channelId: string) =>
@@ -50,7 +51,6 @@ const queryKeyCreator = {
   followings: followingQueryKey,
   followers: (): [string] => ['followers'],
   reissueToken: () => ['reissueToken'] as const,
-  userSearch: (filter: string) => ['userSearch', { filter }],
   directMessage: directMessageQueryKey,
   community: communityQueryKey,
   channel: channelQueryKey,
