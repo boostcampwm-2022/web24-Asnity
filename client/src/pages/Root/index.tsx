@@ -1,4 +1,4 @@
-import { useMyInfo } from '@hooks/useMyInfoQuery';
+import { useMyInfoQueryData } from '@hooks/auth';
 import { useTokenStore } from '@stores/tokenStore';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { Navigate } from 'react-router-dom';
  * - 조건문에 user || accessToken 중 하나라도 없으면 **`/sign-in`** -> **`/`** -> **`/sign-in`** ... 무한루프 발생함.
  */
 const Root = () => {
-  const user = useMyInfo();
+  const user = useMyInfoQueryData();
   const accessToken = useTokenStore((state) => state.accessToken);
 
   if (user || accessToken) return <Navigate to="/dms" replace />;

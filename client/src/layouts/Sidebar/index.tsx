@@ -2,7 +2,7 @@ import type { MouseEventHandler } from 'react';
 
 import MyPanel from '@components/MyPanel';
 import Spinner from '@components/Spinner';
-import useMyInfoQuery from '@hooks/useMyInfoQuery';
+import { useMyInfoQuery } from '@hooks/auth';
 import CommunityNav from '@layouts/CommunityNav';
 import DmNav from '@layouts/DmNav';
 import React from 'react';

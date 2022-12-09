@@ -1,5 +1,5 @@
 import FullScreenSpinner from '@components/FullScreenSpinner';
-import { useMyInfo } from '@hooks/useMyInfoQuery';
+import { useMyInfoQueryData } from '@hooks/auth';
 import useReissueTokenMutation from '@hooks/useReissueTokenMutation';
 import { useTokenStore } from '@stores/tokenStore';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
  * - 토큰 갱신 요청시, 유효하지 않은 토큰 에러나 알 수 없는 에러가 발생하면 페이지 이동 없이 그대로 유지한다.
  */
 const UnAuthorizedLayer = () => {
-  const user = useMyInfo();
+  const user = useMyInfoQueryData();
   const location = useLocation();
 
   const accessToken = useTokenStore((state) => state.accessToken);
