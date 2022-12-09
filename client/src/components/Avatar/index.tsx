@@ -28,16 +28,14 @@ const SCALE = {
 };
 
 const getFirstLetter = (str: string) => {
-  const firstLetter = str.at(0);
-
-  if (!firstLetter) {
+  if (!str?.length) {
     console.warn(
       `getFirstLetter의 인자로는 반드시 길이 1이상의 문자열이 들어와야 합니다.`,
     );
     return '';
   }
 
-  return firstLetter;
+  return str?.at(0);
 };
 
 const BADGE_POSITION = {
