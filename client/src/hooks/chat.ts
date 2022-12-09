@@ -38,7 +38,7 @@ type AddChatsQueryData = ({
   written?: boolean | -1;
 }) => void;
 
-type UpdateChatToWrittenChat = ({
+type UpdateChatQueryDataToWrittenChat = ({
   id,
   channelId,
 }: {
@@ -46,8 +46,8 @@ type UpdateChatToWrittenChat = ({
   channelId: string;
 }) => void;
 
-type UpdateChatToFailedChat = UpdateChatToWrittenChat;
-type RemoveChatQueryData = UpdateChatToWrittenChat;
+type UpdateChatQueryDataToFailedChat = UpdateChatQueryDataToWrittenChat;
+type RemoveChatQueryData = UpdateChatQueryDataToWrittenChat;
 
 export const useSetChatsQuery = () => {
   const queryClient = useQueryClient();
@@ -86,7 +86,7 @@ export const useSetChatsQuery = () => {
   /**
    * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시킨다,
    */
-  const updateChatToWrittenChat: UpdateChatToWrittenChat = ({
+  const updateChatQueryDataToWrittenChat: UpdateChatQueryDataToWrittenChat = ({
     id,
     channelId,
   }) => {
@@ -110,7 +110,7 @@ export const useSetChatsQuery = () => {
   /**
    * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 false로 변경시킨다.
    */
-  const updateChatToFailedChat: UpdateChatToFailedChat = ({
+  const updateChatQueryDataToFailedChat: UpdateChatQueryDataToFailedChat = ({
     id,
     channelId,
   }) => {
@@ -156,8 +156,8 @@ export const useSetChatsQuery = () => {
 
   return {
     addChatsQueryData,
-    updateChatToWrittenChat,
-    updateChatToFailedChat,
+    updateChatQueryDataToWrittenChat,
+    updateChatQueryDataToFailedChat,
     removeChatQueryData,
   };
 };
