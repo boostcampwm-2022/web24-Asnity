@@ -4,7 +4,8 @@ import Button from '@components/Button';
 import ChannelInviteUserSearchResult from '@components/ChannelInviteUserSearchResult';
 import ErrorMessage from '@components/ErrorMessage';
 import SearchInput from '@components/SearchInput';
-import { useCommunityUsersQuery } from '@hooks/user';
+import Spinner from '@components/Spinner';
+import { useChannelUsersMapQuery, useCommunityUsersQuery } from '@hooks/user';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -24,13 +25,11 @@ const ChannelInviteBox: FC<Props> = ({ channelId }) => {
   const communityId = params.communityId as string;
   const { register, handleSubmit } = useForm<UserSearchInput>();
 
+  const { channelUsersMapQuery } = useChannelUsersMapQuery(channelId);
   const [submittedFilter, setSubmittedFilter] = useState('');
   const { communityUsersQuery } = useCommunityUsersQuery(
     communityId,
     submittedFilter,
-    {
-      enabled: !!submittedFilter,
-    },
   );
   const handleSubmitUserSearchForm = (data: UserSearchInput) => {
     if (data.filter.trim()) {
@@ -57,16 +56,17 @@ const ChannelInviteBox: FC<Props> = ({ channelId }) => {
           </form>
         </div>
         <div className="w-full h-full flex justify-center items-center">
-          {/* 캐시에 데이터가 있어도 데이터를 보여주지 않고 검색을 해야지만 검색 결과를 보여줘야 함*/}
-          {!communityUsersQuery.isFetchedAfterMount ? (
-            <div>검색어를 입력해주세요</div>
-          ) : communityUsersQuery.isLoading ? (
-            <div>로딩중...</div>
-          ) : communityUsersQuery.error ? (
+          {communityUsersQuery.isLoading || channelUsersMapQuery.isLoading ? (
+            <>
+              <span className="sr-only">로딩중</span>
+              <Spinner />
+            </>
+          ) : communityUsersQuery.isError || channelUsersMapQuery.isError ? (
             <ErrorMessage size="lg">에러가 발생했습니다.</ErrorMessage>
           ) : (
             <ChannelInviteUserSearchResult
-              users={communityUsersQuery.data}
+              communityUsers={communityUsersQuery.data}
+              channelUsersMap={channelUsersMapQuery.data}
               communityId={communityId}
               channelId={channelId}
             />
