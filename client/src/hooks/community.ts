@@ -23,15 +23,21 @@ import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
 
 export const useCommunitiesQuery = () => {
-  const queryClient = useQueryClient();
-
   const key = queryKeyCreator.community.all();
   const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
+
+  return query;
+};
+
+export const useInvalidateCommunitiesQuery = () => {
+  const key = queryKeyCreator.community.all();
+  const queryClient = useQueryClient();
+
   const invalidate = useCallback(() => {
     return queryClient.invalidateQueries(key);
   }, [queryClient, key]);
 
-  return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
+  return invalidate;
 };
 
 export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
@@ -86,7 +92,7 @@ export const useJoinedChannelsQuery = (id: string) => {
     },
   );
 
-  return { joinedChannelsQuery: query };
+  return query;
 };
 
 interface SetCommunities {

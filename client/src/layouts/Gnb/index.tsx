@@ -25,7 +25,7 @@ const Gnb = () => {
 
   const openCommonModal = useRootStore((state) => state.openCommonModal);
 
-  const { communitiesQuery } = useCommunitiesQuery();
+  const communitiesQuery = useCommunitiesQuery();
 
   const communityItemListPadding = cn({
     'pb-[30vh]': !communitiesQuery.isLoading,
