@@ -11,7 +11,7 @@
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
+<table align="center">
   <tbody>
     <tr>
       <td align="center">
@@ -39,6 +39,30 @@
 - [Skill Spec](https://github.com/boostcampwm-2022/web24-Asnity/wiki/Skill-Spec)
 - [Database ERD](https://github.com/boostcampwm-2022/web24-Asnity/wiki/DB-Diagram)
 - [Backlog](https://lake-duke-f63.notion.site/25c4c9e46d464ea1a82a68c8399ceaf0?v=ea1b4f77e71f4d17b2be0ebdc9c03702)
+ 
+## Skill Spec
+<div align="center">
+<img src="https://img.shields.io/badge/Node.js-16.17.0-339933?logo=node.js"> <img src="https://img.shields.io/badge/TypeScript-4.7.4-3178C6?logo=typescript"> <img src="https://img.shields.io/badge/Jest-29.3.1-C21325?logo=jest">
+</div>
+<br />
 
-## Tech Stack
-![image](https://user-images.githubusercontent.com/79135734/201241974-64de8370-9061-40ce-a44a-63969b3ae80f.png)
+<div align="center">
+<img src="https://img.shields.io/badge/Docker-20.10.21-2496ED?logo=docker"> <img src="https://img.shields.io/badge/NGINX-1.14.0-009639?logo=nginx">
+</div>
+<br />
+
+<div align="center">
+  <img src="https://img.shields.io/badge/MongoDB-4.4.17-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/Mongoose-6.7.2-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/NestJS-9.1.5-E0234E?logo=NestJS">
+</div>
+
+<div align="center">
+  <br />
+  <img src="https://img.shields.io/badge/React-18.2.0-61DBFB?logo=react"> <img src="https://img.shields.io/badge/ReactQuery-4.16.1-FF4154?logo=react-query"> <img src="https://img.shields.io/badge/Zustand-4.1.4-7F52FF?logo=redux"> 
+</div>
+
+<div align="center">
+<img src="https://img.shields.io/badge/TailwindCSS-3.2.4-06B6D4?logo=tailwindcss"> <img src="https://img.shields.io/badge/TestingLibrary-13.4.0-C21325?logo=testing-library"> <img src="https://img.shields.io/badge/Webpack-5.75.0-8DD6F9?logo=webpack"> <img src="https://img.shields.io/badge/Babel-7.20.2-F9DC3E?logo=babel">
+<br />
+</div>
+
+![stack](https://user-images.githubusercontent.com/79135734/206748158-d0659242-4034-4cf3-bbab-95418d49bf54.PNG)
