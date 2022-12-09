@@ -18,14 +18,13 @@ import { WsCatchAllFilter } from './exceptions/socket-catch-error';
 import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
 import { joinChannelInUsersURL, storeMessageURL } from './axios/request-api-urls';
-import { InviteChannelDto } from '@channel/dto';
-//TODO : revers proxy : https://socket.io/docs/v4/reverse-proxy/
+import { authMiddleware } from './middleware/authMiddleware';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
   namespace: /\/socket\/commu-.+/,
   cors: {
-    origin: '*', //['http://localhost:80'],
+    origin: '*',
   },
 })
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -34,7 +33,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('Socket');
 
-  @SubscribeMessage('join') // socket.on('join', ({}) => {})
+  @SubscribeMessage('join')
   joinEvent(@MessageBody() data: Join, @ConnectedSocket() socket: SocketWithAuth) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
@@ -46,7 +45,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
-  @SubscribeMessage('new-message') // socket.on('new-message', ({}) => {})
+  @SubscribeMessage('new-message')
   async newMessageEvent(
     @MessageBody() data: NewMessage,
     @ConnectedSocket() socket: SocketWithAuth,
@@ -62,15 +61,12 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       content: message,
       senderId: socket.user._id,
     };
-    const apiUrl = storeMessageURL(channelId);
-    const result =
-      process.env.NODE_ENV == 'dev'
-        ? true
-        : await requestApiServer({
-            path: apiUrl,
-            accessToken: socket.user.accessToken,
-            data: restoreMessageDto,
-          });
+    const result = await requestApiServer({
+      method: 'post',
+      path: storeMessageURL(channelId),
+      accessToken: socket.user.accessToken,
+      data: restoreMessageDto,
+    });
     if (result) {
       socket.to(channelId).emit('new-message', data);
     }
@@ -84,22 +80,18 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: InviteChannel,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
-    const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { channel_id, users } = data;
     this.logger.log(
       `Invite Users to Channel.\t[NS] : ${communityName},\t[channel] : ${channel_id}\t[users] ${users}`,
     );
 
-    const apiUrl = joinChannelInUsersURL(channel_id);
-    const result =
-      process.env.NODE_ENV == 'dev'
-        ? true
-        : await requestApiServer({
-            path: apiUrl,
-            accessToken: socket.user.accessToken,
-            data,
-          });
+    const result = await requestApiServer({
+      method: 'post',
+      path: joinChannelInUsersURL(channel_id),
+      accessToken: socket.user.accessToken,
+      data,
+    });
     if (result) {
       Array.from(socket.nsp.sockets.values()).forEach((otherSocket: SocketWithAuth) => {
         if (users.includes(otherSocket.user._id)) {
@@ -133,7 +125,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   afterInit(server: Server) {
     // 서버 실행 시 실행되는 함수
     this.logger.log('웹소켓 서버 실행 시작');
-    this.server.use(createTokenMiddleware(this.jwtService));
+    this.server.use(authMiddleware(this.jwtService));
   }
 
   handleDisconnect(socket: SocketWithAuth) {
@@ -146,20 +138,3 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(`Client Connected : [NS] '${socket.nsp.name}', [ID] ${socket.id}`);
   }
 }
-
-const createTokenMiddleware = (jwtService: JwtService) => (socket: SocketWithAuth, next) => {
-  const token = socket.handshake.auth.token || socket.handshake.headers['token'];
-
-  try {
-    const accessToken = token.split(' ')[1];
-    const payload = jwtService.verify(accessToken);
-    socket.user = {
-      _id: payload._id,
-      nickname: payload.nickname,
-      accessToken,
-    };
-    next();
-  } catch (error) {
-    next(new WsException('Unauthorized'));
-  }
-};
