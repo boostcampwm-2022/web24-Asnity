@@ -22,26 +22,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
 
-export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
-/**
- *
- * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을 `Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
- */
-export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
+export const useCommunitiesQuery = () => {
   const queryClient = useQueryClient();
 
   const key = queryKeyCreator.community.all();
-  const communitiesQueryData =
-    queryClient.getQueryData<CommunitySummaries>(key);
+  const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
+  const invalidate = useCallback(() => {
+    return queryClient.invalidateQueries(key);
+  }, [queryClient, key]);
 
-  return communitiesQueryData?.reduce(
-    (acc, community) => ({
-      ...acc,
-      [community._id]: community,
-    }),
-    {},
-  );
+  return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
 };
+
+export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
 
 export const useCommunitiesMapQuery = () => {
   const key = queryKeyCreator.community.all();
@@ -57,16 +50,24 @@ export const useCommunitiesMapQuery = () => {
   return query;
 };
 
-export const useCommunitiesQuery = () => {
+/**
+ *
+ * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을`Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
+ */
+export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
   const queryClient = useQueryClient();
 
   const key = queryKeyCreator.community.all();
-  const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
-  const invalidate = useCallback(() => {
-    return queryClient.invalidateQueries(key);
-  }, [queryClient, key]);
+  const communitiesQueryData =
+    queryClient.getQueryData<CommunitySummaries>(key);
 
-  return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
+  return communitiesQueryData?.reduce(
+    (acc, community) => ({
+      ...acc,
+      [community._id]: community,
+    }),
+    {},
+  );
 };
 
 /**
