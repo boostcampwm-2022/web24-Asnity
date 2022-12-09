@@ -104,17 +104,13 @@ export const useCreateChannelMutation = (
 
 /**
  * ### invalidate queries 하지 않고, 수동으로 queryClient update 할 때 사용합니다.
- * - addChannelToCommunity: 커뮤니티 아이디와 추가할 채널을 인자로 전달.
+ * - addChannelQueryData: 커뮤니티 아이디와 추가할 채널을 인자로 전달.
  */
-export const useSetChannelsQuery = () => {
+export const useSetChannelQueryData = () => {
   const queryClient = useQueryClient();
   const key = queryKeyCreator.community.all();
 
-  // TODO: 네이밍
-  const addChannelToCommunity = (
-    communityId: string,
-    channel: JoinedChannel,
-  ) => {
+  const addChannelQueryData = (communityId: string, channel: JoinedChannel) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
@@ -129,10 +125,7 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  const deleteChannelFromCommunity = (
-    communityId: string,
-    channelId: string,
-  ) => {
+  const deleteChannelQueryData = (communityId: string, channelId: string) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
@@ -148,7 +141,7 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  return { addChannelToCommunity, deleteChannelFromCommunity };
+  return { addChannelQueryData, deleteChannelQueryData };
 };
 
 export const useLeaveChannelMutation = (
