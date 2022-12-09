@@ -8,7 +8,7 @@ import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
 import REGEX from '@constants/regex';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
-import useSignUpMutation from '@hooks/useSignUpMutation';
+import { useSignUpMutation } from '@hooks/auth';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
