@@ -1,12 +1,29 @@
 import type { Channel } from '@apis/channel';
-import type { User, UserUID } from '@apis/user';
+import type { User, UserUID, GetUsersResult } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getChannel } from '@apis/channel';
-import { getCommunityUsers } from '@apis/user';
+import { getCommunityUsers, getUsers } from '@apis/user';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
+
+export const useUsersQuery = (
+  filter: string,
+  options?: { suspense?: boolean; enabled?: boolean },
+) => {
+  const key = queryKeyCreator.userSearch(filter);
+  const query = useQuery<GetUsersResult['users'], AxiosError>(
+    key,
+    () => getUsers({ search: filter }),
+    {
+      ...options,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  return query;
+};
 
 export const useCommunityUsersQuery = (
   communityId: string,
