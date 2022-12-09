@@ -25,9 +25,9 @@ const ChannelInviteBox: FC<Props> = ({ channelId }) => {
   const communityId = params.communityId as string;
   const { register, handleSubmit } = useForm<UserSearchInput>();
 
-  const { channelUsersMapQuery } = useChannelUsersMapQuery(channelId);
+  const channelUsersMapQuery = useChannelUsersMapQuery(channelId);
   const [submittedFilter, setSubmittedFilter] = useState('');
-  const { communityUsersQuery } = useCommunityUsersQuery(
+  const communityUsersQuery = useCommunityUsersQuery(
     communityId,
     submittedFilter,
   );
