@@ -38,7 +38,7 @@ type AddChatsQueryData = ({
   written?: boolean | -1;
 }) => void;
 
-type UpdateChatToWittenChat = ({
+type UpdateChatToWrittenChat = ({
   id,
   channelId,
 }: {
@@ -46,8 +46,8 @@ type UpdateChatToWittenChat = ({
   channelId: string;
 }) => void;
 
-type UpdateChatToFailedChat = UpdateChatToWittenChat;
-type RemoveChatQueryData = UpdateChatToWittenChat;
+type UpdateChatToFailedChat = UpdateChatToWrittenChat;
+type RemoveChatQueryData = UpdateChatToWrittenChat;
 
 export const useSetChatsQuery = () => {
   const queryClient = useQueryClient();
@@ -86,7 +86,7 @@ export const useSetChatsQuery = () => {
   /**
    * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시킨다,
    */
-  const updateChatToWrittenChat: UpdateChatToWittenChat = ({
+  const updateChatToWrittenChat: UpdateChatToWrittenChat = ({
     id,
     channelId,
   }) => {
