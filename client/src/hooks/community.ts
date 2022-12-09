@@ -23,7 +23,7 @@ import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
 
 export const useCommunitiesQuery = () => {
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
 
   return query;
@@ -43,7 +43,7 @@ export const useInvalidateCommunitiesQuery = () => {
 export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
 
 export const useCommunitiesMapQuery = () => {
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError, CommunitiesMap>(
     key,
     getCommunities,
@@ -63,7 +63,7 @@ export const useCommunitiesMapQuery = () => {
 export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
   const queryClient = useQueryClient();
 
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const communitiesQueryData =
     queryClient.getQueryData<CommunitySummaries>(key);
 
@@ -81,7 +81,7 @@ export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
  * 접속한 커뮤니티에서 참여하고 있는 채널 목록
  */
 export const useJoinedChannelsQuery = (id: string) => {
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError, JoinedChannel[]>(
     key,
     getCommunities,
@@ -119,7 +119,7 @@ interface SetCommunities {
 export const useSetCommunitiesQueryData = () => {
   const queryClient = useQueryClient();
 
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
 
   const setCommunitiesQueryData: SetCommunities = (cb) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {

@@ -108,7 +108,7 @@ export const useCreateChannelMutation = (
  */
 export const useSetChannelQueryData = () => {
   const queryClient = useQueryClient();
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
 
   const addChannelQueryData = (communityId: string, channel: JoinedChannel) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
