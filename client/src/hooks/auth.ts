@@ -1,17 +1,24 @@
+import type { ErrorResponse } from '@@types/apis/response';
 import type {
   SignOutResult,
   SignInRequest,
   SignInResult,
   SignUpRequest,
   SignUpResult,
+  ReissueTokenResult,
 } from '@apis/auth';
 import type { GetMyInfoResult } from '@apis/user';
-import type { UseMutationOptions } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
+import type {
+  UseMutationOptions,
+  UseMutationResult,
+} from '@tanstack/react-query';
 
-import { signOut, signIn, signUp } from '@apis/auth';
+import { signOut, signIn, signUp, reissueToken } from '@apis/auth';
 import { getMyInfo } from '@apis/user';
+import { useTokenStore } from '@stores/tokenStore';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -43,6 +50,62 @@ export const useSignOutMutation = (
   const key = queryKeyCreator.signOut();
   const mutation = useMutation(key, signOut, {
     ...options,
+  });
+
+  return mutation;
+};
+
+type UseReissueTokenMutationResult = UseMutationResult<
+  ReissueTokenResult,
+  unknown,
+  void,
+  unknown
+>;
+
+interface UseReissueTokenMutation {
+  (
+    invalidTokenErrorFallback?: string | (() => void),
+    unknownErrorFallback?: string | (() => void),
+  ): UseReissueTokenMutationResult;
+}
+
+/**
+ * @description 서버에서 401 에러가 발생하는 경우에만 accessToken을 리셋하기 때문에, 그 이외의 에러로 로그인이 풀리지는 않음.
+ */
+export const useReissueTokenMutation: UseReissueTokenMutation = (
+  invalidTokenErrorFallback,
+  unknownErrorFallback,
+) => {
+  const navigate = useNavigate();
+  const setAccessToken = useTokenStore((state) => state.setAccessToken);
+  const key = queryKeyCreator.reissueToken();
+  const mutation = useMutation(key, reissueToken, {
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken);
+    },
+    onError: (error) => {
+      if (!(error instanceof AxiosError)) {
+        console.error(error);
+        return;
+      }
+
+      const errorResponse = error.response?.data as ErrorResponse | undefined;
+
+      /** 유효하지 않은 토큰 */
+      if (errorResponse?.statusCode === 401) {
+        setAccessToken(null);
+        if (typeof invalidTokenErrorFallback === 'string')
+          navigate(invalidTokenErrorFallback);
+        else invalidTokenErrorFallback && invalidTokenErrorFallback();
+
+        return;
+      }
+
+      /** 네트워크 오류나 기타 서버 오류 등 */
+      if (typeof unknownErrorFallback === 'string') {
+        navigate(unknownErrorFallback);
+      } else unknownErrorFallback && unknownErrorFallback();
+    },
   });
 
   return mutation;
