@@ -6,7 +6,7 @@ import Spinner from '@components/Spinner';
 import { faker } from '@faker-js/faker';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useChannelWithUsersMapQuery } from '@hooks/channel';
-import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
+import { useChatsInfiniteQuery, useSetChatsQueryData } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useRootStore } from '@stores/rootStore';
@@ -52,7 +52,7 @@ const Channel = () => {
     addChatsQueryData,
     updateChatQueryDataToFailedChat,
     updateChatQueryDataToWrittenChat,
-  } = useSetChatsQuery();
+  } = useSetChatsQueryData();
   const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
