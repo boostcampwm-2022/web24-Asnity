@@ -1,4 +1,4 @@
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -6,15 +6,15 @@ import { ToastContainer } from 'react-toastify';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 
 import App from './App';
+import queryClient from './queryClient';
 import './index.css';
 
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = require('./mocks/browsers');
-//
-//   worker.start();
-// }
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browsers');
 
-const queryClient = new QueryClient();
+  worker.start();
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );

@@ -4,6 +4,7 @@ import path from 'path';
 
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import dotenv from 'dotenv';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import webpack from 'webpack';
@@ -58,7 +59,19 @@ const config: Configuration = {
         PUBLIC_URL: process.env.PUBLIC_URL,
       },
     }),
-    new webpack.EnvironmentPlugin(['API_URL', 'PUBLIC_URL']),
+    new webpack.EnvironmentPlugin(['API_URL', 'PUBLIC_URL', 'SOCKET_URL']),
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        configFile: path.resolve(__dirname, '..', 'tsconfig.json'),
+      },
+      async: true,
+      formatter: {
+        type: 'codeframe',
+        options: {
+          forceColor: true,
+        },
+      },
+    }),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(isTruthy),
 };

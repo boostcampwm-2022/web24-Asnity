@@ -29,6 +29,8 @@ const channelQueryKey = {
   detail: (channelId: string) =>
     [...channelQueryKey.all(), 'detail', channelId] as const,
   createChannel: () => ['createChannel'] as const,
+  inviteChannel: () => ['inviteChannel'] as const,
+  leaveChannel: () => ['leaveChannel'] as const,
 };
 
 const chatQueryKey = {
@@ -36,11 +38,17 @@ const chatQueryKey = {
   list: (channelId: string) => [...chatQueryKey.all(), { channelId }] as const,
 };
 
+const followingQueryKey = {
+  all: () => ['followings'] as const,
+  toggleFollowing: () => ['toggleFollowing'] as const,
+};
+
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
   signIn: () => ['signIn'] as const,
-  followings: (): [string] => ['followings'],
+  signOut: () => ['signOut'] as const,
+  followings: followingQueryKey,
   followers: (): [string] => ['followers'],
   reissueToken: () => ['reissueToken'] as const,
   userSearch: (filter: string) => ['userSearch', { filter }],

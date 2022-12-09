@@ -7,6 +7,7 @@
     "dev": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.ts --progress",
     "dev:proxy": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.proxy.ts --progress",
     "dev:https": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.https.ts --progress",
+    "build:dev": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod:dev.ts --progress",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.ts --progress",
     "analysis": "cross-env NODE_ENV=production webpack --config ./config/webpack.analysis.ts --progress",
     "test": "jest"
@@ -21,10 +22,12 @@
     "react-custom-scrollbars-2": "^4.5.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.39.4",
+    "react-loader-spinner": "^5.3.4",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.4.3",
     "react-toastify": "^9.1.1",
     "shared": "1.0.0",
+    "socket.io-client": "^4.5.4",
     "tailwindcss": "^3.2.4",
     "zustand": "^4.1.4"
   },
@@ -61,6 +64,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "fork-ts-checker-webpack-plugin": "^7.2.13",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",

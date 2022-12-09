@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { StateCreator } from 'zustand';
 
 import { immer } from 'zustand/middleware/immer';
@@ -8,9 +8,7 @@ type OverlayBackground = 'white' | 'black' | 'transparent';
 export interface CommonModal {
   isOpen: boolean;
   overlayBackground: OverlayBackground;
-  x: number | string;
-  y: number | string;
-  transform?: string;
+  contentWrapperStyle?: CSSProperties;
   content?: ReactNode;
   onCancel?: () => void;
   onSubmit?: () => void;
@@ -34,9 +32,7 @@ const initialCommonModalValue = {
   overlayBackground: 'transparent',
   onCancel: undefined,
   onSubmit: undefined,
-  transform: undefined,
-  x: 0,
-  y: 0,
+  contentWrapperStyle: undefined,
 } as const;
 
 export const commonModalSlice: StateCreator<

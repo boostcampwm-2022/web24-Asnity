@@ -1,11 +1,14 @@
 import type { JoinedChannel } from '@apis/channel';
 import type { FC } from 'react';
 
+import ChannelInviteBox from '@components/ChannelInviteBox';
+import ChannelLeaveBox from '@components/ChannelLeaveBox';
 import {
   ArrowRightOnRectangleIcon,
   Cog6ToothIcon,
   UserPlusIcon,
 } from '@heroicons/react/20/solid';
+import { usePrefetchChannelQuery } from '@hooks/channel';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 
@@ -19,11 +22,37 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
     (state) => state.closeContextMenuModal,
   );
 
-  const handleClickChannelInviteButton = () => {};
+  const prefetchChannelQuery = usePrefetchChannelQuery(channel._id);
 
-  const handleClickChannelSettingsButton = () => {};
+  prefetchChannelQuery();
 
-  const handleClickChannelLeaveButton = () => {};
+  const handleClickChannelInviteButton = () => {
+    closeContextMenuModal();
+    openCommonModal({
+      content: <ChannelInviteBox channelId={channel._id} />,
+      overlayBackground: 'black',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
+    });
+  };
+
+  const handleClickChannelSettingsButton = () => { };
+
+  const handleClickChannelLeaveButton = () => {
+    closeContextMenuModal();
+    openCommonModal({
+      content: <ChannelLeaveBox channel={channel} />,
+      overlayBackground: 'black',
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
+    });
+  };
 
   return (
     <section className="w-[300px] p-[16px]">

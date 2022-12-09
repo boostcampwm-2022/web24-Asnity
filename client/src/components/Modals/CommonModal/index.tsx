@@ -1,7 +1,7 @@
 import type { CSSProperties, FC } from 'react';
 
 import { useRootStore } from '@stores/rootStore';
-import React, { useMemo } from 'react';
+import React from 'react';
 import ReactModal from 'react-modal';
 
 const OverlayBackground = {
@@ -11,44 +11,27 @@ const OverlayBackground = {
 } as const;
 
 const CommonModal: FC = () => {
-  const {
-    isOpen,
-    content,
-    overlayBackground,
-    onCancel,
-    transform,
-    x = 1,
-    y = 1,
-  } = useRootStore((state) => state.commonModal);
+  const { isOpen, content, overlayBackground, onCancel, contentWrapperStyle } =
+    useRootStore((state) => state.commonModal);
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const overlayStyle: CSSProperties = useMemo(
-    () => ({
-      background: OverlayBackground[overlayBackground],
-    }),
-    [overlayBackground],
-  );
+  const modalOverlayStyle: CSSProperties = {
+    background: OverlayBackground[overlayBackground],
+  };
 
-  const contentStyle: CSSProperties = useMemo(
-    () => ({
-      width: 'max-content',
-      height: 'max-content',
-      padding: 0,
-      border: 0,
-      top: y,
-      left: x,
-      transform,
-    }),
-    [x, y, transform],
-  );
+  const modalContentStyle: CSSProperties = {
+    width: 'max-content',
+    height: 'max-content',
+    padding: 0,
+    top: '',
+    left: '',
+    ...contentWrapperStyle,
+  };
 
   return (
     <ReactModal
       isOpen={isOpen}
-      style={{
-        overlay: overlayStyle,
-        content: contentStyle,
-      }}
+      style={{ content: modalContentStyle, overlay: modalOverlayStyle }}
       onRequestClose={onCancel ?? closeCommonModal}
       overlayRef={(ref) => {
         if (!ref) return;

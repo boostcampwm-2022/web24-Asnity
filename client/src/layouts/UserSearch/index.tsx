@@ -10,7 +10,11 @@ import Button from '@/components/Button';
 interface UserSearchInput {
   filter: string;
 }
-
+/**
+ *
+ * @returns 검색 인풋과 사용자 목록을 렌더링하는 컴포넌트.
+ * 사용자가 검색 인풋으로 검색어를 제출하면 해당 값으로 필터링된 사용자 목록을 렌더링한다.
+ */
 const UserSearch = () => {
   const { register, handleSubmit } = useForm<UserSearchInput>();
 
@@ -44,7 +48,7 @@ const UserSearch = () => {
       </div>
 
       <div className="w-full h-full flex justify-center items-center">
-        {usersQuery.isLoading && usersQuery.isFetching ? (
+        {usersQuery.isFetching ? (
           <div>로딩중...</div>
         ) : usersQuery.isLoading ? (
           <div>검색어를 입력해주세요</div>

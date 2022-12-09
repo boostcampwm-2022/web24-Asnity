@@ -1,5 +1,6 @@
 import type { SuccessResponse } from '@@types/apis/response';
 
+import endPoint from '@constants/endPoint';
 import { tokenAxios } from '@utils/axios';
 
 export type ChatType = 'TEXT' | 'IMAGE';
@@ -12,6 +13,10 @@ export interface Chat {
   updatedAt: string;
   createdAt: string;
   deletedAt?: string;
+  written?: boolean | -1;
+  // -1: Optimistic Updates 중
+  // true: DB 쓰기에 성공
+  // false: DB 쓰기에 실패
 }
 
 export type GetChatsResult = {
@@ -26,9 +31,9 @@ export type GetChats = (
 ) => Promise<GetChatsResult>;
 
 export const getChats: GetChats = (channelId, prev) => {
-  const endPoint = `/api/chat/${channelId}`;
+  const _endPoint = endPoint.getChats(channelId);
 
   return tokenAxios
-    .get<GetChatsResponse>(endPoint, { params: { prev } })
+    .get<GetChatsResponse>(_endPoint, { params: { prev } })
     .then((response) => response.data.result);
 };

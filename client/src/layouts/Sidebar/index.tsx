@@ -1,7 +1,7 @@
 import type { MouseEventHandler } from 'react';
 
-import UserProfile from '@components/UserProfile';
-import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import MyPanel from '@components/MyPanel';
+import Spinner from '@components/Spinner';
 import useMyInfoQuery from '@hooks/useMyInfoQuery';
 import CommunityNav from '@layouts/CommunityNav';
 import DmNav from '@layouts/DmNav';
@@ -23,16 +23,14 @@ const Sidebar = () => {
       <div className="flex-1">
         {pathname.startsWith('/dms') ? <DmNav /> : <CommunityNav />}
       </div>
-      <div className="flex justify-between items-center w-full px-4 bg-inputBackground border-t border-line">
+      <div className="flex justify-between items-center w-full bg-inputBackground border-t border-line">
         {myInfoQuery.isLoading ? (
-          <div>로딩중...</div>
+          <div className="w-full h-full flex justify-center items-center">
+            <Spinner size={40} />
+          </div>
         ) : (
-          myInfoQuery.data && <UserProfile user={myInfoQuery.data} />
+          myInfoQuery.data && <MyPanel me={myInfoQuery.data} />
         )}
-        <button>
-          <span className="sr-only">환경 설정</span>
-          <Cog6ToothIcon className="w-7 h-7 fill-label" />
-        </button>
       </div>
     </div>
   );

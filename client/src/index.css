@@ -28,3 +28,15 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.loader-default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-icon-default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

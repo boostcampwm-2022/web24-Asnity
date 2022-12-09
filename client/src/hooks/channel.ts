@@ -1,32 +1,93 @@
 import type {
+  Channel,
   CreateChannelRequest,
   CreateChannelResult,
   GetChannelResult,
+  InviteChannelResult,
   JoinedChannel,
+  LeaveChannelResult,
 } from '@apis/channel';
 import type { CommunitySummaries } from '@apis/community';
-import type { UseMutationOptions } from '@tanstack/react-query';
+import type { UsersMap } from '@hooks/user';
+import type {
+  MutationOptions,
+  UseMutationOptions,
+} from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { createChannel, getChannel } from '@apis/channel';
+import {
+  inviteChannel,
+  leaveChannel,
+  createChannel,
+  getChannel,
+} from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
 export const useChannelQuery = (channelId: string) => {
-  const queryClient = useQueryClient();
   const key = queryKeyCreator.channel.detail(channelId);
 
   const query = useQuery<GetChannelResult, AxiosError>(key, () =>
     getChannel(channelId),
   );
-  const invalidate = useCallback(
+
+  return { channelQuery: query };
+};
+
+export const useInvalidateChannelQuery = (channelId: string) => {
+  const queryClient = useQueryClient();
+  const key = queryKeyCreator.channel.detail(channelId);
+
+  const invalidte = useCallback(
     () => queryClient.invalidateQueries(key),
     [queryClient, key],
   );
 
-  return { channelQuery: query, invalidateChannelQuery: invalidate };
+  return invalidte;
+};
+
+export const usePrefetchChannelQuery = (channelId: string) => {
+  const queryClient = useQueryClient();
+  const key = queryKeyCreator.channel.detail(channelId);
+
+  const prefetchQuery = () =>
+    queryClient.prefetchQuery<GetChannelResult, AxiosError>(key, () =>
+      getChannel(channelId),
+    );
+
+  return prefetchQuery;
+};
+/**
+ * `Channel`과 같으나 `users`가 `User[]`이 아니라 `Record<User['id'], User>`이다.
+ */
+export type ChannelWithUsersMap = Omit<Channel, 'users'> & {
+  users: UsersMap;
+};
+
+/**
+ *
+ * @param channelId 채널 id
+ * @returns `users`가 `UsersMap`인 `Channel` 객체
+ */
+export const useChannelWithUsersMapQuery = (channelId: string) => {
+  const key = queryKeyCreator.channel.detail(channelId);
+  const query = useQuery<GetChannelResult, AxiosError, ChannelWithUsersMap>(
+    key,
+    () => getChannel(channelId),
+    {
+      select: (channel) => ({
+        ...channel,
+        users: channel.users.reduce(
+          (acc, cur) => ({ ...acc, [cur._id]: cur }),
+          {},
+        ),
+      }),
+    },
+  );
+
+  return query;
 };
 
 export const useCreateChannelMutation = (
@@ -70,5 +131,42 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  return { addChannelToCommunity };
+  const deleteChannelFromCommunity = (
+    communityId: string,
+    channelId: string,
+  ) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
+      const newCommunities = communities?.map((community) => {
+        if (community._id !== communityId) return community;
+        return {
+          ...community,
+          channels: community.channels.filter(
+            (channel) => channel._id !== channelId,
+          ),
+        };
+      });
+
+      return newCommunities;
+    });
+  };
+
+  return { addChannelToCommunity, deleteChannelFromCommunity };
+};
+
+export const useLeaveChannelMutation = (
+  options?: MutationOptions<LeaveChannelResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.leaveChannel();
+  const mutation = useMutation(key, leaveChannel, { ...options });
+
+  return mutation;
+};
+
+export const useInviteChannelMutation = (
+  options?: MutationOptions<InviteChannelResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.inviteChannel();
+  const mutation = useMutation(key, inviteChannel, { ...options });
+
+  return mutation;
 };

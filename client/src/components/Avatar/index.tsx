@@ -1,14 +1,20 @@
+import type { USER_STATUS } from '@constants/user';
 import type { ReactNode, FC } from 'react';
 
 import React, { memo } from 'react';
 
-export interface AvatarProps {
-  size: 'small' | 'medium';
-  variant: 'circle' | 'rectangle';
+type BadgeType = keyof typeof USER_STATUS;
+
+export interface Props {
   name: string;
-  url?: string;
+  size?: 'sm' | 'md';
+  variant?: 'circle' | 'rectangle';
+  profileUrl?: string;
   className?: string;
   children?: ReactNode;
+  status?: BadgeType;
+  badge?: boolean;
+  badgePosition?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
 }
 
 const ROUNDED = {
@@ -17,51 +23,71 @@ const ROUNDED = {
 };
 
 const SCALE = {
-  small: 'w-[57px] h-[57px]',
-  medium: 'w-[65px] h-[65px]',
+  sm: 'w-[57px] h-[57px]',
+  md: 'w-[65px] h-[65px]',
 };
 
 const getFirstLetter = (str: string) => {
-  const firstLetter = str.at(0);
-
-  if (!firstLetter) {
+  if (!str?.length) {
     console.warn(
       `getFirstLetter의 인자로는 반드시 길이 1이상의 문자열이 들어와야 합니다.`,
     );
     return '';
   }
 
-  return firstLetter;
+  return str?.at(0);
 };
 
-// TODO: url 바꿔야함
-const Avatar: FC<AvatarProps> = ({
+const BADGE_POSITION = {
+  'top-right': 'top-0 right-0',
+  'bottom-right': 'bottom-0 right-0',
+  'top-left': 'top-0 left-0',
+  'bottom-left': 'bottom-0 left-0',
+};
+
+const BADGE_COLOR: Record<BadgeType, string> = {
+  ONLINE: 'bg-success',
+  AFK: 'bg-error',
+  OFFLINE: 'bg-label',
+};
+
+const Avatar: FC<Props> = ({
   name,
-  url = 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png',
-  size,
-  variant,
+  profileUrl,
+  size = 'sm',
+  variant = 'circle',
   className = '',
   children,
+  badge = false,
+  badgePosition = 'bottom-right',
+  status = 'OFFLINE',
 }) => {
   return (
-    <div
-      className={`flex justify-center items-center ${SCALE[size]} border border-line ${ROUNDED[variant]} text-s24 italic font-bold overflow-hidden select-none ${className}`}
-    >
-      {children}
-      {!children &&
-        (url.length ? (
-          <img
-            className="block object-cover h-full"
-            src={
-              url === 'url'
-                ? 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'
-                : url
-            }
-            alt={`${name}의 프로필 이미지`}
-          />
-        ) : (
-          getFirstLetter(name)
-        ))}
+    <div className={`relative ${SCALE[size]}`}>
+      {badge && (
+        <div
+          className={`w-[20px] h-[20px] absolute right-0 bottom-0 border border-offWhite rounded-full z-50 ${BADGE_POSITION[badgePosition]} ${BADGE_COLOR[status]}`}
+        />
+      )}
+      <div
+        className={`flex h-full w-full justify-center items-center border border-line ${ROUNDED[variant]} text-s24 italic font-bold overflow-hidden select-none ${className}`}
+      >
+        {children}
+        {!children &&
+          (profileUrl ? (
+            <img
+              className="block object-cover h-full"
+              src={
+                profileUrl === 'url'
+                  ? 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'
+                  : profileUrl
+              }
+              alt={`${name}의 프로필 이미지`}
+            />
+          ) : (
+            getFirstLetter(name)
+          ))}
+      </div>
     </div>
   );
 };

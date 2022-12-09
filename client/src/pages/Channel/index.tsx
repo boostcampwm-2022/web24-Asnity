@@ -1,95 +1,159 @@
-import ChannelMetadata from '@components/ChannelMetadata';
-import ChatItem from '@components/ChatItem';
-import { useChannelQuery } from '@hooks/channel';
-import { useChatsInfiniteQuery } from '@hooks/chat';
-import useIsIntersecting from '@hooks/useIsIntersecting';
-import React, { useRef, useEffect, Fragment } from 'react';
+import type { User } from '@apis/user';
+
+import ChatForm from '@components/ChatForm';
+import ChatList from '@components/ChatList';
+import Spinner from '@components/Spinner';
+import { faker } from '@faker-js/faker';
+import { useChannelWithUsersMapQuery } from '@hooks/channel';
+import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
+import useIntersectionObservable from '@hooks/useIntersectionObservable';
+import { useMyInfo } from '@hooks/useMyInfoQuery';
+import ChannelUserStatus from '@layouts/ChannelUserStatus';
+import { useRootStore } from '@stores/rootStore';
+import { useSocketStore } from '@stores/socketStore';
+import { isScrollTouchedBottom } from '@utils/scrollValues';
+import React, { useRef, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
-const Channel = () => {
-  const params = useParams();
-  const roomId = params.roomId as string;
-  const { channelQuery } = useChannelQuery(roomId);
+import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
 
-  // TODO: `any` 말고 적절한 타이핑 주기
-  const scrollbarContainerRef = useRef<any>(null);
-  const fetchPreviousRef = useRef<HTMLDivElement>(null);
-  const isFetchPreviousIntersecting =
-    useIsIntersecting<HTMLDivElement>(fetchPreviousRef);
+const Channel = () => {
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
+
+  const params = useParams();
+  const communityId = params.communityId as string;
+  const roomId = params.roomId as string;
+
+  const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
+  const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
 
-  useEffect(() => {
-    if (
-      !isFetchPreviousIntersecting ||
-      !chatsInfiniteQuery.hasPreviousPage ||
-      chatsInfiniteQuery.isFetchingPreviousPage
-    )
-      return;
-    chatsInfiniteQuery.fetchPreviousPage();
-  }, [isFetchPreviousIntersecting]);
+  const intersectionObservable = useIntersectionObservable(
+    (entry, observer) => {
+      observer.unobserve(entry.target);
+      if (
+        !chatsInfiniteQuery.hasPreviousPage ||
+        chatsInfiniteQuery.isFetchingPreviousPage
+      )
+        return;
 
-  if (channelQuery.isLoading || chatsInfiniteQuery.isLoading)
-    return <div>loading</div>;
+      chatsInfiniteQuery.fetchPreviousPage().then(() => {
+        if (scrollbarContainerRef?.current) {
+          /* TODO: 새로 불러와도 스크롤 안 움직인 것처럼 만들기 */
+          scrollbarContainerRef.current.scrollTop(10);
+        }
+      });
+    },
+  );
+
+  const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
+    useSetChatsQuery();
+  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
+  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
+
+  // 메세지 보내기:
+  const socket = useSocketStore((state) => state.sockets[communityId]);
+
+  const handleSubmitChat = (content: string) => {
+    const id = faker.datatype.uuid();
+    const createdAt = new Date();
+    const newChat = { id, content, createdAt, senderId: myInfo._id };
+
+    addChatsQueryData({
+      id,
+      channelId: roomId,
+      content,
+      createdAt,
+      senderId: myInfo._id,
+      written: -1, // Optimistic Updates중임을 나타냄.
+    });
+
+    // https://socket.io/docs/v3/emitting-events/#acknowledgements
+    socket.emit(
+      SOCKET_EVENTS.SEND_CHAT,
+      sendChatPayload({
+        ...newChat,
+        channelId: roomId,
+      }),
+      ({ written }: { written: boolean }) => {
+        if (written) {
+          updateChatToWrittenChat({ id, channelId: roomId });
+          return;
+        }
+
+        updateChatToFailedChat({ id, channelId: roomId });
+      },
+    );
+
+    if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
+      setTimeout(() => {
+        scrollbarContainerRef.current?.scrollToBottom();
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (scrollbarContainerRef.current !== chatScrollbar) {
+      // 비교 연산 없으면 채널간 이동에서 딜레이가 매우 많이 생긴다.
+      setChatScrollbar(scrollbarContainerRef.current);
+    }
+
+    if (!chatsInfiniteQuery.isLoading) {
+      scrollbarContainerRef.current?.scrollToBottom();
+    }
+  }, [roomId, chatsInfiniteQuery.isLoading]);
+
+  const isLoading =
+    channelWithUsersMap.isLoading || chatsInfiniteQuery.isLoading;
+
+  if (isLoading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <span className="sr-only">로딩중</span>
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap text-indigo font-bold text-[24px]">
-          {channelQuery.data && `#${channelQuery.data.name}`}
+          {channelWithUsersMap.data && `#${channelWithUsersMap.data.name}`}
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex-1 min-w-[720px] max-w-[960px] h-full">
+        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full py-4">
           <div className="flex justify-center items-center font-ipSans text-s14">
             {chatsInfiniteQuery.isFetchingPreviousPage &&
               '지난 메시지 불러오는 중'}
           </div>
-          <Scrollbars ref={scrollbarContainerRef}>
-            <div ref={fetchPreviousRef} />
-            <div>
-              <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-                {chatsInfiniteQuery.data &&
-                  channelQuery.data &&
-                  chatsInfiniteQuery.data.pages.map((page) =>
-                    page.chat?.length ? (
-                      <Fragment key={page.chat[0].id}>
-                        {page.chat.map((chat) => (
-                          <ChatItem
-                            key={chat.id}
-                            chat={chat}
-                            className="px-8"
-                            user={channelQuery.data.users.find(
-                              (user) => user._id === chat.senderId,
-                            )}
-                          />
-                        ))}
-                      </Fragment>
-                    ) : (
-                      <Fragment key={channelQuery.data._id}>
-                        {channelQuery.data && channelQuery.data.users && (
-                          <div className="p-8">
-                            <ChannelMetadata
-                              channel={channelQuery.data}
-                              managerName={
-                                channelQuery.data.users.find(
-                                  (user) =>
-                                    user._id === channelQuery.data.managerId,
-                                )?.nickname
-                              }
-                            />
-                          </div>
-                        )}
-                      </Fragment>
-                    ),
-                  )}
-              </ul>
-            </div>
+          <Scrollbars
+            className="max-h-[90%] grow shrink"
+            ref={scrollbarContainerRef}
+          >
+            <div ref={intersectionObservable} />
+            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
+              {chatsInfiniteQuery.data && channelWithUsersMap.data && (
+                <ChatList
+                  pages={chatsInfiniteQuery.data.pages}
+                  users={channelWithUsersMap.data.users}
+                />
+              )}
+            </ul>
           </Scrollbars>
+          <ChatForm
+            className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
+            handleSubmitChat={handleSubmitChat}
+          />
         </div>
-        <div className="flex w-72 h-full border-l border-line">
-          온라인, 오프라인
+        <div className="flex grow w-80 h-full border-l border-line">
+          {channelWithUsersMap.data && (
+            <ChannelUserStatus
+              users={Object.values(channelWithUsersMap.data.users)}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import type {
   LeaveCommunityResult,
   InviteCommunityResult,
   CommunitySummaries,
+  CommunitySummary,
 } from '@apis/community';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
@@ -20,6 +21,41 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
+
+export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
+/**
+ *
+ * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을 `Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
+ */
+export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
+  const queryClient = useQueryClient();
+
+  const key = queryKeyCreator.community.all();
+  const communitiesQueryData =
+    queryClient.getQueryData<CommunitySummaries>(key);
+
+  return communitiesQueryData?.reduce(
+    (acc, community) => ({
+      ...acc,
+      [community._id]: community,
+    }),
+    {},
+  );
+};
+
+export const useCommunitiesMapQuery = () => {
+  const key = queryKeyCreator.community.all();
+  const query = useQuery<CommunitySummaries, AxiosError, CommunitiesMap>(
+    key,
+    getCommunities,
+    {
+      select: (communities) =>
+        communities.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
 
 export const useCommunitiesQuery = () => {
   const queryClient = useQueryClient();

@@ -8,7 +8,6 @@ export const createMockChannel = () => ({
   managerId: users[0]._id,
   name: faker.name.jobType(),
   isPrivate: chancify(() => true, 50, false),
-  profileUrl: chancify(() => faker.image.avatar(), 50),
   description: faker.lorem.sentence(1),
   lastRead: chancify(() => true, 50, false),
   type: 'Channel',
@@ -22,7 +21,7 @@ export const createMockCommunities = () => ({
   _id: faker.datatype.uuid(),
   name: faker.name.jobType(),
   managerId: faker.datatype.uuid(),
-  profileUrl: chancify(() => faker.image.avatar(), 50),
+  profileUrl: chancify(() => faker.image.nature(300, 300, true), 50),
   description: faker.lorem.sentence(1),
   channels,
 });

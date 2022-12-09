@@ -62,9 +62,6 @@ const Friends = () => {
         <div className="flex-1 min-w-[720px] max-w-[960px] h-[100%]">
           {TabPanel[tab]}
         </div>
-        <div className="flex w-72 h-full border-l border-line">
-          온라인, 오프라인
-        </div>
       </div>
     </div>
   );

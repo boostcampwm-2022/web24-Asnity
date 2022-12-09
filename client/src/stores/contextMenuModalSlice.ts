@@ -1,13 +1,11 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { StateCreator } from 'zustand';
 
 import { immer } from 'zustand/middleware/immer';
 
 export interface ContextMenuModal {
   isOpen: boolean;
-  x: number | string;
-  y: number | string;
-  transform?: string;
+  contentWrapperStyle?: CSSProperties;
   content?: ReactNode;
 }
 
@@ -28,9 +26,7 @@ export interface ContextMenuModalSlice {
 
 const initialContextMenuModalValue = {
   isOpen: false,
-  x: 0,
-  y: 0,
-  transform: undefined,
+  contentWrapperStyle: undefined,
   content: undefined,
 } as const;
 

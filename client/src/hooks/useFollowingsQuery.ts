@@ -1,17 +1,18 @@
-import type { Followings } from '@apis/user';
+import type { User } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getFollowings } from '@apis/user';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
 const useFollowingsQuery = (
-  filter: string,
+  filter?: string,
   options?: { suspense: boolean },
 ) => {
-  const key = queryKeyCreator.followings();
-  const query = useQuery<Followings, AxiosError>(key, getFollowings, {
+  const key = queryKeyCreator.followings.all();
+  const query = useQuery<User[], AxiosError>(key, getFollowings, {
     ...options,
     select: (data) =>
       filter
@@ -25,3 +26,30 @@ const useFollowingsQuery = (
 };
 
 export default useFollowingsQuery;
+
+export type FollowingsMap = Record<User['id'], User>;
+export const useFollowingsMapQuery = () => {
+  const key = queryKeyCreator.followings.all();
+  const query = useQuery<User[], AxiosError, FollowingsMap>(
+    key,
+    getFollowings,
+    {
+      select: (followings) =>
+        followings.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
+export const useInvalidateFollowingsQuery = () => {
+  const key = queryKeyCreator.followings.all();
+
+  const queryClient = useQueryClient();
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return invalidate;
+};

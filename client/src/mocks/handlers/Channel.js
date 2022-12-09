@@ -3,7 +3,7 @@ import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
 import { communities } from '../data/communities';
-import { me } from '../data/users';
+import { me, users } from '../data/users';
 import {
   createErrorContext,
   createSuccessContext,
@@ -16,8 +16,10 @@ const GetChannel = rest.get(getChannelEndPoint, (req, res, ctx) => {
 
   let targetChannel;
 
-  communities.forEach(({ channels: _channels }) => {
+  communities.some(({ channels: _channels }) => {
     targetChannel = _channels.find(({ _id }) => _id === channelId);
+
+    return !!targetChannel;
   });
 
   if (!targetChannel) targetChannel = communities[0].channels[0];
@@ -50,6 +52,7 @@ const CreateChannel = rest.post(
       description,
       lastRead: true,
       type,
+      users: [me._id],
     };
 
     const errorResponse = res(...createErrorContext(ctx));
@@ -67,4 +70,51 @@ const CreateChannel = rest.post(
   },
 );
 
-export default [GetChannel, CreateChannel];
+const leaveChannelEndPoint = API_URL + endPoint.leaveChannel(':channelId');
+const LeaveChannel = rest.delete(leaveChannelEndPoint, (req, res, ctx) => {
+  const { channelId } = req.params;
+  const ERROR = false;
+
+  const errorResponse = res(...createErrorContext(ctx));
+  const successRespose = res(
+    ...createSuccessContext(ctx, 200, 500, {
+      statusCode: 200,
+      result: {
+        message: '채널 퇴장 성공!',
+      },
+    }),
+  );
+
+  return ERROR ? errorResponse : successRespose;
+});
+
+const inviteChannelEndPoint = API_URL + endPoint.inviteChannel(':channelId');
+const InviteChannel = rest.post(
+  inviteChannelEndPoint,
+  async (req, res, ctx) => {
+    const { channelId } = req.params;
+    /* eslint-disable camelcase */
+    const { community_id, userIds } = await req.json();
+
+    const ERROR = false;
+
+    communities
+      .find((community) => community._id === community_id)
+      .channels.find((channel) => channel._id === channelId)
+      .users.push(users.find((user) => user._id === userIds[0]));
+
+    const errorResponse = res(...createErrorContext(ctx));
+    const successRespose = res(
+      ...createSuccessContext(ctx, 200, 500, {
+        statusCode: 200,
+        result: {
+          message: '채널 초대 성공!',
+        },
+      }),
+    );
+
+    return ERROR ? errorResponse : successRespose;
+  },
+);
+
+export default [GetChannel, CreateChannel, LeaveChannel, InviteChannel];

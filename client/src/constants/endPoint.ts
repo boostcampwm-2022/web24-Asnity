@@ -1,9 +1,13 @@
 const endPoint = {
   signUp: () => `/api/user/auth/signup` as const,
   signIn: () => `/api/user/auth/signin` as const,
+  signOut: () => `/api/user/auth/signout` as const,
   reissueToken: () => `/api/user/auth/refresh` as const,
   createChannel: () => `/api/channel` as const,
   getChannel: (channelId: string) => `/api/channels/${channelId}` as const,
+  inviteChannel: (channelId: string) =>
+    `/api/channels/${channelId}/users` as const,
+  leaveChannel: (channelId: string) => `/api/channels/${channelId}/me` as const,
   getCommunities: () => `/api/communities` as const,
   createCommunity: () => `/api/community` as const,
   removeCommunity: (communityId: string) =>
@@ -19,6 +23,7 @@ const endPoint = {
   getUsers: () => `/api/users`, // 사용할 때는 queryString 추가 전달 필요합니다 as const.
   getCommunityUsers: (communityId: string) =>
     `/api/communities/${communityId}/users` as const,
+  getChats: (channelId: string) => `/api/channels/${channelId}/message`,
 } as const;
 
 export default endPoint;

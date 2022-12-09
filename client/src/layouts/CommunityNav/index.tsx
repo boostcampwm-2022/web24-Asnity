@@ -6,7 +6,10 @@ import ChannelCreateBox from '@components/ChannelCreateBox';
 import ChannelItem from '@components/ChannelItem';
 import ErrorMessage from '@components/ErrorMessage';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
-import { useCommunitiesQuery, useJoinedChannelsQuery } from '@hooks/community';
+import {
+  useCommunitiesMapQuery,
+  useJoinedChannelsQuery,
+} from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import cn from 'classnames';
 import React, { useState } from 'react';
@@ -15,10 +18,8 @@ import { useParams, Link } from 'react-router-dom';
 const CommunityNav = () => {
   const params = useParams() as { communityId: string; roomId?: string };
   const { communityId, roomId } = params;
-  const { communitiesQuery } = useCommunitiesQuery();
-  const communitySummary = communitiesQuery.data?.find(
-    ({ _id }) => _id === communityId,
-  );
+  const communitiesMapQuery = useCommunitiesMapQuery();
+  const communitySummary = communitiesMapQuery.data?.[communityId];
   const { joinedChannelsQuery } = useJoinedChannelsQuery(communityId);
   const joinedChannelsLength = joinedChannelsQuery.data?.length || 0;
 
@@ -35,19 +36,24 @@ const CommunityNav = () => {
     (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
     (e) => {
       openContextMenuModal({
-        x: e.clientX,
-        y: e.clientY,
         content: <ChannelContextMenu channel={channel} />,
+        contentWrapperStyle: {
+          borderRadius: 16,
+          left: e.clientX,
+          top: e.clientY,
+        },
       });
     };
 
   const handleClickChannelCreateButton = () => {
     openCommonModal({
-      x: '50%',
-      y: '50%',
-      transform: 'translate3d(-50%, -50%, 0)',
       overlayBackground: 'black',
       content: <ChannelCreateBox communityId={communityId} />,
+      contentWrapperStyle: {
+        left: '50%',
+        top: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
     });
   };
 
