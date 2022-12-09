@@ -6,8 +6,8 @@ import Input from '@components/Input';
 import SuccessMessage from '@components/SuccessMessage';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import {
-  useCommunitiesQuery,
   useCreateCommunityMutation,
+  useInvalidateCommunitiesQuery,
 } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
@@ -28,7 +28,8 @@ const createCommunityFormDefaultValue = {
 const CommunityCreateBox: FC = () => {
   const navigate = useNavigate();
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
-  const { invalidateCommunitiesQuery } = useCommunitiesQuery();
+
+  const invalidateCommunitiesQuery = useInvalidateCommunitiesQuery();
   const createCommunityMutation = useCreateCommunityMutation({
     onSuccess: ({ _id }) => {
       invalidateCommunitiesQuery()
