@@ -47,7 +47,7 @@ const queryKeyCreator = {
   signUp: () => ['signUp'] as const,
   signIn: () => ['signIn'] as const,
   signOut: () => ['signOut'] as const,
-  followings: followingQueryKey,
+  following: followingQueryKey,
   followers: (): [string] => ['followers'],
   reissueToken: () => ['reissueToken'] as const,
   directMessage: directMessageQueryKey,
