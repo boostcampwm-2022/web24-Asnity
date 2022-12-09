@@ -14,8 +14,10 @@ import {
   getUsers,
   getFollowers,
   updateFollowing,
+  getFollowings,
 } from '@apis/user';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -34,6 +36,51 @@ export const useUsersQuery = (
   );
 
   return query;
+};
+
+export const useFollowingsQuery = (
+  filter?: string,
+  options?: { suspense: boolean },
+) => {
+  const key = queryKeyCreator.followings.all();
+  const query = useQuery<User[], AxiosError>(key, getFollowings, {
+    ...options,
+    select: (data) =>
+      filter
+        ? data.filter(({ nickname }) =>
+            nickname.toUpperCase().includes(filter.toUpperCase()),
+          )
+        : data,
+  });
+
+  return query;
+};
+
+export type FollowingsMap = Record<User['id'], User>;
+export const useFollowingsMapQuery = () => {
+  const key = queryKeyCreator.followings.all();
+  const query = useQuery<User[], AxiosError, FollowingsMap>(
+    key,
+    getFollowings,
+    {
+      select: (followings) =>
+        followings.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
+export const useInvalidateFollowingsQuery = () => {
+  const key = queryKeyCreator.followings.all();
+
+  const queryClient = useQueryClient();
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return invalidate;
 };
 
 export const useFollowersQuery = (
