@@ -1,5 +1,5 @@
 import { IsBoolean, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class CreateChannelDto {
   @IsMongoId()
@@ -12,11 +12,8 @@ export class CreateChannelDto {
   name: string;
 
   @IsMongoId()
-  @IsOptional()
-  requestUserId: string;
-
-  @IsMongoId()
-  @IsOptional()
+  @IsNotEmpty()
+  @Expose({ name: 'requestUserId' })
   managerId: string;
 
   @IsString()
