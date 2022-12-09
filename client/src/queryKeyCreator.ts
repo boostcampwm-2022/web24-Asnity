@@ -42,13 +42,18 @@ const followingQueryKey = {
   toggleFollowing: () => ['toggleFollowing'] as const,
 };
 
+const followerQueryKey = {
+  all: () => ['followers'] as const,
+  list: () => [...followerQueryKey.all(), 'list'] as const,
+};
+
 const queryKeyCreator = {
   me: () => ['me'] as const,
   signUp: () => ['signUp'] as const,
   signIn: () => ['signIn'] as const,
   signOut: () => ['signOut'] as const,
   following: followingQueryKey,
-  followers: (): [string] => ['followers'],
+  follower: followerQueryKey,
   reissueToken: () => ['reissueToken'] as const,
   directMessage: directMessageQueryKey,
   community: communityQueryKey,

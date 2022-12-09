@@ -87,7 +87,7 @@ export const useFollowersQuery = (
   filter?: string,
   options?: { suspense: boolean },
 ) => {
-  const key = queryKeyCreator.followers();
+  const key = queryKeyCreator.follower.list();
   const query = useQuery<User[], AxiosError>(key, getFollowers, {
     ...options,
     select: (data) =>
@@ -103,7 +103,7 @@ export const useFollowersQuery = (
 
 export type FollowersMap = Record<User['id'], User>;
 export const useFollowersMapQuery = () => {
-  const key = queryKeyCreator.followers();
+  const key = queryKeyCreator.follower.list();
   const query = useQuery<User[], AxiosError, FollowersMap>(key, getFollowers, {
     select: (followers) =>
       followers.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
