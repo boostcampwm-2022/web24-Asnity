@@ -3,8 +3,6 @@ const userQueryKey = {
   list: (filter: string) => [...userQueryKey.all(), { filter }],
   communityUsers: (communityId: string) =>
     [...userQueryKey.all(), { communityId }] as const,
-  channelUsers: (channelId: string) =>
-    [...userQueryKey.all(), { channelId }] as const,
 };
 
 const directMessageQueryKey = {
