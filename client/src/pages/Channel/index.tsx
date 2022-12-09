@@ -4,7 +4,7 @@ import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import { faker } from '@faker-js/faker';
-import { useUsersNormalizedChannelQuery } from '@hooks/channel';
+import { useChannelWithUsersMapQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import { useMyInfo } from '@hooks/useMyInfoQuery';
@@ -26,7 +26,7 @@ const Channel = () => {
   const roomId = params.roomId as string;
 
   const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
-  const normalizedChannelQuery = useUsersNormalizedChannelQuery(roomId);
+  const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
 
@@ -95,7 +95,7 @@ const Channel = () => {
   }, [roomId, chatsInfiniteQuery.isLoading]);
 
   const isLoading =
-    normalizedChannelQuery.isLoading || chatsInfiniteQuery.isLoading;
+    channelWithUsersMap.isLoading || chatsInfiniteQuery.isLoading;
 
   if (isLoading)
     return (
@@ -109,8 +109,7 @@ const Channel = () => {
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap text-indigo font-bold text-[24px]">
-          {normalizedChannelQuery.data &&
-            `#${normalizedChannelQuery.data.name}`}
+          {channelWithUsersMap.data && `#${channelWithUsersMap.data.name}`}
         </div>
       </header>
       <div className="flex h-full">
@@ -125,10 +124,10 @@ const Channel = () => {
           >
             <div ref={intersectionObservable} />
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-              {chatsInfiniteQuery.data && normalizedChannelQuery.data && (
+              {chatsInfiniteQuery.data && channelWithUsersMap.data && (
                 <ChatList
                   pages={chatsInfiniteQuery.data.pages}
-                  users={normalizedChannelQuery.data.users}
+                  users={channelWithUsersMap.data.users}
                 />
               )}
             </ul>
@@ -139,9 +138,9 @@ const Channel = () => {
           />
         </div>
         <div className="flex grow w-80 h-full border-l border-line">
-          {normalizedChannelQuery.data && (
+          {channelWithUsersMap.data && (
             <ChannelUserStatus
-              users={Object.values(normalizedChannelQuery.data.users)}
+              users={Object.values(channelWithUsersMap.data.users)}
             />
           )}
         </div>
