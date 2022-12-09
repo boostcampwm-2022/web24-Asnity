@@ -48,8 +48,11 @@ const Channel = () => {
     },
   );
 
-  const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
-    useSetChatsQuery();
+  const {
+    addChatsQueryData,
+    updateChatQueryDataToFailedChat,
+    updateChatQueryDataToWrittenChat,
+  } = useSetChatsQuery();
   const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
@@ -79,11 +82,11 @@ const Channel = () => {
       }),
       ({ written }: { written: boolean }) => {
         if (written) {
-          updateChatToWrittenChat({ id, channelId: roomId });
+          updateChatQueryDataToWrittenChat({ id, channelId: roomId });
           return;
         }
 
-        updateChatToFailedChat({ id, channelId: roomId });
+        updateChatQueryDataToFailedChat({ id, channelId: roomId });
       },
     );
 
