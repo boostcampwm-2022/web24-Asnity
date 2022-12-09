@@ -2,7 +2,7 @@ import ErrorMessage from '@components/ErrorMessage';
 import FollowingUserSearchResult from '@components/FollowingUserSearchResult';
 import SearchInput from '@components/SearchInput';
 import useDebouncedValue from '@hooks/useDebouncedValue';
-import usefollowingsQuery from '@hooks/useFollowingsQuery';
+import { useFollowingsQuery } from '@hooks/user';
 import React, { useState } from 'react';
 
 /**
@@ -15,7 +15,7 @@ const Followings = () => {
   const DEBOUNCE_DELAY = 500;
   const [filter, setFilter] = useState('');
   const debouncedFilter = useDebouncedValue(filter, DEBOUNCE_DELAY);
-  const followingsQuery = usefollowingsQuery(debouncedFilter);
+  const followingsQuery = useFollowingsQuery(debouncedFilter);
 
   return (
     <div className="flex flex-col h-full">
