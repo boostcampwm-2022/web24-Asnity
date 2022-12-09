@@ -42,7 +42,7 @@ export const useFollowingsQuery = (
   filter?: string,
   options?: { suspense: boolean },
 ) => {
-  const key = queryKeyCreator.followings.list();
+  const key = queryKeyCreator.following.list();
   const query = useQuery<User[], AxiosError>(key, getFollowings, {
     ...options,
     select: (data) =>
@@ -58,7 +58,7 @@ export const useFollowingsQuery = (
 
 export type FollowingsMap = Record<User['id'], User>;
 export const useFollowingsMapQuery = () => {
-  const key = queryKeyCreator.followings.list();
+  const key = queryKeyCreator.following.list();
   const query = useQuery<User[], AxiosError, FollowingsMap>(
     key,
     getFollowings,
@@ -72,7 +72,7 @@ export const useFollowingsMapQuery = () => {
 };
 
 export const useInvalidateFollowingsQuery = () => {
-  const key = queryKeyCreator.followings.all();
+  const key = queryKeyCreator.following.all();
 
   const queryClient = useQueryClient();
   const invalidate = useCallback(
@@ -115,7 +115,7 @@ export const useFollowersMapQuery = () => {
 export const useFollowingMutation = (
   options?: UseMutationOptions<UpdateFollowingResult, unknown, unknown>,
 ) => {
-  const key = queryKeyCreator.followings.toggleFollowing();
+  const key = queryKeyCreator.following.toggleFollowing();
   const mutation = useMutation(key, updateFollowing, { ...options });
 
   return mutation;
