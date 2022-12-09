@@ -4,6 +4,7 @@ import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
 import { useSetChatsQuery } from '@hooks/chat';
+import { useMyInfo } from '@hooks/useMyInfoQuery';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
@@ -15,6 +16,7 @@ import { io } from 'socket.io-client';
 import { joinChannelsPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 const SocketLayer = () => {
+  const myInfo = useMyInfo();
   const accessToken = useTokenStore((state) => state.accessToken);
   const firstEffect = useRef(true);
   const sockets = useSocketStore((state) => state.sockets);
@@ -76,6 +78,8 @@ const SocketLayer = () => {
       message: content,
       user_id: senderId,
     }) => {
+      if (myInfo?._id === senderId) return;
+
       addChatsQueryData({ id, content, channelId, senderId, createdAt });
 
       if (chatScrollbar && isScrollTouchedBottom(chatScrollbar, 50)) {
