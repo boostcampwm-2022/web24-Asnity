@@ -4,7 +4,7 @@ import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
 import { useMyInfoQueryData } from '@hooks/auth';
-import { useSetChatsQuery } from '@hooks/chat';
+import { useSetChatsQueryData } from '@hooks/chat';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
@@ -30,7 +30,7 @@ const SocketLayer = () => {
 
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
-  const { addChatsQueryData } = useSetChatsQuery();
+  const { addChatsQueryData } = useSetChatsQueryData();
 
   useEffect(() => {
     const opts = {
