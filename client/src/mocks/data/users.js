@@ -9,6 +9,7 @@ export const createMockUser = () => ({
   status: ['ONLINE', 'OFFLINE', 'AFK'][getRandomInt(3)],
   profileUrl: faker.image.cats(300, 300, true),
   description: faker.lorem.sentence(),
+  createdAt: '2022-12-01T21:17:09.270Z',
 });
 
 export const users = [...Array(30)].map(createMockUser);
