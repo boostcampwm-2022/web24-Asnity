@@ -25,7 +25,7 @@ export const useUsersQuery = (
   filter: string,
   options?: { suspense?: boolean; enabled?: boolean },
 ) => {
-  const key = queryKeyCreator.userSearch(filter);
+  const key = queryKeyCreator.user.list(filter);
   const query = useQuery<GetUsersResult['users'], AxiosError>(
     key,
     () => getUsers({ search: filter }),
