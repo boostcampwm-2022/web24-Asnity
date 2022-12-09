@@ -1,7 +1,7 @@
 import type { User, UserUID } from '@apis/user';
+import type { UsersMap } from '@hooks/user';
 import type { MouseEventHandler, FC } from 'react';
 
-import Spinner from '@components/Spinner';
 import UserItem from '@components/UserItem';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserPlusIcon } from '@heroicons/react/20/solid';
@@ -9,23 +9,23 @@ import {
   useInvalidateChannelQuery,
   useInviteChannelMutation,
 } from '@hooks/channel';
-import { useChannelUsersMapQuery } from '@hooks/user';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
 
 interface Props {
-  users: User[];
+  communityUsers: User[];
+  channelUsersMap: UsersMap;
   channelId: string;
   communityId: string;
 }
 
 const ChannelInviteUserSearchResult: FC<Props> = ({
-  users,
+  communityUsers,
+  channelUsersMap,
   channelId,
   communityId,
 }) => {
-  const { channelUsersMapQuery } = useChannelUsersMapQuery(channelId);
   const invalidateChannelQuery = useInvalidateChannelQuery(channelId);
   const inviteChannelMutation = useInviteChannelMutation({
     onSuccess: () => {
@@ -47,7 +47,7 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
         });
       };
 
-  if (!users.length) {
+  if (!communityUsers.length) {
     return (
       <div className="w-full h-full flex justify-center items-center">
         검색 결과가 없습니다.
@@ -55,19 +55,13 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
     );
   }
 
-  if (channelUsersMapQuery.isInitialLoading) return (
-    <div className="w-full h-full flex justify-center items-center">
-      <span className="sr-only">로딩중</span>
-      <Spinner />
-    </div>
-  );
 
   return (
     <Scrollbars>
       <ul>
-        {users.map((user) => {
+        {communityUsers.map((user) => {
           /** 이미 채널에 포함된 사용자라면, true */
-          const disabled = !!channelUsersMapQuery.data?.[user._id];
+          const disabled = !!channelUsersMap[user._id];
 
           return (
             <UserItem
