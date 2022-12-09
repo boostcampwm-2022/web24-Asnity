@@ -4,10 +4,10 @@ import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import { faker } from '@faker-js/faker';
+import { useMyInfoQueryData } from '@hooks/auth';
 import { useChannelWithUsersMapQuery } from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
-import { useMyInfo } from '@hooks/useMyInfoQuery';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
@@ -25,7 +25,7 @@ const Channel = () => {
   const communityId = params.communityId as string;
   const roomId = params.roomId as string;
 
-  const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
+  const myInfo = useMyInfoQueryData() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
 
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
