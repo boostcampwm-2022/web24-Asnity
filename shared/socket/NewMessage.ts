@@ -4,4 +4,5 @@ export interface NewMessage {
   message: string;
   id: string;
   time: Date;
+  cb: () => void;
 }
