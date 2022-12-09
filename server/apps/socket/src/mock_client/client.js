@@ -1,9 +1,10 @@
 import { io } from 'socket.io-client';
 
 const port = 8080;
+const url = 'http://localhost'; //49.50.167.202';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNDc3MjY1LCJleHAiOjE2NzA0NzgxNjV9._XlBanHCSOZXBWlYVlVmnIVKEY88-jH1d_yBGorPxIY';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNTcyMjc0LCJleHAiOjE2NzA1NzMxNzR9.OzrbH5xFaOXJZjvYwLmAoY95jb6kJDEo0qkjKU7dlJU';
 const accessToken2 =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg0NWNiMTU0NDRmMGEyMGRlNTYxMDUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY2OTY1MTM1NywiZXhwIjoxNjY5NjUyMjU3fQ.T3OGoF2hz4ew1iw2c4TA1tldHgTwDxkEyUFBkfUqeHo';
 const opt = {
@@ -12,21 +13,28 @@ const opt = {
   },
 };
 try {
-  const helloSocket = io(`http://localhost:${port}/socket/commu-hello`, opt);
-  // const worldSocket = io(`http://localhost:${port}/socket/commu-world`); // 다른 namesapce
+  const helloSocket = io(`${url}:${port}/socket/commu-hello`, opt);
+  // console.log(helloSocket);
+  const worldSocket = io(`${url}:${port}/socket/commu-world`, opt); // 다른 namesapce
 
   // console.log(helloSocket.connected); // 연결되었는지 true, false로 나옴
 
   // 처음 연결 후 channel 배열을 전달해야함
   const result = helloSocket.emit('join', { channels: ['639086392258e789af7d736e', 'b', 'c'] });
-  // worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
+  worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
   // console.log(result);
-  // console.log(helloSocket);
-  // message listen
+  // // console.log(helloSocket);
+  // // message listen
+  const hello = (c) => {
+    console.log(c);
+  };
   helloSocket.on('new-message', ({ channelId, user_id, message, time }) => {
     console.log(
       `new message channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`,
     );
+  });
+  worldSocket.on('new-message', ({ channelId, user_id, message, time }) => {
+    console.log(`new world channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`);
   });
   helloSocket.on('modify-message', ({ channelId, user_id, messageId, message }) => {
     console.log(
@@ -41,12 +49,31 @@ try {
     console.log('fail error ', message);
   });
   // message 전송
-  helloSocket.emit('new-message', {
-    channelId: '639086392258e789af7d736e',
-    user_id: '639045883f4268e12678ef7f',
-    message: 'hi its third message',
-    time: new Date(),
-  });
+  helloSocket.emit(
+    'new-message',
+    {
+      channelId: '639086392258e789af7d736e',
+      user_id: '639045883f4268e12678ef7f',
+      message: 'hi its third message',
+      time: new Date(),
+    },
+    (c) => {
+      console.log(c);
+    },
+  );
+
+  worldSocket.emit(
+    'new-message',
+    {
+      channelId: 'x',
+      user_id: '639045883f4268e12678ef7f',
+      message: 'hi its third message',
+      time: new Date(),
+    },
+    (c) => {
+      console.log(c, 'this is world');
+    },
+  );
 
   helloSocket.emit('modify-message', {
     channelId: '639086392258e789af7d736e',
