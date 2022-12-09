@@ -33,7 +33,7 @@ export const useChannelQuery = (channelId: string) => {
     getChannel(channelId),
   );
 
-  return { channelQuery: query };
+  return query;
 };
 
 export const useInvalidateChannelQuery = (channelId: string) => {
