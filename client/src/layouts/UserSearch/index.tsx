@@ -1,7 +1,7 @@
 import ErrorMessage from '@components/ErrorMessage';
 import SearchInput from '@components/SearchInput';
 import UserSearchResult from '@components/UserSearchResult';
-import useUsersQuery from '@hooks/useUsersQuery';
+import { useUsersQuery } from '@hooks/user';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
