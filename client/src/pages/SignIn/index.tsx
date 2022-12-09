@@ -7,7 +7,7 @@ import Logo from '@components/Logo';
 import TextButton from '@components/TextButton';
 import REGEX from '@constants/regex';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
-import useSignInMutation from '@hooks/useSignInMutation';
+import { useSignInMutation } from '@hooks/auth';
 import { useTokenStore } from '@stores/tokenStore';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
