@@ -3,7 +3,7 @@ import type {
   User,
   UserUID,
   GetUsersResult,
-  UpdateFollowingResult,
+  ToggleFollowingResult,
 } from '@apis/user';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
@@ -13,7 +13,7 @@ import {
   getCommunityUsers,
   getUsers,
   getFollowers,
-  updateFollowing,
+  toggleFollowing,
   getFollowings,
 } from '@apis/user';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
@@ -112,11 +112,11 @@ export const useFollowersMapQuery = () => {
   return query;
 };
 
-export const useFollowingMutation = (
-  options?: UseMutationOptions<UpdateFollowingResult, unknown, unknown>,
+export const useToggleFollowingMutation = (
+  options?: UseMutationOptions<ToggleFollowingResult, unknown, unknown>,
 ) => {
   const key = queryKeyCreator.following.toggleFollowing();
-  const mutation = useMutation(key, updateFollowing, { ...options });
+  const mutation = useMutation(key, toggleFollowing, { ...options });
 
   return mutation;
 };
