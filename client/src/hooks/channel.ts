@@ -48,6 +48,18 @@ export const useInvalidateChannelQuery = (channelId: string) => {
   return invalidte;
 };
 
+export const usePrefetchChannelQuery = (channelId: string) => {
+  const queryClient = useQueryClient();
+  const key = queryKeyCreator.channel.detail(channelId);
+
+  const prefetchQuery = () =>
+    queryClient.prefetchQuery<GetChannelResult, AxiosError>(key, () =>
+      getChannel(channelId),
+    );
+
+  return prefetchQuery;
+};
+
 // TODO: 적절한 이름 짓기
 export type UsersNormalizedChannel = Omit<Channel, 'users'> & {
   users: UsersMap;
