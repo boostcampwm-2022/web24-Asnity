@@ -43,21 +43,21 @@ export const getFollowings: GetFollowings = () => {
     .then((res) => res.data.result.followings);
 };
 
-export interface UpdateFollowingResult {
+export interface ToggleFollowingResult {
   message?: string;
 }
-export type UpdateFollowingResponse = SuccessResponse<UpdateFollowingResult>;
-export type UpdateFollowing = (
+export type ToggleFollowingResponse = SuccessResponse<ToggleFollowingResult>;
+export type ToggleFollowing = (
   userId: string,
-) => Promise<UpdateFollowingResult>;
+) => Promise<ToggleFollowingResult>;
 
 // 유저를 팔로우한다.
 // 유저가 팔로잉 상태라면 언팔로우 한다. (toggle)
-export const updateFollowing: UpdateFollowing = (userId) => {
+export const toggleFollowing: ToggleFollowing = (userId) => {
   const endPoint = `/api/user/following/${userId}`;
 
   return tokenAxios
-    .post<UpdateFollowingResponse>(endPoint)
+    .post<ToggleFollowingResponse>(endPoint)
     .then((res) => res.data.result);
 };
 
