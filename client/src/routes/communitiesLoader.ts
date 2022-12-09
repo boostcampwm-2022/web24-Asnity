@@ -6,7 +6,7 @@ import { getCommunities } from '@apis/community';
 import queryKeyCreator from '@/queryKeyCreator';
 
 const communitiesLoader = (_queryClient: QueryClient) => async () => {
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
 
   return (
     _queryClient.getQueryData<CommunitySummaries>(key) ??
