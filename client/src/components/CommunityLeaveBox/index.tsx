@@ -5,7 +5,7 @@ import AlertBox from '@components/AlertBox';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import {
   useLeaveCommunityMutation,
-  useSetCommunitiesQuery,
+  useSetCommunitiesQueryData,
 } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
@@ -18,7 +18,7 @@ interface Props {
 const CommunityLeaveBox: FC<Props> = ({ community }) => {
   const params = useParams();
   const navigate = useNavigate();
-  const setCommunities = useSetCommunitiesQuery();
+  const setCommunities = useSetCommunitiesQueryData();
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
   const leaveCommunityMutation = useLeaveCommunityMutation({

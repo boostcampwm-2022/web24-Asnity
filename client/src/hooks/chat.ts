@@ -49,7 +49,7 @@ type UpdateChatQueryDataToWrittenChat = ({
 type UpdateChatQueryDataToFailedChat = UpdateChatQueryDataToWrittenChat;
 type RemoveChatQueryData = UpdateChatQueryDataToWrittenChat;
 
-export const useSetChatsQuery = () => {
+export const useSetChatsQueryData = () => {
   const queryClient = useQueryClient();
 
   /**

@@ -116,19 +116,19 @@ interface SetCommunities {
  *   )
  * ```
  */
-export const useSetCommunitiesQuery = () => {
+export const useSetCommunitiesQueryData = () => {
   const queryClient = useQueryClient();
 
   const key = queryKeyCreator.community.all();
 
-  const setCommunities: SetCommunities = (cb) => {
+  const setCommunitiesQueryData: SetCommunities = (cb) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       if (typeof cb === 'function') return cb(communities);
       return cb;
     });
   };
 
-  return setCommunities;
+  return setCommunitiesQueryData;
 };
 
 export const useCreateCommunityMutation = (
