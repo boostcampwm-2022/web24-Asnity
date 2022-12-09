@@ -20,7 +20,7 @@ const CommunityNav = () => {
   const { communityId, roomId } = params;
   const communitiesMapQuery = useCommunitiesMapQuery();
   const communitySummary = communitiesMapQuery.data?.[communityId];
-  const { joinedChannelsQuery } = useJoinedChannelsQuery(communityId);
+  const joinedChannelsQuery = useJoinedChannelsQuery(communityId);
   const joinedChannelsLength = joinedChannelsQuery.data?.length || 0;
 
   const [visible, setVisible] = useState(true);
