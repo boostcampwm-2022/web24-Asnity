@@ -59,9 +59,10 @@ export const usePrefetchChannelQuery = (channelId: string) => {
 
   return prefetchQuery;
 };
-
-// TODO: 적절한 이름 짓기
-export type UsersNormalizedChannel = Omit<Channel, 'users'> & {
+/**
+ * `Channel`과 같으나 `users`가 `User[]`이 아니라 `Record<User['id'], User>`이다.
+ */
+export type ChannelWithUsersMap = Omit<Channel, 'users'> & {
   users: UsersMap;
 };
 
@@ -70,9 +71,9 @@ export type UsersNormalizedChannel = Omit<Channel, 'users'> & {
  * @param channelId 채널 id
  * @returns `users`가 `UsersMap`인 `Channel` 객체
  */
-export const useUsersNormalizedChannelQuery = (channelId: string) => {
+export const useChannelWithUsersMapQuery = (channelId: string) => {
   const key = queryKeyCreator.channel.detail(channelId);
-  const query = useQuery<GetChannelResult, AxiosError, UsersNormalizedChannel>(
+  const query = useQuery<GetChannelResult, AxiosError, ChannelWithUsersMap>(
     key,
     () => getChannel(channelId),
     {
