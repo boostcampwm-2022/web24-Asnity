@@ -125,7 +125,7 @@ export const useSetChannelQueryData = () => {
     });
   };
 
-  const deleteChannelQueryData = (communityId: string, channelId: string) => {
+  const removeChannelQueryData = (communityId: string, channelId: string) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
@@ -141,7 +141,7 @@ export const useSetChannelQueryData = () => {
     });
   };
 
-  return { addChannelQueryData, deleteChannelQueryData };
+  return { addChannelQueryData, removeChannelQueryData };
 };
 
 export const useLeaveChannelMutation = (
