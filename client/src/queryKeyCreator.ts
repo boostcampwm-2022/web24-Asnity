@@ -34,7 +34,7 @@ const channelQueryKey = {
 
 const chatQueryKey = {
   all: () => ['chats'] as const,
-  list: (channelId: string) => [...chatQueryKey.all(), { channelId }] as const,
+  list: (channelId: string) => [...chatQueryKey.all(), channelId] as const,
 };
 
 const followingQueryKey = {
