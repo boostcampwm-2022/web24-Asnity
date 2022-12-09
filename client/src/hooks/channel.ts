@@ -59,9 +59,7 @@ export const usePrefetchChannelQuery = (channelId: string) => {
 
   return prefetchQuery;
 };
-/**
- * `Channel`과 같으나 `users`가 `User[]`이 아니라 `Record<User['id'], User>`이다.
- */
+
 export type ChannelWithUsersMap = Omit<Channel, 'users'> & {
   users: UsersMap;
 };
