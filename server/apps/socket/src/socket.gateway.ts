@@ -9,8 +9,8 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { Logger, UnauthorizedException, UseFilters } from '@nestjs/common';
+import { Server } from 'socket.io';
+import { Logger, UseFilters } from '@nestjs/common';
 import { Join, NewMessage, ModifyMessage } from '@socketInterface/index';
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
@@ -51,11 +51,10 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: NewMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
-    const community = socket.nsp;
     const communityName = socket.nsp.name;
     const { id, channelId, user_id, message, time } = data;
     this.logger.log(
-      `\nnew message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: [${time}] ${message}`,
+      `New message. [NS] : ${communityName}, [channel] : ${channelId} [From] ${user_id},[MSG][${time}]:${message}`,
     );
     const restoreMessageDto: RestoreMessageDto = {
       channel_id: channelId,
@@ -64,12 +63,17 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       senderId: socket.user._id,
     };
     const apiUrl = storeMessageURL(channelId);
-    await requestApiServer({
+    const result = await requestApiServer({
       path: apiUrl,
       accessToken: socket.user.accessToken,
       data: restoreMessageDto,
     });
-    community.to(channelId).emit('new-message', data);
+    if (result) {
+      socket.to(channelId).emit('new-message', data);
+    }
+
+    const written = result;
+    return { written };
   }
 
   @SubscribeMessage('modify-message')
@@ -81,7 +85,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const communityName = socket.nsp.name;
     const { channelId, user_id, message, messageId } = data;
     this.logger.log(
-      `\nmodify message : \n\tns : ${communityName}\n\tchannel : ${channelId}\n\tFrom ${user_id}: ${message}\n\torigin id : ${messageId}`,
+      `Modify message. [NS] : ${communityName}, [channel] : ${channelId} [From] ${user_id}, [MSG] : ${message}, [Origin id] : ${messageId}`,
     );
     community.to(channelId).emit('modify-message', data);
     // TODO : db에 message data 수정을 여기서할지 논의하기
@@ -98,7 +102,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(`Client Disconnected : [NS] '${socket.nsp.name}', [ID] ${socket.id}`);
   }
 
-  handleConnection(socket: SocketWithAuth, ...args: any[]) {
+  handleConnection(socket: SocketWithAuth) {
     // client의 connect event
     this.logger.log(`Client Connected : [NS] '${socket.nsp.name}', [ID] ${socket.id}`);
   }
