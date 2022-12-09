@@ -76,7 +76,7 @@ export const leaveChannel: LeaveChannel = (channelId) => {
 
   return tokenAxios
     .delete<LeaveChannelResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((response) => response.data.result);
 };
 
 export interface InviteChannelRequest {

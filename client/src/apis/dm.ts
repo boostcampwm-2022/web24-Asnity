@@ -24,5 +24,5 @@ export const getDirectMessages: GetDirectMessages = () => {
 
   return tokenAxios
     .get<GetDirectMessagesResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((response) => response.data.result);
 };
