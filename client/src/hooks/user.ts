@@ -3,8 +3,8 @@ import type { User, UserUID, GetUsersResult } from '@apis/user';
 import type { AxiosError } from 'axios';
 
 import { getChannel } from '@apis/channel';
-import { getCommunityUsers, getUsers } from '@apis/user';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getCommunityUsers, getUsers, getFollowers } from '@apis/user';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 
 import queryKeyCreator from '@/queryKeyCreator';
 
@@ -21,6 +21,35 @@ export const useUsersQuery = (
       refetchOnWindowFocus: false,
     },
   );
+
+  return query;
+};
+
+export const useFollowersQuery = (
+  filter?: string,
+  options?: { suspense: boolean },
+) => {
+  const key = queryKeyCreator.followers();
+  const query = useQuery<User[], AxiosError>(key, getFollowers, {
+    ...options,
+    select: (data) =>
+      filter
+        ? data.filter(({ nickname }) =>
+            nickname.toUpperCase().includes(filter.toUpperCase()),
+          )
+        : data,
+  });
+
+  return query;
+};
+
+export type FollowersMap = Record<User['id'], User>;
+export const useFollowersMapQuery = () => {
+  const key = queryKeyCreator.followers();
+  const query = useQuery<User[], AxiosError, FollowersMap>(key, getFollowers, {
+    select: (followers) =>
+      followers.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+  });
 
   return query;
 };

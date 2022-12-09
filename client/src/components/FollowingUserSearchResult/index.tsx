@@ -5,7 +5,7 @@ import FollowingUserContextMenu from '@components/FollowingUserContextMenu';
 import UserItem from '@components/UserItem';
 import UserList from '@components/UserList';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
-import { useFollowersMapQuery } from '@hooks/useFollowersQuery';
+import { useFollowersMapQuery } from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
