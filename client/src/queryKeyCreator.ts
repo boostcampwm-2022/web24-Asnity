@@ -38,6 +38,7 @@ const chatQueryKey = {
 
 const followingQueryKey = {
   all: () => ['followings'] as const,
+  list: () => [...followingQueryKey.all(), 'list'] as const,
   toggleFollowing: () => ['toggleFollowing'] as const,
 };
 
