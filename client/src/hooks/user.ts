@@ -42,7 +42,7 @@ export const useFollowingsQuery = (
   filter?: string,
   options?: { suspense: boolean },
 ) => {
-  const key = queryKeyCreator.followings.all();
+  const key = queryKeyCreator.followings.list();
   const query = useQuery<User[], AxiosError>(key, getFollowings, {
     ...options,
     select: (data) =>
@@ -58,7 +58,7 @@ export const useFollowingsQuery = (
 
 export type FollowingsMap = Record<User['id'], User>;
 export const useFollowingsMapQuery = () => {
-  const key = queryKeyCreator.followings.all();
+  const key = queryKeyCreator.followings.list();
   const query = useQuery<User[], AxiosError, FollowingsMap>(
     key,
     getFollowings,
