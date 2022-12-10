@@ -9,7 +9,7 @@ export class RestoreMessageDto {
 
   @IsString()
   @IsNotEmpty()
-  type: 'TEXT' | 'IMAGE';
+  type: 'TEXT' | 'IMAGE' | 'SYSTEM';
 
   @IsString()
   @IsNotEmpty()
