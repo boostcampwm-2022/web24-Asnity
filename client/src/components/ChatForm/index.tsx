@@ -1,18 +1,19 @@
 import type {
-  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
   FC,
   FormEvent,
   FormEventHandler,
   KeyboardEventHandler,
+  RefObject,
 } from 'react';
 
 import { PaperAirplaneIcon, BackspaceIcon } from '@heroicons/react/24/solid';
 import useInput from '@hooks/useInput';
 import { resizeElementByScrollHeight } from '@utils/dom';
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
-interface Props extends ComponentPropsWithoutRef<'textarea'> {
+interface Props extends ComponentPropsWithRef<'textarea'> {
   editMode?: boolean;
   initialValue?: string;
   handleCancelEdit?: () => void;
@@ -20,19 +21,23 @@ interface Props extends ComponentPropsWithoutRef<'textarea'> {
   clear?: boolean;
 }
 
-const ChatForm: FC<Props> = ({
-  editMode = false,
-  initialValue = '',
-  handleSubmitChat,
-  handleCancelEdit,
-  className,
-  clear = false,
-  ...restProps
-}) => {
-  const { roomId } = useParams();
-  const [value, onChange, isDirty, setValue] = useInput(initialValue);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const submitButtonRef = useRef<HTMLButtonElement>(null);
+const ChatForm: FC<Props> = forwardRef(
+  (
+    {
+      editMode = false,
+      initialValue = '',
+      handleSubmitChat,
+      handleCancelEdit,
+      className,
+      clear = false,
+      ...restProps
+    },
+    ref,
+  ) => {
+    const { roomId } = useParams();
+    const [value, onChange, isDirty, setValue] = useInput(initialValue);
+    const submitButtonRef = useRef<HTMLButtonElement>(null);
+    const textareaRef = ref as RefObject<HTMLTextAreaElement> | null;
 
   /**
    * 다른 채널로 이동시, value 상태값이 유지되며 채팅 폼이 미리 입력되어 있는 현상을 방지하기 위해
@@ -115,17 +120,20 @@ const ChatForm: FC<Props> = ({
           </button>
         )}
 
-        <button
-          className="chat-submit-button absolute right-3 h-full [&:hover>svg]:fill-indigo "
-          ref={submitButtonRef}
-          disabled={!isDirty}
-        >
-          <span className="sr-only">채팅 입력 버튼</span>
-          <PaperAirplaneIcon className="w-6 h-6" />
-        </button>
-      </div>
-    </form>
-  );
-};
+          <button
+            className="chat-submit-button absolute right-3 h-full [&:hover>svg]:fill-indigo "
+            ref={submitButtonRef}
+            disabled={!isDirty}
+          >
+            <span className="sr-only">채팅 입력 버튼</span>
+            <PaperAirplaneIcon className="w-6 h-6" />
+          </button>
+        </div>
+      </form>
+    );
+  },
+);
+
+ChatForm.displayName = 'ChatForm';
 
 export default ChatForm;
