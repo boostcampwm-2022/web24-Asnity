@@ -14,7 +14,6 @@ import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
-import { BotService } from '@channel/bot.service';
 
 @Injectable()
 export class ChannelService {
@@ -23,7 +22,6 @@ export class ChannelService {
     private readonly communityRepository: CommunityRepository,
     private readonly chatListRepository: ChatListRespository,
     private readonly userRepository: UserRepository,
-    private readonly botService: BotService,
   ) {}
 
   async createChannel(createChannelDto: CreateChannelDto) {
@@ -44,9 +42,6 @@ export class ChannelService {
       // 공개 채널일 경우 : 채널 유저에 커뮤니티 사용자 모두 존재
       await this.addUserToChannel(community._id, channel._id, community.users);
     }
-    const user = await this.userRepository.findById(managerId);
-
-    this.botService.infoMakeChannel(channel._id, user.nickname);
 
     return getChannelBasicInfo(channel);
   }
