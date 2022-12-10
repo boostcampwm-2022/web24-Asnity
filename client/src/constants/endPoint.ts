@@ -24,6 +24,7 @@ const endPoint = {
   getCommunityUsers: (communityId: string) =>
     `/api/communities/${communityId}/users` as const,
   getChats: (channelId: string) => `/api/channels/${channelId}/message`,
+  updateLastRead: (channelId: string) => `/api/channels/${channelId}/lastRead`,
 } as const;
 
 export default endPoint;
