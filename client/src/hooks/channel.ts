@@ -24,6 +24,7 @@ import {
   updateLastRead,
 } from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import produce from 'immer';
 import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
@@ -143,7 +144,32 @@ export const useSetChannelQueryData = () => {
     });
   };
 
-  return { addChannelQueryData, removeChannelQueryData };
+  const updateLastReadInChannelQueryData = (
+    communityId: string,
+    channelId: string,
+    lastRead: boolean,
+  ) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
+      return produce(communities, (draft: CommunitySummaries) => {
+        const community = draft.find(
+          (_community) => _community._id === communityId,
+        );
+        const channel = community?.channels.find(
+          (_channel) => _channel._id === channelId,
+        );
+
+        if (!channel) return;
+
+        channel.lastRead = lastRead;
+      });
+    });
+  };
+
+  return {
+    addChannelQueryData,
+    removeChannelQueryData,
+    updateLastReadInChannelQueryData,
+  };
 };
 
 export const useLeaveChannelMutation = (
