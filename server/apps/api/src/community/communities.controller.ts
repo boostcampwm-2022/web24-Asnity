@@ -23,7 +23,6 @@ export class CommunitiesController {
   async appendUsersToCommunity(
     @ReceivedData() appendUsersToCommunityDto: AppendUsersToCommunityDto,
   ) {
-    console.log(appendUsersToCommunityDto);
     await this.communityService.appendUsersToCommunity(appendUsersToCommunityDto);
     return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
   }
