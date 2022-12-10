@@ -11,41 +11,107 @@ import cn from 'classnames';
 import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 
-const getChatStatus = ({ updatedAt, createdAt, deletedAt, written }: Chat) => {
+const getChatStatus = ({
+  updatedAt,
+  createdAt,
+  deletedAt,
+  written,
+  type,
+}: Chat) => {
   const isUpdated = updatedAt && updatedAt !== createdAt;
   const isDeleted = !!deletedAt;
   const isFailedToSendChat = written === false;
+  const isSendFromBot = type === 'BOT';
 
-  return { isUpdated, isDeleted, isFailedToSendChat };
+  return { isUpdated, isDeleted, isFailedToSendChat, isSendFromBot };
+};
+
+interface ChatItemHeadProps {
+  chat: Chat;
+  user: User;
+  isHover: boolean;
+  opacityClassnames: string;
+  handleClickDiscardButton: () => void;
+}
+
+const ChatItemHead: FC<ChatItemHeadProps> = ({
+  chat,
+  user,
+  isHover,
+  opacityClassnames,
+  handleClickDiscardButton,
+}) => {
+  const { createdAt } = chat;
+  const { isUpdated, isDeleted, isFailedToSendChat, isSendFromBot } =
+    getChatStatus(chat);
+  const failedChatControlButtonsClassnames = `flex items-center px-3 rounded`;
+
+  return (
+    <div className="flex gap-2 items-center text-s16 mb-2">
+      <span
+        className={`font-bold ${
+          isSendFromBot ? 'text-primary' : 'text-indigo'
+        } ${opacityClassnames}`}
+      >
+        {user.nickname}
+      </span>
+      {isFailedToSendChat ? (
+        <span className="text-error font-bold">전송 실패</span>
+      ) : (
+        <span className="text-placeholder">
+          {dateStringToKRLocaleDateString(createdAt, {
+            hour: 'numeric',
+            minute: 'numeric',
+          })}
+        </span>
+      )}
+      {isDeleted ? (
+        <span className="text-label">(삭제됨)</span>
+      ) : (
+        isUpdated && <span className="text-label">(수정됨)</span>
+      )}
+      <div className="flex justify-end grow gap-2 text-s14">
+        {isFailedToSendChat && isHover && (
+          <button
+            type="button"
+            className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
+            onClick={handleClickDiscardButton}
+          >
+            지우기
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const deletedUser: User = {
+  _id: 'Deleted User',
+  id: 'deletedUser@from.asnity',
+  nickname: 'DeletedUser',
+  profileUrl: '',
+  status: 'OFFLINE',
+  description: 'fakeUser',
+  createdAt: new Date().toISOString(),
 };
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
   className?: string;
   chat: Chat;
   user?: User;
-  isSystem?: boolean;
 }
 
-const ChatItem: FC<Props> = ({
-  className = '',
-  chat,
-  user = {
-    profileUrl: undefined,
-    nickname: '(알수없음)',
-  },
-  isSystem = false,
-}) => {
+const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
   const params = useParams();
   const roomId = params.roomId as string;
-  const { content, createdAt, written, id } = chat;
-  const { isUpdated, isDeleted, isFailedToSendChat } = getChatStatus(chat);
+  const { content, written, id } = chat;
+  const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const { removeChatQueryData } = useSetChatsQueryData();
 
-  const contentClassnames = cn({
+  const opacityClassnames = cn({
     'opacity-40': written === -1 || isFailedToSendChat,
   });
-  const failedChatControlButtonsClassnames = `flex items-center px-3 rounded`;
 
   const handleClickDiscardButton = () => {
     removeChatQueryData({ channelId: roomId, id });
@@ -64,42 +130,14 @@ const ChatItem: FC<Props> = ({
             />
           </div>
           <div className="grow">
-            <div className="flex gap-2 items-center text-s16 mb-2">
-              <span
-                className={`font-bold ${
-                  isSystem ? 'text-primary' : 'text-indigo'
-                } ${contentClassnames}`}
-              >
-                {user.nickname}
-              </span>
-              {isFailedToSendChat ? (
-                <span className="text-error font-bold">전송 실패</span>
-              ) : (
-                <span className="text-placeholder">
-                  {dateStringToKRLocaleDateString(createdAt, {
-                    hour: 'numeric',
-                    minute: 'numeric',
-                  })}
-                </span>
-              )}
-              {isDeleted ? (
-                <span className="text-label">(삭제됨)</span>
-              ) : (
-                isUpdated && <span className="text-label">(수정됨)</span>
-              )}
-              <div className="flex justify-end grow gap-2 text-s14">
-                {isFailedToSendChat && isHover && (
-                  <button
-                    type="button"
-                    className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
-                    onClick={handleClickDiscardButton}
-                  >
-                    지우기
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className={`${contentClassnames}`}>
+            <ChatItemHead
+              chat={chat}
+              isHover={isHover}
+              handleClickDiscardButton={handleClickDiscardButton}
+              opacityClassnames={opacityClassnames}
+              user={user}
+            />
+            <div className={`${opacityClassnames}`}>
               {isDeleted ? (
                 '삭제된 메시지입니다'
               ) : (
