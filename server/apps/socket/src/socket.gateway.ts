@@ -11,14 +11,21 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Logger, UseFilters } from '@nestjs/common';
-import { Join, NewMessage, ModifyMessage, InviteChannel } from '@socketInterface/index';
+import {
+  Join,
+  NewMessage,
+  ModifyMessage,
+  InviteChannel,
+  DeleteMessage,
+} from '@socketInterface/index';
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
 import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
-import { joinChannelInUsersURL, modifyMessageURL, storeMessageURL } from './axios/request-api-urls';
+import { getMessageRequestURL, joinChannelInUsersURL } from './axios/request-api-urls';
 import { authMiddleware } from './middleware/authMiddleware';
+import { filterHttpMethod } from './axios/request-api.method';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -45,30 +52,26 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
-  @SubscribeMessage('new-message')
+  @SubscribeMessage('message')
   async newMessageEvent(
-    @MessageBody() data: NewMessage,
+    @MessageBody() data: NewMessage | ModifyMessage | DeleteMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
     const communityName = socket.nsp.name;
-    const { id, channelId, user_id, message, time } = data;
+    const { type, channelId, message } = data;
     this.logger.log(
-      `New message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG][${time}]:${message}`,
+      `${type} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG]:${message}`,
     );
-    const restoreMessageDto: RestoreMessageDto = {
-      channel_id: channelId,
-      type: 'TEXT',
-      content: message,
-      senderId: socket.user._id,
-    };
+
     const result = await requestApiServer({
-      method: 'post',
-      path: storeMessageURL(channelId),
+      method: filterHttpMethod(type),
+      path: getMessageRequestURL(data),
       accessToken: socket.user.accessToken,
-      data: restoreMessageDto,
+      data: getBodyData(socket.user._id, data),
     });
+    console.log(result);
     if (result) {
-      socket.to(channelId).emit('new-message', data);
+      socket.to(channelId).emit(`${type}-message`, data);
     }
 
     const written = result;
@@ -105,33 +108,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     return { isSuccess };
   }
 
-  @SubscribeMessage('modify-message')
-  async modifyMessageEvent(
-    @MessageBody() data: ModifyMessage,
-    @ConnectedSocket() socket: SocketWithAuth,
-  ) {
-    const community = socket.nsp;
-    const communityName = socket.nsp.name;
-    const { channelId, message, messageId } = data;
-    this.logger.log(
-      `Modify message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG] : ${message},\t[Origin id] : ${messageId}`,
-    );
-
-    const result = await requestApiServer({
-      method: 'patch',
-      path: modifyMessageURL(channelId, messageId),
-      accessToken: socket.user.accessToken,
-      data,
-    });
-
-    if (result) {
-      socket.to(channelId).emit('modify-message', data);
-    }
-
-    const written = result;
-    return { written };
-  }
-
   afterInit(server: Server) {
     // 서버 실행 시 실행되는 함수
     this.logger.log('웹소켓 서버 실행 시작');
@@ -148,3 +124,19 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(`Client Connected : [NS] '${socket.nsp.name}', [ID] ${socket.id}`);
   }
 }
+
+const getBodyData = (userId, data) => {
+  if (data.type == 'new') {
+    return {
+      channel_id: data.channelId,
+      type: 'TEXT',
+      content: data.message,
+      senderId: userId,
+    } as RestoreMessageDto;
+  } else if (['modify', 'delete'].includes(data.type)) {
+    delete data['type'];
+    return data;
+  } else {
+    throw Error('Unknown Message Request Type');
+  }
+};
