@@ -11,6 +11,14 @@ import cn from 'classnames';
 import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 
+const getChatStatus = ({ updatedAt, createdAt, deletedAt, written }: Chat) => {
+  const isUpdated = updatedAt && updatedAt !== createdAt;
+  const isDeleted = !!deletedAt;
+  const isFailedToSendChat = written === false;
+
+  return { isUpdated, isDeleted, isFailedToSendChat };
+};
+
 interface Props extends ComponentPropsWithoutRef<'li'> {
   className?: string;
   chat: Chat;
@@ -29,13 +37,11 @@ const ChatItem: FC<Props> = ({
 }) => {
   const params = useParams();
   const roomId = params.roomId as string;
-  const { content, createdAt, updatedAt, deletedAt, written, id } = chat;
+  const { content, createdAt, written, id } = chat;
+  const { isUpdated, isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const { removeChatQueryData } = useSetChatsQueryData();
 
-  const isUpdated = updatedAt && updatedAt !== createdAt;
-  const isDeleted = !!deletedAt;
-  const isFailedToSendChat = written === false;
   const contentClassnames = cn({
     'opacity-40': written === -1 || isFailedToSendChat,
   });
