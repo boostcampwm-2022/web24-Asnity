@@ -40,12 +40,11 @@ type UpdateChatToWrittenChat = ({
   realChatId,
 }: Pick<Chat, 'id'> & { channelId: string; realChatId: number }) => void;
 
-type UpdateChatQueryDataToFailedChat = ({
+type UpdateChatToFailedChat = ({
   id,
   channelId,
 }: Pick<Chat, 'id'> & { channelId: string }) => void;
 
-type UpdateChatToFailedChat = UpdateChatToWrittenChat;
 type RemoveChatQueryData = ({
   id,
   channelId,

@@ -139,7 +139,7 @@ const SocketLayer = () => {
     // });
     // handleReceiveEditChat({
     //   updatedChat: {
-    //     id: 59,
+    //     id: Math.floor(Math.random() * 5) + 55,
     //     content: Math.random().toString(),
     //     createdAt: '',
     //     deletedAt: '',
@@ -148,7 +148,7 @@ const SocketLayer = () => {
     //     senderId: '',
     //     written: undefined,
     //   },
-    //   channelId: '039f672f-1cc2-4c82-a2f3-0e90999b83d1',
+    //   channelId: 'c84ce979-7e14-497a-8384-774318468cf2',
     // });
     // }, 3000);
 
