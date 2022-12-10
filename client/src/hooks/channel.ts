@@ -1,4 +1,5 @@
 import type {
+  UpdateLastReadResult,
   Channel,
   CreateChannelRequest,
   CreateChannelResult,
@@ -20,6 +21,7 @@ import {
   leaveChannel,
   createChannel,
   getChannel,
+  updateLastRead,
 } from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -158,6 +160,15 @@ export const useInviteChannelMutation = (
 ) => {
   const key = queryKeyCreator.channel.inviteChannel();
   const mutation = useMutation(key, inviteChannel, { ...options });
+
+  return mutation;
+};
+
+export const useUpdateLastReadMutation = (
+  options?: MutationOptions<UpdateLastReadResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.updateLastRead();
+  const mutation = useMutation(key, updateLastRead, { ...options });
 
   return mutation;
 };
