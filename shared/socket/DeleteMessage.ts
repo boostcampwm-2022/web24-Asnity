@@ -1,4 +1,4 @@
-export interface ModifyMessage {
+export interface DeleteMessage {
   type: string;
   channelId: string;
   message: string;
