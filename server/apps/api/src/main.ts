@@ -20,6 +20,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       validateCustomDecorators: true,
+      whitelist: true,
     }),
   );
   app.useGlobalInterceptors(new SentryInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
