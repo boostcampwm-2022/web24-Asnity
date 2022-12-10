@@ -1,3 +1,5 @@
+import type { JoinedChannel } from '@apis/channel';
+import type { CommunitySummary } from '@apis/community';
 import type { User } from '@apis/user';
 
 export const SOCKET_EVENTS = {
@@ -6,6 +8,7 @@ export const SOCKET_EVENTS = {
   RECEIVE_CHAT: 'new-message',
   INVALID_TOKEN: 'connect_error',
   INVITE_USERS_TO_CHANNEL: 'invite-users-to-channel',
+  INVITED_TO_CHANNEL: 'invited-to-channel',
 } as const;
 
 export const joinChannelsPayload = (channelIds: string[]) => ({
@@ -72,4 +75,12 @@ export interface InviteUsersToChannelResponse {
 }
 export type InviteUsersToChannelCallback = (
   response: InviteUsersToChannelResponse,
+) => void;
+
+/* ======================= [ 채널 초대 받음 ] ====================== */
+export interface InvitedToChannelPayload extends JoinedChannel {
+  communityId: CommunitySummary['_id'];
+}
+export type InvitedToChannelHandler = (
+  payload: InvitedToChannelPayload,
 ) => void;
