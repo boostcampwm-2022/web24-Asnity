@@ -18,6 +18,10 @@ export class CreateChannelDto {
 
   @IsString()
   @IsNotEmpty()
+  nickname: string;
+
+  @IsString()
+  @IsNotEmpty()
   type: 'Channel' | 'DM';
 
   @IsBoolean()
