@@ -4,14 +4,18 @@ import type { ComponentPropsWithoutRef, FC, MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
+import ChatForm from '@components/ChatForm';
 import ChatActions from '@components/ChatItem/ChatActions';
 import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
+import { useSocketStore } from '@stores/socketStore';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
-import React, { memo, useRef } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import { editChatPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 const getChatStatus = ({
   updatedAt,
@@ -105,15 +109,26 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 
 const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
   const chatContentRef = useRef<HTMLDivElement>(null);
-  const params = useParams();
-  const roomId = params.roomId as string;
+  const [isEditing, setIsEditing] = useState(false);
+  const { roomId, communityId } = useParams() as {
+    roomId: string;
+    communityId: string;
+  };
+  const socket = useSocketStore((state) => state.sockets[communityId]);
   const { content, written, id } = chat;
   const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
-  const { removeChatQueryData } = useSetChatsQueryData();
+  const {
+    removeChatQueryData,
+    editChatQueryData,
+    updateEditChatToWrittenChat,
+    updateEditChatToFailedChat,
+  } = useSetChatsQueryData();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isPending = written === -1;
 
   const opacityClassnames = cn({
-    'opacity-40': written === -1 || isFailedToSendChat,
+    'opacity-40': isPending || isFailedToSendChat,
   });
 
   const handleClickDiscardButton = () => {
@@ -135,6 +150,57 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
     window.navigator.clipboard.writeText(chunks.join('\n')).then(() => {
       toast.success('클립보드에 복사 완료!', { position: 'bottom-right' });
     });
+  };
+
+  const handleClickEditButton: MouseEventHandler<HTMLButtonElement> = () => {
+    setIsEditing(true);
+  };
+
+  const handleSubmitChatEditForm = (editedContent: string) => {
+    const editedChatInfo = {
+      id,
+      content: editedContent,
+      channelId: roomId,
+    };
+
+    editChatQueryData(editedChatInfo);
+    setIsEditing(false);
+
+    socket.emit(
+      SOCKET_EVENTS.EDIT_CHAT,
+      editChatPayload(editedChatInfo),
+      ({
+        written: _written,
+        chat: _updatedChat,
+      }: {
+        written: boolean;
+        chat: Chat;
+      }) => {
+        if (_written) {
+          updateEditChatToWrittenChat({
+            updatedChat: _updatedChat,
+            channelId: roomId,
+          });
+          return;
+        }
+        updateEditChatToFailedChat({ id, channelId: roomId, content });
+        toast.error('채팅 수정에 실패했습니다.');
+      },
+    );
+
+    const fail = false;
+
+    setTimeout(() => {
+      if (fail) {
+        updateEditChatToFailedChat({ id, channelId: roomId, content });
+        toast.error('채팅 수정에 실패했습니다.');
+      } else {
+        updateEditChatToWrittenChat({
+          updatedChat: { ...chat, ...editedChatInfo },
+          channelId: roomId,
+        });
+      }
+    }, 1000);
   };
 
   return (
@@ -160,16 +226,23 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
             <div className={`${opacityClassnames}`} ref={chatContentRef}>
               {isDeleted ? (
                 <p className="opacity-50">삭제된 채팅입니다.</p>
+              ) : isEditing ? (
+                <ChatForm
+                  editMode
+                  initialValue={content}
+                  ref={textareaRef}
+                  handleSubmitChat={handleSubmitChatEditForm}
+                />
               ) : (
                 <ChatContent content={content} />
               )}
             </div>
           </div>
           <div className="absolute -top-3 right-3">
-            {isHover && (
+            {!isEditing && !isPending && isHover && (
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
-                <ChatActions.Edit />
+                <ChatActions.Edit onClick={handleClickEditButton} />
                 <ChatActions.Remove />
               </ChatActions.Container>
             )}
