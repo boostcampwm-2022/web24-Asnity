@@ -164,6 +164,7 @@ const Channel = () => {
           <ChatForm
             className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
             handleSubmitChat={handleSubmitChat}
+            clear
           />
         </div>
         <div className="flex grow w-80 h-full border-l border-line">

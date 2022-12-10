@@ -16,6 +16,7 @@ interface Props extends ComponentPropsWithoutRef<'textarea'> {
   initialValue?: string;
   handleCancelEdit?: () => void;
   handleSubmitChat?: (content: string, e: FormEvent) => void;
+  clear?: boolean;
 }
 
 const ChatForm: FC<Props> = ({
@@ -24,6 +25,7 @@ const ChatForm: FC<Props> = ({
   handleSubmitChat,
   handleCancelEdit,
   className,
+  clear = false,
   ...restProps
 }) => {
   const { roomId } = useParams();
@@ -36,7 +38,9 @@ const ChatForm: FC<Props> = ({
    * 채널 입장마다 value 상태값을 초기화합니다.
    **/
   useEffect(() => {
-    setValue('');
+    if (clear) {
+      setValue('');
+    }
   }, [roomId]);
 
   useEffect(() => {
@@ -94,10 +98,11 @@ const ChatForm: FC<Props> = ({
         placeholder="내용을 입력해주세요."
         {...restProps}
         onKeyDown={handleKeyDown}
-        ref={textareaRef}
         value={value}
+        ref={textareaRef}
         onChange={onChange}
       />
+
       <div className="relative h-[30px] shrink-0">
         {editMode && (
           <button
