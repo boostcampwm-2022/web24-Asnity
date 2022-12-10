@@ -35,7 +35,8 @@ const SocketLayer = () => {
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
   const { addChatsQueryData } = useSetChatsQueryData();
-  const { addChannelQueryData } = useSetChannelQueryData();
+  const { addChannelQueryData, updateLastReadInChannelQueryData } =
+    useSetChannelQueryData();
 
   useEffect(() => {
     const opts = {
@@ -77,6 +78,7 @@ const SocketLayer = () => {
     if (firstEffect.current) return undefined;
 
     const handleReceiveChat: ReceiveChatHandler = ({
+      // communityId,
       id,
       channelId,
       time: createdAt,
@@ -92,6 +94,15 @@ const SocketLayer = () => {
           chatScrollbar?.scrollToBottom();
         });
       }
+
+      const groups = window.location.pathname.match(
+        /\/communities\/(?<communityId>\w+)\/channels\/(?<roomId>\w+)/u,
+      )?.groups as { communityId?: string; roomId?: string };
+
+      if (channelId !== groups?.roomId)
+        // 현재 communityId 보내주지 않으므로 첫번째 커뮤니티로 넣어줌
+        // TODO: 보내주는 communityId를 updateLastRead의 첫번째 인자로 넘겨야함
+        updateLastReadInChannelQueryData(communityIds[0], channelId, true);
     };
 
     const handleInvitedToChannel: InvitedToChannelHandler = ({
