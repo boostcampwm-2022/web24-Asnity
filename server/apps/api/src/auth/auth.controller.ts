@@ -13,7 +13,7 @@ export class AuthController {
   @Post('signup') // 회원가입
   async signUp(@Body() signUpDto: SignUpDto) {
     await this.authService.signUp(signUpDto);
-    return responseForm(200, { message: '회원가입 성공!' });
+    return { message: '회원가입 성공!' };
   }
 
   @Post('signin') // 로그인
@@ -26,7 +26,7 @@ export class AuthController {
       secure: false,
       maxAge: 360000000, // 100시간 만료
     });
-    return responseForm(200, { message: '로그인 성공!', accessToken });
+    return { message: '로그인 성공!', accessToken };
   }
 
   @Post('refresh') // AccessToken 재발행

@@ -9,6 +9,6 @@ export class UsersController {
   @Get()
   async getUser(@Query('search') id: string) {
     const result = await this.userService.getUser(id);
-    return responseForm(200, { users: result });
+    return { users: result };
   }
 }
