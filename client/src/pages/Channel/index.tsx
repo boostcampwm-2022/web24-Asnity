@@ -3,7 +3,6 @@ import type { User } from '@apis/user';
 import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
-import { faker } from '@faker-js/faker';
 import { useMyInfoQueryData } from '@hooks/auth';
 import {
   useChannelWithUsersMapQuery,
@@ -61,7 +60,7 @@ const Channel = () => {
   const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const handleSubmitChat = (content: string) => {
-    const id = faker.datatype.uuid();
+    const id = Date.now();
     const createdAt = new Date();
     const newChat = { id, content, createdAt, senderId: myInfo._id };
 
@@ -81,9 +80,15 @@ const Channel = () => {
         ...newChat,
         channelId: roomId,
       }),
-      ({ written }: { written: boolean }) => {
-        if (written) {
-          updateChatToWrittenChat({ id, channelId: roomId });
+      (
+        response: { written: true; realChatId: number } | { written: false },
+      ) => {
+        if (response.written) {
+          updateChatToWrittenChat({
+            id,
+            realChatId: response.realChatId,
+            channelId: roomId,
+          });
           return;
         }
 
