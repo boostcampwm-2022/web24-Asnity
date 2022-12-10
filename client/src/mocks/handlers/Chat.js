@@ -2,40 +2,40 @@ import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
 import { rest } from 'msw';
 
-import { createMockChat } from '../data/chats';
+import chatData from '../data/chats';
 import {
   createErrorContext,
   createSuccessContext,
 } from '../utils/createContext';
-
-const MAX_PREVIOUS_PAGE = 2;
+import { colorLog } from '../utils/logging';
 
 const getChannelEndPoint = API_URL + endPoint.getChats(':channelId');
 const GetChats = rest.get(getChannelEndPoint, (req, res, ctx) => {
-  // const { channelId } = req.params;
-  const prev = Number(req.url.searchParams.get('prev'));
-  // const nextCursor = req.url.searchParams.get('next');
-
+  let cursor = Number(req.url.searchParams.get('prev'));
   const ERROR = false;
 
   // prevCursor가 undefined이거나 0이면 그대로 undefined를 반환한다.
   // prevCursor가 -1이면 첫 요청이라는 뜻이므로 최대 페이지 개수를 반환한다.
   // 그렇지 않으면 prevCursor를 1 줄여 보낸다.
-  const newPrevCursor =
-    isNaN(prev) || prev === 0
-      ? undefined
-      : prev === -1
-      ? MAX_PREVIOUS_PAGE
-      : prev - 1;
+  let prevCursor;
 
-  console.log(newPrevCursor);
+  if (cursor === 0) {
+    prevCursor = undefined;
+  } else if (cursor === -1) {
+    cursor = chatData.totalPageCount;
+    prevCursor = cursor - 1;
+  } else {
+    prevCursor = cursor - 1;
+  }
+
+  const chat = cursor >= 0 ? chatData.getChats(cursor) : [];
+
+  colorLog(`Mock Chats Fetch: ${cursor}페이지를 불러옵니다.`);
   const errorResponse = res(...createErrorContext(ctx));
   const successResponse = res(
-    ...createSuccessContext(ctx, 200, 1000, {
-      prev: newPrevCursor,
-      chat: Number.isInteger(newPrevCursor)
-        ? [...Array(10)].map(createMockChat)
-        : [],
+    ...createSuccessContext(ctx, 200, 500, {
+      prev: prevCursor,
+      chat,
     }),
   );
 
