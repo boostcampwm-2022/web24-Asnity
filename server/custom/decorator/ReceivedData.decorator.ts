@@ -7,5 +7,6 @@ export const ReceivedData = createParamDecorator((data: unknown, ctx: ExecutionC
     ...req.params,
     ...req.query,
     requestUserId: req.user._id,
+    nickname: req.user.nickname,
   };
 });
