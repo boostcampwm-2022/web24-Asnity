@@ -21,9 +21,9 @@ const getChatStatus = ({
   const isUpdated = updatedAt && updatedAt !== createdAt;
   const isDeleted = !!deletedAt;
   const isFailedToSendChat = written === false;
-  const isSendFromBot = type === 'BOT';
+  const isSystemChat = type === 'SYSTEM';
 
-  return { isUpdated, isDeleted, isFailedToSendChat, isSendFromBot };
+  return { isUpdated, isDeleted, isFailedToSendChat, isSystemChat };
 };
 
 interface ChatItemHeadProps {
@@ -42,7 +42,7 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
   handleClickDiscardButton,
 }) => {
   const { createdAt } = chat;
-  const { isUpdated, isDeleted, isFailedToSendChat, isSendFromBot } =
+  const { isUpdated, isDeleted, isFailedToSendChat, isSystemChat } =
     getChatStatus(chat);
   const failedChatControlButtonsClassnames = `flex items-center px-3 rounded`;
 
@@ -50,7 +50,7 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
     <div className="flex gap-2 items-center text-s16 mb-2">
       <span
         className={`font-bold ${
-          isSendFromBot ? 'text-primary' : 'text-indigo'
+          isSystemChat ? 'text-primary' : 'text-indigo'
         } ${opacityClassnames}`}
       >
         {user.nickname}
