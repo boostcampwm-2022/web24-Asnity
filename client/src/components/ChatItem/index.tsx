@@ -5,9 +5,10 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
 import { useSetChatsQueryData } from '@hooks/chat';
+import useHover from '@hooks/useHover';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
@@ -29,7 +30,7 @@ const ChatItem: FC<Props> = ({
   const params = useParams();
   const roomId = params.roomId as string;
   const { content, createdAt, updatedAt, deletedAt, written, id } = chat;
-  const [isHover, setIsHover] = useState(false);
+  const { isHover, ...hoverHandlers } = useHover(false);
   const { removeChatQueryData } = useSetChatsQueryData();
 
   const isUpdated = updatedAt && updatedAt !== createdAt;
@@ -38,21 +39,15 @@ const ChatItem: FC<Props> = ({
   const contentClassnames = cn({
     'opacity-40': written === -1 || isFailedToSendChat,
   });
-
   const failedChatControlButtonsClassnames = `flex items-center px-3 rounded`;
-  const handleMouseEnter = () => setIsHover(true);
-  const handleMouseLeave = () => setIsHover(false);
+
   const handleClickDiscardButton = () => {
     removeChatQueryData({ channelId: roomId, id });
   };
 
   return (
     chat && (
-      <li
-        className={className}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <li className={className} {...hoverHandlers}>
         <div className="flex gap-3">
           <div className="pt-1">
             <Avatar
