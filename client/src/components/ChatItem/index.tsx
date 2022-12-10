@@ -139,7 +139,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
             />
             <div className={`${opacityClassnames}`}>
               {isDeleted ? (
-                '삭제된 메시지입니다'
+                <p className="opacity-50">삭제된 채팅입니다.</p>
               ) : (
                 <ChatContent content={content} />
               )}
