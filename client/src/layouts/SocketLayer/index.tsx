@@ -1,6 +1,7 @@
 import type {
   ReceiveChatHandler,
   InvitedToChannelHandler,
+  ReceiveEditChatHandler,
 } from '@/socketEvents';
 import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
@@ -34,9 +35,9 @@ const SocketLayer = () => {
 
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
-  const { addChatsQueryData } = useSetChatsQueryData();
   const { addChannelQueryData, updateLastReadInChannelQueryData } =
     useSetChannelQueryData();
+  const { addChatsQueryData, updateChatQueryData } = useSetChatsQueryData();
 
   useEffect(() => {
     const opts = {
@@ -105,6 +106,13 @@ const SocketLayer = () => {
         updateLastReadInChannelQueryData(communityIds[0], channelId, true);
     };
 
+    const handleReceiveEditChat: ReceiveEditChatHandler = ({
+      updatedChat,
+      channelId,
+    }) => {
+      updateChatQueryData({ updatedChat, channelId });
+    };
+
     const handleInvitedToChannel: InvitedToChannelHandler = ({
       communityId,
       ...joinedChannel
@@ -113,21 +121,34 @@ const SocketLayer = () => {
     };
 
     // const interval = setInterval(() => {
-    //   handleReceiveChat({
-    //     id: faker.datatype.uuid(),
-    //     channelId: 'ce616c1f-6dee-48de-9f93-9c757ce8bfc9',
-    //     time: new Date(),
-    //     message: '두번째 채널',
-    //     user_id: '190eb95f-d854-4082-9847-7d66da0c1238',
-    //   });
+    // handleReceiveChat({
+    //   id: Date.now(),
+    //   channelId: 'ce616c1f-6dee-48de-9f93-9c757ce8bfc9',
+    //   time: new Date(),
+    //   message: '두번째 채널',
+    //   user_id: '190eb95f-d854-4082-9847-7d66da0c1238',
+    // });
     //
-    //   handleReceiveChat({
-    //     id: faker.datatype.uuid(),
-    //     channelId: '28f5bb16-e236-4704-8f02-84fbcd89130f',
-    //     time: new Date(),
-    //     message: '첫번째 채널',
-    //     user_id: '1b1260f9-04bf-4e91-9728-c979b0f9e4ed',
-    //   });
+    // handleReceiveChat({
+    //   id: Date.now(),
+    //   channelId: '28f5bb16-e236-4704-8f02-84fbcd89130f',
+    //   time: new Date(),
+    //   message: '첫번째 채널',
+    //   user_id: '1b1260f9-04bf-4e91-9728-c979b0f9e4ed',
+    // });
+    // handleReceiveEditChat({
+    //   updatedChat: {
+    //     id: 59,
+    //     content: Math.random().toString(),
+    //     createdAt: '',
+    //     deletedAt: '',
+    //     type: 'TEXT',
+    //     updatedAt: new Date().toISOString(),
+    //     senderId: '',
+    //     written: undefined,
+    //   },
+    //   channelId: '039f672f-1cc2-4c82-a2f3-0e90999b83d1',
+    // });
     // }, 3000);
 
     // 이벤트 on
@@ -140,6 +161,7 @@ const SocketLayer = () => {
         }
       });
 
+      socket.on(SOCKET_EVENTS.RECEIVE_EDIT_CHAT, handleReceiveEditChat);
       socket.on(SOCKET_EVENTS.INVITED_TO_CHANNEL, handleInvitedToChannel);
     });
 
