@@ -10,6 +10,8 @@ import { initTestUser1, initTestUser2, user1Modify } from '@mock/user.mock';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { followingURL, signupURL, singinURL } from '@api/test/urls/urls';
+import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('User E2E Test', () => {
   let app, server, userModel, mongod, user1;
@@ -23,6 +25,7 @@ describe('User E2E Test', () => {
     mongod = await moduleRef.get(getConnectionToken());
     userModel = mongod.model(User.name, UserSchema);
     app = moduleRef.createNestApplication();
+    app.useGlobalInterceptors(new ApiInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
     await app.init();
   });
 

@@ -13,6 +13,8 @@ import { followingURL, signupURL, singinURL } from '@api/test/urls/urls';
 import { CommunityModule } from '@community/community.module';
 import { Community, CommunitySchema } from '@schemas/community.schema';
 import { communityDto1, modifyCommunityDto1 } from '@mock/community.mock';
+import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 describe('Community E2E Test', () => {
   let app, server, userModel, communityModel, mongod, user1;
@@ -32,6 +34,7 @@ describe('Community E2E Test', () => {
     userModel = mongod.model(User.name, UserSchema);
     communityModel = mongod.model(Community.name, CommunitySchema);
     app = moduleRef.createNestApplication();
+    app.useGlobalInterceptors(new ApiInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
     await app.init();
   });
 
