@@ -188,19 +188,20 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
       },
     );
 
-    const fail = false;
-
-    setTimeout(() => {
-      if (fail) {
-        updateEditChatToFailedChat({ id, channelId: roomId, content });
-        toast.error('채팅 수정에 실패했습니다.');
-      } else {
-        updateEditChatToWrittenChat({
-          updatedChat: { ...chat, ...editedChatInfo },
-          channelId: roomId,
-        });
-      }
-    }, 1000);
+    // 테스트용
+    // const fail = true;
+    //
+    // setTimeout(() => {
+    //   if (fail) {
+    //     updateEditChatToFailedChat({ id, channelId: roomId, content });
+    //     toast.error('채팅 수정에 실패했습니다.');
+    //   } else {
+    //     updateEditChatToWrittenChat({
+    //       updatedChat: { ...chat, ...editedChatInfo },
+    //       channelId: roomId,
+    //     });
+    //   }
+    // }, 1000);
   };
 
   return (
