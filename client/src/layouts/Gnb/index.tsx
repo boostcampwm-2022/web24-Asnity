@@ -100,6 +100,9 @@ const Gnb = () => {
             ) : (
               communitiesQuery.data?.map((community) => {
                 const { _id, name, profileUrl } = community;
+                const existUnreadChat = community.channels.some(
+                  (channel) => channel.lastRead,
+                );
 
                 return (
                   <li key={_id}>
@@ -113,6 +116,9 @@ const Gnb = () => {
                           size="sm"
                           variant="rectangle"
                           profileUrl={profileUrl}
+                          badge={existUnreadChat}
+                          badgePosition="top-left"
+                          status="NEW"
                         />
                       </Link>
                     </GnbItemContainer>

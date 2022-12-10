@@ -3,7 +3,7 @@ import type { ReactNode, FC } from 'react';
 
 import React, { memo } from 'react';
 
-type BadgeType = keyof typeof USER_STATUS;
+type BadgeType = keyof typeof USER_STATUS | 'NEW';
 
 export interface Props {
   name: string;
@@ -49,6 +49,7 @@ const BADGE_COLOR: Record<BadgeType, string> = {
   ONLINE: 'bg-success',
   AFK: 'bg-error',
   OFFLINE: 'bg-label',
+  NEW: 'bg-indigo',
 };
 
 const Avatar: FC<Props> = ({
