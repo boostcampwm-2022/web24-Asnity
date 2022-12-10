@@ -4,9 +4,10 @@ import type { FC } from 'react';
 import Avatar from '@components/Avatar';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { PencilIcon } from '@heroicons/react/24/solid';
-import { useSetMyInfoQueryData, useSignOutMutation } from '@hooks/auth';
+import { useSignOutMutation } from '@hooks/auth';
 import { useRootStore } from '@stores/rootStore';
 import { useTokenStore } from '@stores/tokenStore';
+import { useQueryClient } from '@tanstack/react-query';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +21,14 @@ const UserActionBox: FC<Props> = ({
   user: { status, nickname, profileUrl, createdAt },
 }) => {
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
-  const { removeMyInfoQueryData } = useSetMyInfoQueryData();
   const navigate = useNavigate();
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
+  const queryClient = useQueryClient();
   const signOutMutation = useSignOutMutation({
     onSuccess: () => {
       setAccessToken(null);
       closeCommonModal();
-      removeMyInfoQueryData();
+      queryClient.clear();
       toast.success('성공적으로 로그아웃하였습니다!');
       navigate('/sign-in', {
         state: { alreadyTriedReissueToken: true },
