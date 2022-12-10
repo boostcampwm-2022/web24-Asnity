@@ -3,7 +3,7 @@ import type { SuccessResponse } from '@@types/apis/response';
 import endPoint from '@constants/endPoint';
 import { tokenAxios } from '@utils/axios';
 
-export type ChatType = 'TEXT' | 'IMAGE';
+export type ChatType = 'TEXT' | 'IMAGE' | 'BOT';
 
 export interface Chat {
   id: string;
