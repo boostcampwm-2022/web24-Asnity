@@ -40,12 +40,12 @@ export const useInvalidateChannelQuery = (channelId: string) => {
   const queryClient = useQueryClient();
   const key = queryKeyCreator.channel.detail(channelId);
 
-  const invalidte = useCallback(
+  const invalidate = useCallback(
     () => queryClient.invalidateQueries(key),
     [queryClient, key],
   );
 
-  return invalidte;
+  return invalidate;
 };
 
 export const usePrefetchChannelQuery = (channelId: string) => {
