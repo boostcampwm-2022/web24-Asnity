@@ -89,18 +89,19 @@ const ChatForm: FC<Props> = ({
     <form
       className={`flex flex-col p-2 bg-offWhite relative border border-line text-line focus-within:text-indigo focus-within:border-indigo rounded-2xl 
       [&_button>svg]:fill-line [&:focus-within_.chat-submit-button>svg]:fill-indigo [&_.chat-submit-button:disabled>svg]:fill-line [&:focus-within_.chat-cancel-button>svg]:fill-error ${className}`}
-      onSubmit={handleSubmitForm}
-    >
-      <textarea
-        rows={1}
-        className={`max-h-[120px] grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
-        placeholder="내용을 입력해주세요."
-        {...restProps}
-        onKeyDown={handleKeyDown}
-        value={value}
-        ref={textareaRef}
-        onChange={onChange}
-      />
+        onSubmit={handleSubmitForm}
+      >
+        <textarea
+          rows={1}
+          className={`max-h-[120px] grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
+          placeholder="내용을 입력해주세요."
+          spellCheck={false}
+          {...restProps}
+          onKeyDown={handleKeyDown}
+          value={value}
+          ref={ref}
+          onChange={onChange}
+        />
 
       <div className="relative h-[30px] shrink-0">
         {editMode && (
