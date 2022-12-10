@@ -15,7 +15,7 @@ import { Community, CommunitySchema } from '@schemas/community.schema';
 import { communityDto1, modifyCommunityDto1 } from '@mock/community.mock';
 
 describe('Community E2E Test', () => {
-  let app, userModel, communityModel, mongod, user1;
+  let app, server, userModel, communityModel, mongod, user1;
   let accessToken;
 
   beforeAll(async () => {
@@ -36,7 +36,8 @@ describe('Community E2E Test', () => {
   });
 
   beforeEach(async () => {
-    await request(app.getHttpServer())
+    server = await app.getHttpServer();
+    await request(server)
       .post(signupURL)
       .send({
         id: initTestUser1.id,
@@ -47,9 +48,7 @@ describe('Community E2E Test', () => {
         user1 = await userModel.findOne({ id: initTestUser1.id });
       });
     accessToken = (
-      await request(app.getHttpServer())
-        .post(singinURL)
-        .send({ id: user1.id, password: initTestUser1.password })
+      await request(server).post(singinURL).send({ id: user1.id, password: initTestUser1.password })
     ).body.result.accessToken;
   });
 
@@ -59,7 +58,7 @@ describe('Community E2E Test', () => {
   // TODO: url refactoring 검토
   describe('Post /api/community ', () => {
     it('커뮤니티 추가', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1)
@@ -72,12 +71,12 @@ describe('Community E2E Test', () => {
 
   describe('Get /api/communities', () => {
     it('자신이 속한 커뮤니티들의 정보', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
-      await request(app.getHttpServer())
+      await request(server)
         .get(`/api/communities`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
@@ -91,13 +90,13 @@ describe('Community E2E Test', () => {
   describe('Post /api/communities/:id/users ', () => {
     it('커뮤니티 사용자 추가', async () => {
       const user2 = await userModel.create(initTestUser2);
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
       const community = await communityModel.findOne({ name: communityDto1.name });
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/communities/${community._id}/users`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ community_id: community._id, requestUserId: user1._id, users: [user2._id] })
@@ -111,13 +110,13 @@ describe('Community E2E Test', () => {
 
   describe('Delete /api/communities/:id', () => {
     it('커뮤니티들 삭제', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
       const community = await communityModel.findOne({ name: communityDto1.name });
-      await request(app.getHttpServer())
+      await request(server)
         .delete(`/api/communities/${community._id.toString()}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1)
@@ -134,18 +133,18 @@ describe('Community E2E Test', () => {
   describe('Get /api/communities/:id/users ', () => {
     it('커뮤니티 사용자 정보 전달', async () => {
       const user2 = await userModel.create(initTestUser2);
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
       const community = await communityModel.findOne({ name: communityDto1.name });
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/communities/${community._id.toString()}/users`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ community_id: community._id, requestUserId: user1._id, users: [user2._id] });
 
-      await request(app.getHttpServer())
+      await request(server)
         .get(`/api/communities/${community._id.toString()}/users`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
@@ -158,7 +157,7 @@ describe('Community E2E Test', () => {
   describe('Delete /api/communities/:id/me ', () => {
     it('커뮤니티 퇴장', async () => {
       let user2;
-      await request(app.getHttpServer())
+      await request(server)
         .post(signupURL)
         .send({
           id: initTestUser2.id,
@@ -169,18 +168,18 @@ describe('Community E2E Test', () => {
           user2 = await userModel.findOne({ id: initTestUser2.id });
         });
       const user2AccessToken = (
-        await request(app.getHttpServer())
+        await request(server)
           .post(singinURL)
           .send({ id: user2.id, password: initTestUser2.password })
       ).body.result.accessToken;
 
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
       const community = await communityModel.findOne({ name: communityDto1.name });
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/communities/${community._id.toString()}/users`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
@@ -188,7 +187,7 @@ describe('Community E2E Test', () => {
           requestUserId: user1._id.toString(),
           users: [user2._id],
         });
-      await request(app.getHttpServer())
+      await request(server)
         .delete(`/api/communities/${community._id.toString()}/me`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
@@ -198,7 +197,7 @@ describe('Community E2E Test', () => {
           expect(res.body.error).toBeDefined();
         });
 
-      await request(app.getHttpServer())
+      await request(server)
         .delete(`/api/communities/${community._id.toString()}/me`)
         .set('Authorization', `Bearer ${user2AccessToken}`)
         .expect((res) => {
@@ -212,14 +211,14 @@ describe('Community E2E Test', () => {
   describe('Patch /api/communities/:id/settings ', () => {
     it('커뮤니티 정보 수', async () => {
       const user2 = await userModel.create(initTestUser2);
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/api/community`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(communityDto1);
 
       const community = await communityModel.findOne({ name: communityDto1.name });
 
-      await request(app.getHttpServer())
+      await request(server)
         .patch(`/api/communities/${community._id.toString()}/settings`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(modifyCommunityDto1)
@@ -235,6 +234,7 @@ describe('Community E2E Test', () => {
 
   afterEach(async () => {
     // await mongoDbServerCleanup();
+    server.close();
     const collections = mongod.collections;
     for (const key in collections) {
       const collection = collections[key];
