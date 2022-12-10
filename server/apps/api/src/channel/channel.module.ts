@@ -12,6 +12,7 @@ import { UserModule } from '@user/user.module';
 import { ChannelsController } from '@channel/channels.controller';
 import { ChatListModule } from '@chat-list/chat-list.module';
 import { ChatListRespository } from '@repository/chat-list.respository';
+import { BotService } from '@channel/bot.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ChatListRespository } from '@repository/chat-list.respository';
     CommunityRepository,
     UserRepository,
     ChatListRespository,
+    BotService,
   ],
   exports: [MongooseModule],
 })
