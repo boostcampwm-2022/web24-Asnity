@@ -17,7 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
 import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
-import { joinChannelInUsersURL, storeMessageURL } from './axios/request-api-urls';
+import { joinChannelInUsersURL, modifyMessageURL, storeMessageURL } from './axios/request-api-urls';
 import { authMiddleware } from './middleware/authMiddleware';
 
 @UseFilters(new WsCatchAllFilter())
@@ -53,7 +53,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const communityName = socket.nsp.name;
     const { id, channelId, user_id, message, time } = data;
     this.logger.log(
-      `New message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG][${time}]:${message}`,
+      `New message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG][${time}]:${message}`,
     );
     const restoreMessageDto: RestoreMessageDto = {
       channel_id: channelId,
@@ -106,18 +106,30 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('modify-message')
-  modifyMessageEvent(
+  async modifyMessageEvent(
     @MessageBody() data: ModifyMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
     const community = socket.nsp;
     const communityName = socket.nsp.name;
-    const { channelId, user_id, message, messageId } = data;
+    const { channelId, message, messageId } = data;
     this.logger.log(
-      `Modify message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG] : ${message},\t[Origin id] : ${messageId}`,
+      `Modify message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG] : ${message},\t[Origin id] : ${messageId}`,
     );
-    community.to(channelId).emit('modify-message', data);
-    // TODO : db에 message data 수정을 여기서할지 논의하기
+
+    const result = await requestApiServer({
+      method: 'patch',
+      path: modifyMessageURL(channelId, messageId),
+      accessToken: socket.user.accessToken,
+      data,
+    });
+
+    if (result) {
+      socket.to(channelId).emit('modify-message', data);
+    }
+
+    const written = result;
+    return { written };
   }
 
   afterInit(server: Server) {
