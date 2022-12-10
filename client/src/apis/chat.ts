@@ -6,7 +6,7 @@ import { tokenAxios } from '@utils/axios';
 export type ChatType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
 export interface Chat {
-  id: string;
+  id: number;
   type: ChatType;
   content: string;
   senderId: string;
