@@ -40,6 +40,7 @@ const channelQueryKey = {
   createChannel: () => ['createChannel'] as const,
   leaveChannel: () => ['leaveChannel'] as const,
   inviteChannel: () => ['inviteChannel'] as const,
+  updateLastRead: () => ['updateLastRead'] as const,
 };
 
 const chatQueryKey = {
