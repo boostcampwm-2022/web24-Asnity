@@ -186,6 +186,8 @@ export class ChannelService {
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
     const { community_id, channel_id, users } = inviteChannelDto;
     await this.addUserToChannel(community_id, channel_id, users);
+    const channelInfo = getChannelBasicInfo(await this.channelRepository.findById(channel_id));
+    return { ...channelInfo, lastRead: false };
   }
 
   async updateLastRead(updateLastReadDto: UpdateLastReadDto) {
@@ -200,5 +202,8 @@ export class ChannelService {
   async joinChannel(joinChannelDto: JoinChannelDto) {
     const { requestUserId, channel_id, community_id } = joinChannelDto;
     await this.addUserToChannel(community_id, channel_id, [requestUserId]);
+    const channelInfo = getChannelBasicInfo(await this.channelRepository.findById(channel_id));
+    if (channelInfo) delete channelInfo.users;
+    return { ...channelInfo, lastRead: false };
   }
 }

@@ -48,8 +48,8 @@ export class ChannelsController {
   @Post(':channel_id/users')
   @UseGuards(JwtAccessGuard)
   async inviteChannel(@ReceivedData() inviteChannelDto: InviteChannelDto) {
-    await this.channelService.inviteChannel(inviteChannelDto);
-    return responseForm(200, { message: '채널 초대 성공' });
+    const channelInfo = await this.channelService.inviteChannel(inviteChannelDto);
+    return responseForm(200, channelInfo);
   }
 
   @Patch(':channel_id/lastRead')
@@ -62,7 +62,7 @@ export class ChannelsController {
   @Post(':channel_id')
   @UseGuards(JwtAccessGuard)
   async joinChannel(@ReceivedData() joinChannelDto: JoinChannelDto) {
-    await this.channelService.joinChannel(joinChannelDto);
-    return responseForm(200, { message: '채널 접속 성공!' });
+    const channelInfo = await this.channelService.joinChannel(joinChannelDto);
+    return responseForm(200, channelInfo);
   }
 }
