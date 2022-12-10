@@ -14,6 +14,6 @@ export class CommunityController {
   @UseGuards(JwtAccessGuard)
   async crateCommunity(@ReceivedData(userToManagerPipe) createCommunityDto: CreateCommunityDto) {
     const result = await this.communityService.createCommunity(createCommunityDto);
-    return responseForm(200, result);
+    return result;
   }
 }
