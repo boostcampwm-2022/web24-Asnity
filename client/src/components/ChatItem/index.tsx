@@ -1,6 +1,6 @@
 import type { Chat } from '@apis/chat';
 import type { User } from '@apis/user';
-import type { ComponentPropsWithoutRef, FC } from 'react';
+import type { ComponentPropsWithoutRef, FC, MouseEventHandler } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
@@ -9,8 +9,9 @@ import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const getChatStatus = ({
   updatedAt,
@@ -103,6 +104,7 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 }
 
 const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
+  const chatContentRef = useRef<HTMLDivElement>(null);
   const params = useParams();
   const roomId = params.roomId as string;
   const { content, written, id } = chat;
@@ -116,6 +118,23 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
 
   const handleClickDiscardButton = () => {
     removeChatQueryData({ channelId: roomId, id });
+  };
+
+  const handleClickCopyButton: MouseEventHandler<HTMLButtonElement> = () => {
+    if (!chatContentRef.current) return;
+
+    const $$p = chatContentRef.current?.querySelectorAll('p');
+    const chunks = [] as string[];
+
+    if ($$p) {
+      $$p.forEach(($p) => {
+        chunks.push($p.textContent || '');
+      });
+    }
+
+    window.navigator.clipboard.writeText(chunks.join('\n')).then(() => {
+      toast.success('클립보드에 복사 완료!', { position: 'bottom-right' });
+    });
   };
 
   return (
@@ -138,7 +157,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
               opacityClassnames={opacityClassnames}
               user={user}
             />
-            <div className={`${opacityClassnames}`}>
+            <div className={`${opacityClassnames}`} ref={chatContentRef}>
               {isDeleted ? (
                 <p className="opacity-50">삭제된 채팅입니다.</p>
               ) : (
@@ -149,7 +168,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
           <div className="absolute -top-3 right-3">
             {isHover && (
               <ChatActions.Container className="bg-background">
-                <ChatActions.Copy />
+                <ChatActions.Copy onClick={handleClickCopyButton} />
                 <ChatActions.Edit />
                 <ChatActions.Remove />
               </ChatActions.Container>
