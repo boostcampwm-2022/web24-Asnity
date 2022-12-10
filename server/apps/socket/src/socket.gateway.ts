@@ -96,8 +96,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       Array.from(socket.nsp.sockets.values()).forEach((otherSocket: SocketWithAuth) => {
         if (users.includes(otherSocket.user._id)) {
           otherSocket.join(channel_id);
-          // community.in(otherSocket.id).socketsJoin('room1');
-          console.log(otherSocket);
           otherSocket.emit('invited-to-channel', result);
         }
       });

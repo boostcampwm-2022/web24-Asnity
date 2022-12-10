@@ -4,7 +4,7 @@ const port = 80;
 const url = 'http://49.50.167.202';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNjYwMTY2LCJleHAiOjE2NzA2NjEwNjZ9.-Aur1P5fcSIDY5HzwGSlF8QtRVppbD6cpwTgY84V3ts';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNjY5OTgxLCJleHAiOjE2NzA2NzA4ODF9.X8-umkeMY0V5UoCyQJvEljbBSp5n-79BwD9-Sk-JYUg';
 const accessToken2 =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg0NWNiMTU0NDRmMGEyMGRlNTYxMDUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY2OTY1MTM1NywiZXhwIjoxNjY5NjUyMjU3fQ.T3OGoF2hz4ew1iw2c4TA1tldHgTwDxkEyUFBkfUqeHo';
 const opt = {
