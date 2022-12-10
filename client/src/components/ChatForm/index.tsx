@@ -8,6 +8,7 @@ import type {
 
 import { PaperAirplaneIcon, BackspaceIcon } from '@heroicons/react/24/solid';
 import useInput from '@hooks/useInput';
+import { resizeElementByScrollHeight } from '@utils/dom';
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -41,6 +42,7 @@ const ChatForm: FC<Props> = ({
     if (clear) {
       setValue('');
     }
+    resizeElementByScrollHeight(textareaRef?.current);
   }, [roomId]);
 
   useEffect(() => {
@@ -49,10 +51,7 @@ const ChatForm: FC<Props> = ({
     const textarea = textareaRef.current;
 
     const handleChangeInput = () => {
-      if (textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = `${textarea.scrollHeight}px`;
-      }
+      resizeElementByScrollHeight(textarea);
     };
 
     textarea.addEventListener('input', handleChangeInput);
