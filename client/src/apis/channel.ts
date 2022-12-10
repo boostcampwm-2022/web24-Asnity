@@ -106,3 +106,26 @@ export const inviteChannel: InviteChannel = ({
     })
     .then((response) => response.data.result);
 };
+
+export interface UpdateLastReadRequest {
+  channelId: string;
+  communityId: string;
+}
+
+export interface UpdateLastReadResult {
+  message: string;
+}
+export type UpdateLastReadResponse = SuccessResponse<UpdateLastReadResult>;
+export type UpdateLastRead = (
+  fields: UpdateLastReadRequest,
+) => Promise<UpdateLastReadResult>;
+
+export const updateLastRead: UpdateLastRead = ({ channelId, communityId }) => {
+  const endPoint = `/api/channels/${channelId}/lastRead`;
+
+  return tokenAxios
+    .patch<UpdateLastReadResponse>(endPoint, {
+      community_id: communityId,
+    })
+    .then((response) => response.data.result);
+};
