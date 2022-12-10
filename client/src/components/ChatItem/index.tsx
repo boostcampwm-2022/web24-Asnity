@@ -6,6 +6,7 @@ import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
 import ChatForm from '@components/ChatForm';
 import ChatActions from '@components/ChatItem/ChatActions';
+import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
 import { useSocketStore } from '@stores/socketStore';
@@ -110,12 +111,13 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
   const chatContentRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const myInfo = useMyInfoQueryData() as User;
   const { roomId, communityId } = useParams() as {
     roomId: string;
     communityId: string;
   };
   const socket = useSocketStore((state) => state.sockets[communityId]);
-  const { content, written, id } = chat;
+  const { content, written, id, senderId } = chat;
   const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const {
@@ -126,6 +128,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
   } = useSetChatsQueryData();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isPending = written === -1;
+  const isMine = myInfo._id === senderId;
 
   const opacityClassnames = cn({
     'opacity-40': isPending || isFailedToSendChat,
@@ -243,7 +246,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
             {!isEditing && !isPending && isHover && (
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
-                <ChatActions.Edit onClick={handleClickEditButton} />
+                {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
                 <ChatActions.Remove />
               </ChatActions.Container>
             )}
