@@ -6,6 +6,7 @@ import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import { useSignOutMutation } from '@hooks/auth';
 import { useRootStore } from '@stores/rootStore';
+import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { dateStringToKRLocaleDateString } from '@utils/date';
@@ -21,8 +22,10 @@ const UserActionBox: FC<Props> = ({
   user: { status, nickname, profileUrl, createdAt },
 }) => {
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
-  const navigate = useNavigate();
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
+  const sockets = useSocketStore((state) => state.sockets);
+  const setSockets = useSocketStore((state) => state.setSockets);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const signOutMutation = useSignOutMutation({
     onSuccess: () => {
@@ -30,6 +33,10 @@ const UserActionBox: FC<Props> = ({
       closeCommonModal();
       queryClient.clear();
       toast.success('성공적으로 로그아웃하였습니다!');
+      Object.values(sockets).forEach((socket) => {
+        socket.disconnect();
+      });
+      setSockets({});
       navigate('/sign-in', {
         state: { alreadyTriedReissueToken: true },
         replace: true,
