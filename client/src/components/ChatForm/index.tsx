@@ -94,7 +94,7 @@ const ChatForm: FC<Props> = ({
     >
       <textarea
         rows={1}
-        className={`grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
+        className={`max-h-[120px] grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
         placeholder="내용을 입력해주세요."
         {...restProps}
         onKeyDown={handleKeyDown}
