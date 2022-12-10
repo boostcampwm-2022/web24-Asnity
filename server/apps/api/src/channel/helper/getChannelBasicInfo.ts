@@ -2,7 +2,7 @@ export const getChannelBasicInfo = (channel) => {
   return {
     _id: channel._id,
     name: channel.name,
-    community_id: channel.community_id,
+    communityId: channel.communityId,
     managerId: channel.managerId,
     description: channel.description,
     type: channel.type,
