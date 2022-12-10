@@ -65,8 +65,9 @@ const ChatItem: FC<Props> = ({
           <div className="grow">
             <div className="flex gap-2 items-center text-s16 mb-2">
               <span
-                className={`font-bold ${isSystem ? 'text-primary' : 'text-indigo'
-                  } ${contentClassnames}`}
+                className={`font-bold ${
+                  isSystem ? 'text-primary' : 'text-indigo'
+                } ${contentClassnames}`}
               >
                 {user.nickname}
               </span>
