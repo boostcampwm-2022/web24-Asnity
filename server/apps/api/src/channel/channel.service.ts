@@ -13,9 +13,8 @@ import {
 import { ExitChannelDto } from '@channel/dto/exit-channel.dto';
 import { getChannelBasicInfo, getChannelToUserForm } from '@channel/helper';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
-import { BOT_ID } from '@utils/def';
-import { makeChat } from '@chat-list/helper/makeChat';
 import { ChatListRespository } from '@repository/chat-list.respository';
+import { BotService } from '@channel/bot.service';
 
 @Injectable()
 export class ChannelService {
@@ -24,6 +23,7 @@ export class ChannelService {
     private readonly communityRepository: CommunityRepository,
     private readonly chatListRepository: ChatListRespository,
     private readonly userRepository: UserRepository,
+    private readonly botService: BotService,
   ) {}
 
   async createChannel(createChannelDto: CreateChannelDto) {
@@ -46,29 +46,7 @@ export class ChannelService {
     }
     const user = await this.userRepository.findById(managerId);
 
-    // 봇 메세지 생성
-    const dateForm = new Date().toLocaleDateString('ko', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-    });
-
-    const botMessage = {
-      channel_id: channel.id,
-      type: 'TEXT',
-      content: `${user.nickname}님이 이 채널을 ${dateForm}에 생성했습니다.`,
-      senderId: BOT_ID,
-    } as const;
-
-    const newChatList = await this.chatListRepository.create({
-      chat: [makeChat(0, botMessage)],
-    });
-    // 채널의 chatList에 봇 메세지 추가
-    await this.channelRepository.addArrAtArr({ _id: channel._id }, 'chatLists', [
-      newChatList._id.toString(),
-    ]);
+    this.botService.infoMakeChannel(channel._id, user.nickname);
 
     return getChannelBasicInfo(channel);
   }
