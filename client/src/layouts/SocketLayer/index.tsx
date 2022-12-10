@@ -1,11 +1,14 @@
-import type { ReceiveChatHandler } from '@/socketEvents';
+import type {
+  ReceiveChatHandler,
+  InvitedToChannelHandler,
+} from '@/socketEvents';
 import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
 
 import { SOCKET_URL } from '@constants/url';
 import { useMyInfoQueryData } from '@hooks/auth';
+import { useSetChannelQueryData } from '@hooks/channel';
 import { useSetChatsQueryData } from '@hooks/chat';
-import { useInvalidateCommunitiesQuery } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
@@ -32,8 +35,7 @@ const SocketLayer = () => {
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
   const { addChatsQueryData } = useSetChatsQueryData();
-  const invalidateCommunitiesQuery = useInvalidateCommunitiesQuery();
-  // const { addChannelQueryData } = useSetChannelQueryData();
+  const { addChannelQueryData } = useSetChannelQueryData();
 
   useEffect(() => {
     const opts = {
@@ -92,17 +94,12 @@ const SocketLayer = () => {
       }
     };
 
-    const handleInvitedToChannel = () => {
-      invalidateCommunitiesQuery();
+    const handleInvitedToChannel: InvitedToChannelHandler = ({
+      communityId,
+      ...joinedChannel
+    }) => {
+      addChannelQueryData(communityId, joinedChannel);
     };
-
-    // TODO: 커뮤니티 아이디 받아오면 setQueryData 해줄 수 있음
-    // const handleInvitedToChannel: InvitedToChannelHandler = ({
-    //   communityId,
-    //   ...joinedChannel
-    // }) => {
-    //   addChannelQueryData(communityId, joinedChannel);
-    // };
 
     // const interval = setInterval(() => {
     //   handleReceiveChat({
