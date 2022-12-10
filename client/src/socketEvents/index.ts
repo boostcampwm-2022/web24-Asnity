@@ -1,11 +1,14 @@
 import type { JoinedChannel } from '@apis/channel';
+import type { Chat } from '@apis/chat';
 import type { CommunitySummary } from '@apis/community';
 import type { User } from '@apis/user';
 
 export const SOCKET_EVENTS = {
   JOIN_CHANNEL: 'join',
-  SEND_CHAT: 'new-message',
+  SEND_CHAT: 'message',
+  EDIT_CHAT: 'message',
   RECEIVE_CHAT: 'new-message',
+  RECEIVE_EDIT_CHAT: 'modify-message',
   INVALID_TOKEN: 'connect_error',
   INVITE_USERS_TO_CHANNEL: 'invite-users-to-channel',
   INVITED_TO_CHANNEL: 'invited-to-channel',
@@ -16,7 +19,7 @@ export const joinChannelsPayload = (channelIds: string[]) => ({
 });
 
 export interface SendChatPayloadParameter {
-  id: string;
+  id: number;
   channelId: string;
   senderId: string;
   content: string;
@@ -31,6 +34,7 @@ export const sendChatPayload = ({
   createdAt,
 }: SendChatPayloadParameter) => ({
   id,
+  type: 'new',
   channelId,
   user_id: senderId,
   message: content,
@@ -38,7 +42,7 @@ export const sendChatPayload = ({
 });
 
 export interface ReceiveChatPayload {
-  id: string;
+  id: number;
   channelId: string;
   user_id: string;
   message: string;
@@ -52,6 +56,33 @@ export type ReceiveChatHandler = ({
   message,
   time,
 }: ReceiveChatPayload) => void;
+
+export interface EditChatPayloadParameter {
+  id: number;
+  channelId: string;
+  content: string;
+}
+
+export const editChatPayload = ({
+  id,
+  channelId,
+  content,
+}: EditChatPayloadParameter) => ({
+  messageId: id,
+  type: 'modify',
+  channelId,
+  message: content,
+});
+
+export interface ReceiveEditChatHandlerParameter {
+  updatedChat: Chat;
+  channelId: string;
+}
+
+export type ReceiveEditChatHandler = ({
+  updatedChat,
+  channelId,
+}: ReceiveEditChatHandlerParameter) => void;
 
 /* ======================= [ 채널 초대 보내기 ] ====================== */
 export interface InviteUsersToChannelPayloadParameter {
