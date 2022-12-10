@@ -65,28 +65,6 @@ export class ChannelService {
     }
   }
 
-  async addUserToChannel(community_id, channel_id, newUsers) {
-    // 채널 도큐먼트의 유저 필드 업데이트
-    try {
-      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', newUsers);
-    } catch (error) {
-      throw new BadRequestException('채널에 user 추가 중 오류 발생!');
-    }
-    // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
-    try {
-      await Promise.all(
-        newUsers.map((userId) => {
-          this.userRepository.updateObject(
-            { _id: userId },
-            getChannelToUserForm(community_id, channel_id),
-          );
-        }),
-      );
-    } catch (error) {
-      throw new BadRequestException('유저 도큐먼트에 communities 필드 업데이트 중 오류 발생!');
-    }
-  }
-
   async getChannelInfo(channel_id) {
     const channel = await this.channelRepository.findOne({ _id: channel_id });
     const users = await Promise.all(
@@ -158,6 +136,7 @@ export class ChannelService {
 
   async inviteChannel(inviteChannelDto: InviteChannelDto) {
     const { community_id, channel_id, users } = inviteChannelDto;
+    await this.checkUserInCommunity(community_id, users);
     await this.addUserToChannel(community_id, channel_id, users);
     const channelInfo = getChannelBasicInfo(await this.channelRepository.findById(channel_id));
     if (!channelInfo) throw new BadRequestException();
@@ -175,9 +154,42 @@ export class ChannelService {
 
   async joinChannel(joinChannelDto: JoinChannelDto) {
     const { requestUserId, channel_id, community_id } = joinChannelDto;
+    await this.checkUserInCommunity(community_id, [requestUserId]);
     await this.addUserToChannel(community_id, channel_id, [requestUserId]);
     const channelInfo = getChannelBasicInfo(await this.channelRepository.findById(channel_id));
     if (!channelInfo) throw new BadRequestException();
     return { ...channelInfo, lastRead: false };
+  }
+
+  async checkUserInCommunity(community_id, newUsers) {
+    const community = await this.communityRepository.findById(community_id);
+    const userSet = new Set(community.users);
+    newUsers.map((user) => {
+      if (!userSet.has(user)) {
+        throw new BadRequestException('커뮤니티에 없는 유저는 채널에 참여할 수 없습니다.');
+      }
+    });
+  }
+
+  async addUserToChannel(community_id, channel_id, newUsers) {
+    // 채널 도큐먼트의 유저 필드 업데이트
+    try {
+      await this.channelRepository.addArrAtArr({ _id: channel_id }, 'users', newUsers);
+    } catch (error) {
+      throw new BadRequestException('채널에 user 추가 중 오류 발생!');
+    }
+    // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
+    try {
+      await Promise.all(
+        newUsers.map((userId) => {
+          this.userRepository.updateObject(
+            { _id: userId },
+            getChannelToUserForm(community_id, channel_id),
+          );
+        }),
+      );
+    } catch (error) {
+      throw new BadRequestException('유저 도큐먼트에 communities 필드 업데이트 중 오류 발생!');
+    }
   }
 }
