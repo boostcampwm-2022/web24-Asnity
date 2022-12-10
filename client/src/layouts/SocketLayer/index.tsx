@@ -5,6 +5,7 @@ import type { Sockets } from '@stores/socketStore';
 import { SOCKET_URL } from '@constants/url';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQueryData } from '@hooks/chat';
+import { useInvalidateCommunitiesQuery } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
@@ -31,6 +32,8 @@ const SocketLayer = () => {
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
   const { addChatsQueryData } = useSetChatsQueryData();
+  const invalidateCommunitiesQuery = useInvalidateCommunitiesQuery();
+  // const { addChannelQueryData } = useSetChannelQueryData();
 
   useEffect(() => {
     const opts = {
@@ -89,6 +92,18 @@ const SocketLayer = () => {
       }
     };
 
+    const handleInvitedToChannel = () => {
+      invalidateCommunitiesQuery();
+    };
+
+    // TODO: 커뮤니티 아이디 받아오면 setQueryData 해줄 수 있음
+    // const handleInvitedToChannel: InvitedToChannelHandler = ({
+    //   communityId,
+    //   ...joinedChannel
+    // }) => {
+    //   addChannelQueryData(communityId, joinedChannel);
+    // };
+
     // const interval = setInterval(() => {
     //   handleReceiveChat({
     //     id: faker.datatype.uuid(),
@@ -116,6 +131,8 @@ const SocketLayer = () => {
           console.error(err.message); // Not Authorized
         }
       });
+
+      socket.on(SOCKET_EVENTS.INVITED_TO_CHANNEL, handleInvitedToChannel);
     });
 
     // 이벤트 off
@@ -125,6 +142,7 @@ const SocketLayer = () => {
       socketArr.forEach((socket) => {
         socket.off(SOCKET_EVENTS.RECEIVE_CHAT);
         socket.off(SOCKET_EVENTS.INVALID_TOKEN);
+        socket.off(SOCKET_EVENTS.INVITED_TO_CHANNEL);
       });
     };
   }, [sockets, chatScrollbar]);
