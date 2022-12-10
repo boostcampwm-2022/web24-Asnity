@@ -15,7 +15,8 @@ import SignUp from '@pages/SignUp';
 import UnAuthorizedLayer from '@pages/UnAuthorizedLayer';
 import UnknownError from '@pages/UnknownError';
 import communitiesLoader from '@routes/communitiesLoader';
-import React, { useEffect, useRef } from 'react';
+import HomeErrorElement from '@routes/HomeErrorElement';
+import React from 'react';
 import {
   RouterProvider,
   Route,
@@ -26,22 +27,6 @@ import {
 } from 'react-router-dom';
 
 import queryClient from './queryClient';
-
-const HomeErrorElement = () => {
-  const errorCount = useRef(1);
-  const maxErrorCount = 3;
-
-  useEffect(() => {
-    errorCount.current += 1;
-  });
-
-  if (errorCount.current >= maxErrorCount) {
-    errorCount.current = 1;
-    return <Navigate to="/unknown-error" />;
-  }
-
-  return <Navigate to="/" />;
-};
 
 const router = createBrowserRouter(
   createRoutesFromElements(
