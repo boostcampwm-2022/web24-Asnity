@@ -207,6 +207,10 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
     // }, 1000);
   };
 
+  const handleCancelChatEditForm = () => {
+    setIsEditing(false);
+  };
+
   return (
     chat && (
       <li className={`relative ${className}`} {...hoverHandlers}>
@@ -236,6 +240,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
                   initialValue={content}
                   ref={textareaRef}
                   handleSubmitChat={handleSubmitChatEditForm}
+                  handleCancelEdit={handleCancelChatEditForm}
                 />
               ) : (
                 <ChatContent content={content} />
