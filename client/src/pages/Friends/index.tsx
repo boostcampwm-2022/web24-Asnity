@@ -47,7 +47,6 @@ const Friends = () => {
             <li
               key={_tab}
               className={`${
-                // 강제 포맷 방지용 주석
                 tab === _tab ? 'text-indigo' : 'text-placeholder'
               } font-bold text-s20`}
             >
