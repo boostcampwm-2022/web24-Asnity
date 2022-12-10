@@ -5,7 +5,11 @@ import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import { faker } from '@faker-js/faker';
 import { useMyInfoQueryData } from '@hooks/auth';
-import { useChannelWithUsersMapQuery } from '@hooks/channel';
+import {
+  useChannelWithUsersMapQuery,
+  useSetChannelQueryData,
+  useUpdateLastReadMutation,
+} from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQueryData } from '@hooks/chat';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
@@ -93,6 +97,20 @@ const Channel = () => {
       });
     }
   };
+
+  const { updateLastReadInChannelQueryData } = useSetChannelQueryData();
+  const updateLastReadMutation = useUpdateLastReadMutation({
+    onSuccess: () => {
+      updateLastReadInChannelQueryData(communityId, roomId, false);
+    },
+  });
+
+  useEffect(() => {
+    updateLastReadMutation.mutate({ communityId, channelId: roomId });
+
+    return () =>
+      updateLastReadMutation.mutate({ communityId, channelId: roomId });
+  }, [communityId, roomId]);
 
   useEffect(() => {
     if (scrollbarContainerRef.current !== chatScrollbar) {
