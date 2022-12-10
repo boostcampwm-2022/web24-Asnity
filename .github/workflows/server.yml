@@ -85,7 +85,7 @@ jobs:
           cache: 'npm'
 
       - name: Yarn 설치
-        run: npm install yarn
+        run: npm install yarn --force
 
       - name: yarn으로 패키지 설치
         run: yarn install
