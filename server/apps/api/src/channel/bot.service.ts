@@ -22,7 +22,7 @@ export class BotService {
   async infoMakeChannel(channel_id, nickname) {
     const botMessage = {
       channel_id: channel_id,
-      type: 'TEXT',
+      type: 'SYSTEM',
       content: `${nickname}님이 이 채널을 ${makeBotMessageDate()}에 생성했습니다.`,
       senderId: BOT_ID,
     } as const;
