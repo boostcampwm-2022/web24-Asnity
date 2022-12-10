@@ -1,8 +1,11 @@
+import type { User } from '@apis/user';
+
 export const SOCKET_EVENTS = {
   JOIN_CHANNEL: 'join',
   SEND_CHAT: 'new-message',
   RECEIVE_CHAT: 'new-message',
   INVALID_TOKEN: 'connect_error',
+  INVITE_USERS_TO_CHANNEL: 'invite-users-to-channel',
 } as const;
 
 export const joinChannelsPayload = (channelIds: string[]) => ({
@@ -46,3 +49,27 @@ export type ReceiveChatHandler = ({
   message,
   time,
 }: ReceiveChatPayload) => void;
+
+/* ======================= [ 채널 초대 보내기 ] ====================== */
+export interface InviteUsersToChannelPayloadParameter {
+  communityId: string;
+  channelId: string;
+  users: Array<User['_id']>;
+}
+
+export const inviteUsersToChannelPayload = ({
+  communityId,
+  channelId,
+  users,
+}: InviteUsersToChannelPayloadParameter) => ({
+  community_id: communityId,
+  channel_id: channelId,
+  users,
+});
+
+export interface InviteUsersToChannelResponse {
+  isSuccess: boolean;
+}
+export type InviteUsersToChannelCallback = (
+  response: InviteUsersToChannelResponse,
+) => void;
