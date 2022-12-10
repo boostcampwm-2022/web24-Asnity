@@ -56,6 +56,59 @@ type EditChatQueryData = ({
   channelId,
 }: Pick<Chat, 'id' | 'content'> & { channelId: string }) => void;
 
+type UpdateEditChatToWrittenChat = ({
+  updatedChat,
+  channelId,
+}: {
+  updatedChat: Chat;
+  channelId: string;
+}) => void;
+
+type UpdateEditChatToFailedChat = ({
+  id,
+  content,
+  channelId,
+}: {
+  id: number;
+  content: string;
+  channelId: string;
+}) => void;
+
+type UpdateChatQueryData = ({
+  updatedChat,
+  channelId,
+}: {
+  updatedChat: Chat;
+  channelId: string;
+}) => void;
+
+/**
+ * 채팅 id와 채팅 쿼리 데이터를 넘기면, 해당 채팅 id가 포함되어있는 페이지의 인덱스를 반환
+ */
+const searchTargetChatPageIndex = (
+  id: number,
+  data: InfiniteData<GetChatsResult>,
+) => {
+  let targetPageIndex = -1;
+
+  data.pages.some((page, pageIndex) => {
+    if (!page.chat || !page.chat.length) return false;
+    const pageFirstChatId = page.chat[0].id;
+    const pageLastChatId = page.chat.at(-1)?.id as number;
+    // chat.at()가 undefined 일 수 있는 이유는, 최대 길이 이상의 값이나 음수를 넣을 수 있기 때문인데,
+    // at(-1)은 마지막 인덱스를 가리키고, 이 블럭은 chat.length > 0인 조건문 안이라서 undefined 일 수가 없으므로 assertion 사용.
+
+    if (pageFirstChatId <= id && id <= pageLastChatId) {
+      targetPageIndex = pageIndex;
+      return true;
+    }
+
+    return false;
+  });
+
+  return targetPageIndex;
+};
+
 export const useSetChatsQueryData = () => {
   const queryClient = useQueryClient();
 
@@ -142,28 +195,16 @@ export const useSetChatsQueryData = () => {
     });
   };
 
+  /**
+   * 타겟 메세지를 수정합니다. written은 -1로 설정합니다.
+   */
   const editChatQueryData: EditChatQueryData = ({ id, channelId, content }) => {
     const key = queryKeyCreator.chat.list(channelId);
 
     queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
       if (!data) return undefined;
 
-      let targetPageIndex = -1;
-
-      data.pages.some((page, pageIndex) => {
-        if (!page.chat || !page.chat.length) return false;
-        const pageFirstChatId = page.chat[0].id;
-        const pageLastChatId = page.chat.at(-1)?.id as number;
-        // chat.at()가 undefined 일 수 있는 이유는, 최대 길이 이상의 값이나 음수를 넣을 수 있기 때문인데,
-        // at(-1)은 마지막 인덱스를 가리키고, 이 블럭은 chat.length > 0인 조건문 안이라서 undefined 일 수가 없으므로 assertion 사용.
-
-        if (pageFirstChatId <= id && id <= pageLastChatId) {
-          targetPageIndex = pageIndex;
-          return true;
-        }
-
-        return false;
-      });
+      const targetPageIndex = searchTargetChatPageIndex(id, data);
 
       return produce(data, (draft: InfiniteData<GetChatsResult>) => {
         const chatList = draft.pages[targetPageIndex].chat;
@@ -174,6 +215,68 @@ export const useSetChatsQueryData = () => {
           if (chat.id === id) {
             chat.content = content;
             chat.written = -1;
+          }
+          return chat;
+        });
+      });
+    });
+  };
+
+  /**
+   * 수정한 메세지의 written을 true로 설정하고 updatedAt을 반영합니다.
+   */
+  const updateEditChatToWrittenChat: UpdateEditChatToWrittenChat = ({
+    updatedChat,
+    channelId,
+  }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+      const { id, updatedAt } = updatedChat;
+
+      const targetPageIndex = searchTargetChatPageIndex(id, data);
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages[targetPageIndex].chat;
+
+        if (!chatList) return;
+
+        chatList.map((chat) => {
+          if (chat.id === id) {
+            chat.updatedAt = updatedAt || new Date().toISOString();
+            chat.written = true;
+          }
+          return chat;
+        });
+      });
+    });
+  };
+
+  /**
+   * 메세지 수정에 실패하여, 원래 상태로 되돌립니다.
+   */
+  const updateEditChatToFailedChat: UpdateEditChatToFailedChat = ({
+    id,
+    channelId,
+    content,
+  }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      const targetPageIndex = searchTargetChatPageIndex(id, data);
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages[targetPageIndex].chat;
+
+        if (!chatList) return;
+
+        chatList.map((chat) => {
+          if (chat.id === id) {
+            chat.written = undefined;
+            chat.content = content;
           }
           return chat;
         });
@@ -204,11 +307,47 @@ export const useSetChatsQueryData = () => {
     });
   };
 
+  /**
+   * 타겟 메세지를 업데이트하며, updatedAt과 업데이트된 메세지를 반영합니다.
+   * 소켓 on으로 상대방의 메세지 수정 이벤트를 받았을 때 사용합니다.
+   */
+  const updateChatQueryData: UpdateChatQueryData = ({
+    updatedChat,
+    channelId,
+  }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      const { id, content, updatedAt } = updatedChat;
+
+      const targetPageIndex = searchTargetChatPageIndex(id, data);
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages[targetPageIndex].chat;
+
+        if (!chatList) return;
+
+        chatList.map((chat) => {
+          if (chat.id === id) {
+            chat.content = content;
+            chat.updatedAt = updatedAt;
+          }
+          return chat;
+        });
+      });
+    });
+  };
+
   return {
     addChatsQueryData,
     updateChatToWrittenChat,
     updateChatToFailedChat,
     removeChatQueryData,
     editChatQueryData,
+    updateEditChatToWrittenChat,
+    updateEditChatToFailedChat,
+    updateChatQueryData,
   };
 };
