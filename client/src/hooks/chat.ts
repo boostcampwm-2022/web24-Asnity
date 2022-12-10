@@ -1,4 +1,4 @@
-import type { GetChatsResult } from '@apis/chat';
+import type { Chat, GetChatsResult } from '@apis/chat';
 import type { InfiniteData } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -29,25 +29,32 @@ type AddChatsQueryData = ({
   senderId,
   createdAt,
   written,
-}: {
-  id: string;
+}: Omit<Chat, 'type' | 'updatedAt' | 'createdAt'> & {
   channelId: string;
-  content: string;
-  senderId: string;
   createdAt: Date;
-  written?: boolean | -1;
 }) => void;
 
 type UpdateChatToWrittenChat = ({
   id,
   channelId,
-}: {
-  id: string;
-  channelId: string;
-}) => void;
+  realChatId,
+}: Pick<Chat, 'id'> & { channelId: string; realChatId: number }) => void;
+
+type UpdateChatQueryDataToFailedChat = ({
+  id,
+  channelId,
+}: Pick<Chat, 'id'> & { channelId: string }) => void;
 
 type UpdateChatToFailedChat = UpdateChatToWrittenChat;
-type RemoveChatQueryData = UpdateChatToWrittenChat;
+type RemoveChatQueryData = ({
+  id,
+  channelId,
+}: Pick<Chat, 'id'> & { channelId: string }) => void;
+
+type EditChatQueryData = ({
+  id,
+  channelId,
+}: Pick<Chat, 'id' | 'content'> & { channelId: string }) => void;
 
 export const useSetChatsQueryData = () => {
   const queryClient = useQueryClient();
@@ -88,6 +95,7 @@ export const useSetChatsQueryData = () => {
    */
   const updateChatToWrittenChat: UpdateChatToWrittenChat = ({
     id,
+    realChatId,
     channelId,
   }) => {
     const key = queryKeyCreator.chat.list(channelId);
@@ -102,7 +110,10 @@ export const useSetChatsQueryData = () => {
 
         const targetChat = chatList.find((chat) => chat.id === id);
 
-        if (targetChat) targetChat.written = true;
+        if (targetChat) {
+          targetChat.written = true;
+          targetChat.id = realChatId;
+        }
       });
     });
   };
@@ -127,6 +138,45 @@ export const useSetChatsQueryData = () => {
         const targetChat = chatList.find((chat) => chat.id === id);
 
         if (targetChat) targetChat.written = false; // 보낸 채팅이 DB 저장에 실패했음을 나타낸다.
+      });
+    });
+  };
+
+  const editChatQueryData: EditChatQueryData = ({ id, channelId, content }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      let targetPageIndex = -1;
+
+      data.pages.some((page, pageIndex) => {
+        if (!page.chat || !page.chat.length) return false;
+        const pageFirstChatId = page.chat[0].id;
+        const pageLastChatId = page.chat.at(-1)?.id as number;
+        // chat.at()가 undefined 일 수 있는 이유는, 최대 길이 이상의 값이나 음수를 넣을 수 있기 때문인데,
+        // at(-1)은 마지막 인덱스를 가리키고, 이 블럭은 chat.length > 0인 조건문 안이라서 undefined 일 수가 없으므로 assertion 사용.
+
+        if (pageFirstChatId <= id && id <= pageLastChatId) {
+          targetPageIndex = pageIndex;
+          return true;
+        }
+
+        return false;
+      });
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages[targetPageIndex].chat;
+
+        if (!chatList) return;
+
+        chatList.map((chat) => {
+          if (chat.id === id) {
+            chat.content = content;
+            chat.written = -1;
+          }
+          return chat;
+        });
       });
     });
   };
@@ -159,5 +209,6 @@ export const useSetChatsQueryData = () => {
     updateChatToWrittenChat,
     updateChatToFailedChat,
     removeChatQueryData,
+    editChatQueryData,
   };
 };
