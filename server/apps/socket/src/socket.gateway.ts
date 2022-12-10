@@ -103,8 +103,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       });
     }
 
-    const written = result ? true : false;
-    return { written };
+    const isSuccess = result ? true : false;
+    return { isSuccess };
   }
 
   @SubscribeMessage('modify-message')
