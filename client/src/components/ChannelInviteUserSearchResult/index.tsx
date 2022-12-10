@@ -1,17 +1,17 @@
-import type { User, UserUID } from '@apis/user';
+import type { InviteUsersToChannelResponse } from '@/socketEvents';
+import type { User } from '@apis/user';
 import type { UsersMap } from '@hooks/user';
 import type { MouseEventHandler, FC } from 'react';
 
 import UserItem from '@components/UserItem';
-import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserPlusIcon } from '@heroicons/react/20/solid';
-import {
-  useInvalidateChannelQuery,
-  useInviteChannelMutation,
-} from '@hooks/channel';
+import { useInvalidateChannelQuery } from '@hooks/channel';
+import { useSocketStore } from '@stores/socketStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
+
+import { inviteUsersToChannelPayload, SOCKET_EVENTS } from '@/socketEvents';
 
 interface Props {
   communityUsers: User[];
@@ -26,26 +26,31 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
   channelId,
   communityId,
 }) => {
+  const socket = useSocketStore((state) => state.sockets[communityId]);
   const invalidateChannelQuery = useInvalidateChannelQuery(channelId);
-  const inviteChannelMutation = useInviteChannelMutation({
-    onSuccess: () => {
-      invalidateChannelQuery().finally(() => {
-        toast.success('채널로 초대 성공!');
-      });
-    },
-    onError: (error) => defaultErrorHandler(error),
-  });
 
   const handleChannelInviteButtonClick =
-    (userId: UserUID): MouseEventHandler<HTMLButtonElement> =>
-      /* eslint-disable */
-      (e) => {
-        inviteChannelMutation.mutate({
-          channelId,
+    (user: User): MouseEventHandler<HTMLButtonElement> =>
+    (e) => {
+      socket.emit(
+        SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL,
+        inviteUsersToChannelPayload({
           communityId,
-          userIds: [userId],
-        });
-      };
+          channelId,
+          users: [user._id],
+        }),
+        ({ isSuccess }: InviteUsersToChannelResponse) => {
+          if (isSuccess) {
+            invalidateChannelQuery().finally(() => {
+              toast.success(
+                `${user.nickname}님을 채널에 초대하는데 성공했습니다.`,
+              );
+            });
+          } else
+            toast.error(`${user.nickname}님을 채널에 초대하는데 실패했습니다.`);
+        },
+      );
+    };
 
   if (!communityUsers.length) {
     return (
@@ -54,7 +59,6 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
       </div>
     );
   }
-
 
   return (
     <Scrollbars>
@@ -72,7 +76,7 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
                   <button
                     type="button"
                     className="p-2 rounded-full border border-line active:bg-indigo active:fill-offWhite disabled:bg-offWhite disabled:fill-error-light disabled:cursor-not-allowed"
-                    onClick={handleChannelInviteButtonClick(user._id)}
+                    onClick={handleChannelInviteButtonClick(user)}
                     disabled={disabled}
                   >
                     <span className="sr-only">커뮤니티에 초대하기</span>
