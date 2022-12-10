@@ -4,6 +4,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react';
 
 import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
+import ChatActions from '@components/ChatItem/ChatActions';
 import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
 import { dateStringToKRLocaleDateString } from '@utils/date';
@@ -119,7 +120,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
 
   return (
     chat && (
-      <li className={className} {...hoverHandlers}>
+      <li className={`relative ${className}`} {...hoverHandlers}>
         <div className="flex gap-3">
           <div className="pt-1">
             <Avatar
@@ -144,6 +145,15 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
                 <ChatContent content={content} />
               )}
             </div>
+          </div>
+          <div className="absolute -top-3 right-3">
+            {isHover && (
+              <ChatActions.Container className="bg-background">
+                <ChatActions.Copy />
+                <ChatActions.Edit />
+                <ChatActions.Remove />
+              </ChatActions.Container>
+            )}
           </div>
         </div>
       </li>
