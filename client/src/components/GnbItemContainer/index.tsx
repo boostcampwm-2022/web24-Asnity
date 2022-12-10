@@ -1,7 +1,8 @@
 import type { ReactNode, FC } from 'react';
 
+import useHover from '@hooks/useHover';
 import cn from 'classnames';
-import React, { useState, memo, useCallback } from 'react';
+import React, { memo } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -16,16 +17,13 @@ const GnbItemContainer: FC<Props> = ({
   disableLeftFillBar = false,
   isActive = false,
 }) => {
-  const [isItemHover, setIsItemHover] = useState(false);
+  const { isHover, ...hoverHandlers } = useHover(false);
   const leftFillBarClassnames = disableLeftFillBar
     ? ''
     : cn({
-        'bg-primary-light': isItemHover,
+        'bg-primary-light': isHover,
         'bg-primary-dark': isActive,
       });
-
-  const handleMouseEnterOnItem = useCallback(() => setIsItemHover(true), []);
-  const handleMouseLeaveFromItem = useCallback(() => setIsItemHover(false), []);
 
   return (
     <div className="relative w-full mb-[10px]">
@@ -34,11 +32,7 @@ const GnbItemContainer: FC<Props> = ({
       ></div>
       <div className="flex justify-center">
         {/* Item 영역 */}
-        <div
-          className="max-w-min"
-          onMouseEnter={handleMouseEnterOnItem}
-          onMouseLeave={handleMouseLeaveFromItem}
-        >
+        <div className="max-w-min" {...hoverHandlers}>
           {children}
         </div>
       </div>
