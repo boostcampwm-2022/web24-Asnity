@@ -78,6 +78,7 @@ const SocketLayer = () => {
   useEffect(() => {
     if (firstEffect.current) return undefined;
 
+    // TODO: 채팅 받을 때의 명세가 달라질 것 같으니 수정 준비하세요~
     const handleReceiveChat: ReceiveChatHandler = ({
       // communityId,
       id,
