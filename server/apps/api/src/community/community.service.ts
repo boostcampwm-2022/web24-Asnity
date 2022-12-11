@@ -53,15 +53,17 @@ export class CommunityService {
               throw new BadRequestException('존재하지 않는 채널입니다.');
             }
             const channelInfo = getChannelBasicInfo(channel);
-            // TODO : channel document의 updatedAt 아니고 다르값 비교
+            // 안읽은 채팅 있는 지 확인
             const lastRead = new Date(
               JSON.parse(JSON.stringify(user)).communities[`${channel.communityId}`].channels[
                 `${channel._id}`
               ],
             );
-            const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
+            const lastChatList = JSON.parse(
+              JSON.stringify(await this.chatListRepository.findById(channel.chatLists.at(-1))),
+            );
             const lastChatTime = lastChatList.chat.at(-1).createdAt;
-            lastRead.getTime() >= lastChatTime;
+            channelInfo['existUnreadChat'] = lastRead.getTime() <= new Date(lastChatTime).getTime();
             channelsInfo.push(channelInfo);
           }),
         );
