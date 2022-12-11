@@ -16,6 +16,13 @@ export const SOCKET_EVENTS = {
   INVITED_TO_CHANNEL: 'invited-to-channel',
 } as const;
 
+export type SOCKET_RECEIVE_EVENT_TYPE =
+  | typeof SOCKET_EVENTS.RECEIVE_CHAT
+  | typeof SOCKET_EVENTS.RECEIVE_EDIT_CHAT
+  | typeof SOCKET_EVENTS.RECEIVE_REMOVE_CHAT
+  | typeof SOCKET_EVENTS.INVITED_TO_CHANNEL
+  | typeof SOCKET_EVENTS.INVALID_TOKEN;
+
 export const joinChannelsPayload = (channelIds: string[]) => ({
   channels: channelIds,
 });
