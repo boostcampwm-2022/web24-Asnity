@@ -11,6 +11,7 @@ import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 import { SOCKET_URL } from '@constants/url';
 import { io } from 'socket.io-client';
 
+import { CHAT_MUTATION_TYPE } from '@/socketEvents/clientIO.type';
 import { SOCKET_EVENTS } from '@/socketEvents/index';
 
 const createConnectionUrl = (communityId: string) =>
@@ -25,9 +26,7 @@ export default class ClientIO {
   private io: Socket;
 
   static createOpts({ token }: { token: string }) {
-    return {
-      auth: { token: `Bearer ${token}` },
-    };
+    return { auth: { token: `Bearer ${token}` } };
   }
 
   // 예시: const socket = new ClientIO({ communityId, ClientIO.createOpts({ token }) });
@@ -68,7 +67,7 @@ export default class ClientIO {
   ) {
     this.emit<SendChatPayload, ChatMutationEmitCallback>(
       SOCKET_EVENTS.SEND_CHAT,
-      { ...payload, chatType: 'new' },
+      { ...payload, chatType: CHAT_MUTATION_TYPE.NEW },
       emitCallback,
     );
   }
@@ -79,10 +78,7 @@ export default class ClientIO {
   ) {
     this.emit<EditChatPayload, ChatMutationEmitCallback>(
       SOCKET_EVENTS.EDIT_CHAT,
-      {
-        ...payload,
-        chatType: 'modify',
-      },
+      { ...payload, chatType: CHAT_MUTATION_TYPE.EDIT },
       emitCallback,
     );
   }
@@ -93,7 +89,7 @@ export default class ClientIO {
   ) {
     this.emit<RemoveChatPayload, ChatMutationEmitCallback>(
       SOCKET_EVENTS.REMOVE_CHAT,
-      { ...payload, chatType: 'delete' },
+      { ...payload, chatType: CHAT_MUTATION_TYPE.REMOVE },
       emitCallback,
     );
   }

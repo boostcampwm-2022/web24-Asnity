@@ -1,25 +1,31 @@
 import type { Chat } from '@apis/chat';
 import type { UserUID } from '@apis/user';
 
+export const CHAT_MUTATION_TYPE = {
+  NEW: 'new',
+  EDIT: 'modify',
+  REMOVE: 'delete',
+} as const;
+
 export interface JoinChannelsPayload {
   channels: string[];
 }
 
 export interface SendChatPayload {
-  chatType: 'new';
+  chatType: typeof CHAT_MUTATION_TYPE.NEW;
   channelId: string;
   content: string;
 }
 
 export interface EditChatPayload {
-  chatType: 'modify';
+  chatType: typeof CHAT_MUTATION_TYPE.EDIT;
   channelId: string;
   chatId: number;
   content: string;
 }
 
 export interface RemoveChatPayload {
-  chatType: 'delete';
+  chatType: typeof CHAT_MUTATION_TYPE.REMOVE;
   channelId: string;
   chatId: number;
 }
