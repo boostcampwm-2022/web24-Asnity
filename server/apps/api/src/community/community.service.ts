@@ -54,16 +54,11 @@ export class CommunityService {
             }
             const channelInfo = getChannelBasicInfo(channel);
             // 안읽은 채팅 있는 지 확인
-            const lastRead = new Date(
-              JSON.parse(JSON.stringify(user)).communities[`${channel.communityId}`].channels[
-                `${channel._id}`
-              ],
-            );
-            const lastChatList = JSON.parse(
-              JSON.stringify(await this.chatListRepository.findById(channel.chatLists.at(-1))),
-            );
+            const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
+
             const lastChatTime = lastChatList.chat.at(-1).createdAt;
-            channelInfo['existUnreadChat'] = lastRead.getTime() <= new Date(lastChatTime).getTime();
+            channelInfo['existUnreadChat'] =
+              channels.get(channelId).getTime() <= new Date(lastChatTime).getTime();
             channelsInfo.push(channelInfo);
           }),
         );
