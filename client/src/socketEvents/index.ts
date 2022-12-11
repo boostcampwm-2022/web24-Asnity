@@ -1,4 +1,4 @@
-// TODO: 대부분 ClientIO.type.ts로 옮길 예정
+// TODO: 대부분 ClientIOTypes.ts로 옮길 예정
 import type { JoinedChannel } from '@apis/channel';
 import type { Chat } from '@apis/chat';
 import type { CommunitySummary } from '@apis/community';
