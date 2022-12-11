@@ -4,7 +4,7 @@ const port = 8080;
 const url = 'http://localhost';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk0YzJlNGQxYTYxNWJmNTY0ZDVhY2YiLCJuaWNrbmFtZSI6Im5heW91bmciLCJpYXQiOjE2NzA3ODMxMjIsImV4cCI6MTY3MDc4NDAyMn0.d_xzKiTomxwsDvckKPfZayGELch6JwTlKAYYN3BShUM';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk0YzJlNGQxYTYxNWJmNTY0ZDVhY2YiLCJuaWNrbmFtZSI6Im5heW91bmciLCJpYXQiOjE2NzA3ODQ3MTQsImV4cCI6MTY3MDc4NTYxNH0.Cx8pjTF1_rpL2KINFPQjXkFUzu0gtdFX6ng0gbAcKkU';
 
 const opt = {
   auth: {
@@ -40,17 +40,17 @@ try {
     console.log('fail error ', message);
   });
   // message 전송
-  helloSocket.emit(
-    'chat',
-    {
-      chatType: 'new',
-      channelId: '63956c5cd1a615bf564e3afe',
-      content: '화요일 좋아',
-    },
-    (c) => {
-      console.log(c.written, ' this is hello ', JSON.stringify(c.chatInfo));
-    },
-  );
+  // helloSocket.emit(
+  //   'chat',
+  //   {
+  //     chatType: 'new',
+  //     channelId: '63956c5cd1a615bf564e3afe',
+  //     content: '화요일 좋아',
+  //   },
+  //   (c) => {
+  //     console.log(c.written, ' this is hello ', JSON.stringify(c.chatInfo));
+  //   },
+  // );
 
   // worldSocket.emit(
   //   'message',
@@ -64,19 +64,18 @@ try {
   //   },
   // );
 
-  // helloSocket.emit(
-  //   'message',
-  //   {
-  //     type: 'modify',
-  //     channelId: '639086392258e789af7d736e',
-  //     user_id: '311',
-  //     messageId: '0a2',
-  //     message: 'hi this is modify message',
-  //   },
-  //   (c) => {
-  //     console.log(c.written, ' modify done');
-  //   },
-  // );
+  helloSocket.emit(
+    'chat',
+    {
+      chatType: 'modify',
+      channelId: '63956c5cd1a615bf564e3afe',
+      chatId: '6',
+      content: '맞앙, 화요일 싫어',
+    },
+    (c) => {
+      console.log(c.written, ' modify done');
+    },
+  );
 } catch (error) {
   console.log(error);
 }

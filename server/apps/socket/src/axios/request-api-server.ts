@@ -28,6 +28,7 @@ export const requestApiServer = async ({ method, path, accessToken, data }) => {
     }
     return response.data.result ?? true;
   } catch (error) {
+    console.log(error);
     // throw new WsException('API Server 요청 중 에러가 발생했습니다.');
     return false;
   }
