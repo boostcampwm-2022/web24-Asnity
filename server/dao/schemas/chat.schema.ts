@@ -30,6 +30,5 @@ export class Chat {
 
   @Prop({ type: mongoose.Schema.Types.Date })
   deletedAt: Date;
-  Ï;
 }
 export const ChatSchema = SchemaFactory.createForClass(Chat);
