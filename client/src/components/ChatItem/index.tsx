@@ -6,9 +6,11 @@ import Avatar from '@components/Avatar';
 import ChatContent from '@components/ChatContent';
 import ChatForm from '@components/ChatForm';
 import ChatActions from '@components/ChatItem/ChatActions';
+import ChatRemoveBox from '@components/ChatRemoveBox';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
+import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { dateStringToKRLocaleDateString } from '@utils/date';
 import cn from 'classnames';
@@ -117,6 +119,7 @@ const ChatItem: FC<Props> = ({
   channelManagerId,
   communityManagerId,
 }) => {
+  const openCommonModal = useRootStore((state) => state.openCommonModal);
   const chatContentRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const myInfo = useMyInfoQueryData() as User;
@@ -166,8 +169,20 @@ const ChatItem: FC<Props> = ({
     });
   };
 
-  const handleClickEditButton: MouseEventHandler<HTMLButtonElement> = () => {
-    setIsEditing(true);
+  const handleClickEditButton = () => setIsEditing(true);
+
+  const handleCancelChatEditForm = () => setIsEditing(false);
+
+  const handleClickRemoveButton: MouseEventHandler<HTMLButtonElement> = () => {
+    openCommonModal({
+      content: <ChatRemoveBox />,
+      contentWrapperStyle: {
+        top: '50%',
+        left: '50%',
+        transform: 'translate3d(-50%, -50%, 0)',
+      },
+      overlayBackground: 'black',
+    });
   };
 
   const handleSubmitChatEditForm = (editedContent: string) => {
@@ -218,10 +233,6 @@ const ChatItem: FC<Props> = ({
     // }, 1000);
   };
 
-  const handleCancelChatEditForm = () => {
-    setIsEditing(false);
-  };
-
   return (
     chat && (
       <li className={`relative ${className}`} {...hoverHandlers}>
@@ -262,7 +273,9 @@ const ChatItem: FC<Props> = ({
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
                 {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
-                {(isMine || isManager) && <ChatActions.Remove />}
+                {(isMine || isManager) && (
+                  <ChatActions.Remove onClick={handleClickRemoveButton} />
+                )}
               </ChatActions.Container>
             )}
           </div>
