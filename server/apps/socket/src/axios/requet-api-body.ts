@@ -1,11 +1,9 @@
-import { RestoreMessageDto } from '@chat-list/dto';
-
-export const getBodyData = (userId, data) => {
+export const getBodyData = (data) => {
   if (data.chatType === 'new') {
     return {
       type: 'TEXT',
-      content: data.message,
-    } as RestoreMessageDto;
+      content: data.content,
+    };
   } else if (data.chatType === 'delete') {
     return undefined;
   } else if (data.chatType === 'modify') {
