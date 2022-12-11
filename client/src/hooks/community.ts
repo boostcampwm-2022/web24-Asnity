@@ -56,6 +56,22 @@ export const useCommunitiesMapQuery = () => {
   return query;
 };
 
+export const useCommunityManagerIdQuery = (communityId: string) => {
+  const key = queryKeyCreator.community.list();
+  const query = useQuery<CommunitySummaries, AxiosError, string | undefined>(
+    key,
+    getCommunities,
+    {
+      select: (communities) => {
+        return communities.find((community) => community._id === communityId)
+          ?.managerId;
+      },
+    },
+  );
+
+  return query;
+};
+
 /**
  *
  * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을`Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
