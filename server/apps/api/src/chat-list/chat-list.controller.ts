@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nest
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
 import { RestoreMessageDto } from '@chat-list/dto';
-import { responseForm } from '@utils/responseForm';
 
 @Controller('api/channels')
 export class ChatListController {
@@ -21,7 +20,7 @@ export class ChatListController {
       channel_id,
       senderId: requestUserId,
     });
-    return responseForm(200, { message: '채팅 저장 성공!' });
+    return { message: '채팅 저장 성공!' };
   }
 
   @Get(':channel_id/message')
@@ -33,7 +32,7 @@ export class ChatListController {
       requestUserId,
       channel_id,
     });
-    return responseForm(200, chatList);
+    return chatList;
   }
   @Get(':channel_id/unread-message')
   @UseGuards(JwtAccessGuard)
@@ -43,6 +42,6 @@ export class ChatListController {
       requestUserId,
       channel_id,
     });
-    return responseForm(200, { unreadChatId });
+    return { unreadChatId };
   }
 }
