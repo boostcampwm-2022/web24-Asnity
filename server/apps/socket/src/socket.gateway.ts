@@ -21,11 +21,11 @@ import {
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
-import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
 import { getMessageRequestURL, joinChannelInUsersURL } from './axios/request-api-urls';
 import { authMiddleware } from './middleware/authMiddleware';
 import { filterHttpMethod } from './axios/request-api.method';
+import { getBodyData } from './axios/requet-api-body';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -53,7 +53,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('chat')
-  async chatEvent(
+  async chatEvents(
     @MessageBody() data: NewMessage | ModifyMessage | DeleteMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
@@ -124,18 +124,3 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(`Client Connected : [NS] '${socket.nsp.name}', [ID] ${socket.id}`);
   }
 }
-
-const getBodyData = (userId, data) => {
-  if (data.chatType === 'new') {
-    return {
-      type: 'TEXT',
-      content: data.message,
-    } as RestoreMessageDto;
-  } else if (data.chatType === 'delete') {
-    return undefined;
-  } else if (data.chatType === 'modify') {
-    return { content: data.content };
-  } else {
-    throw Error('Unknown Message Request Type');
-  }
-};
