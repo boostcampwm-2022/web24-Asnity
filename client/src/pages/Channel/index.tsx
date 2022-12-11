@@ -10,6 +10,7 @@ import {
   useUpdateLastReadMutation,
 } from '@hooks/channel';
 import { useChatsInfiniteQuery, useSetChatsQueryData } from '@hooks/chat';
+import { useCommunityManagerIdQuery } from '@hooks/community';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useRootStore } from '@stores/rootStore';
@@ -24,15 +25,20 @@ import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
 
-  const params = useParams();
-  const communityId = params.communityId as string;
-  const roomId = params.roomId as string;
+  const { communityId, roomId } = useParams() as {
+    communityId: string;
+    roomId: string;
+  };
+
+  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
+  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
+  const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const myInfo = useMyInfoQueryData() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
-
+  const channelManagerId = channelWithUsersMap.data?.managerId;
+  const { data: communityManagerId } = useCommunityManagerIdQuery(communityId);
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
-
   const intersectionObservable = useIntersectionObservable(
     (entry, observer) => {
       observer.unobserve(entry.target);
@@ -53,11 +59,6 @@ const Channel = () => {
 
   const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
     useSetChatsQueryData();
-  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
-  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
-
-  // 메세지 보내기:
-  const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const handleSubmitChat = (content: string) => {
     const id = Date.now();
@@ -160,6 +161,8 @@ const Channel = () => {
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
               {chatsInfiniteQuery.data && channelWithUsersMap.data && (
                 <ChatList
+                  communityManagerId={communityManagerId}
+                  channelManagerId={channelManagerId}
                   pages={chatsInfiniteQuery.data.pages}
                   users={channelWithUsersMap.data.users}
                 />
