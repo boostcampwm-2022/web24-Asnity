@@ -17,6 +17,7 @@ export class ChatListService {
   async restoreMessage(restoreMessageDto: RestoreMessageDto) {
     const { channel_id } = restoreMessageDto;
 
+    const date = new Date();
     const channel = await this.channelRepository.findById(channel_id);
     const chatLists = await this.chatListRespository.findById(channel.chatLists.at(-1));
     const chatNum = (channel.chatLists.length - 1) * 100 + chatLists.chat.length;
@@ -24,24 +25,27 @@ export class ChatListService {
     if (chatNum % 100 === 0) {
       // chatList가 꽉 찼을 경우 새로운 chatList 생성
       const newChatList = await this.chatListRespository.create({
-        chat: [makeChat(chatNum, restoreMessageDto)],
+        chat: [makeChat(chatNum, restoreMessageDto, date)],
       });
       await this.channelRepository.addArrAtArr({ _id: channel._id }, 'chatLists', [
         newChatList._id.toString(),
       ]);
-      return;
+    } else {
+      await this.chatListRespository.addArrAtArr({ _id: chatLists._id }, 'chat', [
+        makeChat(chatNum, restoreMessageDto, date),
+      ]);
+      // chatList의 마지막 메세지일 경우 lastChatTime 업데이트
+      if (chatNum % 100 === 99) {
+        await this.chatListRespository.updateOne({ _id: chatLists._id }, { lastChatTime: date });
+      }
     }
-
-    await this.chatListRespository.addArrAtArr({ _id: chatLists._id }, 'chat', [
-      makeChat(chatNum, restoreMessageDto),
-    ]);
-    // chatList의 마지막 메세지일 경우 lastChatTime 업데이트
-    if (chatNum % 100 === 99) {
-      await this.chatListRespository.updateOne(
-        { _id: chatLists._id },
-        { lastChatTime: new Date() },
-      );
-    }
+    return {
+      ...restoreMessageDto,
+      chatId: chatNum,
+      communityId: channel.communityId,
+      createdAt: date,
+      updatedAt: date,
+    };
   }
 
   async getMessage(getMessageDto: GetMessageDto) {
