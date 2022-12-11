@@ -5,6 +5,7 @@ import { ChatListRespository } from '@repository/chat-list.respository';
 import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-point.dto';
 import { UserRepository } from '@repository/user.repository';
 import { makeChat } from '@chat-list/helper/makeChat';
+import { NOT_EXIST_UNREAD_CHAT } from '@utils/def';
 
 @Injectable()
 export class ChatListService {
@@ -101,7 +102,7 @@ export class ChatListService {
       }
     }
     if (new Date(unreadChatList[M].createdAt) < lastRead) {
-      return -1;
+      return NOT_EXIST_UNREAD_CHAT;
     }
     return unreadChatList[M].id;
   }
