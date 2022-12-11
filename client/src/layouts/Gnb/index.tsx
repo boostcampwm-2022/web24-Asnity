@@ -72,7 +72,10 @@ const Gnb = () => {
     >
       <div className="flex flex-col justify-start items-center w-full h-full pt-[16px]">
         <div className="w-full">
-          <GnbItemContainer isActive={pathname === '/dms'}>
+          <GnbItemContainer
+            isActive={pathname === '/dms'}
+            tooltip="Direct Message"
+          >
             <Link to="/dms">
               <Avatar
                 name="Direct Message"
@@ -106,7 +109,10 @@ const Gnb = () => {
 
                 return (
                   <li key={_id}>
-                    <GnbItemContainer isActive={params?.communityId === _id}>
+                    <GnbItemContainer
+                      isActive={params?.communityId === _id}
+                      tooltip={name}
+                    >
                       <Link
                         to={`/communities/${_id}`}
                         onContextMenu={handleRightClickCommunityLink(community)}
@@ -146,10 +152,6 @@ const Gnb = () => {
           </ul>
         </Scrollbars>
       </div>
-
-      {/* TODO: 툴팁 만들기 */}
-      {/* <div className="absolute p-[12px] w-max h-max bg-titleActive text-offWhite left-[100px] top-[20px] z-[9000px]">*/}
-      {/* </div>*/}
     </div>
   );
 };
