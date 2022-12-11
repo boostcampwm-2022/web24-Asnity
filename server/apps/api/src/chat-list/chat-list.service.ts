@@ -100,6 +100,9 @@ export class ChatListService {
         R = M - 1;
       }
     }
+    if (new Date(unreadChatList[M].createdAt) < lastRead) {
+      return -1;
+    }
     return unreadChatList[M].id;
   }
 }
