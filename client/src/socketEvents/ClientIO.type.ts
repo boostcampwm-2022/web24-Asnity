@@ -1,4 +1,9 @@
 import type { Chat } from '@apis/chat';
+import type { UserUID } from '@apis/user';
+
+export interface JoinChannelsPayload {
+  channels: string[];
+}
 
 export interface SendChatPayload {
   chatType: 'new';
@@ -17,6 +22,12 @@ export interface RemoveChatPayload {
   chatType: 'delete';
   channelId: string;
   chatId: number;
+}
+
+export interface InviteUserToChannelPayload {
+  communityId: string;
+  channelId: string;
+  users: UserUID[];
 }
 
 export interface SocketChatInfo extends Chat {
