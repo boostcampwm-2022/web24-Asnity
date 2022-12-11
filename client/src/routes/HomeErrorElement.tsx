@@ -9,7 +9,15 @@ const HomeErrorElement = () => {
 
   if (errorCount >= maxErrorCount) {
     errorCount = 0;
-    return <Navigate to="/unknown-error" />;
+    return (
+      <Navigate
+        to="/error"
+        state={{
+          summary:
+            '알 수 없는 에러가 여러번 감지되었습니다. 잠시 뒤에 다시 시도해주세요.',
+        }}
+      />
+    );
   }
 
   return <Navigate to="/" />;
