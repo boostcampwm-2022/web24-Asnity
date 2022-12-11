@@ -5,7 +5,7 @@ import { UserModule } from '@user/user.module';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { signoutURL, signupURL, signinURL } from '@api/test/urls/urls';
-import { authData } from '@api/test/data/authData';
+import { authData } from '@mock/auth.mock';
 
 describe('Auth E2E Test', () => {
   let app, server;
