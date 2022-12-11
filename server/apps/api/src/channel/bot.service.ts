@@ -27,7 +27,7 @@ export class BotService {
       senderId: BOT_ID,
     } as const;
     const newChatList = await this.chatListRepository.create({
-      chat: [makeChat(0, botMessage)],
+      chat: [makeChat(0, botMessage, new Date())],
     });
     await this.channelRepository.addArrAtArr({ _id: channel_id }, 'chatLists', [
       newChatList._id.toString(),
