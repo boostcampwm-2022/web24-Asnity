@@ -50,9 +50,15 @@ export default class ClientIO {
     this.emit(SOCKET_EVENTS.SEND_CHAT);
   }
 
-  editChat() {}
+  editChat() {
+    this.emit(SOCKET_EVENTS.EDIT_CHAT);
+  }
 
-  removeChat() {}
+  removeChat() {
+    this.emit(SOCKET_EVENTS.REMOVE_CHAT);
+  }
 
-  inviteUsersToChannel() {}
+  inviteUsersToChannel() {
+    this.emit(SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL);
+  }
 }
