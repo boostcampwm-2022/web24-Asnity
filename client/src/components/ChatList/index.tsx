@@ -8,9 +8,16 @@ import React, { Fragment } from 'react';
 interface Props {
   pages: GetChatsResult[];
   users: UsersMap;
+  communityManagerId?: string;
+  channelManagerId?: string;
 }
 
-const ChatList: FC<Props> = ({ pages, users }) => {
+const ChatList: FC<Props> = ({
+  pages,
+  users,
+  communityManagerId,
+  channelManagerId,
+}) => {
   return (
     <>
       {pages.map(
@@ -23,6 +30,8 @@ const ChatList: FC<Props> = ({ pages, users }) => {
                   chat={chat}
                   className="px-5 py-3 tracking-tighter"
                   user={users[chat.senderId]}
+                  communityManagerId={communityManagerId}
+                  channelManagerId={channelManagerId}
                 />
               ))}
             </Fragment>
