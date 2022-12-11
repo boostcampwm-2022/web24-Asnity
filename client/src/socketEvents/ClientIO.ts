@@ -2,8 +2,8 @@ import type {
   EditChatPayload,
   RemoveChatPayload,
   SendChatPayload,
+  ChatMutationEmitCallback,
 } from '@/socketEvents/clientIO.type';
-import type { ChatMutationEmitCallback } from '@/socketEvents/index';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
