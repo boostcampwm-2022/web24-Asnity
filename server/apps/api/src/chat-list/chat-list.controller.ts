@@ -1,26 +1,18 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
 import { RestoreMessageDto } from '@chat-list/dto';
+import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
+import { userToSenderPipe } from '@custom/pipe/userToSender.pipe';
 
 @Controller('api/channels')
 export class ChatListController {
   constructor(private chatListService: ChatListService) {}
 
-  @Post(':channel_id/message')
+  @Post(':channel_id/chat')
   @UseGuards(JwtAccessGuard)
-  async restoreMessage(
-    @Param('channel_id') channel_id,
-    @Body() restoreMessageDto: RestoreMessageDto,
-    @Req() req: any,
-  ) {
-    const requestUserId = req.user._id;
-    await this.chatListService.restoreMessage({
-      ...restoreMessageDto,
-      channel_id,
-      senderId: requestUserId,
-    });
-    return { message: '채팅 저장 성공!' };
+  async restoreMessage(@ReceivedData(userToSenderPipe) restoreMessageDto: RestoreMessageDto) {
+    return await this.chatListService.restoreMessage(restoreMessageDto);
   }
 
   @Get(':channel_id/message')
