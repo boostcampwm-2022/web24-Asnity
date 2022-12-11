@@ -3,13 +3,18 @@ import type {
   RemoveChatPayload,
   SendChatPayload,
   ChatMutationEmitCallback,
+  JoinChannelsPayload,
+  InviteUserToChannelPayload,
 } from '@/socketEvents/clientIO.type';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
 import { io } from 'socket.io-client';
 
-import { joinChannelsPayload, SOCKET_EVENTS } from '@/socketEvents/index';
+import { SOCKET_EVENTS } from '@/socketEvents/index';
+
+const createConnectionUrl = (communityId: string) =>
+  `${SOCKET_URL}/socket/commu-${communityId}`;
 
 interface ClientIOConstructor {
   communityId: string;
@@ -27,10 +32,11 @@ export default class ClientIO {
 
   // 예시: const socket = new ClientIO({ communityId, ClientIO.createOpts({ token }) });
   constructor({ communityId, opts }: ClientIOConstructor) {
-    this.io = io(`${SOCKET_URL}/socket/commu-${communityId}`, opts);
+    this.io = io(createConnectionUrl(communityId), opts);
   }
 
-  on<T extends (...params: unknown[]) => unknown>(
+  // socket.on 메서드 파라미터 타이핑이 any[]로 되어있어서 never[] 사용할 수 없음.
+  on<T extends (...params: any[]) => void | undefined>(
     eventName: string,
     handler: T,
   ) {
@@ -49,8 +55,11 @@ export default class ClientIO {
     this.io.emit(eventName, payload, emitCallback);
   }
 
-  joinChannels(communityIds: string[]) {
-    this.emit(SOCKET_EVENTS.JOIN_CHANNEL, joinChannelsPayload(communityIds));
+  /** 서버 Room에 소켓 등록하기 위한 메서드 */
+  joinChannels(channelIds: string[]) {
+    this.emit<JoinChannelsPayload, never>(SOCKET_EVENTS.JOIN_CHANNEL, {
+      channels: channelIds,
+    });
   }
 
   sendChat(
@@ -89,7 +98,14 @@ export default class ClientIO {
     );
   }
 
-  inviteUsersToChannel() {
-    this.emit(SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL);
+  inviteUsersToChannel(
+    payload: InviteUserToChannelPayload,
+    emitCallback: ChatMutationEmitCallback,
+  ) {
+    this.emit<InviteUserToChannelPayload, ChatMutationEmitCallback>(
+      SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL,
+      payload,
+      emitCallback,
+    );
   }
 }
