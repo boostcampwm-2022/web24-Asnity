@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 @Injectable()
 export class GetUnreadMessagePointDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   requestUserId: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   channel_id: string;
 }
