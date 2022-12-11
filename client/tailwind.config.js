@@ -18,6 +18,7 @@ module.exports = {
       logo: ['80px', '144px'],
     },
     colors: {
+      transparent: 'transparent',
       titleActive: '#14142B',
       body: '#4E4B66',
       label: '#6E7191',
