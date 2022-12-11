@@ -25,7 +25,6 @@ const ChannelLeaveBox: FC<Props> = ({ channel }) => {
   const { removeChannelQueryData } = useSetChannelQueryData();
   const leaveChannelMutation = useLeaveChannelMutation({
     onSuccess: () => {
-      console.log(communityId, channel._id);
       removeChannelQueryData(communityId, channel._id);
 
       if (roomId === channel._id) navigate(`/communities/${communityId}`);
