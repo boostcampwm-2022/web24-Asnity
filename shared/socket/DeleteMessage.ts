@@ -1,7 +1,6 @@
 export interface DeleteMessage {
-  type: string;
+  chatType: string;
   channelId: string;
-  message: string;
-  messageId: string;
+  chatId: string;
   cb: () => void;
 }
