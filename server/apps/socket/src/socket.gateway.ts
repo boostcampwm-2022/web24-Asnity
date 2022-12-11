@@ -62,16 +62,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(
       `${chatType} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname}`,
     );
-
     const result = await requestApiServer({
       method: filterHttpMethod(chatType),
       path: getMessageRequestURL(data),
       accessToken: socket.user.accessToken,
-      data: getBodyData(socket.user._id, data),
+      data: getBodyData(data),
     });
     console.log(result);
     if (result) {
-      socket.to(channelId).emit(`${chatType}-message`, result);
+      socket.to(channelId).emit(`${chatType}-chat`, result);
     }
 
     const written = result ? true : false;
