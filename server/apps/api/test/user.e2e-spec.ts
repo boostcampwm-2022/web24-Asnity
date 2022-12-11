@@ -5,11 +5,11 @@ import { mongoDbServerModule, mongoDbServerStop } from '@api/modules/mongo-serve
 import { UserModule } from '@user/user.module';
 import { UserSchema } from '@schemas/user.schema';
 import { User } from '@schemas/user.schema';
-import { ValidationPipe } from '@nestjs/common';
 import { initTestUser1, initTestUser2, user1Modify } from '@mock/user.mock';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
-import { followingURL, signupURL, singinURL } from '@api/test/urls/urls';
+import { followingURL, getMyInfoURL, signupURL, signinURL } from '@api/test/urls/urls';
+import { userData } from '@api/test/data/userData';
 import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
@@ -42,12 +42,24 @@ describe('User E2E Test', () => {
         user1 = await userModel.findOne({ id: initTestUser1.id });
       });
     accessToken = (
-      await request(server).post(singinURL).send({ id: user1.id, password: initTestUser1.password })
+      await request(server).post(signinURL).send({ id: user1.id, password: initTestUser1.password })
     ).body.result.accessToken;
   });
 
   it('should be defined', () => {
     expect(userModel).toBeDefined();
+  });
+
+  describe('Get /api/user/auth/me', () => {
+    it('나의 정보 가져오기 정상 동작', async () => {
+      await request(server)
+        .get(getMyInfoURL)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body).toEqual(userData.getMyInfo.responseForm);
+        });
+    });
   });
 
   describe('Post /api/user/following/:id', () => {
@@ -97,7 +109,7 @@ describe('User E2E Test', () => {
         });
       const user2AccessToken = (
         await request(server)
-          .post(singinURL)
+          .post(signinURL)
           .send({ id: user2.id, password: initTestUser2.password })
       ).body.result.accessToken;
 
