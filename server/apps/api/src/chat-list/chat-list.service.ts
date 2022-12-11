@@ -39,6 +39,9 @@ export class ChatListService {
         await this.chatListRespository.updateOne({ _id: chatLists._id }, { lastChatTime: date });
       }
     }
+    restoreMessageDto['channelId'] = restoreMessageDto.channel_id;
+    delete restoreMessageDto.channel_id;
+
     return {
       ...restoreMessageDto,
       chatId: chatNum,
