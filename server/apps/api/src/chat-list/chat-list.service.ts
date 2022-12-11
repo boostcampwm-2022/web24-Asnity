@@ -136,11 +136,12 @@ export class ChatListService {
 
     await this.chatListRespository.updateOne({ _id: chatList._id }, chatList);
 
-    chatList.chat[chatNum]['channelId'] = channel_id;
-    chatList.chat[chatNum]['communityId'] = channel.communityId;
-    chatList.chat[chatNum]['chatId'] = chat_id;
     delete chatList.chat[chatNum].id;
-
-    return chatList.chat[chatNum];
+    return {
+      ...chatList.chat[chatNum],
+      channelId: channel_id,
+      communityId: channel.communityId,
+      chatId: chat_id,
+    };
   }
 }
