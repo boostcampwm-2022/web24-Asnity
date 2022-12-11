@@ -15,7 +15,7 @@ const NotFound = () => {
                 Page Not Found
               </h2>
               <div className="text-[30px] text-label">
-                요청하신 페이지를{' '}
+                요청하신 페이지를
                 <span className="text-primary-dark font-bold">
                   찾을 수 없습니다.
                 </span>
