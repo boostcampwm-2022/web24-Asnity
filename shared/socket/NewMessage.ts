@@ -1,9 +1,6 @@
 export interface NewMessage {
-  type: string;
+  chatType: string;
   channelId: string;
-  user_id: string;
-  message: string;
-  id: string;
-  time: Date;
+  content: string;
   cb: () => void;
 }
