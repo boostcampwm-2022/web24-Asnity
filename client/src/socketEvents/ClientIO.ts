@@ -1,3 +1,9 @@
+import type {
+  EditChatPayload,
+  RemoveChatPayload,
+  SendChatPayload,
+} from '@/socketEvents/clientIO.type';
+import type { ChatMutationEmitCallback } from '@/socketEvents/index';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
@@ -19,6 +25,7 @@ export default class ClientIO {
     };
   }
 
+  // 예시: const socket = new ClientIO({ communityId, ClientIO.createOpts({ token }) });
   constructor({ communityId, opts }: ClientIOConstructor) {
     this.io = io(`${SOCKET_URL}/socket/commu-${communityId}`, opts);
   }
@@ -34,7 +41,7 @@ export default class ClientIO {
     this.io.off(eventName);
   }
 
-  emit<T, C extends (...params: unknown[]) => unknown | undefined>(
+  emit<T, C extends (...params: never[]) => void | undefined>(
     eventName: string,
     payload?: T,
     emitCallback?: C,
@@ -46,16 +53,40 @@ export default class ClientIO {
     this.emit(SOCKET_EVENTS.JOIN_CHANNEL, joinChannelsPayload(communityIds));
   }
 
-  sendChat() {
-    this.emit(SOCKET_EVENTS.SEND_CHAT);
+  sendChat(
+    payload: Omit<SendChatPayload, 'chatType'>,
+    emitCallback: ChatMutationEmitCallback,
+  ) {
+    this.emit<SendChatPayload, ChatMutationEmitCallback>(
+      SOCKET_EVENTS.SEND_CHAT,
+      { ...payload, chatType: 'new' },
+      emitCallback,
+    );
   }
 
-  editChat() {
-    this.emit(SOCKET_EVENTS.EDIT_CHAT);
+  editChat(
+    payload: Omit<EditChatPayload, 'chatType'>,
+    emitCallback: ChatMutationEmitCallback,
+  ) {
+    this.emit<EditChatPayload, ChatMutationEmitCallback>(
+      SOCKET_EVENTS.EDIT_CHAT,
+      {
+        ...payload,
+        chatType: 'modify',
+      },
+      emitCallback,
+    );
   }
 
-  removeChat() {
-    this.emit(SOCKET_EVENTS.REMOVE_CHAT);
+  removeChat(
+    payload: Omit<RemoveChatPayload, 'chatType'>,
+    emitCallback: ChatMutationEmitCallback,
+  ) {
+    this.emit<RemoveChatPayload, ChatMutationEmitCallback>(
+      SOCKET_EVENTS.REMOVE_CHAT,
+      { ...payload, chatType: 'delete' },
+      emitCallback,
+    );
   }
 
   inviteUsersToChannel() {
