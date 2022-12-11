@@ -23,7 +23,7 @@ const initialDisplayFallbacks = [
   },
 ];
 
-const UnknownError: FC<Props> = ({
+const Error: FC<Props> = ({
   title = initialDisplayTitle,
   summary = initialDisplaySummary,
   fallbacks = initialDisplayFallbacks,
@@ -76,4 +76,4 @@ const UnknownError: FC<Props> = ({
   );
 };
 
-export default UnknownError;
+export default Error;
