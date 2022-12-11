@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class GetMessageDto {
   @IsOptional()
@@ -7,11 +7,11 @@ export class GetMessageDto {
   @IsOptional()
   next: number | undefined;
 
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   requestUserId: string;
 
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   channel_id: string;
 }
