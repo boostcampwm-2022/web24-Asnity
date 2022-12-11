@@ -1,6 +1,7 @@
 import type { Chat } from '@apis/chat';
 import type { UserUID } from '@apis/user';
 
+/* ↓ ↓ ↓ ↓ ↓ Sender ↓ ↓ ↓ ↓ ↓ */
 export const CHAT_MUTATION_TYPE = {
   NEW: 'new',
   EDIT: 'modify',
@@ -48,3 +49,15 @@ export type ChatMutationEmitCallbackParameter =
 export type ChatMutationEmitCallback = (
   param: ChatMutationEmitCallbackParameter,
 ) => void;
+/* ↑ ↑ ↑ ↑ ↑ Sender ↑ ↑ ↑ ↑ ↑ */
+
+/* ↓ ↓ ↓ ↓ ↓ Receiver ↓ ↓ ↓ ↓ ↓ */
+export interface ReceiveChatPayload extends Chat {
+  channelId: string;
+  communityId: string;
+}
+
+export type ReceiveNewChatListener = (payload: ReceiveChatPayload) => void;
+export type ReceiveEditedChatListener = (payload: ReceiveChatPayload) => void;
+export type ReceiveRemovedChatListener = (payload: ReceiveChatPayload) => void; // TODO: 삭제 Payload는 달라질 듯?
+/* ↑ ↑ ↑ ↑ ↑ Receiver ↑ ↑ ↑ ↑ ↑ */
