@@ -52,30 +52,30 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
-  @SubscribeMessage('message')
-  async newMessageEvent(
+  @SubscribeMessage('chat')
+  async chatEvent(
     @MessageBody() data: NewMessage | ModifyMessage | DeleteMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
     const communityName = socket.nsp.name;
-    const { type, channelId, message } = data;
+    const { chatType, channelId } = data;
     this.logger.log(
-      `${type} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname},\t[MSG]:${message}`,
+      `${chatType} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname}`,
     );
 
     const result = await requestApiServer({
-      method: filterHttpMethod(type),
+      method: filterHttpMethod(chatType),
       path: getMessageRequestURL(data),
       accessToken: socket.user.accessToken,
       data: getBodyData(socket.user._id, data),
     });
     console.log(result);
     if (result) {
-      socket.to(channelId).emit(`${type}-message`, data);
+      socket.to(channelId).emit(`${chatType}-message`, result);
     }
 
-    const written = result;
-    return { written };
+    const written = result ? true : false;
+    return { written, chatInfo: result };
   }
 
   @SubscribeMessage('invite-users-to-channel')
@@ -126,16 +126,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 }
 
 const getBodyData = (userId, data) => {
-  if (data.type == 'new') {
+  if (data.chatType === 'new') {
     return {
-      channel_id: data.channelId,
       type: 'TEXT',
       content: data.message,
-      senderId: userId,
     } as RestoreMessageDto;
-  } else if (['modify', 'delete'].includes(data.type)) {
-    delete data['type'];
-    return data;
+  } else if (data.chatType === 'delete') {
+    return undefined;
+  } else if (data.chatType === 'modify') {
+    return { content: data.content };
   } else {
     throw Error('Unknown Message Request Type');
   }
