@@ -36,7 +36,7 @@ export class AuthController {
     if (accessToken === null) {
       return responseForm(401, { message: '로그인 필요' });
     }
-    return responseForm(200, { message: 'accessToken 재발행 성공!', accessToken });
+    return { message: 'accessToken 재발행 성공!', accessToken };
   }
 
   @Get('me') // 자신의 유저 정보 제공
@@ -44,7 +44,7 @@ export class AuthController {
   async getMyInfo(@Req() req: any) {
     const userId = req.user._id;
     const myInfo = await this.authService.getMyInfo(userId);
-    return responseForm(200, getUserBasicInfo(myInfo));
+    return getUserBasicInfo(myInfo);
   }
 
   @Post('signout')
@@ -52,6 +52,6 @@ export class AuthController {
   async singOut(@Req() req: any, @Res({ passthrough: true }) res: Response) {
     await this.authService.signOut(req.user._id); // DB에서 refreshToken 제거
     res.cookie('refreshToken', 'expired', { maxAge: -1 }); // client에서 refreshToken 제거
-    return responseForm(200, { message: '로그아웃 성공!' });
+    return { message: '로그아웃 성공!' };
   }
 }

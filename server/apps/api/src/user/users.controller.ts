@@ -1,6 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { responseForm } from '@utils/responseForm';
 
 @Controller('api/users')
 export class UsersController {
