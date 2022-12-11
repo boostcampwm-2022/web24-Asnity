@@ -1,3 +1,5 @@
+import type { Chat } from '@apis/chat';
+
 export interface SendChatPayload {
   chatType: 'new';
   channelId: string;
@@ -16,3 +18,16 @@ export interface RemoveChatPayload {
   channelId: string;
   chatId: number;
 }
+
+export interface SocketChatInfo extends Chat {
+  channelId: string;
+  communityId: string;
+}
+
+export type ChatMutationEmitCallbackParameter =
+  | { written: true; chatInfo: SocketChatInfo }
+  | { written: false; chatInfo: undefined };
+
+export type ChatMutationEmitCallback = (
+  param: ChatMutationEmitCallbackParameter,
+) => void;
