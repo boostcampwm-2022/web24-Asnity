@@ -14,6 +14,7 @@ import { getCommunityBasicInfo } from '@community/helper/getCommunityBasicInfo';
 import { getChannelBasicInfo } from '@channel/helper/getChannelBasicInfo';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
+import { ChatListRespository } from '@repository/chat-list.respository';
 
 @Injectable()
 export class CommunityService {
@@ -21,6 +22,7 @@ export class CommunityService {
     private readonly communityRepository: CommunityRepository,
     private readonly userRepository: UserRepository,
     private readonly channelRepository: ChannelRepository,
+    private readonly chatListRepository: ChatListRespository,
   ) {}
 
   async getCommunities(requestUserId: string) {
@@ -46,14 +48,20 @@ export class CommunityService {
         const channelsInfo = [];
         await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
-            const lastRead = channels.get(channelId);
             const channel = (await this.channelRepository.findById(channelId)) as any;
             if (!channel || channel.deletedAt) {
               throw new BadRequestException('존재하지 않는 채널입니다.');
             }
             const channelInfo = getChannelBasicInfo(channel);
             // TODO : channel document의 updatedAt 아니고 다르값 비교
-            channelInfo['lastRead'] = lastRead.getTime() >= channel.updatedAt.getTime();
+            const lastRead = new Date(
+              JSON.parse(JSON.stringify(user)).communities[`${channel.communityId}`].channels[
+                `${channel._id}`
+              ],
+            );
+            const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
+            const lastChatTime = lastChatList.chat.at(-1).createdAt;
+            lastRead.getTime() >= lastChatTime;
             channelsInfo.push(channelInfo);
           }),
         );
