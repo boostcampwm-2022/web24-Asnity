@@ -1,22 +1,33 @@
+// TODO: 대부분 ClientIO.type.ts로 옮길 예정
 import type { JoinedChannel } from '@apis/channel';
 import type { Chat } from '@apis/chat';
 import type { CommunitySummary } from '@apis/community';
 import type { User } from '@apis/user';
 
 export const SOCKET_EVENTS = {
-  JOIN_CHANNEL: 'join',
-  SEND_CHAT: 'message',
-  EDIT_CHAT: 'message',
+  // ClientToServer
+  SEND_CHAT: 'chat',
+  EDIT_CHAT: 'chat',
   REMOVE_CHAT: 'chat',
-  RECEIVE_CHAT: 'new-message',
-  RECEIVE_EDIT_CHAT: 'modify-message',
-  RECEIVE_REMOVE_CHAT: 'delete-chat',
-  INVALID_TOKEN: 'connect_error',
+  JOIN_CHANNEL: 'join',
   INVITE_USERS_TO_CHANNEL: 'invite-users-to-channel',
+
+  // ServerToClient
+  RECEIVE_CHAT: 'new-chat',
+  RECEIVE_REMOVE_CHAT: 'delete-chat',
+  RECEIVE_EDIT_CHAT: 'modify-chat',
   INVITED_TO_CHANNEL: 'invited-to-channel',
+  INVALID_TOKEN: 'connect_error',
 } as const;
 
-export type SOCKET_RECEIVE_EVENT_TYPE =
+export type ClientToServerEventType =
+  | typeof SOCKET_EVENTS.JOIN_CHANNEL
+  | typeof SOCKET_EVENTS.SEND_CHAT
+  | typeof SOCKET_EVENTS.EDIT_CHAT
+  | typeof SOCKET_EVENTS.REMOVE_CHAT
+  | typeof SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL;
+
+export type ServerToClientEventType =
   | typeof SOCKET_EVENTS.RECEIVE_CHAT
   | typeof SOCKET_EVENTS.RECEIVE_EDIT_CHAT
   | typeof SOCKET_EVENTS.RECEIVE_REMOVE_CHAT
