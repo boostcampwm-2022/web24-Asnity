@@ -23,14 +23,14 @@ describe('Auth E2E Test', () => {
     server = await app.getHttpServer();
   });
 
-  describe('회원가입, 로그인', () => {
+  describe('회원가입, 로그인, 로그아웃', () => {
     it('정상 동작', async () => {
       await request(server)
         .post(signupURL)
         .send(authData.signup.requestForm)
         .expect((res) => {
           expect(res.body).toBeDefined();
-          expect(res.body).toStrictEqual(authData.signup.responseForm);
+          expect(res.body).toEqual(authData.signup.responseForm);
         });
 
       const accessToken = (
@@ -41,7 +41,7 @@ describe('Auth E2E Test', () => {
             expect(res.body).toBeDefined();
             expect(res.body).toEqual(authData.signin.responseForm);
           })
-      ).body.result.accessToken;
+      ).body.accessToken;
 
       await request(server)
         .post(signoutURL)
