@@ -6,6 +6,7 @@ import type {
   JoinChannelsPayload,
   InviteUserToChannelPayload,
 } from '@/socketEvents/clientIO.type';
+import type { SOCKET_RECEIVE_EVENT_TYPE } from '@/socketEvents/index';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
@@ -35,10 +36,7 @@ export default class ClientIO {
   }
 
   // socket.on 메서드 파라미터 타이핑이 any[]로 되어있어서 never[] 사용할 수 없음.
-  on<T extends (...params: any[]) => void | undefined>(
-    eventName: string,
-    handler: T,
-  ) {
+  on<E extends SOCKET_RECEIVE_EVENT_TYPE>(eventName: E, handler: any) {
     this.io.on(eventName, handler);
   }
 
