@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { Expose } from 'class-transformer';
+import { CHAT_TYPE } from '@utils/def';
 
 @Injectable()
 export class RestoreMessageDto {
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
   channel_id: string;
 
-  @IsString()
+  @IsIn(CHAT_TYPE)
   @IsNotEmpty()
   type: 'TEXT' | 'IMAGE' | 'SYSTEM';
 
@@ -15,7 +17,8 @@ export class RestoreMessageDto {
   @IsNotEmpty()
   content: string;
 
-  @IsString()
-  @IsOptional()
+  @IsMongoId()
+  @IsNotEmpty()
+  @Expose({ name: 'requestUserId' })
   senderId: string;
 }
