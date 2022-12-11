@@ -6,7 +6,7 @@ import { tokenAxios } from '@utils/axios';
 export type ChatType = 'TEXT' | 'IMAGE' | 'SYSTEM';
 
 export interface Chat {
-  id: number;
+  id: number; // TODO: chatId로 바꿔야 할 수도.
   type: ChatType;
   content: string;
   senderId: string;
