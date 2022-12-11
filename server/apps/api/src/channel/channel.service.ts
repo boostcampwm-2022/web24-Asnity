@@ -28,6 +28,11 @@ export class ChannelService {
     const { communityId, isPrivate, managerId } = createChannelDto;
     // 자신이 속한 커뮤니티 찾기
     const community = await this.communityRepository.findById(communityId);
+
+    if (!community) throw new BadRequestException('커뮤니티가 없습니다.');
+    if (community.deletedAt) throw new BadRequestException('삭제된 커뮤니티 입니다.');
+    if (!community.users.includes(managerId))
+      throw new BadRequestException('커뮤니티에 존재하지 않는 유저입니다.');
     // 채널 생성
     const channel = await this.channelRepository.create(createChannelDto);
     // community 도큐먼트의 channel 필드 업데이트
