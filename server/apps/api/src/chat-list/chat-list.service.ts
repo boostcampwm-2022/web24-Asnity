@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { GetMessageDto, RestoreMessageDto } from '@chat-list/dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { GetMessageDto, ModifyMessageDto, RestoreMessageDto } from '@chat-list/dto';
 import { ChannelRepository } from '@repository/channel.repository';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-point.dto';
@@ -112,5 +112,34 @@ export class ChatListService {
       return NOT_EXIST_UNREAD_CHAT;
     }
     return unreadChatList[M].id;
+  }
+
+  async modifyMessage(modifyMessageDto: ModifyMessageDto) {
+    const { requestUserId, channel_id, chat_id, content } = modifyMessageDto;
+    const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
+
+    if (!channel) {
+      throw new BadRequestException('채널이 존재하지 않습니다.');
+    }
+    const chatListId = Math.floor(+chat_id / 100);
+    const chatNum = +chat_id % 100;
+
+    const chatList = JSON.parse(
+      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListId])),
+    );
+
+    if (chatList.chat[chatNum].senderId !== requestUserId)
+      throw new BadRequestException('자신이 보낸 채팅만 수정할 수 있습니다.');
+
+    chatList.chat[chatNum].content = content;
+    chatList.chat[chatNum].updatedAt = new Date();
+
+    await this.chatListRespository.updateOne({ _id: chatList._id }, chatList);
+
+    chatList.chat[chatNum]['community_id'] = channel.communityId;
+    chatList.chat[chatNum]['chatId'] = chat_id;
+    delete chatList.chat[chatNum].id;
+
+    return chatList.chat[chatNum];
   }
 }

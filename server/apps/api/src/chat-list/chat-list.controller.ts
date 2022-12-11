@@ -1,10 +1,14 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
-import { GetMessageDto, RestoreMessageDto } from '@chat-list/dto';
+import {
+  GetMessageDto,
+  GetUnreadMessagePointDto,
+  ModifyMessageDto,
+  RestoreMessageDto,
+} from '@chat-list/dto';
 import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
 import { userToSenderPipe } from '@custom/pipe/userToSender.pipe';
-import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-point.dto';
 
 @Controller('api/channels')
 export class ChatListController {
@@ -27,5 +31,11 @@ export class ChatListController {
   async getUnreadMessagePoint(@ReceivedData() getUnreadMessageDto: GetUnreadMessagePointDto) {
     const unreadChatId = await this.chatListService.getUnreadMessagePoint(getUnreadMessageDto);
     return { unreadChatId };
+  }
+
+  @Patch(':channel_id/chats/:chat_id')
+  @UseGuards(JwtAccessGuard)
+  async modifyMessage(@ReceivedData() modifyMessageDto: ModifyMessageDto) {
+    return await this.chatListService.modifyMessage(modifyMessageDto);
   }
 }
