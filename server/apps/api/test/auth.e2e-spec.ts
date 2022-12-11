@@ -4,7 +4,7 @@ import { mongoDbServerModule } from '@api/modules/mongo-server.module';
 import { UserModule } from '@user/user.module';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
-import { signoutURL, signupURL, singinURL } from '@api/test/urls/urls';
+import { signoutURL, signupURL, signinURL } from '@api/test/urls/urls';
 import { authData } from '@api/test/data/authData';
 
 describe('Auth E2E Test', () => {
@@ -35,7 +35,7 @@ describe('Auth E2E Test', () => {
 
       const accessToken = (
         await request(server)
-          .post(singinURL)
+          .post(signinURL)
           .send(authData.signin.requestForm)
           .expect((res) => {
             expect(res.body).toBeDefined();
