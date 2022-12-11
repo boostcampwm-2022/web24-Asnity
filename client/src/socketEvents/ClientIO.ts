@@ -6,7 +6,7 @@ import type {
   JoinChannelsPayload,
   InviteUserToChannelPayload,
   ServerToClientEventListener,
-} from '@/socketEvents/clientIO.type';
+} from '@/socketEvents/ClientIOTypes';
 import type {
   ClientToServerEventType,
   ServerToClientEventType,
@@ -16,7 +16,7 @@ import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 import { SOCKET_URL } from '@constants/url';
 import { io } from 'socket.io-client';
 
-import { CHAT_MUTATION_TYPE } from '@/socketEvents/clientIO.type';
+import { CHAT_MUTATION_TYPE } from '@/socketEvents/ClientIOTypes';
 import { SOCKET_EVENTS } from '@/socketEvents/index';
 
 const createConnectionUrl = (communityId: string) =>
