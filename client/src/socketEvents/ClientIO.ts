@@ -5,8 +5,12 @@ import type {
   ChatMutationEmitCallback,
   JoinChannelsPayload,
   InviteUserToChannelPayload,
+  ServerToClientEventListener,
 } from '@/socketEvents/clientIO.type';
-import type { SOCKET_RECEIVE_EVENT_TYPE } from '@/socketEvents/index';
+import type {
+  ClientToServerEventType,
+  ServerToClientEventType,
+} from '@/socketEvents/index';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
@@ -35,8 +39,12 @@ export default class ClientIO {
     this.io = io(createConnectionUrl(communityId), opts);
   }
 
-  // socket.on 메서드 파라미터 타이핑이 any[]로 되어있어서 never[] 사용할 수 없음.
-  on<E extends SOCKET_RECEIVE_EVENT_TYPE>(eventName: E, handler: any) {
+  on<E extends ServerToClientEventType>(
+    eventName: E,
+    handler: ServerToClientEventListener[E],
+  ) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.io.on(eventName, handler);
   }
 
@@ -44,9 +52,9 @@ export default class ClientIO {
     this.io.off(eventName);
   }
 
-  emit<T, C extends (...params: never[]) => void | undefined>(
-    eventName: string,
-    payload?: T,
+  emit<P, C extends (...params: never[]) => void | undefined>(
+    eventName: ClientToServerEventType,
+    payload?: P,
     emitCallback?: C,
   ) {
     this.io.emit(eventName, payload, emitCallback);
