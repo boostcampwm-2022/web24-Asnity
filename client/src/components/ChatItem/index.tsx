@@ -106,9 +106,17 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
   className?: string;
   chat: Chat;
   user?: User;
+  communityManagerId?: string;
+  channelManagerId?: string;
 }
 
-const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
+const ChatItem: FC<Props> = ({
+  className = '',
+  chat,
+  user = deletedUser,
+  channelManagerId,
+  communityManagerId,
+}) => {
   const chatContentRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const myInfo = useMyInfoQueryData() as User;
@@ -116,22 +124,26 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
     roomId: string;
     communityId: string;
   };
+
   const socket = useSocketStore((state) => state.sockets[communityId]);
   const { content, written, id, senderId } = chat;
   const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
+  const isPending = written === -1;
+  const isMine = myInfo._id === senderId;
+  const isManager =
+    communityManagerId === myInfo._id || channelManagerId === myInfo._id;
+
+  const opacityClassnames = cn({
+    'opacity-40': isPending || isFailedToSendChat,
+  });
+
   const {
     removeChatQueryData,
     editChatQueryData,
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
   } = useSetChatsQueryData();
-  const isPending = written === -1;
-  const isMine = myInfo._id === senderId;
-
-  const opacityClassnames = cn({
-    'opacity-40': isPending || isFailedToSendChat,
-  });
 
   const handleClickDiscardButton = () => {
     removeChatQueryData({ channelId: roomId, id });
@@ -250,7 +262,7 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
                 {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
-                <ChatActions.Remove />
+                {(isMine || isManager) && <ChatActions.Remove />}
               </ChatActions.Container>
             )}
           </div>
