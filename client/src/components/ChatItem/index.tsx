@@ -126,7 +126,6 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
   } = useSetChatsQueryData();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isPending = written === -1;
   const isMine = myInfo._id === senderId;
 
@@ -238,7 +237,6 @@ const ChatItem: FC<Props> = ({ className = '', chat, user = deletedUser }) => {
                 <ChatForm
                   editMode
                   initialValue={content}
-                  ref={textareaRef}
                   handleSubmitChat={handleSubmitChatEditForm}
                   handleCancelEdit={handleCancelChatEditForm}
                 />
