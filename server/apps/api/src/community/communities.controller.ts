@@ -1,6 +1,5 @@
 import { Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CommunityService } from '@api/src/community/community.service';
-import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { AppendUsersToCommunityDto, DeleteCommunityDto, ModifyCommunityDto } from '@community/dto';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
