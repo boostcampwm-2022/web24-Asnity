@@ -7,6 +7,7 @@ import type {
 } from '@sockets/ClientIOTypes';
 import type { Sockets } from '@stores/socketStore';
 
+import REGEX from '@constants/regex';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChannelQueryData } from '@hooks/channel';
 import { useSetChatsQueryData } from '@hooks/chat';
@@ -103,9 +104,10 @@ const SocketLayer = () => {
         });
       }
 
-      const groups = window.location.pathname.match(
-        /\/communities\/(?<communityId>\w+)\/channels\/(?<roomId>\w+)/u,
-      )?.groups as { communityId?: string; roomId?: string };
+      const groups = window.location.pathname.match(REGEX.CHANNEL)?.groups as {
+        communityId?: string;
+        roomId?: string;
+      };
 
       if (channelId !== groups?.roomId)
         // 현재 communityId 보내주지 않으므로 첫번째 커뮤니티로 넣어줌
