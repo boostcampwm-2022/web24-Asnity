@@ -7,12 +7,14 @@ import { UserRepository } from '@repository/user.repository';
 import { makeChat } from '@chat-list/helper/makeChat';
 import { NOT_EXIST_UNREAD_CHAT } from '@utils/def';
 import { DeleteMessageDto } from '@chat-list/dto/delete-message.dto';
+import { CommunityRepository } from '@repository/community.repository';
 
 @Injectable()
 export class ChatListService {
   constructor(
     private readonly channelRepository: ChannelRepository,
     private readonly chatListRespository: ChatListRespository,
+    private readonly communityRepository: CommunityRepository,
     private readonly userRepository: UserRepository,
   ) {}
   async restoreMessage(restoreMessageDto: RestoreMessageDto) {
@@ -162,8 +164,15 @@ export class ChatListService {
       JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListIdx])),
     );
 
-    if (chatList.chat[chatNum].senderId !== requestUserId)
-      throw new BadRequestException('자신이 보낸 채팅만 삭제할 수 있습니다.');
+    const community = await this.communityRepository.findById(channel.communityId);
+
+    if (
+      ![community.managerId, channel.managerId, chatList.chat[chatNum].senderId].includes(
+        requestUserId,
+      )
+    ) {
+      throw new BadRequestException('채팅을 삭제할 수 없습니다.');
+    }
 
     const date = new Date();
 
