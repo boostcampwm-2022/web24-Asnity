@@ -104,7 +104,7 @@ const Gnb = () => {
               communitiesQuery.data?.map((community) => {
                 const { _id, name, profileUrl } = community;
                 const existUnreadChat = community.channels.some(
-                  (channel) => channel.lastRead,
+                  (channel) => channel.existUnreadChat,
                 );
 
                 return (

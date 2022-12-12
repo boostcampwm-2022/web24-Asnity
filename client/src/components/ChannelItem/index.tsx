@@ -22,7 +22,7 @@ const ChannelItem: FC<Props> = ({ channel, communityId, ...restProps }) => {
           name={channel.name}
           className="flex items-center gap-[5px] select-none w-full"
         />
-        {channel.lastRead && (
+        {channel.existUnreadChat && (
           <span className="py-1 px-2 rounded-2xl bg-primary text-offWhite text-s12 tracking-tighter font-bold shadow-lg">
             new
           </span>
