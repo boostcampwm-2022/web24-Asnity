@@ -1,4 +1,4 @@
-import type { InviteUsersToChannelResponse } from '@/socketEvents';
+import type { InviteUsersToChannelResponse } from '@/sockets';
 import type { User } from '@apis/user';
 import type { UsersMap } from '@hooks/user';
 import type { MouseEventHandler, FC } from 'react';
@@ -11,7 +11,7 @@ import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
 
-import { inviteUsersToChannelPayload, SOCKET_EVENTS } from '@/socketEvents';
+import { inviteUsersToChannelPayload, SOCKET_EVENTS } from '@/sockets';
 
 interface Props {
   communityUsers: User[];
