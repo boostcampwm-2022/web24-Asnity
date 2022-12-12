@@ -132,6 +132,7 @@ const ChatItem: FC<Props> = ({
   const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const isPending = written === -1;
+  const isFailed = written === false;
   const isMine = myInfo._id === senderId;
   const isManager =
     communityManagerId === myInfo._id || channelManagerId === myInfo._id;
@@ -273,7 +274,7 @@ const ChatItem: FC<Props> = ({
             </div>
           </div>
           <div className="absolute -top-3 right-3">
-            {!deletedAt && !isEditing && !isPending && isHover && (
+            {!deletedAt && !isFailed && !isEditing && !isPending && isHover && (
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
                 {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
