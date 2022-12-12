@@ -229,9 +229,10 @@ export class CommunityService {
       throw new BadRequestException(`요청한 사용자 _id(${requestUserId})가 올바르지 않습니다.`);
     } else if (!community) {
       throw new BadRequestException(`요청한 커뮤니티 _id가 올바르지 않습니다.`);
-    } else if (requestUserId === community.managerId) {
+    } else if (requestUserId === community.managerId && community.users.length > 1) {
       throw new BadRequestException(`매니저는 커뮤니티에서 탈퇴할 수 없습니다. 매니저 위임하세요.`);
     }
+
     // user doc에서 community 삭제하기
     await this.deleteCommunityAtUserDocument(requestUserId, community_id);
     // community doc에서 users에 사용자 삭제하기
