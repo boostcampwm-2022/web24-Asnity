@@ -140,14 +140,14 @@ const ChatItem: FC<Props> = ({
   });
 
   const {
-    removeChatQueryData,
+    discardChatQueryData,
     editChatQueryData,
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
   } = useSetChatsQueryData();
 
   const handleClickDiscardButton = () => {
-    removeChatQueryData({ channelId: roomId, id });
+    discardChatQueryData({ channelId: roomId, id });
   };
 
   const handleClickCopyButton: MouseEventHandler<HTMLButtonElement> = () => {
@@ -173,7 +173,13 @@ const ChatItem: FC<Props> = ({
 
   const handleClickRemoveButton: MouseEventHandler<HTMLButtonElement> = () => {
     openCommonModal({
-      content: <ChatRemoveBox />,
+      content: (
+        <ChatRemoveBox
+          communityId={communityId}
+          channelId={roomId}
+          chat={chat}
+        />
+      ),
       contentWrapperStyle: {
         top: '50%',
         left: '50%',
