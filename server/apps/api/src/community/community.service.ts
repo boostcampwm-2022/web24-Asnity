@@ -203,7 +203,7 @@ export class CommunityService {
     return this.userRepository.deleteObject(
       { _id: user_id },
       {
-        communities: { _id: community_id },
+        [`communities.${community_id}`]: 1,
       },
     );
   }
