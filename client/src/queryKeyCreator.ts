@@ -46,6 +46,8 @@ const channelQueryKey = {
 const chatQueryKey = {
   all: () => ['chats'] as const,
   list: (channelId: string) => [...chatQueryKey.all(), channelId] as const,
+  unreadChatId: (channelId: string) =>
+    [...chatQueryKey.all(), 'unread-chat-id', channelId] as const,
 };
 
 const queryKeyCreator = {
