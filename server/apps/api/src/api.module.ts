@@ -11,6 +11,7 @@ import { ChatListModule } from '@chat-list/chat-list.module';
 import { mongoDbServerModule } from '@api/modules/mongo-server.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { importConfigModule } from '@api/modules/Config.module';
+import { importRedisModule } from '@api/modules/Redis.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { importConfigModule } from '@api/modules/Config.module';
     process.env.NODE_ENV != 'test'
       ? MongooseModule.forRoot(process.env.MONGODB_URL)
       : mongoDbServerModule(),
+    importRedisModule(),
     importWinstonModule(),
     UserModule,
     ChannelModule,
