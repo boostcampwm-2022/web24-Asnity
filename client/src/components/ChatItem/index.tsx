@@ -7,6 +7,7 @@ import ChatContent from '@components/ChatContent';
 import ChatForm from '@components/ChatForm';
 import ChatActions from '@components/ChatItem/ChatActions';
 import ChatRemoveBox from '@components/ChatRemoveBox';
+import { LOGO_IMG_URL } from '@constants/url';
 import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQueryData } from '@hooks/chat';
@@ -96,11 +97,21 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
 const deletedUser: User = {
   _id: 'Deleted User',
   id: 'deletedUser@from.asnity',
-  nickname: 'DeletedUser',
+  nickname: '삭제된 사용자',
   profileUrl: '',
   status: 'OFFLINE',
   description: 'fakeUser',
   createdAt: new Date().toISOString(),
+};
+
+const systemBot: User = {
+  _id: 'system',
+  id: 'system@from.asnity',
+  nickname: '시스템',
+  profileUrl: LOGO_IMG_URL,
+  status: 'ONLINE',
+  description: '시스템 봇',
+  createdAt: new Date().toDateString(),
 };
 
 interface Props extends ComponentPropsWithoutRef<'li'> {
@@ -114,7 +125,7 @@ interface Props extends ComponentPropsWithoutRef<'li'> {
 const ChatItem: FC<Props> = ({
   className = '',
   chat,
-  user = deletedUser,
+  user = chat.type === 'SYSTEM' ? systemBot : deletedUser,
   channelManagerId,
   communityManagerId,
 }) => {
@@ -129,7 +140,7 @@ const ChatItem: FC<Props> = ({
 
   const socket = useSocketStore((state) => state.sockets[communityId]);
   const { content, written, id, senderId, deletedAt } = chat;
-  const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
+  const { isDeleted, isFailedToSendChat, isSystemChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const isPending = written === -1;
   const isFailed = written === false;
@@ -274,15 +285,22 @@ const ChatItem: FC<Props> = ({
             </div>
           </div>
           <div className="absolute -top-3 right-3">
-            {!deletedAt && !isFailed && !isEditing && !isPending && isHover && (
-              <ChatActions.Container className="bg-background">
-                <ChatActions.Copy onClick={handleClickCopyButton} />
-                {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
-                {(isMine || isManager) && (
-                  <ChatActions.Remove onClick={handleClickRemoveButton} />
-                )}
-              </ChatActions.Container>
-            )}
+            {!isSystemChat &&
+              !deletedAt &&
+              !isFailed &&
+              !isEditing &&
+              !isPending &&
+              isHover && (
+                <ChatActions.Container className="bg-background">
+                  <ChatActions.Copy onClick={handleClickCopyButton} />
+                  {isMine && (
+                    <ChatActions.Edit onClick={handleClickEditButton} />
+                  )}
+                  {(isMine || isManager) && (
+                    <ChatActions.Remove onClick={handleClickRemoveButton} />
+                  )}
+                </ChatActions.Container>
+              )}
           </div>
         </div>
       </li>
