@@ -159,7 +159,6 @@ export const useSetChannelQueryData = () => {
           (_channel) => _channel._id === channelId,
         );
 
-        console.log(channel?.name);
         if (!channel) return;
 
         channel.existUnreadChat = existUnreadChat;
