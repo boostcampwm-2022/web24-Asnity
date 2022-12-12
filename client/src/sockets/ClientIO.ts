@@ -36,6 +36,10 @@ export default class ClientIO {
     this.io = io(createConnectionUrl(communityId), opts);
   }
 
+  isConnected() {
+    return this.io.connected;
+  }
+
   on<E extends ServerToClientEventType>(
     eventName: E,
     handler: ServerToClientEventListener[E],
