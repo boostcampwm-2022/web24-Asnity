@@ -137,7 +137,10 @@ export class ChatListService {
 
     const date = new Date();
 
-    await this.chatListRespository.updateChatAtChatList(chatList._id, +chat_id, content, date);
+    await this.chatListRespository.updateOne(
+      { _id: chatList._id, 'chat.id': +chat_id },
+      { $set: { 'chat.$.content': content, 'chat.$.updatedAt': date } },
+    );
 
     const result = {
       ...chatList.chat[chatNum],
@@ -171,7 +174,10 @@ export class ChatListService {
 
     const date = new Date();
 
-    await this.chatListRespository.deleteChatAtChatList(chatList._id, +chat_id, date);
+    await this.chatListRespository.updateOne(
+      { _id: chatList._id, 'chat.id': +chat_id },
+      { $set: { 'chat.$.updatedAt': date, 'chat.$.deletedAt': date } },
+    );
 
     const result = {
       ...chatList.chat[chatNum],
