@@ -8,6 +8,7 @@ import {
   useSetCommunitiesQueryData,
 } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
+import { useSocketStore } from '@stores/socketStore';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -20,9 +21,12 @@ const CommunityLeaveBox: FC<Props> = ({ community }) => {
   const navigate = useNavigate();
   const setCommunities = useSetCommunitiesQueryData();
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
+  const socket = useSocketStore((state) => state.sockets[community._id]);
 
   const leaveCommunityMutation = useLeaveCommunityMutation({
     onSuccess: () => {
+      socket.disconnect();
+
       setCommunities((prevCommunities) =>
         prevCommunities?.filter(
           (prevCommunity) => prevCommunity._id !== community._id,
