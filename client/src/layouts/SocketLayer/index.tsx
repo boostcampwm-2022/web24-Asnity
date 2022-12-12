@@ -76,7 +76,7 @@ const SocketLayer = () => {
     if (firstEffect.current) return undefined;
 
     const handleReceiveChat: ReceiveNewChatListener = ({
-      chatId,
+      id,
       channelId,
       createdAt,
       content,
@@ -87,7 +87,7 @@ const SocketLayer = () => {
 
       // chatInfinityQueryData 마지막 페이지에 삽입
       addChatsQueryData({
-        id: chatId,
+        id,
         content,
         channelId,
         senderId,
