@@ -11,6 +11,7 @@ import { useCommunitiesMapQuery } from '@hooks/community';
 import { useRootStore } from '@stores/rootStore';
 import cn from 'classnames';
 import React, { useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams, Link } from 'react-router-dom';
 
 const CommunityNav = () => {
@@ -98,26 +99,28 @@ const CommunityNav = () => {
             <br /> 오류가 발생했습니다.
           </ErrorMessage>
         ) : (
-          <ul className="flex flex-col">
-            {joinedChannels?.map((channel) => {
-              const itemClassnames = cn('flex items-center hover:shadow-sm', {
-                hidden: !visible && channel._id !== roomId,
-                'text-placeholder hover:bg-offWhite': channel._id !== roomId,
-                'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite shadow-xl':
-                  channel._id === roomId,
-              });
+          <Scrollbars>
+            <ul className="flex flex-col">
+              {joinedChannels?.map((channel) => {
+                const itemClassnames = cn('flex items-center hover:shadow-sm', {
+                  hidden: !visible && channel._id !== roomId,
+                  'text-placeholder hover:bg-offWhite': channel._id !== roomId,
+                  'bg-indigo text-offWhite hover:bg-indigo hover:text-offwhite shadow-xl':
+                    channel._id === roomId,
+                });
 
-              return (
-                <ChannelItem
-                  key={channel._id}
-                  communityId={communityId}
-                  channel={channel}
-                  className={itemClassnames}
-                  onContextMenu={handleRightClickChannelItem(channel)}
-                />
-              );
-            })}
-          </ul>
+                return (
+                  <ChannelItem
+                    key={channel._id}
+                    communityId={communityId}
+                    channel={channel}
+                    className={itemClassnames}
+                    onContextMenu={handleRightClickChannelItem(channel)}
+                  />
+                );
+              })}
+            </ul>
+          </Scrollbars>
         )}
       </div>
     </nav>
