@@ -14,9 +14,15 @@ export type SocketStore = {
 const initialSockets = {};
 
 export const useSocketStore = store<SocketStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     sockets: initialSockets,
     setSockets: (sockets) => set({ sockets }),
-    clearSockets: () => set(initialSockets),
+    clearSockets: () => {
+      const state = get();
+      const { sockets } = state;
+
+      Object.values(sockets).forEach((socket) => socket.disconnect());
+      set(initialSockets);
+    },
   })),
 );
