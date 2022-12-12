@@ -59,6 +59,10 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   ) {
     const communityName = socket.nsp.name;
     const { chatType, channelId } = data;
+    if ('content' in data && data.content.length > 300) {
+      return { written: false };
+    }
+
     this.logger.log(
       `${chatType} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname}`,
     );
