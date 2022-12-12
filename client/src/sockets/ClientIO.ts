@@ -51,7 +51,7 @@ export default class ClientIO {
     this.io.off(eventName);
   }
 
-  emit<P, C extends (...params: never[]) => void | undefined>(
+  private emit<P, C extends (...params: never[]) => void | undefined>(
     eventName: ClientToServerEventType,
     payload?: P,
     emitCallback?: C,
