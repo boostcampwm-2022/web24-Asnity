@@ -67,6 +67,11 @@ const Channel = () => {
   const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
     useSetChatsQueryData();
 
+  /* ======================== [ 안 읽은 메시지 위치 ] ========================== */
+  const unreadChatIdQuery = useUnreadChatIdQuery(roomId);
+  const { clearUnreadChatIdQueryData } = useSetUnreadChatIdQueryData(roomId);
+  const handleMarkAsRead = () => clearUnreadChatIdQueryData();
+
   const handleSubmitChat = (content: string) => {
     if (!socket.isConnected()) {
       defaultSocketErrorHandler();
@@ -107,6 +112,11 @@ const Channel = () => {
     }
   };
 
+  const isLoading =
+    channelWithUsersMap.isLoading ||
+    chatsInfiniteQuery.isLoading ||
+    unreadChatIdQuery.isLoading;
+
   /* ===================== [ 채널 페이지 입장시 전역 스크롤바 설정 ] =================================== */
   useEffect(() => {
     if (scrollbarContainerRef.current !== chatScrollbar) {
@@ -114,10 +124,10 @@ const Channel = () => {
       setChatScrollbar(scrollbarContainerRef.current);
     }
 
-    if (!chatsInfiniteQuery.isLoading) {
+    if (!isLoading) {
       scrollbarContainerRef.current?.scrollToBottom();
     }
-  }, [roomId, chatsInfiniteQuery.isLoading]);
+  }, [roomId, isLoading]);
 
   /* ===================== [ 채널 마지막 방문 시간과 안 읽은 메시지 있음 여부 ] =================================== */
   const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
@@ -128,24 +138,11 @@ const Channel = () => {
   });
 
   useEffect(() => {
-    // 채널 페이지에 들어올 때 마지막 방문 시간을 업데이트하고 안 읽은 메시지를 없음으로 표시
     updateLastReadMutation.mutate({ communityId, channelId: roomId });
 
-    // 채널 페이지에서 나갈 때 마지막 방문 시간을 업데이트하고 안 읽은 메시지를 없음으로 표시
     return () =>
       updateLastReadMutation.mutate({ communityId, channelId: roomId });
   }, [communityId, roomId]);
-
-  /* ======================== [ 안 읽은 메시지 위치 ] ========================== */
-  const unreadChatIdQuery = useUnreadChatIdQuery(roomId);
-  const { clearUnreadChatIdQueryData } = useSetUnreadChatIdQueryData(roomId);
-  const handleMarkAsRead = () => clearUnreadChatIdQueryData();
-
-  /* ============================== [ 컴포넌트 렌더링 ] =================================== */
-  const isLoading =
-    channelWithUsersMap.isLoading ||
-    chatsInfiniteQuery.isLoading ||
-    unreadChatIdQuery.isLoading;
 
   if (isLoading)
     return (
