@@ -403,3 +403,20 @@ export const useUnreadChatIdQuery = (channelId: string) => {
   return query;
 };
 
+/**
+ * ### 캐시에 저장된 읽지 않은 메시지의 위치(`Chat['id']`)를 바꾸기 위해 사용한다.
+ */
+export const useSetUnreadChatIdQueryData = (channelId: string) => {
+  const key = queryKeyCreator.chat.unreadChatId(channelId);
+  const queryClient = useQueryClient();
+
+  /**
+   * ### 캐시에 저장된 읽지 않은 메시지의 위치를 `-1`로 만든다.
+   * => 채널에 안 읽은 메시지가 없도록 만든다.
+   */
+  const clearUnreadChatIdQueryData = () => {
+    queryClient.setQueryData<GetUnreadChatIdResult['unreadChatId']>(key, -1);
+  };
+
+  return { clearUnreadChatIdQueryData };
+};
