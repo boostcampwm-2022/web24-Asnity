@@ -31,7 +31,6 @@ export default class ClientIO {
     return { auth: { token: `Bearer ${token}` } };
   }
 
-  // 예시: const socket = new ClientIO({ communityId, ClientIO.createOpts({ token }) });
   constructor({ communityId, opts }: ClientIOConstructor) {
     this.io = io(createConnectionUrl(communityId), opts);
   }
