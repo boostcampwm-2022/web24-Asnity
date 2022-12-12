@@ -7,16 +7,13 @@ import type {
   InviteUserToChannelPayload,
   ServerToClientEventListener,
   InviteUserToChannelEmitCallback,
-} from '@sockets/ClientIOTypes';
-import type {
-  ClientToServerEventType,
   ServerToClientEventType,
-} from '@sockets/index';
+  ClientToServerEventType,
+} from '@sockets/ClientIOTypes';
 import type { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { SOCKET_URL } from '@constants/url';
-import { CHAT_MUTATION_TYPE } from '@sockets/ClientIOTypes';
-import { SOCKET_EVENTS } from '@sockets/index';
+import { CHAT_MUTATION_TYPE, SOCKET_EVENTS } from '@sockets/ClientIOTypes';
 import { io } from 'socket.io-client';
 
 const createConnectionUrl = (communityId: string) =>
