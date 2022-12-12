@@ -4,13 +4,19 @@ import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
 import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useMyInfoQueryData } from '@hooks/auth';
 import {
   useChannelWithUsersMapQuery,
   useSetChannelQueryData,
   useUpdateLastReadMutation,
 } from '@hooks/channel';
-import { useChatsInfiniteQuery, useSetChatsQueryData } from '@hooks/chat';
+import {
+  useChatsInfiniteQuery,
+  useSetChatsQueryData,
+  useSetUnreadChatIdQueryData,
+  useUnreadChatIdQuery,
+} from '@hooks/chat';
 import { useCommunityManagerIdQuery } from '@hooks/community';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
@@ -113,7 +119,7 @@ const Channel = () => {
     }
   }, [roomId, chatsInfiniteQuery.isLoading]);
 
-  /* ===================== [ 채널 마지막 방문 시간과 안 읽은 메시지 ] =================================== */
+  /* ===================== [ 채널 마지막 방문 시간과 안 읽은 메시지 있음 여부 ] =================================== */
   const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
   const updateLastReadMutation = useUpdateLastReadMutation({
     onSuccess: () => {
@@ -130,9 +136,16 @@ const Channel = () => {
       updateLastReadMutation.mutate({ communityId, channelId: roomId });
   }, [communityId, roomId]);
 
+  /* ======================== [ 안 읽은 메시지 위치 ] ========================== */
+  const unreadChatIdQuery = useUnreadChatIdQuery(roomId);
+  const { clearUnreadChatIdQueryData } = useSetUnreadChatIdQueryData(roomId);
+  const handleMarkAsRead = () => clearUnreadChatIdQueryData();
+
   /* ============================== [ 컴포넌트 렌더링 ] =================================== */
   const isLoading =
-    channelWithUsersMap.isLoading || chatsInfiniteQuery.isLoading;
+    channelWithUsersMap.isLoading ||
+    chatsInfiniteQuery.isLoading ||
+    unreadChatIdQuery.isLoading;
 
   if (isLoading)
     return (
@@ -150,17 +163,32 @@ const Channel = () => {
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full py-4">
-          <div className="flex justify-center items-center font-ipSans text-s14">
-            {chatsInfiniteQuery.isFetchingPreviousPage &&
-              '지난 메시지 불러오는 중'}
-          </div>
+        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full pb-4">
+          {unreadChatIdQuery.data && unreadChatIdQuery.data !== -1 && (
+            <div className="flex justify-between items-center w-full h-8 bg-indigo font-medium text-offWhite rounded-b-md text-s14 px-3">
+              <div>위에 읽지 않은 메시지가 있어요</div>
+              <button
+                type="button"
+                className="flex items-center gap-1"
+                onClick={handleMarkAsRead}
+              >
+                <div>읽음으로 표시하기</div>
+                <span className="sr-only">읽음으로 표시하기</span>
+                <CheckCircleIcon className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+          {chatsInfiniteQuery.isFetchingPreviousPage && (
+            <div className="flex justify-center items-center font-ipSans text-s14 py-3">
+              지난 메시지 불러오는 중
+            </div>
+          )}
           <Scrollbars
             className="max-h-[90%] grow shrink"
             ref={scrollbarContainerRef}
           >
             <div ref={intersectionObservable} />
-            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
+            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background pt-7">
               {chatsInfiniteQuery.data && channelWithUsersMap.data && (
                 <ChatList
                   communityManagerId={communityManagerId}
