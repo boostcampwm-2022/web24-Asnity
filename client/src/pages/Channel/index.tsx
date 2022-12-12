@@ -1,5 +1,6 @@
 import type { User } from '@apis/user';
 
+import ChannelName from '@components/ChannelName';
 import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
@@ -156,7 +157,14 @@ const Channel = () => {
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap text-indigo font-bold text-[24px]">
-          {channelWithUsersMap.data && `#${channelWithUsersMap.data.name}`}
+          {channelWithUsersMap.data && (
+            <ChannelName
+              className="flex gap-2 items-center"
+              name={channelWithUsersMap.data.name}
+              isPrivate={channelWithUsersMap.data.isPrivate}
+              size="lg"
+            />
+          )}
         </div>
       </header>
       <div className="flex h-full">
