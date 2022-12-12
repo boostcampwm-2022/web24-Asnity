@@ -1,4 +1,3 @@
-import type { CommunitySummaries } from '@apis/community';
 import type {
   ReceiveNewChatListener,
   ReceiveEditedChatListener,
@@ -11,6 +10,7 @@ import REGEX from '@constants/regex';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChannelQueryData } from '@hooks/channel';
 import { useSetChatsQueryData } from '@hooks/chat';
+import { useCommunitiesQuery } from '@hooks/community';
 import ClientIO from '@sockets/ClientIO';
 import { SOCKET_EVENTS } from '@sockets/ClientIOTypes';
 import { useRootStore } from '@stores/rootStore';
@@ -18,7 +18,6 @@ import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useLoaderData } from 'react-router-dom';
 
 const SocketLayer = () => {
   const myInfo = useMyInfoQueryData();
@@ -27,7 +26,8 @@ const SocketLayer = () => {
   const sockets = useSocketStore((state) => state.sockets);
   const setSockets = useSocketStore((state) => state.setSockets);
   const socketArr = useMemo(() => Object.values(sockets), [sockets]);
-  const communitySummaries = useLoaderData() as CommunitySummaries;
+  const communitySummariesQuery = useCommunitiesQuery();
+  const communitySummaries = communitySummariesQuery.data ?? [];
   const communityIds = useMemo(
     () => communitySummaries.map((communitySummary) => communitySummary._id),
     [communitySummaries],
