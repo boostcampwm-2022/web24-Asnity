@@ -39,16 +39,20 @@ interface ChatItemHeadProps {
   chat: Chat;
   user: User;
   isHover: boolean;
+  disabled?: boolean;
   opacityClassnames: string;
   handleClickDiscardButton: () => void;
+  handleClickResendButton: () => void;
 }
 
 const ChatItemHead: FC<ChatItemHeadProps> = ({
   chat,
   user,
   isHover,
+  disabled = false,
   opacityClassnames,
   handleClickDiscardButton,
+  handleClickResendButton,
 }) => {
   const { createdAt } = chat;
   const { isUpdated, isDeleted, isFailedToSendChat, isSystemChat } =
@@ -85,7 +89,8 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
             <button
               type="button"
               className={`${failedChatControlButtonsClassnames} bg-secondary hover:bg-secondary-dark text-offWhite`}
-              onClick={handleClickDiscardButton}
+              onClick={handleClickResendButton}
+              disabled={disabled}
             >
               재전송
             </button>
@@ -93,6 +98,7 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
               type="button"
               className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
               onClick={handleClickDiscardButton}
+              disabled={disabled}
             >
               지우기
             </button>
@@ -140,6 +146,7 @@ const ChatItem: FC<Props> = ({
 }) => {
   const openCommonModal = useRootStore((state) => state.openCommonModal);
   const chatContentRef = useRef<HTMLDivElement>(null);
+  const [isResending, setIsResending] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const myInfo = useMyInfoQueryData() as User;
   const { roomId, communityId } = useParams() as {
@@ -166,10 +173,60 @@ const ChatItem: FC<Props> = ({
     editChatQueryData,
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
+    spliceAndPushChatQueryData,
   } = useSetChatsQueryData();
 
   const handleClickDiscardButton = () => {
     discardChatQueryData({ channelId: roomId, id });
+  };
+
+  const handleClickResendButton = () => {
+    if (!socket.isConnected()) {
+      defaultSocketErrorHandler();
+      return;
+    }
+
+    setIsResending(true);
+
+    socket.sendChat(
+      { channelId: roomId, content },
+      ({ chatInfo, written: _written }) => {
+        if (_written) {
+          spliceAndPushChatQueryData({
+            ...chatInfo,
+            realChatId: chatInfo.id,
+            written: _written,
+            id, // fakeId
+          });
+          setIsResending(false);
+          return;
+        }
+        toast.error('재전송에 실패했습니다!');
+        setIsResending(false);
+      },
+    );
+
+    // setTimeout(() => {
+    //   const error = true;
+    //
+    //   if (!error) {
+    //     spliceAndPushChatQueryData({
+    //       channelId: roomId,
+    //       senderId: myInfo._id,
+    //       id,
+    //       content,
+    //       createdAt: new Date().toISOString(),
+    //       updatedAt: '',
+    //       type: 'TEXT',
+    //       written: true,
+    //       realChatId: 250,
+    //     });
+    //     setIsResending(false);
+    //     return;
+    //   }
+    //   toast.error('재전송에 실패했습니다!');
+    //   setIsResending(false);
+    // }, 1000);
   };
 
   const handleClickCopyButton: MouseEventHandler<HTMLButtonElement> = () => {
@@ -274,10 +331,12 @@ const ChatItem: FC<Props> = ({
           <div className="grow">
             <ChatItemHead
               chat={chat}
-              isHover={isHover}
-              handleClickDiscardButton={handleClickDiscardButton}
-              opacityClassnames={opacityClassnames}
               user={user}
+              isHover={isHover}
+              disabled={isResending}
+              handleClickDiscardButton={handleClickDiscardButton}
+              handleClickResendButton={handleClickResendButton}
+              opacityClassnames={opacityClassnames}
             />
             <div className={`${opacityClassnames}`} ref={chatContentRef}>
               {isDeleted ? (
