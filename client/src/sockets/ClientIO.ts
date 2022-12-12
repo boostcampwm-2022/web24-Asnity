@@ -6,6 +6,7 @@ import type {
   JoinChannelsPayload,
   InviteUserToChannelPayload,
   ServerToClientEventListener,
+  InviteUserToChannelEmitCallback,
 } from '@sockets/ClientIOTypes';
 import type {
   ClientToServerEventType,
@@ -101,9 +102,9 @@ export default class ClientIO {
 
   inviteUsersToChannel(
     payload: InviteUserToChannelPayload,
-    emitCallback: ChatMutationEmitCallback,
+    emitCallback: InviteUserToChannelEmitCallback,
   ) {
-    this.emit<InviteUserToChannelPayload, ChatMutationEmitCallback>(
+    this.emit<InviteUserToChannelPayload, InviteUserToChannelEmitCallback>(
       SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL,
       payload,
       emitCallback,

@@ -34,9 +34,10 @@ export interface RemoveChatPayload {
   chatId: number;
 }
 
+/** 소켓 명세에 여기만 snake_case 사용합니다. */
 export interface InviteUserToChannelPayload {
-  communityId: string;
-  channelId: string;
+  community_id: string;
+  channel_id: string;
   users: UserUID[];
 }
 
@@ -56,6 +57,12 @@ export type ChatMutationEmitCallbackParameter =
 export type ChatMutationEmitCallback = (
   param: ChatMutationEmitCallbackParameter,
 ) => void;
+
+export type InviteUserToChannelEmitCallback = ({
+  isSuccess,
+}: {
+  isSuccess: boolean;
+}) => void;
 
 /* ↑ ↑ ↑ ↑ ↑ Sender ↑ ↑ ↑ ↑ ↑ */
 
