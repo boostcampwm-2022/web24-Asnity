@@ -110,13 +110,7 @@ const SocketLayer = () => {
       };
 
       if (channelId !== groups?.roomId)
-        // 현재 communityId 보내주지 않으므로 첫번째 커뮤니티로 넣어줌
-        // TODO: 보내주는 communityId를 updateLastRead의 첫번째 인자로 넘겨야함
-        updateExistUnreadChatInChannelQueryData(
-          communityIds[0],
-          channelId,
-          true,
-        );
+        updateExistUnreadChatInChannelQueryData(communityId, channelId, true);
     };
 
     const handleReceiveEditedChat: ReceiveEditedChatListener = (payload) => {
