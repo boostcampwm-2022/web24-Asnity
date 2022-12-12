@@ -314,7 +314,7 @@ export const useSetChatsQueryData = () => {
   };
 
   /**
-   * 타깃 채팅의 deletedAt을 업데이트하고,
+   * 타깃 채팅의 deletedAt을 업데이트하고, content를 비웁니다.
    */
   const removeChatQueryData: RemoveChatQueryData = ({
     id,
@@ -335,7 +335,7 @@ export const useSetChatsQueryData = () => {
 
         chatList.map((chat) => {
           if (chat.id === id) {
-            chat.deletedAt = deletedAt;
+            chat.deletedAt = deletedAt || new Date().toISOString();
             chat.content = '';
           }
           return chat;
