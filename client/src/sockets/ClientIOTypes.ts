@@ -1,7 +1,35 @@
 import type { JoinedChannel } from '@apis/channel';
 import type { Chat } from '@apis/chat';
 import type { UserUID } from '@apis/user';
-import type { SOCKET_EVENTS } from '@sockets/index';
+
+export const SOCKET_EVENTS = {
+  // ClientToServer
+  SEND_CHAT: 'chat',
+  EDIT_CHAT: 'chat',
+  REMOVE_CHAT: 'chat',
+  JOIN_CHANNEL: 'join',
+  INVITE_USERS_TO_CHANNEL: 'invite-users-to-channel',
+
+  // ServerToClient
+  RECEIVE_CHAT: 'new-chat',
+  RECEIVE_REMOVE_CHAT: 'delete-chat',
+  RECEIVE_EDIT_CHAT: 'modify-chat',
+  INVITED_TO_CHANNEL: 'invited-to-channel',
+  INVALID_TOKEN: 'connect_error',
+} as const;
+
+export type ClientToServerEventType =
+  | typeof SOCKET_EVENTS.JOIN_CHANNEL
+  | typeof SOCKET_EVENTS.SEND_CHAT
+  | typeof SOCKET_EVENTS.EDIT_CHAT
+  | typeof SOCKET_EVENTS.REMOVE_CHAT
+  | typeof SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL;
+export type ServerToClientEventType =
+  | typeof SOCKET_EVENTS.RECEIVE_CHAT
+  | typeof SOCKET_EVENTS.RECEIVE_EDIT_CHAT
+  | typeof SOCKET_EVENTS.RECEIVE_REMOVE_CHAT
+  | typeof SOCKET_EVENTS.INVITED_TO_CHANNEL
+  | typeof SOCKET_EVENTS.INVALID_TOKEN;
 
 /* ↓ ↓ ↓ ↓ ↓ Sender ↓ ↓ ↓ ↓ ↓ */
 
