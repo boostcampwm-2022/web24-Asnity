@@ -47,7 +47,7 @@ export default class ClientIO {
     this.io.on(eventName, handler);
   }
 
-  off(eventName: string) {
+  off<E extends ServerToClientEventType>(eventName: E) {
     this.io.off(eventName);
   }
 
