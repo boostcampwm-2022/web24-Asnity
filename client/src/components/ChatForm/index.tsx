@@ -20,6 +20,8 @@ interface Props extends ComponentPropsWithRef<'textarea'> {
   clear?: boolean;
 }
 
+const maxLength = 300;
+
 const ChatForm: FC<Props> = ({
   editMode = false,
   initialValue = '',
@@ -33,6 +35,8 @@ const ChatForm: FC<Props> = ({
   const [value, onChange, isDirty, setValue] = useInput(initialValue);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const exceededMaxLength = value.length >= maxLength;
+  const isSubmittable = isDirty && !exceededMaxLength;
 
   /**
    * 다른 채널로 이동시, value 상태값이 유지되며 채팅 폼이 미리 입력되어 있는 현상을 방지하기 위해
@@ -62,7 +66,7 @@ const ChatForm: FC<Props> = ({
 
   const handleSubmitForm: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!value.trim() || !isDirty) return;
+    if (!value.trim() || !isSubmittable) return;
 
     handleSubmitChat?.(value, e);
     setValue(initialValue);
@@ -99,6 +103,7 @@ const ChatForm: FC<Props> = ({
         spellCheck={false}
         {...restProps}
         onKeyDown={handleKeyDown}
+        maxLength={maxLength}
         value={value}
         ref={textareaRef}
         onChange={onChange}
@@ -119,7 +124,7 @@ const ChatForm: FC<Props> = ({
         <button
           className="chat-submit-button absolute right-3 h-full [&:hover>svg]:fill-indigo "
           ref={submitButtonRef}
-          disabled={!isDirty}
+          disabled={!isDirty || exceededMaxLength}
         >
           <span className="sr-only">채팅 입력 버튼</span>
           <PaperAirplaneIcon className="w-6 h-6" />
