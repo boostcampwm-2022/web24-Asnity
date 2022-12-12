@@ -192,7 +192,7 @@ const ChatItem: FC<Props> = ({
   };
 
   const handleSubmitChatEditForm = (editedContent: string) => {
-    if (socket.isConnected()) {
+    if (!socket.isConnected()) {
       defaultSocketErrorHandler();
       return;
     }
@@ -224,7 +224,7 @@ const ChatItem: FC<Props> = ({
 
     // 테스트용
     // const fail = true;
-    //
+
     // setTimeout(() => {
     //   if (fail) {
     //     updateEditChatToFailedChat({ id, channelId: roomId, content });

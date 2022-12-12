@@ -62,7 +62,7 @@ const Channel = () => {
     useSetChatsQueryData();
 
   const handleSubmitChat = (content: string) => {
-    if (socket.isConnected()) {
+    if (!socket.isConnected()) {
       defaultSocketErrorHandler();
       return;
     }
