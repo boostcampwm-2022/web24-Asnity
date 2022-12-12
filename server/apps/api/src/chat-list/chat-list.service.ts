@@ -137,21 +137,14 @@ export class ChatListService {
 
     const date = new Date();
 
-    await this.chatListRespository.updateOne(
+    const updatedChatList = await this.chatListRespository.findOneAndUpdate(
       { _id: chatList._id, 'chat.id': +chat_id },
       { $set: { 'chat.$.content': content, 'chat.$.updatedAt': date } },
     );
 
-    const result = {
-      ...chatList.chat[chatNum],
-      content: content,
-      updatedAt: date,
-      channelId: channel_id,
-      communityId: channel.communityId,
-      id: +chat_id,
-    };
+    const result = JSON.parse(JSON.stringify(updatedChatList)).chat[+chat_id];
 
-    return result;
+    return { ...result, communityId: channel.communityId, channelId: channel._id };
   }
 
   async deleteMessage(deleteMessageDto: DeleteMessageDto) {
@@ -174,20 +167,13 @@ export class ChatListService {
 
     const date = new Date();
 
-    await this.chatListRespository.updateOne(
+    const updatedChatList = await this.chatListRespository.findOneAndUpdate(
       { _id: chatList._id, 'chat.id': +chat_id },
       { $set: { 'chat.$.updatedAt': date, 'chat.$.deletedAt': date } },
     );
 
-    const result = {
-      ...chatList.chat[chatNum],
-      updatedAt: date,
-      deletedAt: date,
-      channelId: channel_id,
-      communityId: channel.communityId,
-      id: +chat_id,
-    };
+    const result = JSON.parse(JSON.stringify(updatedChatList)).chat[+chat_id];
 
-    return result;
+    return { ...result, communityId: channel.communityId, channelId: channel._id };
   }
 }
