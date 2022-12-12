@@ -15,6 +15,7 @@ import { getChannelBasicInfo } from '@channel/helper/getChannelBasicInfo';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
+import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
 
 @Injectable()
 export class CommunityService {
@@ -62,10 +63,12 @@ export class CommunityService {
             channelsInfo.push(channelInfo);
           }),
         );
+        channelsInfo.sort(sortedByCreateTime);
         const communityInfo = getCommunityBasicInfo(community, channelsInfo);
         communitiesInfo.push(communityInfo);
       }),
     );
+    communitiesInfo.sort(sortedByCreateTime);
     return { communities: communitiesInfo };
   }
   async createCommunity(createCommunityDto: CreateCommunityDto) {
