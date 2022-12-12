@@ -3,6 +3,7 @@ import type { User } from '@apis/user';
 import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
+import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
 import { useMyInfoQueryData } from '@hooks/auth';
 import {
   useChannelWithUsersMapQuery,
@@ -59,6 +60,11 @@ const Channel = () => {
     useSetChatsQueryData();
 
   const handleSubmitChat = (content: string) => {
+    if (socket.isConnected()) {
+      defaultSocketErrorHandler();
+      return;
+    }
+
     const id = Date.now(); // fakeId
     const createdAt = new Date();
 
