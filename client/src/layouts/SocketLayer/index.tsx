@@ -10,14 +10,13 @@ import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChannelQueryData } from '@hooks/channel';
 import { useSetChatsQueryData } from '@hooks/chat';
 import ClientIO from '@sockets/ClientIO';
+import { SOCKET_EVENTS } from '@sockets/ClientIOTypes';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
-
-import { SOCKET_EVENTS } from '@/sockets';
 
 const SocketLayer = () => {
   const myInfo = useMyInfoQueryData();
