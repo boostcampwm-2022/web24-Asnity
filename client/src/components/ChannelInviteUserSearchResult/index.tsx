@@ -1,4 +1,3 @@
-import type { InviteUsersToChannelResponse } from '@/sockets';
 import type { User } from '@apis/user';
 import type { UsersMap } from '@hooks/user';
 import type { MouseEventHandler, FC } from 'react';
@@ -10,8 +9,6 @@ import { useSocketStore } from '@stores/socketStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
-
-import { inviteUsersToChannelPayload, SOCKET_EVENTS } from '@/sockets';
 
 interface Props {
   communityUsers: User[];
@@ -31,23 +28,23 @@ const ChannelInviteUserSearchResult: FC<Props> = ({
 
   const handleChannelInviteButtonClick =
     (user: User): MouseEventHandler<HTMLButtonElement> =>
-    (e) => {
-      socket.emit(
-        SOCKET_EVENTS.INVITE_USERS_TO_CHANNEL,
-        inviteUsersToChannelPayload({
-          communityId,
-          channelId,
+    () => {
+      socket.inviteUsersToChannel(
+        {
+          channel_id: channelId,
+          community_id: communityId,
           users: [user._id],
-        }),
-        ({ isSuccess }: InviteUsersToChannelResponse) => {
+        },
+        ({ isSuccess }) => {
           if (isSuccess) {
             invalidateChannelQuery().finally(() => {
               toast.success(
                 `${user.nickname}님을 채널에 초대하는데 성공했습니다.`,
               );
             });
-          } else
-            toast.error(`${user.nickname}님을 채널에 초대하는데 실패했습니다.`);
+            return;
+          }
+          toast.error(`${user.nickname}님을 채널에 초대하는데 실패했습니다.`);
         },
       );
     };
