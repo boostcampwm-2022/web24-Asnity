@@ -14,7 +14,7 @@ export const useChatsInfiniteQuery = (channelId: string) => {
     key,
     ({ pageParam = -1 }) => getChats(channelId, pageParam),
     {
-      getPreviousPageParam: (firstPage) => firstPage.prev,
+      getPreviousPageParam: (firstPage) => firstPage?.prev,
       staleTime: 1000 * 60 * 10,
     },
   );
