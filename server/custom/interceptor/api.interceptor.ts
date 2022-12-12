@@ -49,7 +49,7 @@ export class ApiInterceptor implements NestInterceptor {
             ],
           });
         }
-        return of(error.response ?? error);
+        throw error;
       }),
     );
   }
