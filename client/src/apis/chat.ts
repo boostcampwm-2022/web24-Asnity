@@ -37,3 +37,20 @@ export const getChats: GetChats = (channelId, prev) => {
     .get<GetChatsResponse>(_endPoint, { params: { prev } })
     .then((response) => response.data.result);
 };
+
+export type GetUnreadChatIdResult = {
+  unreadChatId: number;
+};
+
+export type GetUnreadChatIdResponse = SuccessResponse<GetUnreadChatIdResult>;
+export type GetUnreadChatId = (
+  channelId: string,
+) => Promise<GetUnreadChatIdResult['unreadChatId']>;
+
+export const getUnreadChatId: GetUnreadChatId = (channelId) => {
+  const _endPoint = endPoint.getUnreadChatId(channelId);
+
+  return tokenAxios
+    .get<GetUnreadChatIdResponse>(_endPoint)
+    .then((response) => response.data.result.unreadChatId);
+};
