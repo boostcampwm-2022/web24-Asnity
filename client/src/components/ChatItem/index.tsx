@@ -18,8 +18,6 @@ import React, { memo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { editChatPayload, SOCKET_EVENTS } from '@/sockets';
-
 const getChatStatus = ({
   updatedAt,
   createdAt,
@@ -187,7 +185,7 @@ const ChatItem: FC<Props> = ({
 
   const handleSubmitChatEditForm = (editedContent: string) => {
     const editedChatInfo = {
-      id,
+      id, // realId
       content: editedContent,
       channelId: roomId,
     };
@@ -195,23 +193,17 @@ const ChatItem: FC<Props> = ({
     editChatQueryData(editedChatInfo);
     setIsEditing(false);
 
-    socket.emit(
-      SOCKET_EVENTS.EDIT_CHAT,
-      editChatPayload(editedChatInfo),
-      ({
-        written: _written,
-        chat: _updatedChat,
-      }: {
-        written: boolean;
-        chat: Chat;
-      }) => {
+    socket.editChat(
+      { ...editedChatInfo, chatId: id },
+      ({ written: _written, chatInfo }) => {
         if (_written) {
           updateEditChatToWrittenChat({
-            updatedChat: _updatedChat,
+            updatedChat: chatInfo,
             channelId: roomId,
           });
           return;
         }
+
         updateEditChatToFailedChat({ id, channelId: roomId, content });
         toast.error('채팅 수정에 실패했습니다.');
       },
