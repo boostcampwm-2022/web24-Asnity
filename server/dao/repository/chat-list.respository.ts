@@ -22,4 +22,17 @@ export class ChatListRespository {
   async updateOne(filter, updateField) {
     return await this.chatListModel.updateOne(filter, updateField);
   }
+
+  async updateChatAtChatList(chatListId, chatId, content, date) {
+    await this.chatListModel.updateOne(
+      { _id: chatListId, 'chat.id': chatId },
+      { $set: { 'chat.$.content': content, 'chat.$.updatedAt': date } },
+    );
+  }
+  async deleteChatAtChatList(chatListId, chatId, date) {
+    await this.chatListModel.updateOne(
+      { _id: chatListId, 'chat.id': chatId },
+      { $set: { 'chat.$.updatedAt': date, 'chat.$.deletedAt': date } },
+    );
+  }
 }
