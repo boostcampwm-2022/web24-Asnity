@@ -58,6 +58,12 @@ export default class ClientIO {
     payload?: P,
     emitCallback?: C,
   ) {
+    /** socket emit message 3번째에 null 들어가는 이슈 */
+    if (emitCallback) {
+      this.io.emit(eventName, payload);
+      return;
+    }
+
     this.io.emit(eventName, payload, emitCallback);
   }
 
