@@ -31,7 +31,7 @@ type AddChatsQueryData = ({
   written,
 }: Omit<Chat, 'type' | 'updatedAt' | 'createdAt'> & {
   channelId: string;
-  createdAt: Date;
+  createdAt: Date | string;
 }) => void;
 
 type UpdateChatToWrittenChat = ({
@@ -133,7 +133,7 @@ export const useSetChatsQueryData = () => {
           content,
           senderId,
           written, // Send Chat 에러 처리를 위한 프로퍼티
-          createdAt: createdAt.toISOString(),
+          createdAt: new Date(createdAt).toISOString(),
           updatedAt: '',
           deletedAt: '',
           type: 'TEXT',
