@@ -217,13 +217,12 @@ export const useSetChatsQueryData = () => {
 
         if (!chatList) return;
 
-        chatList.map((chat) => {
-          if (chat.id === id) {
-            chat.content = content;
-            chat.written = -1;
-          }
-          return chat;
-        });
+        const targetChat = chatList.find((chat) => chat.id === id);
+
+        if (targetChat) {
+          targetChat.content = content;
+          targetChat.written = -1;
+        }
       });
     });
   };
@@ -247,14 +246,12 @@ export const useSetChatsQueryData = () => {
         const chatList = draft.pages[targetPageIndex].chat;
 
         if (!chatList) return;
+        const targetChat = chatList.find((chat) => chat.id === id);
 
-        chatList.map((chat) => {
-          if (chat.id === id) {
-            chat.updatedAt = updatedAt || new Date().toISOString();
-            chat.written = true;
-          }
-          return chat;
-        });
+        if (targetChat) {
+          targetChat.updatedAt = updatedAt || new Date().toISOString();
+          targetChat.written = true;
+        }
       });
     });
   };
@@ -279,13 +276,12 @@ export const useSetChatsQueryData = () => {
 
         if (!chatList) return;
 
-        chatList.map((chat) => {
-          if (chat.id === id) {
-            chat.written = undefined; // undefined면 해당 아이템은 서버에서 처리중이지 않다는 뜻
-            chat.content = content;
-          }
-          return chat;
-        });
+        const targetChat = chatList.find((chat) => chat.id === id);
+
+        if (targetChat) {
+          targetChat.content = content;
+          targetChat.written = undefined;
+        }
       });
     });
   };
@@ -333,13 +329,12 @@ export const useSetChatsQueryData = () => {
 
         if (!chatList) return;
 
-        chatList.map((chat) => {
-          if (chat.id === id) {
-            chat.deletedAt = deletedAt || new Date().toISOString();
-            chat.content = '';
-          }
-          return chat;
-        });
+        const targetChat = chatList.find((chat) => chat.id === id);
+
+        if (targetChat) {
+          targetChat.content = '';
+          targetChat.deletedAt = deletedAt || new Date().toISOString();
+        }
       });
     });
   };
@@ -366,13 +361,12 @@ export const useSetChatsQueryData = () => {
 
         if (!chatList) return;
 
-        chatList.map((chat) => {
-          if (chat.id === id) {
-            chat.content = content;
-            chat.updatedAt = updatedAt;
-          }
-          return chat;
-        });
+        const targetChat = chatList.find((chat) => chat.id === id);
+
+        if (targetChat) {
+          targetChat.content = content;
+          targetChat.updatedAt = updatedAt;
+        }
       });
     });
   };
