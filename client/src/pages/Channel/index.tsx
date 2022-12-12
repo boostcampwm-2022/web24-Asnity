@@ -104,10 +104,10 @@ const Channel = () => {
     }
   };
 
-  const { updateLastReadInChannelQueryData } = useSetChannelQueryData();
+  const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
   const updateLastReadMutation = useUpdateLastReadMutation({
     onSuccess: () => {
-      updateLastReadInChannelQueryData(communityId, roomId, false);
+      updateExistUnreadChatInChannelQueryData(communityId, roomId, false);
     },
   });
 
