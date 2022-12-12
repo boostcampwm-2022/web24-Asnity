@@ -264,6 +264,7 @@ const ChatItem: FC<Props> = ({
         <div className="flex gap-3">
           <div className="pt-1">
             <Avatar
+              user={user}
               variant="rectangle"
               size="sm"
               profileUrl={user.profileUrl}
