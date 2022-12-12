@@ -1,5 +1,6 @@
 import endPoint from '@constants/endPoint';
 import { API_URL } from '@constants/url';
+import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
 import chatData from '../data/chats';
@@ -46,11 +47,13 @@ const getUnreadChatEndPoint = API_URL + endPoint.getUnreadChatId(':channelId');
 const GetUnreadChatId = rest.get(getUnreadChatEndPoint, (rea, res, ctx) => {
   const { chats } = chatData;
   const ERROR = false;
-
+  const existUnreadChat = faker.datatype.boolean();
   const errorResponse = res(...createErrorContext(ctx));
   const successResponse = res(
     ...createSuccessContext(ctx, 200, 500, {
-      unreadChatId: chats[Math.floor(Math.random() * chats.length)].id,
+      unreadChatId: existUnreadChat
+        ? chats[Math.floor(Math.random() * chats.length)].id
+        : -1,
     }),
   );
 
