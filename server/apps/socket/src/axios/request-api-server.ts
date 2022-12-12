@@ -1,12 +1,14 @@
 import axios from 'axios';
-import { WsException } from '@nestjs/websockets';
 
-export const requestApiServer = async ({ path, accessToken, data }) => {
-  const apiUrl = 'http://localhost:3000' + path;
+export const requestApiServer = async ({ method, path, accessToken, data }) => {
+  if (process.env.NODE_ENV === 'dev') {
+    return true;
+  }
+  const url = 'http://api-container:' + (process.env.NODE_ENV == 'dev' ? 3000 : 3001) + path;
   try {
     const response = await axios({
-      method: 'post',
-      url: apiUrl,
+      method,
+      url,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -16,12 +18,18 @@ export const requestApiServer = async ({ path, accessToken, data }) => {
     });
     if (
       response.status >= 300 ||
+      response.data?.statusCode > 300 ||
       response.data?.name?.match(/error/i) ||
       response.data?.message?.match(/error/i)
     ) {
-      throw new WsException('API Server 요청 중 에러가 발생했습니다.');
+      // throw new WsException('API Server 요청 중 에러가 발생했습니다.');
+      console.log(data.name ?? data.message ?? 'API Request Error');
+      return false;
     }
+    return response.data.result ?? true;
   } catch (error) {
-    throw new WsException('API Server 요청 중 에러가 발생했습니다.');
+    console.log(error);
+    // throw new WsException('API Server 요청 중 에러가 발생했습니다.');
+    return false;
   }
 };

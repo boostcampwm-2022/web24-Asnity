@@ -1,7 +1,6 @@
-export interface ModifyMessage {
+export interface DeleteMessage {
   chatType: string;
   channelId: string;
-  content: string;
   chatId: string;
   cb: () => void;
 }

@@ -1,48 +1,48 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
-import { RestoreMessageDto } from '@chat-list/dto';
-import { responseForm } from '@utils/responseForm';
+import {
+  GetMessageDto,
+  GetUnreadMessagePointDto,
+  ModifyMessageDto,
+  RestoreMessageDto,
+} from '@chat-list/dto';
+import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
+import { userToSenderPipe } from '@custom/pipe/userToSender.pipe';
+import { DeleteMessageDto } from '@chat-list/dto/delete-message.dto';
 
 @Controller('api/channels')
 export class ChatListController {
   constructor(private chatListService: ChatListService) {}
 
-  @Post(':channel_id/message')
+  @Post(':channel_id/chat')
   @UseGuards(JwtAccessGuard)
-  async restoreMessage(
-    @Param('channel_id') channel_id,
-    @Body() restoreMessageDto: RestoreMessageDto,
-    @Req() req: any,
-  ) {
-    const requestUserId = req.user._id;
-    await this.chatListService.restoreMessage({
-      ...restoreMessageDto,
-      channel_id,
-      senderId: requestUserId,
-    });
-    return responseForm(200, { message: '채팅 저장 성공!' });
+  async restoreMessage(@ReceivedData(userToSenderPipe) restoreMessageDto: RestoreMessageDto) {
+    return await this.chatListService.restoreMessage(restoreMessageDto);
   }
 
-  @Get(':channel_id/message')
+  @Get(':channel_id/chat')
   @UseGuards(JwtAccessGuard)
-  async getMessage(@Param('channel_id') channel_id, @Query() query: any, @Req() req: any) {
-    const requestUserId = req.user._id;
-    const chatList = await this.chatListService.getMessage({
-      ...query,
-      requestUserId,
-      channel_id,
-    });
-    return responseForm(200, chatList);
+  async getMessage(@ReceivedData() getMessageDto: GetMessageDto) {
+    return await this.chatListService.getMessage(getMessageDto);
   }
-  @Get(':channel_id/unread-message')
+
+  @Get(':channel_id/unread-chat')
   @UseGuards(JwtAccessGuard)
-  async getUnreadMessagePoint(@Param('channel_id') channel_id, @Req() req: any) {
-    const requestUserId = req.user._id;
-    const unreadChatId = await this.chatListService.getUnreadMessagePoint({
-      requestUserId,
-      channel_id,
-    });
-    return responseForm(200, { unreadChatId });
+  async getUnreadMessagePoint(@ReceivedData() getUnreadMessageDto: GetUnreadMessagePointDto) {
+    const unreadChatId = await this.chatListService.getUnreadMessagePoint(getUnreadMessageDto);
+    return { unreadChatId };
+  }
+
+  @Patch(':channel_id/chats/:chat_id')
+  @UseGuards(JwtAccessGuard)
+  async modifyMessage(@ReceivedData() modifyMessageDto: ModifyMessageDto) {
+    return await this.chatListService.modifyMessage(modifyMessageDto);
+  }
+
+  @Delete(':channel_id/chats/:chat_id')
+  @UseGuards(JwtAccessGuard)
+  async deleteMessage(@ReceivedData() deleteMessageDto: DeleteMessageDto) {
+    return await this.chatListService.deleteMessage(deleteMessageDto);
   }
 }
