@@ -28,7 +28,6 @@ const toggleFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
   // 팔로잉 목록에 있으면 팔로잉 목록에서 삭제
   else followings.splice(idx, 1);
 
-  console.log(followings);
   return res(
     ctx.delay(),
     ctx.status(200),
