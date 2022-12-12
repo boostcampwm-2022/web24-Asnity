@@ -45,7 +45,7 @@ type UpdateChatToFailedChat = ({
   channelId,
 }: Pick<Chat, 'id'> & { channelId: string }) => void;
 
-type RemoveChatQueryData = ({
+type DiscardChatQueryData = ({
   id,
   channelId,
 }: Pick<Chat, 'id'> & { channelId: string }) => void;
@@ -285,9 +285,9 @@ export const useSetChatsQueryData = () => {
   };
 
   /**
-   * 타겟 메세지를 쿼리 상태에서 지웁니다.
+   * 전송 실패한 타겟 메세지를 채팅 목록에서 제거합니다. (remove와 다릅니다. remove는 deleteAt만 업데이트 하는것)
    */
-  const removeChatQueryData: RemoveChatQueryData = ({ id, channelId }) => {
+  const discardChatQueryData: DiscardChatQueryData = ({ id, channelId }) => {
     const key = queryKeyCreator.chat.list(channelId);
 
     queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
@@ -344,7 +344,7 @@ export const useSetChatsQueryData = () => {
     addChatsQueryData,
     updateChatToWrittenChat,
     updateChatToFailedChat,
-    removeChatQueryData,
+    discardChatQueryData,
     editChatQueryData,
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
