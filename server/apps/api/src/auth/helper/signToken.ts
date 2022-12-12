@@ -11,7 +11,7 @@ export class SignToken {
       nickname,
     };
     const accessToken = await this.jwt.signAsync(accessTokenPayload, {
-      expiresIn: '15m',
+      expiresIn: '1hr',
       secret: this.config.get('JWT_SECRET'),
     });
     return accessToken;
