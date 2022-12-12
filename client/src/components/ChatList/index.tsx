@@ -40,13 +40,14 @@ const ChatList: FC<Props> = ({
 
   // 캐시에 있는 안 읽은 메시지의 id를 가져온다.
   const cachedUnreadChatId = useUnreadChatIdQueryData(channelId) as number;
-  // 채널 입장 시의 안 읽은 메시지의 id를 저장한다.
+  // 채널 입장 시의 캐시에 저장되어있는 안 읽은 메시지의 id를 저장한다.
   const firstUnreadChatId = useRef<number | null>(null);
 
   useEffect(() => {
     // 이렇게 해야 divider가 화면에 보여서
     // clearUnreadChatIdQueryData()를 실행하여 캐시에 -1로 저장해도
-    // firstUnreadChatId는 -1이 아니라 첫 렌더링 시의 안 읽은 메시지의 id를 저장하게 된다.
+    // firstUnreadChatId는 현재 캐시에 저장된 -1이 아니라
+    // 첫 렌더링 시의 캐시에 저장된 안 읽은 메시지의 id를 저장하게 된다.
     if (!firstUnreadChatId.current) {
       firstUnreadChatId.current = cachedUnreadChatId;
     }
@@ -60,12 +61,15 @@ const ChatList: FC<Props> = ({
             <Fragment key={page.chat[0].id}>
               {page.chat.map((chat) => (
                 <Fragment key={chat.id}>
-                  {/* chat의 id가 첫 렌더링 시의 안 읽은 메시지의 id와 같다면 divider를 렌더링한다*/}
+                  {/* chat의 id가 첫 렌더링 시의 캐시에 저장된 안 읽은 메시지의 id와 같다면 divider를 렌더링한다.
+                  최신 캐시에 있는 안 읽은 메시지의 id와 비교하지 않으므로 해당 값이 -1로 바뀌어도
+                  divider는 사라지지 않는다.
+                  */}
                   {chat.id === firstUnreadChatId.current && (
                     <div
                       className="flex items-center relative h-0 my-3 border-b-[1px] border-error"
                       ref={
-                        /* 캐시에 저장된 안 읽은 메시지의 ㅑㅇ가 -1이 되면 divider에 더이상 
+                        /* 캐시에 저장된 안 읽은 메시지의 id가 -1이 되면 divider에 더이상 
                         observable ref가 붙지 않도록 한다*/
                         chat.id === cachedUnreadChatId
                           ? firstUnreadChatObservable
