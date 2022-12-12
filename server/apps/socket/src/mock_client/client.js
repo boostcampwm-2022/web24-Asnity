@@ -4,7 +4,7 @@ const port = 8080;
 const url = 'http://localhost';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk0YzJlNGQxYTYxNWJmNTY0ZDVhY2YiLCJuaWNrbmFtZSI6Im5heW91bmciLCJpYXQiOjE2NzA3ODQ3MTQsImV4cCI6MTY3MDc4NTYxNH0.Cx8pjTF1_rpL2KINFPQjXkFUzu0gtdFX6ng0gbAcKkU';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk0YzJlNGQxYTYxNWJmNTY0ZDVhY2YiLCJuaWNrbmFtZSI6Im5heW91bmciLCJpYXQiOjE2NzA4NDQyNDMsImV4cCI6MTY3MDg0NTE0M30.frX2jym5MdNPbmTD3c9xUeH38WbXArfY2SX-NVZlEzQ';
 
 const opt = {
   auth: {

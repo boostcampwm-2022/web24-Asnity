@@ -4,7 +4,7 @@ export const requestApiServer = async ({ method, path, accessToken, data }) => {
   if (process.env.NODE_ENV === 'dev') {
     return true;
   }
-  const url = 'http://localhost:' + (process.env.NODE_ENV == 'dev' ? 3000 : 3001) + path;
+  const url = 'http://api-container:' + (process.env.NODE_ENV == 'dev' ? 3000 : 3001) + path;
   try {
     const response = await axios({
       method,
