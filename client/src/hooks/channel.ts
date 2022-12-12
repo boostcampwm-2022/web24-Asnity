@@ -144,23 +144,25 @@ export const useSetChannelQueryData = () => {
     });
   };
 
-  const updateLastReadInChannelQueryData = (
+  const updateExistUnreadChatInChannelQueryData = (
     communityId: string,
     channelId: string,
-    lastRead: boolean,
+    existUnreadChat: boolean,
   ) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       return produce(communities, (draft: CommunitySummaries) => {
         const community = draft.find(
           (_community) => _community._id === communityId,
         );
+
         const channel = community?.channels.find(
           (_channel) => _channel._id === channelId,
         );
 
+        console.log(channel?.name);
         if (!channel) return;
 
-        channel.lastRead = lastRead;
+        channel.existUnreadChat = existUnreadChat;
       });
     });
   };
@@ -168,7 +170,7 @@ export const useSetChannelQueryData = () => {
   return {
     addChannelQueryData,
     removeChannelQueryData,
-    updateLastReadInChannelQueryData,
+    updateExistUnreadChatInChannelQueryData,
   };
 };
 

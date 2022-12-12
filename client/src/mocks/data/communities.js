@@ -9,7 +9,7 @@ export const createMockChannel = () => ({
   name: faker.name.jobType(),
   isPrivate: chancify(() => true, 50, false),
   description: faker.lorem.sentence(1),
-  lastRead: chancify(() => true, 50, false),
+  existUnreadChat: chancify(() => true, 50, false),
   type: 'Channel',
   users: channelUsers,
   createdAt: new Date().toISOString(),
