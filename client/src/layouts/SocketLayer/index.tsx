@@ -1,24 +1,23 @@
-import type {
-  ReceiveChatHandler,
-  InvitedToChannelHandler,
-  ReceiveEditChatHandler,
-} from '@/sockets';
 import type { CommunitySummaries } from '@apis/community';
+import type {
+  ReceiveNewChatListener,
+  ReceiveEditedChatListener,
+  InvitedToChannelListener,
+} from '@sockets/ClientIOTypes';
 import type { Sockets } from '@stores/socketStore';
 
-import { SOCKET_URL } from '@constants/url';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChannelQueryData } from '@hooks/channel';
 import { useSetChatsQueryData } from '@hooks/chat';
+import ClientIO from '@sockets/ClientIO';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
 import { useTokenStore } from '@stores/tokenStore';
 import { isScrollTouchedBottom } from '@utils/scrollValues';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { io } from 'socket.io-client';
 
-import { joinChannelsPayload, SOCKET_EVENTS } from '@/sockets';
+import { SOCKET_EVENTS } from '@/sockets';
 
 const SocketLayer = () => {
   const myInfo = useMyInfoQueryData();
@@ -40,14 +39,16 @@ const SocketLayer = () => {
   const { addChatsQueryData, updateChatQueryData } = useSetChatsQueryData();
 
   useEffect(() => {
-    const opts = {
-      auth: { token: `Bearer ${accessToken}` },
-    };
+    if (!accessToken) return;
 
+    /** 소켓 namespace 연결 */
     const newSockets = communityIds.reduce((acc, communityId) => {
       acc[communityId] =
         sockets[communityId] ??
-        io(`${SOCKET_URL}/socket/commu-${communityId}`, opts);
+        new ClientIO({
+          communityId,
+          opts: ClientIO.createOpts({ token: accessToken }),
+        });
       return acc;
     }, {} as Sockets);
 
@@ -67,10 +68,7 @@ const SocketLayer = () => {
 
       // join channels
       communityIds.forEach((communityId) => {
-        newSockets[communityId].emit(
-          SOCKET_EVENTS.JOIN_CHANNEL,
-          joinChannelsPayload(channelsMap[communityId]),
-        );
+        newSockets[communityId]?.joinChannels(channelsMap[communityId]);
       });
     }
   }, [communityIds]);
@@ -78,19 +76,26 @@ const SocketLayer = () => {
   useEffect(() => {
     if (firstEffect.current) return undefined;
 
-    // TODO: 채팅 받을 때의 명세가 달라질 것 같으니 수정 준비하세요~
-    const handleReceiveChat: ReceiveChatHandler = ({
-      // communityId,
-      id,
+    const handleReceiveChat: ReceiveNewChatListener = ({
+      chatId,
       channelId,
-      time: createdAt,
-      message: content,
-      user_id: senderId,
+      createdAt,
+      content,
+      senderId,
+      communityId,
     }) => {
       if (myInfo?._id === senderId) return;
 
-      addChatsQueryData({ id, content, channelId, senderId, createdAt });
+      // chatInfinityQueryData 마지막 페이지에 삽입
+      addChatsQueryData({
+        id: chatId,
+        content,
+        channelId,
+        senderId,
+        createdAt,
+      });
 
+      // 스크롤바의 높이를 자동으로 조절
       if (chatScrollbar && isScrollTouchedBottom(chatScrollbar, 50)) {
         setTimeout(() => {
           chatScrollbar?.scrollToBottom();
@@ -111,18 +116,15 @@ const SocketLayer = () => {
         );
     };
 
-    const handleReceiveEditChat: ReceiveEditChatHandler = ({
-      updatedChat,
-      channelId,
-    }) => {
-      updateChatQueryData({ updatedChat, channelId });
+    const handleReceiveEditChat: ReceiveEditedChatListener = (payload) => {
+      updateChatQueryData({
+        updatedChat: payload,
+        channelId: payload.channelId,
+      });
     };
 
-    const handleInvitedToChannel: InvitedToChannelHandler = ({
-      communityId,
-      ...joinedChannel
-    }) => {
-      addChannelQueryData(communityId, joinedChannel);
+    const handleInvitedToChannel: InvitedToChannelListener = (payload) => {
+      addChannelQueryData(payload.communityId, payload);
     };
 
     // const interval = setInterval(() => {
@@ -159,13 +161,11 @@ const SocketLayer = () => {
     // 이벤트 on
     socketArr.forEach((socket) => {
       socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
-
       socket.on(SOCKET_EVENTS.INVALID_TOKEN, (err) => {
         if ('message' in err) {
           console.error(err.message); // Not Authorized
         }
       });
-
       socket.on(SOCKET_EVENTS.RECEIVE_EDIT_CHAT, handleReceiveEditChat);
       socket.on(SOCKET_EVENTS.INVITED_TO_CHANNEL, handleInvitedToChannel);
     });
