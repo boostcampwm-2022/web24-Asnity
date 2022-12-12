@@ -20,6 +20,10 @@ interface TooltipProps {
 }
 
 const Tooltip = ({ visible, children }: TooltipProps) => {
+  if (!$tooltip) {
+    return null;
+  }
+
   return !visible ? null : ReactDOM.createPortal(children, $tooltip);
 };
 
