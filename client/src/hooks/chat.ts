@@ -143,7 +143,8 @@ export const useSetChatsQueryData = () => {
   };
 
   /**
-   * Optimistic Updates한 채팅의 id와 채널 id를 받아서, 해당 채팅의 written 프로퍼티를 true로 변경시킨다,
+   * Optimistic Updates한 채팅의 id(fakeId)와, realChatId와, 채널 id를 받아서,
+   * 해당 채팅의 written 프로퍼티를 true로 변경시키고, id를 realChatId로 변경시킨다.
    */
   const updateChatToWrittenChat: UpdateChatToWrittenChat = ({
     id,
