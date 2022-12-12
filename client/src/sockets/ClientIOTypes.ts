@@ -86,11 +86,10 @@ export type ChatMutationEmitCallback = (
   param: ChatMutationEmitCallbackParameter,
 ) => void;
 
+export type InviteUserToChannelEmitCallbackParameter = { isSuccess: boolean };
 export type InviteUserToChannelEmitCallback = ({
   isSuccess,
-}: {
-  isSuccess: boolean;
-}) => void;
+}: InviteUserToChannelEmitCallbackParameter) => void;
 
 /* ↑ ↑ ↑ ↑ ↑ Sender ↑ ↑ ↑ ↑ ↑ */
 
