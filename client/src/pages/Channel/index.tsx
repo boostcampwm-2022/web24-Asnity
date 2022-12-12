@@ -20,8 +20,6 @@ import React, { useRef, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
-import { sendChatPayload, SOCKET_EVENTS } from '@/sockets';
-
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
 
@@ -61,9 +59,8 @@ const Channel = () => {
     useSetChatsQueryData();
 
   const handleSubmitChat = (content: string) => {
-    const id = Date.now();
+    const id = Date.now(); // fakeId
     const createdAt = new Date();
-    const newChat = { id, content, createdAt, senderId: myInfo._id };
 
     addChatsQueryData({
       id,
@@ -75,27 +72,17 @@ const Channel = () => {
     });
 
     // https://socket.io/docs/v3/emitting-events/#acknowledgements
-    socket.emit(
-      SOCKET_EVENTS.SEND_CHAT,
-      sendChatPayload({
-        ...newChat,
-        channelId: roomId,
-      }),
-      (
-        response: { written: true; realChatId: number } | { written: false },
-      ) => {
-        if (response.written) {
-          updateChatToWrittenChat({
-            id,
-            realChatId: response.realChatId,
-            channelId: roomId,
-          });
-          return;
-        }
-
-        updateChatToFailedChat({ id, channelId: roomId });
-      },
-    );
+    socket.sendChat({ channelId: roomId, content }, ({ written, chatInfo }) => {
+      if (written) {
+        updateChatToWrittenChat({
+          id, // fakeId
+          realChatId: chatInfo.id,
+          channelId: roomId,
+        });
+        return;
+      }
+      updateChatToFailedChat({ id, channelId: roomId });
+    });
 
     if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
       setTimeout(() => {
