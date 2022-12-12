@@ -22,21 +22,18 @@ import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
 const Channel = () => {
-  const scrollbarContainerRef = useRef<Scrollbars>(null);
-
   const { communityId, roomId } = useParams() as {
     communityId: string;
     roomId: string;
   };
 
-  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
-  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
-  const socket = useSocketStore((state) => state.sockets[communityId]);
-
   const myInfo = useMyInfoQueryData() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
   const channelManagerId = channelWithUsersMap.data?.managerId;
   const { data: communityManagerId } = useCommunityManagerIdQuery(communityId);
+
+  /* ============================== [ 무한 스크롤 ] =================================== */
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
   const intersectionObservable = useIntersectionObservable(
     (entry, observer) => {
@@ -56,6 +53,11 @@ const Channel = () => {
     },
   );
 
+  /* ============================== [ 소켓 채팅 전송 ] =================================== */
+  const chatScrollbar = useRootStore((state) => state.chatScrollbar);
+  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
+
+  const socket = useSocketStore((state) => state.sockets[communityId]);
   const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
     useSetChatsQueryData();
 
@@ -68,6 +70,7 @@ const Channel = () => {
     const id = Date.now(); // fakeId
     const createdAt = new Date();
 
+    // 사용자가 입력한 채팅 메시지 optimistc update
     addChatsQueryData({
       id,
       channelId: roomId,
@@ -77,7 +80,7 @@ const Channel = () => {
       written: -1, // Optimistic Updates중임을 나타냄.
     });
 
-    // https://socket.io/docs/v3/emitting-events/#acknowledgements
+    // 소켓으로 채팅 메시지 전송
     socket.sendChat({ channelId: roomId, content }, ({ written, chatInfo }) => {
       if (written) {
         updateChatToWrittenChat({
@@ -90,6 +93,7 @@ const Channel = () => {
       updateChatToFailedChat({ id, channelId: roomId });
     });
 
+    // 전역 스크롤바 조작
     if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
       setTimeout(() => {
         scrollbarContainerRef.current?.scrollToBottom();
@@ -97,20 +101,7 @@ const Channel = () => {
     }
   };
 
-  const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
-  const updateLastReadMutation = useUpdateLastReadMutation({
-    onSuccess: () => {
-      updateExistUnreadChatInChannelQueryData(communityId, roomId, false);
-    },
-  });
-
-  useEffect(() => {
-    updateLastReadMutation.mutate({ communityId, channelId: roomId });
-
-    return () =>
-      updateLastReadMutation.mutate({ communityId, channelId: roomId });
-  }, [communityId, roomId]);
-
+  /* ===================== [ 채널 페이지 입장시 전역 스크롤바 설정 ] =================================== */
   useEffect(() => {
     if (scrollbarContainerRef.current !== chatScrollbar) {
       // 비교 연산 없으면 채널간 이동에서 딜레이가 매우 많이 생긴다.
@@ -122,6 +113,24 @@ const Channel = () => {
     }
   }, [roomId, chatsInfiniteQuery.isLoading]);
 
+  /* ===================== [ 채널 마지막 방문 시간과 안 읽은 메시지 ] =================================== */
+  const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
+  const updateLastReadMutation = useUpdateLastReadMutation({
+    onSuccess: () => {
+      updateExistUnreadChatInChannelQueryData(communityId, roomId, false);
+    },
+  });
+
+  useEffect(() => {
+    // 채널 페이지에 들어올 때 마지막 방문 시간을 업데이트하고 안 읽은 메시지를 없음으로 표시
+    updateLastReadMutation.mutate({ communityId, channelId: roomId });
+
+    // 채널 페이지에서 나갈 때 마지막 방문 시간을 업데이트하고 안 읽은 메시지를 없음으로 표시
+    return () =>
+      updateLastReadMutation.mutate({ communityId, channelId: roomId });
+  }, [communityId, roomId]);
+
+  /* ============================== [ 컴포넌트 렌더링 ] =================================== */
   const isLoading =
     channelWithUsersMap.isLoading || chatsInfiniteQuery.isLoading;
 
