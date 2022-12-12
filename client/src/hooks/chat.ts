@@ -420,3 +420,14 @@ export const useSetUnreadChatIdQueryData = (channelId: string) => {
 
   return { clearUnreadChatIdQueryData };
 };
+
+/**
+ * ### 캐시에 저장된 읽지 않은 메시지의 위치(`Chat['id']`)를 가져오기 위해 사용한다.
+ */
+export const useUnreadChatIdQueryData = (channelId: string) => {
+  const key = queryKeyCreator.chat.unreadChatId(channelId);
+  const queryClient = useQueryClient();
+  const unreadChatId = queryClient.getQueryData(key);
+
+  return unreadChatId;
+};
