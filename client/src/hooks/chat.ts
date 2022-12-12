@@ -1,9 +1,13 @@
-import type { Chat, GetChatsResult } from '@apis/chat';
+import type { Chat, GetChatsResult, GetUnreadChatIdResult } from '@apis/chat';
 import type { InfiniteData } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { getChats } from '@apis/chat';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { getUnreadChatId, getChats } from '@apis/chat';
+import {
+  useQuery,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import produce from 'immer';
 
 import queryKeyCreator from '@/queryKeyCreator';
@@ -383,3 +387,19 @@ export const useSetChatsQueryData = () => {
     removeChatQueryData,
   };
 };
+
+/**
+ *
+ * @param channelId 채널 아이디
+ * @returns 안 읽은 메시지의 위치(id)를 반환한다.
+ */
+export const useUnreadChatIdQuery = (channelId: string) => {
+  const key = queryKeyCreator.chat.unreadChatId(channelId);
+  const query = useQuery<GetUnreadChatIdResult['unreadChatId'], AxiosError>(
+    key,
+    () => getUnreadChatId(channelId),
+  );
+
+  return query;
+};
+
