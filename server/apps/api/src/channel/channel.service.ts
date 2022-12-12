@@ -167,8 +167,12 @@ export class ChannelService {
 
   async updateLastRead(updateLastReadDto: UpdateLastReadDto) {
     const { community_id, channel_id, requestUserId } = updateLastReadDto;
-    const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
-    if (!channel) throw new BadRequestException('존재하지 않는 채널입니다.');
+    const channel = await this.channelRepository.findOne({
+      _id: channel_id,
+      deletedAt: undefined,
+      users: requestUserId,
+    });
+    if (!channel) throw new BadRequestException('사용자가 존재하는 채널이 아닙니다.');
 
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     await this.userRepository.updateObject(
