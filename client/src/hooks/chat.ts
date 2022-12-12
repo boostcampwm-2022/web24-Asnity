@@ -50,6 +50,12 @@ type DiscardChatQueryData = ({
   channelId,
 }: Pick<Chat, 'id'> & { channelId: string }) => void;
 
+type RemoveChatQueryData = ({
+  id,
+  deletedAt,
+  channelId,
+}: Pick<Chat, 'id' | 'deletedAt'> & { channelId: string }) => void;
+
 type EditChatQueryData = ({
   id,
   channelId,
@@ -308,6 +314,37 @@ export const useSetChatsQueryData = () => {
   };
 
   /**
+   * 타깃 채팅의 deletedAt을 업데이트하고,
+   */
+  const removeChatQueryData: RemoveChatQueryData = ({
+    id,
+    deletedAt,
+    channelId,
+  }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      const targetPageIndex = searchTargetChatPageIndex(id, data);
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages[targetPageIndex].chat;
+
+        if (!chatList) return;
+
+        chatList.map((chat) => {
+          if (chat.id === id) {
+            chat.deletedAt = deletedAt;
+            chat.content = '';
+          }
+          return chat;
+        });
+      });
+    });
+  };
+
+  /**
    * 타겟 메세지를 업데이트하며, updatedAt과 업데이트된 메세지를 반영합니다.
    * 소켓 on으로 상대방의 메세지 수정 이벤트를 받았을 때 사용합니다.
    */
@@ -349,5 +386,6 @@ export const useSetChatsQueryData = () => {
     updateEditChatToWrittenChat,
     updateEditChatToFailedChat,
     updateChatQueryData,
+    removeChatQueryData,
   };
 };
