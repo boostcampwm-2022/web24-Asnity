@@ -127,7 +127,7 @@ const ChatItem: FC<Props> = ({
   };
 
   const socket = useSocketStore((state) => state.sockets[communityId]);
-  const { content, written, id, senderId } = chat;
+  const { content, written, id, senderId, deletedAt } = chat;
   const { isDeleted, isFailedToSendChat } = getChatStatus(chat);
   const { isHover, ...hoverHandlers } = useHover(false);
   const isPending = written === -1;
@@ -267,7 +267,7 @@ const ChatItem: FC<Props> = ({
             </div>
           </div>
           <div className="absolute -top-3 right-3">
-            {!isEditing && !isPending && isHover && (
+            {!deletedAt && !isEditing && !isPending && isHover && (
               <ChatActions.Container className="bg-background">
                 <ChatActions.Copy onClick={handleClickCopyButton} />
                 {isMine && <ChatActions.Edit onClick={handleClickEditButton} />}
