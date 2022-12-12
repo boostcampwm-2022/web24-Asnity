@@ -1,6 +1,6 @@
-import type { SOCKET_EVENTS } from '@/socketEvents/index';
 import type { Chat } from '@apis/chat';
 import type { UserUID } from '@apis/user';
+import type { SOCKET_EVENTS } from '@sockets/index';
 
 /* ↓ ↓ ↓ ↓ ↓ Sender ↓ ↓ ↓ ↓ ↓ */
 

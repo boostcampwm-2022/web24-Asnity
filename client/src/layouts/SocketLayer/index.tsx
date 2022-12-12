@@ -2,7 +2,7 @@ import type {
   ReceiveChatHandler,
   InvitedToChannelHandler,
   ReceiveEditChatHandler,
-} from '@/socketEvents';
+} from '@/sockets';
 import type { CommunitySummaries } from '@apis/community';
 import type { Sockets } from '@stores/socketStore';
 
@@ -18,7 +18,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
-import { joinChannelsPayload, SOCKET_EVENTS } from '@/socketEvents';
+import { joinChannelsPayload, SOCKET_EVENTS } from '@/sockets';
 
 const SocketLayer = () => {
   const myInfo = useMyInfoQueryData();
