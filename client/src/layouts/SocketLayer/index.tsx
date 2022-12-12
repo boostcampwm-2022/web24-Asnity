@@ -3,6 +3,7 @@ import type {
   ReceiveNewChatListener,
   ReceiveEditedChatListener,
   InvitedToChannelListener,
+  ReceiveRemovedChatListener,
 } from '@sockets/ClientIOTypes';
 import type { Sockets } from '@stores/socketStore';
 
@@ -35,7 +36,8 @@ const SocketLayer = () => {
 
   const { addChannelQueryData, updateExistUnreadChatInChannelQueryData } =
     useSetChannelQueryData();
-  const { addChatsQueryData, updateChatQueryData } = useSetChatsQueryData();
+  const { addChatsQueryData, updateChatQueryData, removeChatQueryData } =
+    useSetChatsQueryData();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -75,7 +77,7 @@ const SocketLayer = () => {
   useEffect(() => {
     if (firstEffect.current) return undefined;
 
-    const handleReceiveChat: ReceiveNewChatListener = ({
+    const handleReceiveNewChat: ReceiveNewChatListener = ({
       id,
       channelId,
       createdAt,
@@ -115,11 +117,15 @@ const SocketLayer = () => {
         );
     };
 
-    const handleReceiveEditChat: ReceiveEditedChatListener = (payload) => {
+    const handleReceiveEditedChat: ReceiveEditedChatListener = (payload) => {
       updateChatQueryData({
         updatedChat: payload,
         channelId: payload.channelId,
       });
+    };
+
+    const handleReceiveRemovedChat: ReceiveRemovedChatListener = (payload) => {
+      removeChatQueryData(payload);
     };
 
     const handleInvitedToChannel: InvitedToChannelListener = (payload) => {
@@ -159,14 +165,15 @@ const SocketLayer = () => {
 
     // 이벤트 on
     socketArr.forEach((socket) => {
-      socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveChat);
+      socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveNewChat);
       socket.on(SOCKET_EVENTS.INVALID_TOKEN, (err) => {
         if ('message' in err) {
           console.error(err.message); // Not Authorized
         }
       });
-      socket.on(SOCKET_EVENTS.RECEIVE_EDIT_CHAT, handleReceiveEditChat);
+      socket.on(SOCKET_EVENTS.RECEIVE_EDIT_CHAT, handleReceiveEditedChat);
       socket.on(SOCKET_EVENTS.INVITED_TO_CHANNEL, handleInvitedToChannel);
+      socket.on(SOCKET_EVENTS.RECEIVE_REMOVE_CHAT, handleReceiveRemovedChat);
     });
 
     // 이벤트 off
