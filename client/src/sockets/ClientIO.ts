@@ -60,11 +60,11 @@ export default class ClientIO {
   ) {
     /** socket emit message 3번째에 null 들어가는 이슈 */
     if (emitCallback) {
-      this.io.emit(eventName, payload);
+      this.io.emit(eventName, payload, emitCallback);
       return;
     }
 
-    this.io.emit(eventName, payload, emitCallback);
+    this.io.emit(eventName, payload);
   }
 
   /** 서버 Room에 소켓 등록하기 위한 메서드 */
