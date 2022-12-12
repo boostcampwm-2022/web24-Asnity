@@ -88,7 +88,9 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
           <>
             <button
               type="button"
-              className={`${failedChatControlButtonsClassnames} bg-secondary hover:bg-secondary-dark text-offWhite`}
+              className={`${failedChatControlButtonsClassnames} 
+                bg-secondary hover:bg-secondary-dark text-offWhite 
+                disabled:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed`}
               onClick={handleClickResendButton}
               disabled={disabled}
             >
@@ -96,7 +98,9 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
             </button>
             <button
               type="button"
-              className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
+              className={`${failedChatControlButtonsClassnames} 
+                bg-error hover:bg-error-dark text-offWhite 
+                disabled:bg-error disabled:opacity-50 disabled:cursor-not-allowed`}
               onClick={handleClickDiscardButton}
               disabled={disabled}
             >
