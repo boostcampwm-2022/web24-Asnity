@@ -109,4 +109,8 @@ export default class ClientIO {
       emitCallback,
     );
   }
+
+  disconnect() {
+    this.io.disconnect();
+  }
 }
