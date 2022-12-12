@@ -7,6 +7,7 @@ import ChatContent from '@components/ChatContent';
 import ChatForm from '@components/ChatForm';
 import ChatActions from '@components/ChatItem/ChatActions';
 import ChatRemoveBox from '@components/ChatRemoveBox';
+import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
 import { useMyInfoQueryData } from '@hooks/auth';
 import { useSetChatsQueryData } from '@hooks/chat';
 import useHover from '@hooks/useHover';
@@ -190,6 +191,11 @@ const ChatItem: FC<Props> = ({
   };
 
   const handleSubmitChatEditForm = (editedContent: string) => {
+    if (socket.isConnected()) {
+      defaultSocketErrorHandler();
+      return;
+    }
+
     const editedChatInfo = {
       id, // realId
       content: editedContent,
