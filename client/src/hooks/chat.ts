@@ -196,7 +196,7 @@ export const useSetChatsQueryData = () => {
   };
 
   /**
-   * 타겟 메세지를 수정합니다. written은 -1로 설정합니다.
+   * 타겟 메세지를 수정합니다. written은 -1로(Pending) 설정합니다.
    */
   const editChatQueryData: EditChatQueryData = ({ id, channelId, content }) => {
     const key = queryKeyCreator.chat.list(channelId);
@@ -275,7 +275,7 @@ export const useSetChatsQueryData = () => {
 
         chatList.map((chat) => {
           if (chat.id === id) {
-            chat.written = undefined;
+            chat.written = undefined; // undefined면 해당 아이템은 서버에서 처리중이지 않다는 뜻
             chat.content = content;
           }
           return chat;
