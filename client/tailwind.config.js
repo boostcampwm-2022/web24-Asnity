@@ -26,7 +26,10 @@ module.exports = {
       line: '#D9DBE9',
       inputBackground: '#EFF0F6',
       background: '#F7F7FC;',
-      offWhite: '#FEFEFE',
+      offWhite: {
+        DEFAULT: '#FEFEFE',
+        dark: '#12121208',
+      },
       indigo: '#1D1D50',
       primary: {
         DEFAULT: '#FFA52D',
