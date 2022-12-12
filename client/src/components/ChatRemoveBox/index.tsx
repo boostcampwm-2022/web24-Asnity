@@ -21,6 +21,11 @@ const ChatRemoveBox: FC<Props> = ({ communityId, channelId, chat }) => {
   const { removeChatQueryData } = useSetChatsQueryData();
 
   const handleSubmitAlert = () => {
+    if (!socket.isConnected()) {
+      toast.error('채팅 서버와의 연결이 원활하지 않습니다.');
+      return;
+    }
+
     setIsRequestPending(true);
     socket.removeChat(
       { chatId: chat.id, channelId },
@@ -34,6 +39,22 @@ const ChatRemoveBox: FC<Props> = ({ communityId, channelId, chat }) => {
         setIsRequestPending(false);
       },
     );
+
+    // setTimeout(() => {
+    //   const error = false;
+    //
+    //   if (!error) {
+    //     removeChatQueryData({
+    //       id: chat.id,
+    //       deletedAt: new Date().toISOString(),
+    //       channelId,
+    //     });
+    //     closeCommonModal();
+    //     return;
+    //   }
+    //   toast.error('채팅 삭제에 실패했습니다!');
+    //   setIsRequestPending(false);
+    // }, 1000);
   };
 
   return (

@@ -166,14 +166,16 @@ const SocketLayer = () => {
     // 이벤트 on
     socketArr.forEach((socket) => {
       socket.on(SOCKET_EVENTS.RECEIVE_CHAT, handleReceiveNewChat);
-      socket.on(SOCKET_EVENTS.INVALID_TOKEN, (err) => {
-        if ('message' in err) {
-          console.error(err.message); // Not Authorized
-        }
-      });
       socket.on(SOCKET_EVENTS.RECEIVE_EDIT_CHAT, handleReceiveEditedChat);
       socket.on(SOCKET_EVENTS.INVITED_TO_CHANNEL, handleInvitedToChannel);
       socket.on(SOCKET_EVENTS.RECEIVE_REMOVE_CHAT, handleReceiveRemovedChat);
+      socket.on(SOCKET_EVENTS.INVALID_TOKEN, (err) => {
+        if ('message' in err) {
+          console.error(err.message); // Not Authorized
+          return;
+        }
+        console.error('Socket Error');
+      });
     });
 
     // 이벤트 off
