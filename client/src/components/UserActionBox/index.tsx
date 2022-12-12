@@ -23,8 +23,7 @@ const UserActionBox: FC<Props> = ({
 }) => {
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
-  const sockets = useSocketStore((state) => state.sockets);
-  const setSockets = useSocketStore((state) => state.setSockets);
+  const clearSockets = useSocketStore((state) => state.clearSockets);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const signOutMutation = useSignOutMutation({
@@ -32,11 +31,8 @@ const UserActionBox: FC<Props> = ({
       setAccessToken(null);
       closeCommonModal();
       queryClient.clear();
+      clearSockets();
       toast.success('성공적으로 로그아웃하였습니다!');
-      Object.values(sockets).forEach((socket) => {
-        socket.disconnect();
-      });
-      setSockets({});
       navigate('/sign-in', {
         state: { alreadyTriedReissueToken: true },
         replace: true,
