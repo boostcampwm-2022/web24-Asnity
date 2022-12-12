@@ -54,7 +54,7 @@ const GnbItemContainer: FC<Props> = ({
           {children}
         </div>
       </div>
-      {tooltip && isHover && (
+      {tooltip && ref.current && isHover && (
         <Tooltip visible>
           <div
             className="absolute flex items-center p-[12px] rounded-xl w-max h-[56px] bg-titleActive text-offWhite z-[9000px] font-mont text-s20 italic"
