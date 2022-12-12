@@ -42,4 +42,19 @@ const GetChats = rest.get(getChannelEndPoint, (req, res, ctx) => {
   return ERROR ? errorResponse : successResponse;
 });
 
-export default [GetChats];
+const getUnreadChatEndPoint = API_URL + endPoint.getUnreadChatId(':channelId');
+const GetUnreadChatId = rest.get(getUnreadChatEndPoint, (rea, res, ctx) => {
+  const { chats } = chatData;
+  const ERROR = false;
+
+  const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(
+    ...createSuccessContext(ctx, 200, 500, {
+      unreadChatId: chats[Math.floor(Math.random() * chats.length)].id,
+    }),
+  );
+
+  return ERROR ? errorResponse : successResponse;
+});
+
+export default [GetChats, GetUnreadChatId];
