@@ -52,6 +52,7 @@ const CreateChannel = rest.post(
       description,
       existUnreadChat: false,
       type,
+      createdAt: new Date().toISOString(),
       users: [me._id],
     };
 
@@ -72,7 +73,6 @@ const CreateChannel = rest.post(
 
 const leaveChannelEndPoint = API_URL + endPoint.leaveChannel(':channelId');
 const LeaveChannel = rest.delete(leaveChannelEndPoint, (req, res, ctx) => {
-  const { channelId } = req.params;
   const ERROR = false;
 
   const errorResponse = res(...createErrorContext(ctx));
