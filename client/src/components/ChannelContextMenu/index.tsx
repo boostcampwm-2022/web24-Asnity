@@ -39,7 +39,7 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
     });
   };
 
-  const handleClickChannelSettingsButton = () => { };
+  const handleClickChannelSettingsButton = () => {};
 
   const handleClickChannelLeaveButton = () => {
     closeContextMenuModal();
@@ -58,7 +58,7 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
     <section className="w-[300px] p-[16px]">
       <h3 className="sr-only">채널 컨텍스트 메뉴</h3>
       <ul>
-        {channel.isPrivate && (
+        {
           <li className="mb-[8px]">
             <button
               className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
@@ -68,7 +68,7 @@ const ChannelContextMenu: FC<Props> = ({ channel }) => {
               <UserPlusIcon className="w-6 h-6 pointer-events-none text-placeholder" />
             </button>
           </li>
-        )}
+        }
         <li className="mb-[8px]">
           <button
             className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
