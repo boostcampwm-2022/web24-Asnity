@@ -42,7 +42,7 @@ const ChatRemoveBox: FC<Props> = ({ communityId, channelId, chat }) => {
     );
 
     // setTimeout(() => {
-    //   const error = false;
+    //   const error = true;
     //
     //   if (!error) {
     //     removeChatQueryData({
