@@ -81,13 +81,22 @@ const ChatItemHead: FC<ChatItemHeadProps> = ({
       )}
       <div className="flex justify-end grow gap-2 text-s14">
         {isFailedToSendChat && isHover && (
-          <button
-            type="button"
-            className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
-            onClick={handleClickDiscardButton}
-          >
-            지우기
-          </button>
+          <>
+            <button
+              type="button"
+              className={`${failedChatControlButtonsClassnames} bg-secondary hover:bg-secondary-dark text-offWhite`}
+              onClick={handleClickDiscardButton}
+            >
+              재전송
+            </button>
+            <button
+              type="button"
+              className={`${failedChatControlButtonsClassnames} bg-error hover:bg-error-dark text-offWhite`}
+              onClick={handleClickDiscardButton}
+            >
+              지우기
+            </button>
+          </>
         )}
       </div>
     </div>
