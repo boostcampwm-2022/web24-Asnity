@@ -35,7 +35,7 @@ const SocketLayer = () => {
 
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
-  const { addChannelQueryData, updateLastReadInChannelQueryData } =
+  const { addChannelQueryData, updateExistUnreadChatInChannelQueryData } =
     useSetChannelQueryData();
   const { addChatsQueryData, updateChatQueryData } = useSetChatsQueryData();
 
@@ -104,7 +104,11 @@ const SocketLayer = () => {
       if (channelId !== groups?.roomId)
         // 현재 communityId 보내주지 않으므로 첫번째 커뮤니티로 넣어줌
         // TODO: 보내주는 communityId를 updateLastRead의 첫번째 인자로 넘겨야함
-        updateLastReadInChannelQueryData(communityIds[0], channelId, true);
+        updateExistUnreadChatInChannelQueryData(
+          communityIds[0],
+          channelId,
+          true,
+        );
     };
 
     const handleReceiveEditChat: ReceiveEditChatHandler = ({

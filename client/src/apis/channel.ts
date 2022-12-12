@@ -9,7 +9,7 @@ export interface JoinedChannel {
   name: string;
   isPrivate: boolean;
   description: string;
-  lastRead: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
+  existUnreadChat: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
   type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
   createdAt: string;
 }

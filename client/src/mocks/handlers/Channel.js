@@ -50,7 +50,7 @@ const CreateChannel = rest.post(
       isPrivate,
       profileUrl,
       description,
-      lastRead: true,
+      existUnreadChat: false,
       type,
       users: [me._id],
     };
