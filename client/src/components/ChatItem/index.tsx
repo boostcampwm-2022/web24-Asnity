@@ -18,7 +18,7 @@ import React, { memo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { editChatPayload, SOCKET_EVENTS } from '@/socketEvents';
+import { editChatPayload, SOCKET_EVENTS } from '@/sockets';
 
 const getChatStatus = ({
   updatedAt,

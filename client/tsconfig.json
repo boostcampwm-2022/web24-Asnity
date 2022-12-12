@@ -20,6 +20,7 @@
       "@errors/*": ["src/errors/*"],
       "@utils/*": ["src/utils/*"],
       "@routes/*": ["src/routes/*"],
+      "@sockets/*": ["src/sockets/*"],
       "@@types/*": ["src/types/*"],
       "@/*": ["src/*"]
     }
