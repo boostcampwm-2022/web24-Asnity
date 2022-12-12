@@ -97,14 +97,13 @@ export type InviteUserToChannelEmitCallback = ({
 /* ↓ ↓ ↓ ↓ ↓ Receiver ↓ ↓ ↓ ↓ ↓ */
 
 export interface ReceiveChatPayload extends Chat {
-  chatId: number;
   channelId: string;
   communityId: string;
 }
 
 export type ReceiveNewChatListener = (payload: ReceiveChatPayload) => void;
 export type ReceiveEditedChatListener = (payload: ReceiveChatPayload) => void;
-export type ReceiveRemovedChatListener = (payload: ReceiveChatPayload) => void; // TODO: 삭제 Payload는 달라질 듯?
+export type ReceiveRemovedChatListener = (payload: ReceiveChatPayload) => void;
 export type InvitedToChannelListener = (
   payload: InvitedToChannelPayload,
 ) => void;
