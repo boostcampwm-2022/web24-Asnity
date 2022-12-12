@@ -2,6 +2,7 @@ import type { Chat } from '@apis/chat';
 import type { FC } from 'react';
 
 import AlertBox from '@components/AlertBox';
+import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
 import { useSetChatsQueryData } from '@hooks/chat';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
@@ -22,7 +23,7 @@ const ChatRemoveBox: FC<Props> = ({ communityId, channelId, chat }) => {
 
   const handleSubmitAlert = () => {
     if (!socket.isConnected()) {
-      toast.error('채팅 서버와의 연결이 원활하지 않습니다.');
+      defaultSocketErrorHandler();
       return;
     }
 
