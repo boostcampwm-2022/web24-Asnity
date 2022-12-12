@@ -48,13 +48,10 @@ export class UserService {
   }
 
   async getUser(id: string) {
-    const users = await this.userRepository.findOr([
+    const users = await this.userRepository.findUser([
       { id: { $regex: id } },
       { nickname: { $regex: id } },
     ]);
-    // if (!users) {
-    //   throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
-    // }
     return users.map((user) => getUserBasicInfo(user));
   }
 
