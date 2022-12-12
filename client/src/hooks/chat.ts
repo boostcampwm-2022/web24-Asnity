@@ -91,6 +91,18 @@ type UpdateChatQueryData = ({
   channelId: string;
 }) => void;
 
+type SpliceAndPushChatQueryData = ({
+  id,
+  channelId,
+  content,
+  senderId,
+  createdAt,
+  written,
+}: Chat & {
+  channelId: string;
+  realChatId: number;
+}) => void;
+
 /**
  * 채팅 id와 채팅 쿼리 데이터를 넘기면, 해당 채팅 id가 포함되어있는 페이지의 인덱스를 반환
  */
@@ -375,6 +387,45 @@ export const useSetChatsQueryData = () => {
     });
   };
 
+  /**
+   * id(fakeId)에 해당하는 채팅을 splice하고, realChatId를 가지는 새로운 채팅을 맨 뒤에 삽입한다.
+   */
+  const spliceAndPushChatQueryData: SpliceAndPushChatQueryData = ({
+    id,
+    realChatId,
+    channelId,
+    content,
+    senderId,
+    createdAt,
+    updatedAt,
+    type,
+    written,
+  }) => {
+    const key = queryKeyCreator.chat.list(channelId);
+
+    queryClient.setQueryData<InfiniteData<GetChatsResult>>(key, (data) => {
+      if (!data) return undefined;
+
+      return produce(data, (draft: InfiniteData<GetChatsResult>) => {
+        const chatList = draft.pages.at(-1)?.chat;
+
+        if (!chatList) return;
+        const targetIndex = chatList.findIndex((chat) => chat.id === id);
+
+        chatList.splice(targetIndex, 1);
+        chatList.push({
+          id: realChatId,
+          content,
+          senderId,
+          written,
+          createdAt,
+          updatedAt,
+          type,
+        });
+      });
+    });
+  };
+
   return {
     addChatsQueryData,
     updateChatToWrittenChat,
@@ -385,6 +436,7 @@ export const useSetChatsQueryData = () => {
     updateEditChatToFailedChat,
     updateChatQueryData,
     removeChatQueryData,
+    spliceAndPushChatQueryData,
   };
 };
 
