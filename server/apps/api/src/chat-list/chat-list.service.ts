@@ -6,6 +6,7 @@ import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-poin
 import { UserRepository } from '@repository/user.repository';
 import { makeChat } from '@chat-list/helper/makeChat';
 import { NOT_EXIST_UNREAD_CHAT } from '@utils/def';
+import { DeleteMessageDto } from '@chat-list/dto/delete-message.dto';
 
 @Injectable()
 export class ChatListService {
@@ -65,7 +66,9 @@ export class ChatListService {
     const chatListId = channel.chatLists[chatListIdx];
     const chatList = await this.chatListRespository.findById(chatListId);
 
-    const chat = JSON.parse(JSON.stringify(chatList)).chat;
+    const chat = JSON.parse(JSON.stringify(chatList)).chat.filter((message) => {
+      return !message.deletedAt;
+    });
 
     // chatListIdx === -1 : 채팅 처음 로딩 시
     if (Number(prev ?? next) === -1)
@@ -120,27 +123,65 @@ export class ChatListService {
 
     if (!channel) {
       throw new BadRequestException('채널이 존재하지 않습니다.');
+      // throw new HttpException('채널이 존재하지 않습니다', 401);
     }
-    const chatListId = Math.floor(+chat_id / 100);
+    const chatListIdx = Math.floor(+chat_id / 100);
     const chatNum = +chat_id % 100;
 
     const chatList = JSON.parse(
-      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListId])),
+      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListIdx])),
     );
 
     if (chatList.chat[chatNum].senderId !== requestUserId)
       throw new BadRequestException('자신이 보낸 채팅만 수정할 수 있습니다.');
 
-    chatList.chat[chatNum].content = content;
-    chatList.chat[chatNum].updatedAt = new Date();
+    const date = new Date();
 
-    await this.chatListRespository.updateOne({ _id: chatList._id }, chatList);
+    await this.chatListRespository.updateChatAtChatList(chatList._id, +chat_id, content, date);
 
-    return {
+    const result = {
       ...chatList.chat[chatNum],
+      content: content,
+      updatedAt: date,
       channelId: channel_id,
       communityId: channel.communityId,
       id: +chat_id,
     };
+
+    return result;
+  }
+
+  async deleteMessage(deleteMessageDto: DeleteMessageDto) {
+    const { requestUserId, channel_id, chat_id } = deleteMessageDto;
+    const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
+
+    if (!channel) {
+      throw new BadRequestException('채널이 존재하지 않습니다.');
+      // throw new HttpException('채널이 존재하지 않습니다', 401);
+    }
+    const chatListIdx = Math.floor(+chat_id / 100);
+    const chatNum = +chat_id % 100;
+
+    const chatList = JSON.parse(
+      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListIdx])),
+    );
+
+    if (chatList.chat[chatNum].senderId !== requestUserId)
+      throw new BadRequestException('자신이 보낸 채팅만 삭제할 수 있습니다.');
+
+    const date = new Date();
+
+    await this.chatListRespository.deleteChatAtChatList(chatList._id, +chat_id, date);
+
+    const result = {
+      ...chatList.chat[chatNum],
+      updatedAt: date,
+      deletedAt: date,
+      channelId: channel_id,
+      communityId: channel.communityId,
+      id: +chat_id,
+    };
+
+    return result;
   }
 }

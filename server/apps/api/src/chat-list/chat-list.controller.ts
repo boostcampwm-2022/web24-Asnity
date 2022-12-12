@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ChatListService } from '@chat-list/chat-list.service';
 import { JwtAccessGuard } from '@auth/guard';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@chat-list/dto';
 import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
 import { userToSenderPipe } from '@custom/pipe/userToSender.pipe';
+import { DeleteMessageDto } from '@chat-list/dto/delete-message.dto';
 
 @Controller('api/channels')
 export class ChatListController {
@@ -37,5 +38,11 @@ export class ChatListController {
   @UseGuards(JwtAccessGuard)
   async modifyMessage(@ReceivedData() modifyMessageDto: ModifyMessageDto) {
     return await this.chatListService.modifyMessage(modifyMessageDto);
+  }
+
+  @Delete(':channel_id/chats/:chat_id')
+  @UseGuards(JwtAccessGuard)
+  async deleteMessage(@ReceivedData() deleteMessageDto: DeleteMessageDto) {
+    return await this.chatListService.deleteMessage(deleteMessageDto);
   }
 }
