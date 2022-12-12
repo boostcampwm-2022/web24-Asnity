@@ -20,7 +20,7 @@ import React, { useRef, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
-import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
+import { sendChatPayload, SOCKET_EVENTS } from '@/sockets';
 
 const Channel = () => {
   const scrollbarContainerRef = useRef<Scrollbars>(null);
