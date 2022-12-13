@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,6 +12,7 @@ import { mongoDbServerModule } from '@api/modules/mongo-server.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { importConfigModule } from '@api/modules/Config.module';
 import { importRedisModule } from '@api/modules/Redis.module';
+// import { RedisModule } from '@api/modules/redis/Redis.module';
 
 @Module({
   imports: [
