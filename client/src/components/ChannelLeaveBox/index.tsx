@@ -8,6 +8,7 @@ import {
   useSetChannelQueryData,
 } from '@hooks/channel';
 import { useRootStore } from '@stores/rootStore';
+import { useSocketStore } from '@stores/socketStore';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -19,6 +20,7 @@ const ChannelLeaveBox: FC<Props> = ({ channel }) => {
   const navigate = useNavigate();
   const roomId = params.roomId as string;
   const communityId = params.communityId as string;
+  const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
@@ -26,6 +28,7 @@ const ChannelLeaveBox: FC<Props> = ({ channel }) => {
   const leaveChannelMutation = useLeaveChannelMutation({
     onSuccess: () => {
       removeChannelQueryData(communityId, channel._id);
+      socket.leaveChannel(channel._id);
 
       if (roomId === channel._id) navigate(`/communities/${communityId}`);
       closeCommonModal();
