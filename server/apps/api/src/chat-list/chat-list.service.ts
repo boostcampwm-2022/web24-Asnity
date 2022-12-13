@@ -6,12 +6,15 @@ import { GetUnreadMessagePointDto } from '@chat-list/dto/get-unread-message-poin
 import { UserRepository } from '@repository/user.repository';
 import { makeChat } from '@chat-list/helper/makeChat';
 import { NOT_EXIST_UNREAD_CHAT } from '@utils/def';
+import { DeleteMessageDto } from '@chat-list/dto/delete-message.dto';
+import { CommunityRepository } from '@repository/community.repository';
 
 @Injectable()
 export class ChatListService {
   constructor(
     private readonly channelRepository: ChannelRepository,
     private readonly chatListRespository: ChatListRespository,
+    private readonly communityRepository: CommunityRepository,
     private readonly userRepository: UserRepository,
   ) {}
   async restoreMessage(restoreMessageDto: RestoreMessageDto) {
@@ -44,7 +47,7 @@ export class ChatListService {
 
     return {
       ...restoreMessageDto,
-      chatId: chatNum,
+      id: +chatNum,
       communityId: channel.communityId,
       createdAt: date,
       updatedAt: date,
@@ -65,7 +68,9 @@ export class ChatListService {
     const chatListId = channel.chatLists[chatListIdx];
     const chatList = await this.chatListRespository.findById(chatListId);
 
-    const chat = JSON.parse(JSON.stringify(chatList)).chat;
+    const chat = JSON.parse(JSON.stringify(chatList)).chat.filter((message) => {
+      return !message.deletedAt;
+    });
 
     // chatListIdx === -1 : 채팅 처음 로딩 시
     if (Number(prev ?? next) === -1)
@@ -120,28 +125,64 @@ export class ChatListService {
 
     if (!channel) {
       throw new BadRequestException('채널이 존재하지 않습니다.');
+      // throw new HttpException('채널이 존재하지 않습니다', 401);
     }
-    const chatListId = Math.floor(+chat_id / 100);
+    const chatListIdx = Math.floor(+chat_id / 100);
     const chatNum = +chat_id % 100;
 
     const chatList = JSON.parse(
-      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListId])),
+      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListIdx])),
     );
 
     if (chatList.chat[chatNum].senderId !== requestUserId)
       throw new BadRequestException('자신이 보낸 채팅만 수정할 수 있습니다.');
 
-    chatList.chat[chatNum].content = content;
-    chatList.chat[chatNum].updatedAt = new Date();
+    const date = new Date();
 
-    await this.chatListRespository.updateOne({ _id: chatList._id }, chatList);
+    const updatedChatList = await this.chatListRespository.findOneAndUpdate(
+      { _id: chatList._id, 'chat.id': +chat_id },
+      { $set: { 'chat.$.content': content, 'chat.$.updatedAt': date } },
+    );
 
-    delete chatList.chat[chatNum].id;
-    return {
-      ...chatList.chat[chatNum],
-      channelId: channel_id,
-      communityId: channel.communityId,
-      chatId: chat_id,
-    };
+    const result = JSON.parse(JSON.stringify(updatedChatList)).chat[+chat_id];
+
+    return { ...result, communityId: channel.communityId, channelId: channel._id };
+  }
+
+  async deleteMessage(deleteMessageDto: DeleteMessageDto) {
+    const { requestUserId, channel_id, chat_id } = deleteMessageDto;
+    const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
+
+    if (!channel) {
+      throw new BadRequestException('채널이 존재하지 않습니다.');
+      // throw new HttpException('채널이 존재하지 않습니다', 401);
+    }
+    const chatListIdx = Math.floor(+chat_id / 100);
+    const chatNum = +chat_id % 100;
+
+    const chatList = JSON.parse(
+      JSON.stringify(await this.chatListRespository.findById(channel.chatLists[chatListIdx])),
+    );
+
+    const community = await this.communityRepository.findById(channel.communityId);
+
+    if (
+      ![community.managerId, channel.managerId, chatList.chat[chatNum].senderId].includes(
+        requestUserId,
+      )
+    ) {
+      throw new BadRequestException('채팅을 삭제할 수 없습니다.');
+    }
+
+    const date = new Date();
+
+    const updatedChatList = await this.chatListRespository.findOneAndUpdate(
+      { _id: chatList._id, 'chat.id': +chat_id },
+      { $set: { 'chat.$.updatedAt': date, 'chat.$.deletedAt': date } },
+    );
+
+    const result = JSON.parse(JSON.stringify(updatedChatList)).chat[+chat_id];
+
+    return { ...result, communityId: channel.communityId, channelId: channel._id };
   }
 }

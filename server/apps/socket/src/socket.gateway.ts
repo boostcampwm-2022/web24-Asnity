@@ -11,14 +11,21 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Logger, UseFilters } from '@nestjs/common';
-import { Join, NewMessage, ModifyMessage, InviteChannel } from '@socketInterface/index';
+import {
+  Join,
+  NewMessage,
+  ModifyMessage,
+  InviteChannel,
+  DeleteMessage,
+} from '@socketInterface/index';
 import { SocketWithAuth } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { WsCatchAllFilter } from './exceptions/socket-catch-error';
-import { RestoreMessageDto } from '@chat-list/dto';
 import { requestApiServer } from './axios/request-api-server';
-import { joinChannelInUsersURL, storeMessageURL } from './axios/request-api-urls';
+import { getMessageRequestURL, joinChannelInUsersURL } from './axios/request-api-urls';
 import { authMiddleware } from './middleware/authMiddleware';
+import { filterHttpMethod } from './axios/request-api.method';
+import { getBodyData } from './axios/requet-api-body';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
@@ -45,34 +52,33 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     );
   }
 
-  @SubscribeMessage('new-message')
-  async newMessageEvent(
-    @MessageBody() data: NewMessage,
+  @SubscribeMessage('chat')
+  async chatEvents(
+    @MessageBody() data: NewMessage | ModifyMessage | DeleteMessage,
     @ConnectedSocket() socket: SocketWithAuth,
   ) {
     const communityName = socket.nsp.name;
-    const { id, channelId, user_id, message, time } = data;
-    this.logger.log(
-      `New message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG][${time}]:${message}`,
-    );
-    const restoreMessageDto: RestoreMessageDto = {
-      channel_id: channelId,
-      type: 'TEXT',
-      content: message,
-      senderId: socket.user._id,
-    };
-    const result = await requestApiServer({
-      method: 'post',
-      path: storeMessageURL(channelId),
-      accessToken: socket.user.accessToken,
-      data: restoreMessageDto,
-    });
-    if (result) {
-      socket.to(channelId).emit('new-message', data);
+    const { chatType, channelId } = data;
+    if ('content' in data && data.content.length > 300) {
+      return { written: false };
     }
 
-    const written = result;
-    return { written };
+    this.logger.log(
+      `${chatType} message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${socket.user.nickname}`,
+    );
+    const result = await requestApiServer({
+      method: filterHttpMethod(chatType),
+      path: getMessageRequestURL(data),
+      accessToken: socket.user.accessToken,
+      data: getBodyData(data),
+    });
+    console.log(result);
+    if (result) {
+      socket.to(channelId).emit(`${chatType}-chat`, result);
+    }
+
+    const written = result ? true : false;
+    return { written, chatInfo: result };
   }
 
   @SubscribeMessage('invite-users-to-channel')
@@ -103,21 +109,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const isSuccess = result ? true : false;
     return { isSuccess };
-  }
-
-  @SubscribeMessage('modify-message')
-  modifyMessageEvent(
-    @MessageBody() data: ModifyMessage,
-    @ConnectedSocket() socket: SocketWithAuth,
-  ) {
-    const community = socket.nsp;
-    const communityName = socket.nsp.name;
-    const { channelId, user_id, message, messageId } = data;
-    this.logger.log(
-      `Modify message.\t[NS] : ${communityName},\t[channel] : ${channelId}\t[From] ${user_id},\t[MSG] : ${message},\t[Origin id] : ${messageId}`,
-    );
-    community.to(channelId).emit('modify-message', data);
-    // TODO : db에 message data 수정을 여기서할지 논의하기
   }
 
   afterInit(server: Server) {

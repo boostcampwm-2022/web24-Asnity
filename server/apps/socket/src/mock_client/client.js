@@ -1,40 +1,37 @@
 import { io } from 'socket.io-client';
 
-const port = 80;
-const url = 'http://49.50.167.202';
+const port = 8080;
+const url = 'http://localhost';
 // 형식은 'commu-{community id}'
 const accessToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzkwNDU4ODNmNDI2OGUxMjY3OGVmN2YiLCJuaWNrbmFtZSI6Im55IiwiaWF0IjoxNjcwNjY5OTgxLCJleHAiOjE2NzA2NzA4ODF9.X8-umkeMY0V5UoCyQJvEljbBSp5n-79BwD9-Sk-JYUg';
-const accessToken2 =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg0NWNiMTU0NDRmMGEyMGRlNTYxMDUiLCJuaWNrbmFtZSI6InNvb21hbiIsImlhdCI6MTY2OTY1MTM1NywiZXhwIjoxNjY5NjUyMjU3fQ.T3OGoF2hz4ew1iw2c4TA1tldHgTwDxkEyUFBkfUqeHo';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk0YzJlNGQxYTYxNWJmNTY0ZDVhY2YiLCJuaWNrbmFtZSI6Im5heW91bmciLCJpYXQiOjE2NzA4NDQyNDMsImV4cCI6MTY3MDg0NTE0M30.frX2jym5MdNPbmTD3c9xUeH38WbXArfY2SX-NVZlEzQ';
+
 const opt = {
   auth: {
     token: `Bearer ${accessToken}`,
   },
 };
 try {
-  const helloSocket = io(`${url}:${port}/socket/commu-hello`, opt);
-  const worldSocket = io(`${url}:${port}/socket/commu-world`, opt); // 다른 namesapce
+  const helloSocket = io(`${url}:${port}/socket/commu-63956c42d1a615bf564e3af6`, opt);
+  // const worldSocket = io(`${url}:${port}/socket/commu-world`, opt); // 다른 namesapce
 
   // console.log(helloSocket.connected); // 연결되었는지 true, false로 나옴
 
   // 처음 연결 후 channel 배열을 전달해야함
-  const result = helloSocket.emit('join', { channels: ['a', 'b', 'c'] });
-  worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
+  const result = helloSocket.emit('join', { channels: ['63956c5cd1a615bf564e3afe', 'b', 'c'] });
+  // worldSocket.emit('join', { channels: ['x', 'y', 'z'] });
 
-  helloSocket.on('new-message', ({ channelId, user_id, message, time }) => {
-    console.log(
-      `new message channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`,
-    );
+  helloSocket.on('new-chat', (data) => {
+    console.log(`new message channel : ${JSON.stringify(data)}`);
   });
-  worldSocket.on('new-message', ({ channelId, user_id, message, time }) => {
-    console.log(`new world channel : ${channelId}, sender : ${user_id}, msg : [${time}]${message}`);
+  // worldSocket.on('new-chat', (data) => {
+  //   console.log(`new world channel : ${JSON.stringify(data)}`);
+  // });
+
+  helloSocket.on('modify-chat', (data) => {
+    console.log(`modify message channel : ${JSON.stringify(data)}`);
   });
-  helloSocket.on('modify-message', ({ channelId, user_id, messageId, message }) => {
-    console.log(
-      `modify message channel : ${channelId}, sender : ${user_id}, msg(${messageId}) : ${message}`,
-    );
-  });
+
   helloSocket.on('connect_error', (err) => {
     console.log(err instanceof Error); // true
     console.log(err.message); // not authorized
@@ -43,38 +40,42 @@ try {
     console.log('fail error ', message);
   });
   // message 전송
+  // helloSocket.emit(
+  //   'chat',
+  //   {
+  //     chatType: 'new',
+  //     channelId: '63956c5cd1a615bf564e3afe',
+  //     content: '화요일 좋아',
+  //   },
+  //   (c) => {
+  //     console.log(c.written, ' this is hello ', JSON.stringify(c.chatInfo));
+  //   },
+  // );
+
+  // worldSocket.emit(
+  //   'message',
+  //   {
+  //     type: 'new',
+  //     channelId: 'x',
+  //     content: 'hi its third message',
+  //   },
+  //   (c) => {
+  //     console.log(c.written, ' this is world', JSON.stringify(c.chatInfo));
+  //   },
+  // );
+
   helloSocket.emit(
-    'new-message',
+    'chat',
     {
-      channelId: '639086392258e789af7d736e',
-      user_id: '639045883f4268e12678ef7f',
-      message: 'hi its third message',
-      time: new Date(),
+      chatType: 'modify',
+      channelId: '63956c5cd1a615bf564e3afe',
+      chatId: '6',
+      content: '맞앙, 화요일 싫어',
     },
     (c) => {
-      console.log(c.written, ' this is hello');
+      console.log(c.written, ' modify done');
     },
   );
-
-  worldSocket.emit(
-    'new-message',
-    {
-      channelId: 'x',
-      user_id: '639045883f4268e12678ef7f',
-      message: 'hi its third message',
-      time: new Date(),
-    },
-    (c) => {
-      console.log(c.written, ' this is world');
-    },
-  );
-
-  helloSocket.emit('modify-message', {
-    channelId: '639086392258e789af7d736e',
-    user_id: '311',
-    messageId: '0a2',
-    message: 'hi this is modify message',
-  });
 } catch (error) {
   console.log(error);
 }

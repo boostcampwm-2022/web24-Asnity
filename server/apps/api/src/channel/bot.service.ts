@@ -3,9 +3,10 @@ import { makeChat } from '@chat-list/helper/makeChat';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { ChannelRepository } from '@repository/channel.repository';
 import { Injectable } from '@nestjs/common';
+import { getKoreanTime } from '@channel/helper';
 
 const makeBotMessageDate = () =>
-  new Date().toLocaleDateString('ko', {
+  getKoreanTime().toLocaleDateString('ko', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
+import { BOT_ID } from '@utils/def';
 
 @Injectable()
 export class UserRepository {
@@ -22,8 +23,8 @@ export class UserRepository {
     return await this.userModel.findOne(condition);
   }
 
-  async findOr(conditions: any) {
-    return await this.userModel.find({ $or: conditions });
+  async findUser(conditions: any) {
+    return await this.userModel.find({ $and: [{ $or: conditions }, { _id: { $ne: BOT_ID } }] });
   }
 
   async findById(_id: string) {

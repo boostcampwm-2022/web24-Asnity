@@ -15,6 +15,7 @@ import { getChannelBasicInfo } from '@channel/helper/getChannelBasicInfo';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
+import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
 
 @Injectable()
 export class CommunityService {
@@ -55,17 +56,18 @@ export class CommunityService {
             const channelInfo = getChannelBasicInfo(channel);
             // 안읽은 채팅 있는 지 확인
             const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
+            const lastChatTime = lastChatList.chat.at(-1).get('createdAt');
 
-            const lastChatTime = lastChatList.chat.at(-1).createdAt;
-            channelInfo['existUnreadChat'] =
-              channels.get(channelId).getTime() <= new Date(lastChatTime).getTime();
+            channelInfo['existUnreadChat'] = channels.get(channelId).getTime() <= lastChatTime;
             channelsInfo.push(channelInfo);
           }),
         );
+        channelsInfo.sort(sortedByCreateTime);
         const communityInfo = getCommunityBasicInfo(community, channelsInfo);
         communitiesInfo.push(communityInfo);
       }),
     );
+    communitiesInfo.sort(sortedByCreateTime);
     return { communities: communitiesInfo };
   }
   async createCommunity(createCommunityDto: CreateCommunityDto) {
@@ -200,7 +202,7 @@ export class CommunityService {
     return this.userRepository.deleteObject(
       { _id: user_id },
       {
-        communities: { _id: community_id },
+        [`communities.${community_id}`]: 1,
       },
     );
   }
@@ -226,9 +228,13 @@ export class CommunityService {
       throw new BadRequestException(`요청한 사용자 _id(${requestUserId})가 올바르지 않습니다.`);
     } else if (!community) {
       throw new BadRequestException(`요청한 커뮤니티 _id가 올바르지 않습니다.`);
-    } else if (requestUserId === community.managerId) {
+    } else if (requestUserId === community.managerId && community.users.length > 1) {
       throw new BadRequestException(`매니저는 커뮤니티에서 탈퇴할 수 없습니다. 매니저 위임하세요.`);
+    } else if (requestUserId === community.managerId && community.users.length === 1) {
+      this.deleteCommunity(requestUserAboutCommunityDto);
+      return;
     }
+
     // user doc에서 community 삭제하기
     await this.deleteCommunityAtUserDocument(requestUserId, community_id);
     // community doc에서 users에 사용자 삭제하기

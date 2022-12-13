@@ -93,16 +93,17 @@ export class ChannelService {
 
     // channel 관리자이고 channel의 users에 2명이상 존재 시 채널 퇴장 불가능
     const channel = await this.channelRepository.findOne({
-      channel_id: channel_id,
+      _id: channel_id,
       deletedAt: undefined,
     });
+
     if (!channel) throw new BadRequestException('존재하지 않는 채널입니다.');
     if (requestUserId === channel.managerId) {
       if (channel.users.length > 1) {
         throw new BadRequestException('관리자를 변경하고 채널을 퇴장하십시오!');
       }
       // 관리자 혼자 채널에 존재하고 채널을 나갈 경우 채널 제거
-      this.deleteChannel({ channel_id, requestUserId });
+      await this.deleteChannel({ channel_id, requestUserId });
     }
 
     // channel도큐먼트에 users필드에서 user_id 제거
@@ -121,6 +122,7 @@ export class ChannelService {
     // 관리자가 아니면 채널 삭제 에러 처리
     const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
     if (!channel) throw new BadRequestException('존재하지 않는 채널입니다.');
+
     if (requestUserId !== channel.managerId) {
       throw new BadRequestException('관리자가 아닙니다!');
     }
@@ -160,13 +162,17 @@ export class ChannelService {
 
     const channelInfo = getChannelBasicInfo(await this.channelRepository.findById(channel_id));
     if (!channelInfo) throw new BadRequestException();
-    return { ...channelInfo, lastRead: false };
+    return { ...channelInfo, existUnreadChat: false };
   }
 
   async updateLastRead(updateLastReadDto: UpdateLastReadDto) {
     const { community_id, channel_id, requestUserId } = updateLastReadDto;
-    const channel = await this.channelRepository.findOne({ _id: channel_id, deletedAt: undefined });
-    if (!channel) throw new BadRequestException('존재하지 않는 채널입니다.');
+    const channel = await this.channelRepository.findOne({
+      _id: channel_id,
+      deletedAt: undefined,
+      users: requestUserId,
+    });
+    if (!channel) throw new BadRequestException('사용자가 존재하는 채널이 아닙니다.');
 
     // 유저 도큐먼트의 커뮤니티:채널 필드 업데이트
     await this.userRepository.updateObject(
