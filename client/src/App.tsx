@@ -14,7 +14,6 @@ import Root from '@pages/Root';
 import SignIn from '@pages/SignIn';
 import SignUp from '@pages/SignUp';
 import UnAuthorizedLayer from '@pages/UnAuthorizedLayer';
-import communitiesLoader from '@routes/communitiesLoader';
 import HomeErrorElement from '@routes/HomeErrorElement';
 import React from 'react';
 import {
@@ -26,18 +25,12 @@ import {
   Outlet,
 } from 'react-router-dom';
 
-import queryClient from './queryClient';
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Root />} />
       <Route element={<AuthorizedLayer />}>
-        <Route
-          element={<Home />}
-          loader={communitiesLoader(queryClient)}
-          errorElement={<HomeErrorElement />}
-        >
+        <Route element={<Home />} errorElement={<HomeErrorElement />}>
           <Route path="dms" element={<DM />}>
             <Route index element={<Friends />} />
             <Route
