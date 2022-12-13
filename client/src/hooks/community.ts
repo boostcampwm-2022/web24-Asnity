@@ -25,8 +25,8 @@ import queryKeyCreator from 'src/queryKeyCreator';
 export const useCommunitiesQuery = () => {
   const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities, {
-    refetchInterval: 1000 * 10,
     staleTime: 1000 * 10,
+    cacheTime: 1000 * 10,
   });
 
   return query;
