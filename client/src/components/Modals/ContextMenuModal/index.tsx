@@ -30,8 +30,6 @@ const ContextMenuModal: FC<Props> = () => {
     ...contentWrapperStyle,
   };
 
-  console.log(modalContentStyle);
-
   return (
     <ReactModal
       isOpen={isOpen}
