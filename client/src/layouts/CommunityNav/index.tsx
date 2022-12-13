@@ -35,12 +35,18 @@ const CommunityNav = () => {
   const handleRightClickChannelItem =
     (channel: JoinedChannel): MouseEventHandler<HTMLLIElement> =>
     (e) => {
+      const contextMenuHeight = 177;
+      const top =
+        e.clientY + contextMenuHeight > window.innerHeight
+          ? e.clientY - contextMenuHeight
+          : e.clientY;
+
       openContextMenuModal({
         content: <ChannelContextMenu channel={channel} />,
         contentWrapperStyle: {
           borderRadius: 16,
           left: e.clientX,
-          top: e.clientY,
+          top,
         },
       });
     };
