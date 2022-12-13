@@ -22,6 +22,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
 
+/**
+ * - 커뮤니티 목록을 가져옵니다.
+ * - `refetchInterval`을 바꾸면 안됩니다.
+ * - @hooks/combine.ts - useUpdateLastReadAndFetchCommunitiesIntervalEffect 참고
+ * - \**#388** (https://github.com/boostcampwm-2022/web24-Asnity/pull/388)
+ */
 export const useCommunitiesQuery = () => {
   const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities, {
