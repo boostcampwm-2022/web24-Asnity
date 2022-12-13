@@ -27,11 +27,15 @@ const SocketLayer = () => {
   const setSockets = useSocketStore((state) => state.setSockets);
   const socketArr = useMemo(() => Object.values(sockets), [sockets]);
   const communitySummariesQuery = useCommunitiesQuery();
-  const communitySummaries = communitySummariesQuery.data ?? [];
+  const communitySummaries = communitySummariesQuery.data || [];
   const communityIds = useMemo(
     () => communitySummaries.map((communitySummary) => communitySummary._id),
     [communitySummaries],
   );
+  const channelsMap = communitySummaries.reduce((acc, { _id, channels }) => {
+    acc[_id] = channels.map((channel) => channel._id);
+    return acc;
+  }, {} as Record<string, string[]>);
 
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
 
@@ -54,26 +58,17 @@ const SocketLayer = () => {
       return acc;
     }, {} as Sockets);
 
-    setSockets(newSockets);
-
-    if (firstEffect.current) {
-      firstEffect.current = false;
-
-      // Record<communityId, channelId[]>
-      const channelsMap = communitySummaries.reduce(
-        (acc, { _id, channels }) => {
-          acc[_id] = channels.map((channel) => channel._id);
-          return acc;
-        },
-        {} as Record<string, string[]>,
-      );
-
-      // join channels
-      communityIds.forEach((communityId) => {
-        newSockets[communityId]?.joinChannels(channelsMap[communityId]);
-      });
+    // 이전 상태와 비교해서 communityIds 개수가 다를 때만 소켓 상태 업데이트
+    if (Object.keys(sockets).length !== Object.keys(newSockets).length) {
+      setSockets(newSockets);
     }
-  }, [communityIds]);
+
+    // join channels
+    firstEffect.current = false;
+    communityIds.forEach((communityId) => {
+      newSockets[communityId]?.joinChannels(channelsMap[communityId]);
+    });
+  }, [communitySummaries]);
 
   useEffect(() => {
     if (firstEffect.current) return undefined;
