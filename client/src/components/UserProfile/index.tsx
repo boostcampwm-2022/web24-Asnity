@@ -8,10 +8,13 @@ interface Props extends ComponentPropsWithoutRef<'div'> {
   user: User;
 }
 
-const UserProfile: FC<Props> = ({ user: { nickname, profileUrl, status } }) => {
+const UserProfile: FC<Props> = ({ user }) => {
+  const { nickname, profileUrl, status } = user;
+
   return (
     <div className="flex items-center gap-[11px] py-2 max-w-[220px]">
       <Avatar
+        user={user}
         size="sm"
         variant="circle"
         name={nickname}
