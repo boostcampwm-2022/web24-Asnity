@@ -450,6 +450,9 @@ export const useUnreadChatIdQuery = (channelId: string) => {
   const query = useQuery<GetUnreadChatIdResult['unreadChatId'], AxiosError>(
     key,
     () => getUnreadChatId(channelId),
+    {
+      cacheTime: 0,
+    },
   );
 
   return query;
