@@ -29,9 +29,9 @@ const UserActionBox: FC<Props> = ({
   const signOutMutation = useSignOutMutation({
     onSuccess: () => {
       setAccessToken(null);
-      closeCommonModal();
       queryClient.clear();
       clearSockets();
+      closeCommonModal();
       toast.success('성공적으로 로그아웃하였습니다!');
       navigate('/sign-in', {
         state: { alreadyTriedReissueToken: true },
