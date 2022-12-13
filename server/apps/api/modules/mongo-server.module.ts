@@ -13,6 +13,8 @@ export const mongoDbServerModule = () =>
     },
   });
 
+export const mongoDbRealServerModule = () => MongooseModule.forRoot(process.env.MONGODB_ATLAS);
+
 export const mongoDbServerCleanup = async () => {
   await mongod.cleanup();
 };
