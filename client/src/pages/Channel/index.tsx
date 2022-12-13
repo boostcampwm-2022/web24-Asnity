@@ -169,7 +169,7 @@ const Channel = () => {
       </header>
       <div className="flex h-full">
         <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full pb-4">
-          {unreadChatIdQuery.data && unreadChatIdQuery.data !== -1 && (
+          {unreadChatIdQuery.data !== undefined && unreadChatIdQuery.data > -1 && (
             <div className="flex justify-between items-center w-full h-8 bg-indigo font-medium text-offWhite rounded-b-md text-s14 px-3">
               <div>위에 읽지 않은 메시지가 있어요</div>
               <button
@@ -196,7 +196,7 @@ const Channel = () => {
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background pt-7">
               {chatsInfiniteQuery.data &&
                 channelWithUsersMap.data &&
-                unreadChatIdQuery.data && (
+                unreadChatIdQuery.data !== undefined && (
                   <ChatList
                     communityManagerId={communityManagerId}
                     channelManagerId={channelManagerId}
