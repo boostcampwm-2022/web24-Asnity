@@ -9,7 +9,7 @@ import { merge } from 'webpack-merge';
 import common from './webpack.common';
 
 const config: Configuration = {
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
   mode: 'production',
   module: {
     rules: [
