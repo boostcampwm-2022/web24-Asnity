@@ -26,6 +26,7 @@ export const useCommunitiesQuery = () => {
   const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities, {
     refetchInterval: 1000 * 10,
+    staleTime: 1000 * 10,
   });
 
   return query;
@@ -50,6 +51,7 @@ export const useCommunitiesMapQuery = () => {
     key,
     getCommunities,
     {
+      staleTime: 1000 * 10,
       select: (communities) =>
         communities.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
     },
