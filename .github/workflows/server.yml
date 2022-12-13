@@ -36,6 +36,7 @@ jobs:
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             ERROR_SLACK_WEBHOOK=${{ secrets.ERROR_SLACK_WEBHOOK }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
+            MONGODB_ATLAS=${{secrets.MONGODB_ATLAS}}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
