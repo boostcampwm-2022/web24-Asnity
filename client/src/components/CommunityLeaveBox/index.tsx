@@ -25,6 +25,7 @@ const CommunityLeaveBox: FC<Props> = ({ community }) => {
 
   const leaveCommunityMutation = useLeaveCommunityMutation({
     onSuccess: () => {
+      socket.leaveCommunity();
       socket.disconnect();
 
       setCommunities((prevCommunities) =>
