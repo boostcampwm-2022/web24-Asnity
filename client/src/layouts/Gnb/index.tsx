@@ -43,11 +43,18 @@ const Gnb = () => {
   ) => MouseEventHandler<HTMLAnchorElement> = (community) => (e) => {
     e.preventDefault();
 
+    // 컨텍스트 메뉴의 높이는 약 180px
+    const contextMenuHeight = 177;
+    const top =
+      e.clientY + contextMenuHeight > window.innerHeight
+        ? e.clientY - contextMenuHeight
+        : e.clientY;
+
     openContextMenuModal({
       content: <CommunityContextMenu community={community} />,
       contentWrapperStyle: {
         left: e.clientX,
-        top: e.clientY,
+        top,
         borderRadius: 16,
       },
     });
