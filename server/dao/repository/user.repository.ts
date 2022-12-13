@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto } from '@user/dto/create-user.dto';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectRedis() private readonly redis: Redis,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     await this.userModel.create(createUserDto);
@@ -22,7 +27,19 @@ export class UserRepository {
   }
 
   async findById(_id: string) {
-    return await this.userModel.findById(_id);
+    const result = await this.userModel.findById(_id);
+    this.redis.set(`user/${_id}`, JSON.stringify(result));
+    return result;
+  }
+
+  async findByIdAfterCache(_id: string) {
+    const cache = await this.redis.get(`user/${_id}`);
+    if (cache) {
+      return JSON.parse(cache);
+    }
+    const result = await this.userModel.findById(_id);
+    await this.redis.set(`user/${_id}`, JSON.stringify(result));
+    return result;
   }
 
   async updateOne(filter, updateField) {

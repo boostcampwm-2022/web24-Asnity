@@ -34,7 +34,7 @@ export class CommunityService {
     await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
-        const community = await this.communityRepository.findById(_id);
+        const community = await this.communityRepository.findByIdAfterCache(_id);
         if (!community) {
           throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
         }
