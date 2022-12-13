@@ -116,7 +116,9 @@ export const useReissueTokenMutation: UseReissueTokenMutation = (
 
 export const useMyInfoQuery = () => {
   const key = queryKeyCreator.me();
-  const query = useQuery<GetMyInfoResult, AxiosError>(key, getMyInfo);
+  const query = useQuery<GetMyInfoResult, AxiosError>(key, getMyInfo, {
+    staleTime: 1000 * 100,
+  });
 
   return query;
 };
