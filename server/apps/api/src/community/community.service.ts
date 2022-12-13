@@ -57,9 +57,10 @@ export class CommunityService {
             // 안읽은 채팅 있는 지 확인
             const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
 
-            const lastChatTime = lastChatList.chat.at(-1).createdAt;
+            const lastChatTime = lastChatList.chat.at(-1).get('createdAt');
+
             channelInfo['existUnreadChat'] =
-              channels.get(channelId).getTime() <= new Date(lastChatTime).getTime();
+              new Date(channels.get(channelId).getTime()) <= lastChatTime;
             channelsInfo.push(channelInfo);
           }),
         );
