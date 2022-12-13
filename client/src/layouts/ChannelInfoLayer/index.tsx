@@ -2,7 +2,7 @@ import ChannelCard from '@components/ChannelCard';
 import ErrorIcon from '@components/ErrorIcon';
 import ErrorMessage from '@components/ErrorMessage';
 import Spinner from '@components/Spinner';
-import { useCommunitiesMapQueryData } from '@hooks/community';
+import { useCommunitiesMapQuery } from '@hooks/community';
 import { useCommunityUsersMapQuery } from '@hooks/user';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -10,8 +10,8 @@ import { useParams } from 'react-router-dom';
 
 const ChannelInfoLayer = () => {
   const { communityId } = useParams() as { communityId: string };
-  const communitiesMapQueryData = useCommunitiesMapQueryData();
-  const communitySummary = communitiesMapQueryData?.[communityId];
+  const communitiesMapQuery = useCommunitiesMapQuery();
+  const communitySummary = communitiesMapQuery.data?.[communityId];
   const communityUsersMapQuery = useCommunityUsersMapQuery(communityId);
 
   const isLoading = !communitySummary || communityUsersMapQuery.isLoading;
