@@ -26,13 +26,15 @@ interface ClientIOConstructor {
 
 export default class ClientIO {
   private io: Socket;
+  private communityId: string;
 
+  static joinedChannels: Record<string, string[] | undefined> = {};
   static createOpts({ token }: { token: string }) {
     return { auth: { token: `Bearer ${token}` } };
   }
 
-  // 예시: const socket = new ClientIO({ communityId, ClientIO.createOpts({ token }) });
   constructor({ communityId, opts }: ClientIOConstructor) {
+    this.communityId = communityId;
     this.io = io(createConnectionUrl(communityId), opts);
   }
 
@@ -67,11 +69,39 @@ export default class ClientIO {
     this.io.emit(eventName, payload);
   }
 
-  /** 서버 Room에 소켓 등록하기 위한 메서드 */
+  /**
+   * ### 서버 Room에 소켓 등록하기 위한 메서드
+   * - 서버에서 room을 set으로 관리하기 때문에, 전체 채널 join요청을 보내도 상관 X (등록된 채널을 중복해서 요청해도 된다.)
+   * - 따라서 채널을 하나씩 비교하지 않고, `queryClient`에서 관리하는 스토어에서의 채널 개수와,
+   * `ClientIO`에서 관리하는 스토어에서의 채널 개수가 다른지만 비교한 뒤 다르다면 요청한다.
+   * - 요청을 보내면 즉시 `queryClient`의 채널 정보와 `ClientIO`의 채널 정보를 동기화한다.
+   */
   joinChannels(channelIds: string[]) {
-    this.emit<JoinChannelsPayload, never>(SOCKET_EVENTS.JOIN_CHANNEL, {
-      channels: channelIds,
-    });
+    const { communityId } = this;
+    const target = ClientIO.joinedChannels[communityId];
+
+    if (target === undefined || target.length !== channelIds.length) {
+      ClientIO.joinedChannels[communityId] = channelIds;
+      this.emit<JoinChannelsPayload, never>(SOCKET_EVENTS.JOIN_CHANNEL, {
+        channels: channelIds,
+      });
+    }
+  }
+
+  leaveChannel(channelId: string) {
+    const { communityId } = this;
+
+    ClientIO.joinedChannels[communityId] = ClientIO.joinedChannels[
+      communityId
+    ]?.filter((_channelId) => _channelId !== channelId);
+    /** 필요하다면, 여기서 서버에 채널 join을 해제하는 emit을 보낼 수 있다. */
+  }
+
+  leaveCommunity() {
+    const { communityId } = this;
+
+    /** 필요하다면, 여기서 서버에 채널 join을 해제하는 emit을 보낼 수 있다. */
+    ClientIO.joinedChannels[communityId] = undefined;
   }
 
   sendChat(
