@@ -194,14 +194,17 @@ const Channel = () => {
           >
             <div ref={intersectionObservable} />
             <ul className="flex flex-col gap-3 [&>*:hover]:bg-background pt-7">
-              {chatsInfiniteQuery.data && channelWithUsersMap.data && (
-                <ChatList
-                  communityManagerId={communityManagerId}
-                  channelManagerId={channelManagerId}
-                  pages={chatsInfiniteQuery.data.pages}
-                  users={channelWithUsersMap.data.users}
-                />
-              )}
+              {chatsInfiniteQuery.data &&
+                channelWithUsersMap.data &&
+                unreadChatIdQuery.data && (
+                  <ChatList
+                    communityManagerId={communityManagerId}
+                    channelManagerId={channelManagerId}
+                    pages={chatsInfiniteQuery.data.pages}
+                    users={channelWithUsersMap.data.users}
+                    unreadChatId={unreadChatIdQuery.data}
+                  />
+                )}
             </ul>
           </Scrollbars>
           <ChatForm
