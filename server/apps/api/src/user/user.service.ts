@@ -55,6 +55,7 @@ export class UserService {
     return users.map((user) => getUserBasicInfo(user));
   }
 
+  // TODO : feature 수정으로 인해 안쓰는 코드로 유추 재확인
   async getRelatedUsers(_id: string, option: string) {
     const user = await this.userRepository.findById(_id);
     if (!user) {

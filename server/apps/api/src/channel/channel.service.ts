@@ -80,7 +80,7 @@ export class ChannelService {
     if (!channel) throw new BadRequestException('존재하지 않는 채널입니다.');
     const users = await Promise.all(
       channel.users.map(async (user_id) => {
-        const user = await this.userRepository.findById(user_id);
+        const user = await this.userRepository.findByIdAfterCache(user_id);
         return getUserBasicInfo(user);
       }),
     );

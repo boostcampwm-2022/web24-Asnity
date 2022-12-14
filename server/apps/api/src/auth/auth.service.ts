@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   async getMyInfo(userId: string) {
-    const myInfo = await this.userRepository.findById(userId);
+    const myInfo = await this.userRepository.findByIdAfterCache(userId);
     return getUserBasicInfo(myInfo);
   }
 }
