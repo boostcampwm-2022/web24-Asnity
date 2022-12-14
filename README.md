@@ -52,7 +52,7 @@
 <br />
 
 <div align="center">
-  <img src="https://img.shields.io/badge/MongoDB-4.4.17-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/Mongoose-6.7.2-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/NestJS-9.1.5-E0234E?logo=NestJS">
+  <img src="https://img.shields.io/badge/MongoDB-4.4.17-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/Mongoose-6.7.2-47A248?logo=mongodb"> <img src="https://img.shields.io/badge/NestJS-9.1.5-E0234E?logo=NestJS"> <img src="https://img.shields.io/badge/Redis-7.0.6-DC382D?logo=Redis">
 </div>
 
 <div align="center">
@@ -65,4 +65,4 @@
 <br />
 </div>
 
-![stack](https://user-images.githubusercontent.com/79135734/206748158-d0659242-4034-4cf3-bbab-95418d49bf54.PNG)
+![image](https://user-images.githubusercontent.com/34162358/207605404-3da6f4f9-65a6-4167-992a-6eef41ccebd9.png)
