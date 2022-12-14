@@ -12,3 +12,12 @@ services:
     ports:
       - "8080:8080"
     restart: "unless-stopped"
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass {{REDIS_PW}} --port 6379
+    restart: always
+    hostname: 'localhost'
+    network_mode: 'host'
+    ports:
+      - "6379:6379"
+    container_name: cache-redis
