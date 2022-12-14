@@ -224,7 +224,6 @@ export class CommunityService {
     const { requestUserId, community_id } = requestUserAboutCommunityDto;
     const user = await this.userRepository.findById(requestUserId);
     const community = await this.communityRepository.findById(community_id);
-    console.log(community);
     if (!user) {
       throw new BadRequestException(`요청한 사용자 _id(${requestUserId})가 올바르지 않습니다.`);
     } else if (!community) {
