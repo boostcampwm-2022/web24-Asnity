@@ -14,9 +14,9 @@ services:
     restart: "unless-stopped"
   redis:
     image: redis:alpine
-    command: redis-server --requirepass {{REDIS_PW}} --port 6379
+    command: redis-server
     restart: always
-    hostname: 'localhost'
+    hostname: cache-redis
     network_mode: 'host'
     ports:
       - "6379:6379"
