@@ -44,6 +44,9 @@ export class UserRepository {
   }
 
   async updateOne(filter, updateField) {
+    if (filter._id) {
+      this.redis.del(`user/${filter._id}`);
+    }
     await this.userModel.updateOne(filter, updateField);
   }
 
@@ -52,30 +55,32 @@ export class UserRepository {
   }
 
   async updateObject(filter, appendElement) {
+    if (filter._id) {
+      this.redis.del(`user/${filter._id}`);
+    }
     return await this.userModel.updateOne(filter, { $set: appendElement });
   }
 
   async deleteObject(filter, appendElement) {
+    if (filter._id) {
+      this.redis.del(`user/${filter._id}`);
+    }
     return await this.userModel.updateOne(filter, { $unset: appendElement }, { new: true });
   }
 
   async deleteElementAtArr(filter, removeElement) {
+    if (filter._id) {
+      this.redis.del(`user/${filter._id}`);
+    }
     await this.userModel.updateOne(filter, { $pullAll: removeElement });
-  }
-
-  async deleteElementAtArr2(_id, removeElement) {
-    await this.userModel.findByIdAndUpdate(_id, { $pullAll: removeElement }, { new: true });
   }
 
   async addArrAtArr(filter, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
+    if (filter._id) {
+      this.redis.del(`user/${filter._id}`);
+    }
     return await this.userModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
-
-  // async set(filter, obj) {
-  //   const user = new User();
-  //
-  //   this.userModel.find(filter).communities.set();
-  // }
 }
