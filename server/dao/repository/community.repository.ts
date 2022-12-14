@@ -23,11 +23,8 @@ export class CommunityRepository {
   }
 
   async findByIdAfterCache(_id: string) {
-    // await this.redis.del(`community/${_id}`);
     const cache = await this.redis.get(`community/${_id}`);
     if (cache) {
-      console.log(JSON.parse(cache));
-      console.log('hit cache');
       return JSON.parse(cache);
     }
     const result = await this.communityModel.findById(_id);
@@ -71,7 +68,7 @@ export class CommunityRepository {
   async deleteElementAtArr(filter, removeElement) {
     const result = await this.communityModel.updateOne(filter, { $pullAll: removeElement });
     if (filter._id) {
-      this.redis.del(`community/${filter._id}`);
+      await this.redis.del(`community/${filter._id}`);
     }
   }
 }
