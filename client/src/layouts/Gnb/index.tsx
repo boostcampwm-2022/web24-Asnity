@@ -81,11 +81,11 @@ const Gnb = () => {
         <div className="w-full">
           <GnbItemContainer
             isActive={pathname === '/dms'}
-            tooltip="Direct Message"
+            tooltip="Asnity 홈으로"
           >
             <Link to="/dms">
               <Avatar
-                name="Direct Message"
+                name="Asnity"
                 size="sm"
                 profileUrl={LOGO_IMG_URL}
                 variant="rectangle"
