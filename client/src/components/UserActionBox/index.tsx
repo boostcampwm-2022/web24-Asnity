@@ -18,9 +18,9 @@ interface Props {
   user: User;
 }
 
-const UserActionBox: FC<Props> = ({
-  user: { status, nickname, profileUrl, createdAt },
-}) => {
+const UserActionBox: FC<Props> = ({ user }) => {
+  const { status, nickname, profileUrl, createdAt } = user;
+
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
   const setAccessToken = useTokenStore((state) => state.setAccessToken);
   const clearSockets = useSocketStore((state) => state.clearSockets);
@@ -52,6 +52,7 @@ const UserActionBox: FC<Props> = ({
       <div className="flex justify-between items-center">
         <div>
           <Avatar
+            user={user}
             size="md"
             variant="circle"
             name={nickname}

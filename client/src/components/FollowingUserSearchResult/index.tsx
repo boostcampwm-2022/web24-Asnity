@@ -28,11 +28,17 @@ const FollowingUserSearchResult: FC<Props> = ({ users }) => {
   const handleMoreButtonClick: (
     user: User,
   ) => React.MouseEventHandler<HTMLButtonElement> = (user) => (e) => {
+    const contextMenuWidth = 302;
+    const left =
+      e.clientX + contextMenuWidth > window.innerWidth
+        ? e.clientX - contextMenuWidth
+        : e.clientX;
+
     openContextMenuModal({
       content: <FollowingUserContextMenu user={user} />,
       contentWrapperStyle: {
         borderRadius: 16,
-        left: e.clientX,
+        left,
         top: e.clientY,
       },
     });
