@@ -30,16 +30,29 @@
 
 ## 프로젝트 소개
 아스니티(Asmi + Community)는 디스코드와 슬랙을 참고한 실시간 채팅 서비스입니다.
-실시간 통신을 통해 커뮤니티에 속한 사용자들끼리 채팅할 수 있으며, 귤 까먹으면서 채팅(시간제한이 있는 채팅)을 할 수 있는 기능이 있습니다.
+실시간 통신을 통해 커뮤니티에 속한 사용자들끼리 채팅할 수 있습니다.
+
+## 프로젝스 소개 자료
+
+📎 [배포 링크](http://www.asnity.site) : http://www.asnity.site
+
+🖥 [데모 영상](https://www.youtube.com/watch?v=2gI3OlJXAZQ)
+
+📽 [발표 영상](https://youtu.be/vEL2TTPZ9tk)
+
+📋 [발표 PPT](https://docs.google.com/presentation/d/1kduK9v3o7nCGQghsplh-WrS9VVjWvp8R/edit?usp=sharing&ouid=115620821189866783380&rtpof=true&sd=true)
 
 ## Wiki
 
+- [Team Notion](https://grand-beanie-e57.notion.site/Asnity-cbd4dcce58f540b4b5b7ff33c8cea984)
 - [기획서](https://github.com/boostcampwm-2022/web24-Asnity/wiki/%EA%B8%B0%ED%9A%8D%EC%84%9C)
 - [Architecture](https://github.com/boostcampwm-2022/web24-Asnity/wiki/Architecture)
 - [Skill Spec](https://github.com/boostcampwm-2022/web24-Asnity/wiki/Skill-Spec)
 - [Database ERD](https://github.com/boostcampwm-2022/web24-Asnity/wiki/DB-Diagram)
 - [Backlog](https://lake-duke-f63.notion.site/25c4c9e46d464ea1a82a68c8399ceaf0?v=ea1b4f77e71f4d17b2be0ebdc9c03702)
- 
+
+
+
 ## Skill Spec
 <div align="center">
 <img src="https://img.shields.io/badge/Node.js-16.17.0-339933?logo=node.js"> <img src="https://img.shields.io/badge/TypeScript-4.7.4-3178C6?logo=typescript"> <img src="https://img.shields.io/badge/Jest-29.3.1-C21325?logo=jest">
