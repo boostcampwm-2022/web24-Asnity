@@ -4,7 +4,7 @@ import ErrorMessage from '@components/ErrorMessage';
 import FullScreenSpinner from '@components/FullScreenSpinner';
 import CommonModal from '@components/Modals/CommonModal';
 import ContextMenuModal from '@components/Modals/ContextMenuModal';
-import { useUpdateLastReadAndFetchCommunitiesIntervalEffect } from '@hooks/combine';
+import { useUpdateLastReadAndInvalidateCommunitiesInterval } from '@hooks/combine';
 import { useCommunitiesQuery } from '@hooks/community';
 import Gnb from '@layouts/Gnb';
 import Sidebar from '@layouts/Sidebar';
@@ -13,7 +13,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 const Home = () => {
-  useUpdateLastReadAndFetchCommunitiesIntervalEffect(1000 * 10);
+  useUpdateLastReadAndInvalidateCommunitiesInterval();
   const communitiesQuery = useCommunitiesQuery();
 
   if (communitiesQuery.isError) {
