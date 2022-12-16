@@ -16,7 +16,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
   placeholder?: string;
 }
 
-const AuthInput: FC<Props> = forwardRef(
+const LabelInput: FC<Props> = forwardRef(
   (
     {
       type = 'text',
@@ -68,6 +68,6 @@ const AuthInput: FC<Props> = forwardRef(
   },
 );
 
-AuthInput.displayName = 'AuthInput';
+LabelInput.displayName = 'LabelInput';
 
-export default AuthInput;
+export default LabelInput;
