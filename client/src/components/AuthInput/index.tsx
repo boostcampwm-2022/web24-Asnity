@@ -53,7 +53,8 @@ const AuthInput: FC<Props> = forwardRef(
           type={type}
           value={value}
           onChange={onChange}
-          className={`block w-[100%] h-[56px] text-s16 transition-all px-6 py-2 bg-inputBackground rounded-2xl focus:bg-offWhite ${moveInputValueBottom}`}
+          className={`block w-[100%] h-[56px] text-s16 transition-all px-6 py-2 bg-inputBackground rounded-2xl focus:bg-offWhite [&::placeholder]:opacity-0 ${moveInputValueBottom}`}
+          placeholder={placeholder}
           {...restProps}
           ref={ref}
         />
