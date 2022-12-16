@@ -1,8 +1,8 @@
 import type { SignInRequest } from '@apis/auth';
 
-import AuthInput from '@components/AuthInput';
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
+import LabelInput from '@components/LabelInput';
 import Logo from '@components/Logo';
 import TextButton from '@components/TextButton';
 import REGEX from '@constants/regex';
@@ -69,7 +69,7 @@ const SignIn = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput {...field} type="text" placeholder="아이디" />
+                <LabelInput {...field} type="text" placeholder="아이디" />
                 <div className="pl-6">
                   {errors?.id && (
                     <ErrorMessage>{errors.id.message}</ErrorMessage>
@@ -90,7 +90,7 @@ const SignIn = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput {...field} type="password" placeholder="비밀번호" />
+                <LabelInput {...field} type="password" placeholder="비밀번호" />
                 {
                   <div className="pl-6">
                     {errors?.password && (

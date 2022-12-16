@@ -1,8 +1,8 @@
 import type { SignUpRequest } from '@apis/auth';
 
-import AuthInput from '@components/AuthInput';
 import Button from '@components/Button';
 import ErrorMessage from '@components/ErrorMessage';
+import LabelInput from '@components/LabelInput';
 import Logo from '@components/Logo';
 import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
@@ -77,7 +77,7 @@ const SignUp = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput {...field} type="text" placeholder="아이디" />
+                <LabelInput {...field} type="text" placeholder="아이디" />
                 <div className="pl-6">
                   {errors?.id ? (
                     <ErrorMessage>{errors.id.message}</ErrorMessage>
@@ -107,7 +107,7 @@ const SignUp = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput {...field} type="text" placeholder="닉네임" />
+                <LabelInput {...field} type="text" placeholder="닉네임" />
                 <div className="pl-6">
                   {errors?.nickname ? (
                     <ErrorMessage>{errors.nickname.message}</ErrorMessage>
@@ -132,7 +132,7 @@ const SignUp = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput {...field} type="password" placeholder="비밀번호" />
+                <LabelInput {...field} type="password" placeholder="비밀번호" />
                 {
                   <div className="pl-6">
                     {errors?.password ? (
@@ -163,7 +163,7 @@ const SignUp = () => {
           render={({ field, formState: { errors } }) => {
             return (
               <div className="mb-5">
-                <AuthInput
+                <LabelInput
                   {...field}
                   type="password"
                   placeholder="비밀번호 확인"
