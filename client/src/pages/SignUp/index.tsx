@@ -1,11 +1,10 @@
 import type { SignUpRequest } from '@apis/auth';
 
 import Button from '@components/Button';
-import ErrorMessage from '@components/ErrorMessage';
 import LabelInput from '@components/LabelInput';
 import Logo from '@components/Logo';
-import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
+import ValidationInputWrapper from '@components/ValidationInputWrapper';
 import REGEX from '@constants/regex';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { useSignUpMutation } from '@hooks/auth';
@@ -76,18 +75,12 @@ const SignUp = () => {
           }}
           render={({ field, formState: { errors } }) => {
             return (
-              <div className="mb-5">
-                <LabelInput {...field} type="text" placeholder="아이디" />
-                <div className="pl-6">
-                  {errors?.id ? (
-                    <ErrorMessage>{errors.id.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>올바른 이메일 형식입니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
+              <ValidationInputWrapper
+                errorMessage={errors?.id?.message}
+                successMessage={field.value && '올바른 이메일 형식입니다!'}
+              >
+                <LabelInput type="text" {...field} placeholder="아이디" />
+              </ValidationInputWrapper>
             );
           }}
         />
@@ -106,18 +99,12 @@ const SignUp = () => {
           }}
           render={({ field, formState: { errors } }) => {
             return (
-              <div className="mb-5">
-                <LabelInput {...field} type="text" placeholder="닉네임" />
-                <div className="pl-6">
-                  {errors?.nickname ? (
-                    <ErrorMessage>{errors.nickname.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>사용 가능한 닉네임입니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
+              <ValidationInputWrapper
+                errorMessage={errors?.nickname?.message}
+                successMessage={field.value && '사용 가능한 닉네임입니다!'}
+              >
+                <LabelInput type="text" {...field} placeholder="닉네임" />
+              </ValidationInputWrapper>
             );
           }}
         />
@@ -131,22 +118,12 @@ const SignUp = () => {
           }}
           render={({ field, formState: { errors } }) => {
             return (
-              <div className="mb-5">
-                <LabelInput {...field} type="password" placeholder="비밀번호" />
-                {
-                  <div className="pl-6">
-                    {errors?.password ? (
-                      <ErrorMessage>{errors?.password.message}</ErrorMessage>
-                    ) : (
-                      field.value && (
-                        <SuccessMessage>
-                          사용 가능한 비밀번호입니다!
-                        </SuccessMessage>
-                      )
-                    )}
-                  </div>
-                }
-              </div>
+              <ValidationInputWrapper
+                errorMessage={errors?.password?.message}
+                successMessage={field.value && '사용 가능한 비밀번호입니다!'}
+              >
+                <LabelInput type="password" {...field} placeholder="비밀번호" />
+              </ValidationInputWrapper>
             );
           }}
         />
@@ -162,22 +139,16 @@ const SignUp = () => {
           }}
           render={({ field, formState: { errors } }) => {
             return (
-              <div className="mb-5">
+              <ValidationInputWrapper
+                errorMessage={errors?.passwordCheck?.message}
+                successMessage={field.value && '비밀번호가 일치합니다!'}
+              >
                 <LabelInput
-                  {...field}
                   type="password"
+                  {...field}
                   placeholder="비밀번호 확인"
                 />
-                <div className="pl-6">
-                  {errors.passwordCheck ? (
-                    <ErrorMessage>{errors?.passwordCheck.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>비밀번호가 일치합니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
+              </ValidationInputWrapper>
             );
           }}
         />
