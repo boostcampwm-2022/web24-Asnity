@@ -1,13 +1,25 @@
 import type { User } from '@apis/user';
 
+import ChannelName from '@components/ChannelName';
 import ChatForm from '@components/ChatForm';
 import ChatList from '@components/ChatList';
 import Spinner from '@components/Spinner';
-import { faker } from '@faker-js/faker';
-import { useChannelWithUsersMapQuery } from '@hooks/channel';
-import { useChatsInfiniteQuery, useSetChatsQuery } from '@hooks/chat';
+import defaultSocketErrorHandler from '@errors/defaultSocketErrorHandler';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
+import { useMyInfoQueryData } from '@hooks/auth';
+import {
+  useChannelWithUsersMapQuery,
+  useSetChannelQueryData,
+  useUpdateLastReadMutation,
+} from '@hooks/channel';
+import {
+  useChatsInfiniteQuery,
+  useSetChatsQueryData,
+  useSetUnreadChatIdQueryData,
+  useUnreadChatIdQuery,
+} from '@hooks/chat';
+import { useCommunityManagerIdQuery } from '@hooks/community';
 import useIntersectionObservable from '@hooks/useIntersectionObservable';
-import { useMyInfo } from '@hooks/useMyInfoQuery';
 import ChannelUserStatus from '@layouts/ChannelUserStatus';
 import { useRootStore } from '@stores/rootStore';
 import { useSocketStore } from '@stores/socketStore';
@@ -16,20 +28,20 @@ import React, { useRef, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useParams } from 'react-router-dom';
 
-import { sendChatPayload, SOCKET_EVENTS } from '@/socketEvents';
-
 const Channel = () => {
-  const scrollbarContainerRef = useRef<Scrollbars>(null);
+  const { communityId, roomId } = useParams() as {
+    communityId: string;
+    roomId: string;
+  };
 
-  const params = useParams();
-  const communityId = params.communityId as string;
-  const roomId = params.roomId as string;
-
-  const myInfo = useMyInfo() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
+  const myInfo = useMyInfoQueryData() as User; // 인증되지 않으면 이 페이지에 접근이 불가능하기 때문에 무조건 myInfo가 있음.
   const channelWithUsersMap = useChannelWithUsersMapQuery(roomId);
+  const channelManagerId = channelWithUsersMap.data?.managerId;
+  const { data: communityManagerId } = useCommunityManagerIdQuery(communityId);
 
+  /* ============================== [ 무한 스크롤 ] =================================== */
+  const scrollbarContainerRef = useRef<Scrollbars>(null);
   const chatsInfiniteQuery = useChatsInfiniteQuery(roomId);
-
   const intersectionObservable = useIntersectionObservable(
     (entry, observer) => {
       observer.unobserve(entry.target);
@@ -48,19 +60,29 @@ const Channel = () => {
     },
   );
 
-  const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
-    useSetChatsQuery();
-  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
+  /* ============================== [ 소켓 채팅 전송 ] =================================== */
   const chatScrollbar = useRootStore((state) => state.chatScrollbar);
+  const setChatScrollbar = useRootStore((state) => state.setChatScrollbar);
 
-  // 메세지 보내기:
   const socket = useSocketStore((state) => state.sockets[communityId]);
+  const { addChatsQueryData, updateChatToFailedChat, updateChatToWrittenChat } =
+    useSetChatsQueryData();
+
+  /* ======================== [ 안 읽은 메시지 위치 ] ========================== */
+  const unreadChatIdQuery = useUnreadChatIdQuery(roomId);
+  const { clearUnreadChatIdQueryData } = useSetUnreadChatIdQueryData(roomId);
+  const handleMarkAsRead = () => clearUnreadChatIdQueryData();
 
   const handleSubmitChat = (content: string) => {
-    const id = faker.datatype.uuid();
-    const createdAt = new Date();
-    const newChat = { id, content, createdAt, senderId: myInfo._id };
+    if (!socket.isConnected()) {
+      defaultSocketErrorHandler();
+      return;
+    }
 
+    const id = Date.now(); // fakeId
+    const createdAt = new Date();
+
+    // 사용자가 입력한 채팅 메시지 optimistc update
     addChatsQueryData({
       id,
       channelId: roomId,
@@ -70,23 +92,20 @@ const Channel = () => {
       written: -1, // Optimistic Updates중임을 나타냄.
     });
 
-    // https://socket.io/docs/v3/emitting-events/#acknowledgements
-    socket.emit(
-      SOCKET_EVENTS.SEND_CHAT,
-      sendChatPayload({
-        ...newChat,
-        channelId: roomId,
-      }),
-      ({ written }: { written: boolean }) => {
-        if (written) {
-          updateChatToWrittenChat({ id, channelId: roomId });
-          return;
-        }
+    // 소켓으로 채팅 메시지 전송
+    socket.sendChat({ channelId: roomId, content }, ({ written, chatInfo }) => {
+      if (written) {
+        updateChatToWrittenChat({
+          id, // fakeId
+          realChatId: chatInfo.id,
+          channelId: roomId,
+        });
+        return;
+      }
+      updateChatToFailedChat({ id, channelId: roomId });
+    });
 
-        updateChatToFailedChat({ id, channelId: roomId });
-      },
-    );
-
+    // 전역 스크롤바 조작
     if (isScrollTouchedBottom(scrollbarContainerRef.current, 50)) {
       setTimeout(() => {
         scrollbarContainerRef.current?.scrollToBottom();
@@ -94,19 +113,37 @@ const Channel = () => {
     }
   };
 
+  const isLoading =
+    channelWithUsersMap.isLoading ||
+    chatsInfiniteQuery.isLoading ||
+    unreadChatIdQuery.isLoading;
+
+  /* ===================== [ 채널 페이지 입장시 전역 스크롤바 설정 ] =================================== */
   useEffect(() => {
     if (scrollbarContainerRef.current !== chatScrollbar) {
       // 비교 연산 없으면 채널간 이동에서 딜레이가 매우 많이 생긴다.
       setChatScrollbar(scrollbarContainerRef.current);
     }
 
-    if (!chatsInfiniteQuery.isLoading) {
+    if (!isLoading) {
       scrollbarContainerRef.current?.scrollToBottom();
     }
-  }, [roomId, chatsInfiniteQuery.isLoading]);
+  }, [roomId, isLoading]);
 
-  const isLoading =
-    channelWithUsersMap.isLoading || chatsInfiniteQuery.isLoading;
+  /* ===================== [ 채널 마지막 방문 시간과 안 읽은 메시지 있음 여부 ] =================================== */
+  const { updateExistUnreadChatInChannelQueryData } = useSetChannelQueryData();
+  const updateLastReadMutation = useUpdateLastReadMutation({
+    onSuccess: () => {
+      updateExistUnreadChatInChannelQueryData(communityId, roomId, false);
+    },
+  });
+
+  useEffect(() => {
+    updateLastReadMutation.mutate({ communityId, channelId: roomId });
+
+    return () =>
+      updateLastReadMutation.mutate({ communityId, channelId: roomId });
+  }, [communityId, roomId]);
 
   if (isLoading)
     return (
@@ -120,32 +157,60 @@ const Channel = () => {
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
         <div className="block w-[400px] overflow-ellipsis overflow-hidden whitespace-nowrap text-indigo font-bold text-[24px]">
-          {channelWithUsersMap.data && `#${channelWithUsersMap.data.name}`}
+          {channelWithUsersMap.data && (
+            <ChannelName
+              className="flex gap-2 items-center"
+              name={channelWithUsersMap.data.name}
+              isPrivate={channelWithUsersMap.data.isPrivate}
+              size="lg"
+            />
+          )}
         </div>
       </header>
       <div className="flex h-full">
-        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full py-4">
-          <div className="flex justify-center items-center font-ipSans text-s14">
-            {chatsInfiniteQuery.isFetchingPreviousPage &&
-              '지난 메시지 불러오는 중'}
-          </div>
+        <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full pb-4">
+          {unreadChatIdQuery.data !== undefined && unreadChatIdQuery.data > -1 && (
+            <div className="flex justify-between items-center w-full h-8 bg-indigo font-medium text-offWhite rounded-b-md text-s14 px-3">
+              <div>위에 읽지 않은 메시지가 있어요</div>
+              <button
+                type="button"
+                className="flex items-center gap-1"
+                onClick={handleMarkAsRead}
+              >
+                <div>읽음으로 표시하기</div>
+                <span className="sr-only">읽음으로 표시하기</span>
+                <CheckCircleIcon className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+          {chatsInfiniteQuery.isFetchingPreviousPage && (
+            <div className="flex justify-center items-center font-ipSans text-s14 py-3">
+              지난 메시지 불러오는 중
+            </div>
+          )}
           <Scrollbars
             className="max-h-[90%] grow shrink"
             ref={scrollbarContainerRef}
           >
             <div ref={intersectionObservable} />
-            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background">
-              {chatsInfiniteQuery.data && channelWithUsersMap.data && (
-                <ChatList
-                  pages={chatsInfiniteQuery.data.pages}
-                  users={channelWithUsersMap.data.users}
-                />
-              )}
+            <ul className="flex flex-col gap-3 [&>*:hover]:bg-background pt-7">
+              {chatsInfiniteQuery.data &&
+                channelWithUsersMap.data &&
+                unreadChatIdQuery.data !== undefined && (
+                  <ChatList
+                    communityManagerId={communityManagerId}
+                    channelManagerId={channelManagerId}
+                    pages={chatsInfiniteQuery.data.pages}
+                    users={channelWithUsersMap.data.users}
+                    unreadChatId={unreadChatIdQuery.data}
+                  />
+                )}
             </ul>
           </Scrollbars>
           <ChatForm
             className="max-h-[20%] w-[95%] grow shrink-0 mx-auto mt-6"
             handleSubmitChat={handleSubmitChat}
+            clear
           />
         </div>
         <div className="flex grow w-80 h-full border-l border-line">

@@ -18,6 +18,7 @@ module.exports = {
       logo: ['80px', '144px'],
     },
     colors: {
+      transparent: 'transparent',
       titleActive: '#14142B',
       body: '#4E4B66',
       label: '#6E7191',
@@ -25,7 +26,10 @@ module.exports = {
       line: '#D9DBE9',
       inputBackground: '#EFF0F6',
       background: '#F7F7FC;',
-      offWhite: '#FEFEFE',
+      offWhite: {
+        DEFAULT: '#FEFEFE',
+        dark: '#12121208',
+      },
       indigo: '#1D1D50',
       primary: {
         DEFAULT: '#FFA52D',

@@ -1,7 +1,6 @@
 import Spinner from '@components/Spinner';
 import UserProfile from '@components/UserProfile';
 import { useChannelQuery } from '@hooks/channel';
-// import { useMyInfo } from '@hooks/useMyInfoQuery';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { Link } from 'react-router-dom';
@@ -9,16 +8,16 @@ import { Link } from 'react-router-dom';
 const DmNav = () => {
   // const myInfo = useMyInfo();
   // TODO 현재 DM API 없는 관계로 임시로 channel의 사용자 목록 가져오는 API 사용함
-  const { channelQuery } = useChannelQuery('dm');
+  // const channelQuery = useChannelQuery('dm');
 
   return (
     <nav className="flex flex-col flex-1 h-full">
       <header className="flex shrink-0 items-center px-[10px] w-full h-header border-b border-line font-ipSans text-title select-none tracking-tighter">
         <h2>
-          <Link to="/dms">Direct Message</Link>
+          <Link to="/dms">Asnity</Link>
         </h2>
       </header>
-      <Scrollbars>
+      {/* <Scrollbars>
         {channelQuery.isLoading ? (
           <Spinner
             className="flex justify-center items-center h-full"
@@ -37,7 +36,7 @@ const DmNav = () => {
             </ul>
           )
         )}
-      </Scrollbars>
+      </Scrollbars> */}
     </nav>
   );
 };

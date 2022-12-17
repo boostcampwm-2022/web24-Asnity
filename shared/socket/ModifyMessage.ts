@@ -1,7 +1,7 @@
 export interface ModifyMessage {
+  chatType: string;
   channelId: string;
-  user_id: string;
-  message: string;
-  messageId: string;
-  time: Date;
+  content: string;
+  chatId: string;
+  cb: () => void;
 }

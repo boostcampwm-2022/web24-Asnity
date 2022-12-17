@@ -2,7 +2,7 @@ import ErrorMessage from '@components/ErrorMessage';
 import FollowerUserSearchResult from '@components/FollowerUserSearchResult';
 import SearchInput from '@components/SearchInput';
 import useDebouncedValue from '@hooks/useDebouncedValue';
-import useFollowersQuery from '@hooks/useFollowersQuery';
+import { useFollowersQuery } from '@hooks/user';
 import React, { useState } from 'react';
 
 /**

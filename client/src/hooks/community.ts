@@ -22,15 +22,74 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import queryKeyCreator from 'src/queryKeyCreator';
 
+/**
+ * - 커뮤니티 목록을 가져옵니다.
+ * - `refetchInterval`을 바꾸면 안됩니다.
+ * - @hooks/combine.ts - useUpdateLastReadAndFetchCommunitiesIntervalEffect 참고
+ * - \**#388** (https://github.com/boostcampwm-2022/web24-Asnity/pull/388)
+ */
+export const useCommunitiesQuery = () => {
+  const key = queryKeyCreator.community.list();
+  const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities, {
+    staleTime: 1000 * 10,
+    cacheTime: 1000 * 10,
+  });
+
+  return query;
+};
+
+export const useInvalidateCommunitiesQuery = () => {
+  const key = queryKeyCreator.community.all();
+  const queryClient = useQueryClient();
+
+  const invalidate = useCallback(() => {
+    return queryClient.invalidateQueries(key);
+  }, [queryClient, key]);
+
+  return invalidate;
+};
+
 export type CommunitiesMap = Record<CommunitySummary['_id'], CommunitySummary>;
+
+export const useCommunitiesMapQuery = () => {
+  const key = queryKeyCreator.community.list();
+  const query = useQuery<CommunitySummaries, AxiosError, CommunitiesMap>(
+    key,
+    getCommunities,
+    {
+      staleTime: 1000 * 10,
+      select: (communities) =>
+        communities.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
+export const useCommunityManagerIdQuery = (communityId: string) => {
+  const key = queryKeyCreator.community.list();
+  const query = useQuery<CommunitySummaries, AxiosError, string | undefined>(
+    key,
+    getCommunities,
+    {
+      select: (communities) => {
+        return communities.find((community) => community._id === communityId)
+          ?.managerId;
+      },
+    },
+  );
+
+  return query;
+};
+
 /**
  *
- * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을 `Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
+ * @returns 쿼리 클라이언트에 캐싱된 커뮤니티 목록을`Record<CommunitySummary['_id'], CommunitySummary>` 형태로 반환한다.
  */
 export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
   const queryClient = useQueryClient();
 
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const communitiesQueryData =
     queryClient.getQueryData<CommunitySummaries>(key);
 
@@ -43,38 +102,12 @@ export const useCommunitiesMapQueryData = (): CommunitiesMap | undefined => {
   );
 };
 
-export const useCommunitiesMapQuery = () => {
-  const key = queryKeyCreator.community.all();
-  const query = useQuery<CommunitySummaries, AxiosError, CommunitiesMap>(
-    key,
-    getCommunities,
-    {
-      select: (communities) =>
-        communities.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
-    },
-  );
-
-  return query;
-};
-
-export const useCommunitiesQuery = () => {
-  const queryClient = useQueryClient();
-
-  const key = queryKeyCreator.community.all();
-  const query = useQuery<CommunitySummaries, AxiosError>(key, getCommunities);
-  const invalidate = useCallback(() => {
-    return queryClient.invalidateQueries(key);
-  }, [queryClient, key]);
-
-  return { communitiesQuery: query, invalidateCommunitiesQuery: invalidate };
-};
-
 /**
  * @param id 접속한 커뮤니티의 id
  * 접속한 커뮤니티에서 참여하고 있는 채널 목록
  */
 export const useJoinedChannelsQuery = (id: string) => {
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
   const query = useQuery<CommunitySummaries, AxiosError, JoinedChannel[]>(
     key,
     getCommunities,
@@ -85,7 +118,7 @@ export const useJoinedChannelsQuery = (id: string) => {
     },
   );
 
-  return { joinedChannelsQuery: query };
+  return query;
 };
 
 interface SetCommunities {
@@ -109,19 +142,19 @@ interface SetCommunities {
  *   )
  * ```
  */
-export const useSetCommunitiesQuery = () => {
+export const useSetCommunitiesQueryData = () => {
   const queryClient = useQueryClient();
 
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
 
-  const setCommunities: SetCommunities = (cb) => {
+  const setCommunitiesQueryData: SetCommunities = (cb) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       if (typeof cb === 'function') return cb(communities);
       return cb;
     });
   };
 
-  return setCommunities;
+  return setCommunitiesQueryData;
 };
 
 export const useCreateCommunityMutation = (

@@ -12,7 +12,7 @@ on:
 
 jobs:
   build_api:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -49,7 +49,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }}
         if: always()
   build_socket:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -85,7 +85,7 @@ jobs:
           cache: 'npm'
 
       - name: Yarn 설치
-        run: npm install yarn
+        run: npm install yarn --force
 
       - name: yarn으로 패키지 설치
         run: yarn install
@@ -109,7 +109,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAIL_WEBHOOK_URL }}
         if: failure()
   nCloudDeploy:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
     needs: [build_api, build_socket]
     runs-on: ubuntu-latest
     steps:

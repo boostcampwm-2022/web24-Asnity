@@ -12,3 +12,11 @@ services:
     ports:
       - "8080:8080"
     restart: "unless-stopped"
+  redis:
+    image: redis:alpine
+    command: redis-server
+    restart: always
+    hostname: cache-redis
+    ports:
+      - "6379:6379"
+    container_name: cache-redis

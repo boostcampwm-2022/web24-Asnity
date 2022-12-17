@@ -5,7 +5,7 @@ import FollowingUserContextMenu from '@components/FollowingUserContextMenu';
 import UserItem from '@components/UserItem';
 import UserList from '@components/UserList';
 import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
-import { useFollowersMapQuery } from '@hooks/useFollowersQuery';
+import { useFollowersMapQuery } from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -28,11 +28,17 @@ const FollowingUserSearchResult: FC<Props> = ({ users }) => {
   const handleMoreButtonClick: (
     user: User,
   ) => React.MouseEventHandler<HTMLButtonElement> = (user) => (e) => {
+    const contextMenuWidth = 302;
+    const left =
+      e.clientX + contextMenuWidth > window.innerWidth
+        ? e.clientX - contextMenuWidth
+        : e.clientX;
+
     openContextMenuModal({
       content: <FollowingUserContextMenu user={user} />,
       contentWrapperStyle: {
         borderRadius: 16,
-        left: e.clientX,
+        left,
         top: e.clientY,
       },
     });

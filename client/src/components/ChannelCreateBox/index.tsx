@@ -7,7 +7,10 @@ import Input from '@components/Input';
 import SuccessMessage from '@components/SuccessMessage';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { HashtagIcon, LockClosedIcon } from '@heroicons/react/20/solid';
-import { useCreateChannelMutation, useSetChannelsQuery } from '@hooks/channel';
+import {
+  useCreateChannelMutation,
+  useSetChannelQueryData,
+} from '@hooks/channel';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -35,10 +38,10 @@ const ChannelCreateBox: FC<Props> = ({ communityId }) => {
   const navigate = useNavigate();
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const { addChannelToCommunity } = useSetChannelsQuery();
+  const { addChannelQueryData } = useSetChannelQueryData();
   const createChannelMutation = useCreateChannelMutation({
     onSuccess: (createdChannel) => {
-      addChannelToCommunity(communityId, createdChannel);
+      addChannelQueryData(communityId, createdChannel);
       closeCommonModal();
       navigate(`/communities/${communityId}/channels/${createdChannel._id}`);
     },

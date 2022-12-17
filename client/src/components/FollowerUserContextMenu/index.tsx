@@ -3,8 +3,10 @@ import type { FC } from 'react';
 
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { UserPlusIcon } from '@heroicons/react/20/solid';
-import useFollowingMutation from '@hooks/useFollowingMutation';
-import { useInvalidateFollowingsQuery } from '@hooks/useFollowingsQuery';
+import {
+  useInvalidateFollowingsQuery,
+  useToggleFollowingMutation,
+} from '@hooks/user';
 import { useRootStore } from '@stores/rootStore';
 import React from 'react';
 
@@ -18,7 +20,7 @@ const FollowerUserContextMenu: FC<Props> = ({ user }) => {
   );
 
   const invalidateFollowingsQuery = useInvalidateFollowingsQuery();
-  const followingMutation = useFollowingMutation({
+  const toggleFollowingMutation = useToggleFollowingMutation({
     onSuccess: () => {
       invalidateFollowingsQuery();
     },
@@ -26,7 +28,7 @@ const FollowerUserContextMenu: FC<Props> = ({ user }) => {
   });
 
   const handleUnfollowButtonClick = () => {
-    followingMutation.mutate(user._id);
+    toggleFollowingMutation.mutate(user._id);
     closeContextMenuModal(); /* TODO: 모달 안 닫히는 문제 있음 */
   };
 
@@ -38,7 +40,7 @@ const FollowerUserContextMenu: FC<Props> = ({ user }) => {
           <button
             className="flex justify-between items-center w-full text-s16 h-[40px] rounded-xl hover:bg-background px-[12px]"
             onClick={handleUnfollowButtonClick}
-            disabled={followingMutation.isLoading}
+            disabled={toggleFollowingMutation.isLoading}
           >
             <span>팔로잉하기</span>
             <UserPlusIcon className="w-6 h-6 pointer-events-none" />

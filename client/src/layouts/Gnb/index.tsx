@@ -25,7 +25,7 @@ const Gnb = () => {
 
   const openCommonModal = useRootStore((state) => state.openCommonModal);
 
-  const { communitiesQuery } = useCommunitiesQuery();
+  const communitiesQuery = useCommunitiesQuery();
 
   const communityItemListPadding = cn({
     'pb-[30vh]': !communitiesQuery.isLoading,
@@ -43,11 +43,18 @@ const Gnb = () => {
   ) => MouseEventHandler<HTMLAnchorElement> = (community) => (e) => {
     e.preventDefault();
 
+    // 컨텍스트 메뉴의 높이는 약 180px
+    const contextMenuHeight = 177;
+    const top =
+      e.clientY + contextMenuHeight > window.innerHeight
+        ? e.clientY - contextMenuHeight
+        : e.clientY;
+
     openContextMenuModal({
       content: <CommunityContextMenu community={community} />,
       contentWrapperStyle: {
         left: e.clientX,
-        top: e.clientY,
+        top,
         borderRadius: 16,
       },
     });
@@ -72,10 +79,13 @@ const Gnb = () => {
     >
       <div className="flex flex-col justify-start items-center w-full h-full pt-[16px]">
         <div className="w-full">
-          <GnbItemContainer isActive={pathname === '/dms'}>
+          <GnbItemContainer
+            isActive={pathname === '/dms'}
+            tooltip="Asnity 홈으로"
+          >
             <Link to="/dms">
               <Avatar
-                name="Direct Message"
+                name="Asnity"
                 size="sm"
                 profileUrl={LOGO_IMG_URL}
                 variant="rectangle"
@@ -100,10 +110,16 @@ const Gnb = () => {
             ) : (
               communitiesQuery.data?.map((community) => {
                 const { _id, name, profileUrl } = community;
+                const existUnreadChat = community.channels.some(
+                  (channel) => channel.existUnreadChat,
+                );
 
                 return (
                   <li key={_id}>
-                    <GnbItemContainer isActive={params?.communityId === _id}>
+                    <GnbItemContainer
+                      isActive={params?.communityId === _id}
+                      tooltip={name}
+                    >
                       <Link
                         to={`/communities/${_id}`}
                         onContextMenu={handleRightClickCommunityLink(community)}
@@ -113,6 +129,9 @@ const Gnb = () => {
                           size="sm"
                           variant="rectangle"
                           profileUrl={profileUrl}
+                          badge={existUnreadChat}
+                          badgePosition="top-left"
+                          status="NEW"
                         />
                       </Link>
                     </GnbItemContainer>
@@ -140,10 +159,6 @@ const Gnb = () => {
           </ul>
         </Scrollbars>
       </div>
-
-      {/* TODO: 툴팁 만들기 */}
-      {/* <div className="absolute p-[12px] w-max h-max bg-titleActive text-offWhite left-[100px] top-[20px] z-[9000px]">*/}
-      {/* </div>*/}
     </div>
   );
 };

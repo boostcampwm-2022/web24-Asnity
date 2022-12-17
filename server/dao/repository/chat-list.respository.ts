@@ -22,4 +22,8 @@ export class ChatListRespository {
   async updateOne(filter, updateField) {
     return await this.chatListModel.updateOne(filter, updateField);
   }
+
+  async findOneAndUpdate(filter, updateField) {
+    return await this.chatListModel.findOneAndUpdate(filter, updateField, { new: true });
+  }
 }

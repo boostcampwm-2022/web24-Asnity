@@ -3,7 +3,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ApiModule } from './api.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
-import { SentryInterceptor } from './webhook.interceptor';
+import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 
@@ -20,9 +20,10 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       validateCustomDecorators: true,
+      whitelist: true,
     }),
   );
-  app.useGlobalInterceptors(new SentryInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
+  app.useGlobalInterceptors(new ApiInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
   if (process.env.NODE_ENV == 'prod') {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,

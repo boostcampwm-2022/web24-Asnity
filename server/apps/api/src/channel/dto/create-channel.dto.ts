@@ -1,5 +1,5 @@
 import { IsBoolean, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class CreateChannelDto {
   @IsMongoId()
@@ -18,11 +18,14 @@ export class CreateChannelDto {
 
   @IsString()
   @IsNotEmpty()
+  nickname: string;
+
+  @IsString()
+  @IsNotEmpty()
   type: 'Channel' | 'DM';
 
   @IsBoolean()
   @IsNotEmpty()
-  @Transform(({ value }) => value === 'true')
   isPrivate: boolean;
 
   @IsString()

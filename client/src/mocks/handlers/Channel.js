@@ -50,8 +50,9 @@ const CreateChannel = rest.post(
       isPrivate,
       profileUrl,
       description,
-      lastRead: true,
+      existUnreadChat: false,
       type,
+      createdAt: new Date().toISOString(),
       users: [me._id],
     };
 
@@ -72,7 +73,6 @@ const CreateChannel = rest.post(
 
 const leaveChannelEndPoint = API_URL + endPoint.leaveChannel(':channelId');
 const LeaveChannel = rest.delete(leaveChannelEndPoint, (req, res, ctx) => {
-  const { channelId } = req.params;
   const ERROR = false;
 
   const errorResponse = res(...createErrorContext(ctx));
@@ -117,4 +117,27 @@ const InviteChannel = rest.post(
   },
 );
 
-export default [GetChannel, CreateChannel, LeaveChannel, InviteChannel];
+const updateLastReadEndPoint = API_URL + endPoint.updateLastRead(':channelId');
+const UpdateLastRead = rest.patch(updateLastReadEndPoint, (req, res, ctx) => {
+  const ERROR = false;
+
+  const errorResponse = res(...createErrorContext(ctx));
+  const successResponse = res(
+    ...createSuccessContext(ctx, 200, 500, {
+      statusCode: 200,
+      result: {
+        message: 'Last Read 업데이트 성공!',
+      },
+    }),
+  );
+
+  return ERROR ? errorResponse : successResponse;
+});
+
+export default [
+  GetChannel,
+  CreateChannel,
+  LeaveChannel,
+  InviteChannel,
+  UpdateLastRead,
+];

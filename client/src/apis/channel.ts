@@ -9,7 +9,7 @@ export interface JoinedChannel {
   name: string;
   isPrivate: boolean;
   description: string;
-  lastRead: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
+  existUnreadChat: boolean; // NOTE: get communities에는 있는데, get channel에는 없는 프로퍼티.
   type: string; // TODO: DM or Channel -> DM 구현할 때 타입 구체화
   createdAt: string;
 }
@@ -76,7 +76,7 @@ export const leaveChannel: LeaveChannel = (channelId) => {
 
   return tokenAxios
     .delete<LeaveChannelResponse>(endPoint)
-    .then((res) => res.data.result);
+    .then((response) => response.data.result);
 };
 
 export interface InviteChannelRequest {
@@ -103,6 +103,29 @@ export const inviteChannel: InviteChannel = ({
     .post<InviteChannelResponse>(endPoint, {
       community_id: communityId,
       userIds,
+    })
+    .then((response) => response.data.result);
+};
+
+export interface UpdateLastReadRequest {
+  channelId: string;
+  communityId: string;
+}
+
+export interface UpdateLastReadResult {
+  message: string;
+}
+export type UpdateLastReadResponse = SuccessResponse<UpdateLastReadResult>;
+export type UpdateLastRead = (
+  fields: UpdateLastReadRequest,
+) => Promise<UpdateLastReadResult>;
+
+export const updateLastRead: UpdateLastRead = ({ channelId, communityId }) => {
+  const endPoint = `/api/channels/${channelId}/lastRead`;
+
+  return tokenAxios
+    .patch<UpdateLastReadResponse>(endPoint, {
+      community_id: communityId,
     })
     .then((response) => response.data.result);
 };

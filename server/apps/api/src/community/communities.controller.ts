@@ -1,6 +1,5 @@
 import { Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CommunityService } from '@api/src/community/community.service';
-import { responseForm } from '@utils/responseForm';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { AppendUsersToCommunityDto, DeleteCommunityDto, ModifyCommunityDto } from '@community/dto';
 import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-community.dto';
@@ -15,7 +14,7 @@ export class CommunitiesController {
   async getCommunities(@Req() req: any) {
     const requestUserid = req.user._id;
     const result = await this.communityService.getCommunities(requestUserid);
-    return responseForm(200, result);
+    return result;
   }
 
   @Post(':community_id/users')
@@ -23,16 +22,15 @@ export class CommunitiesController {
   async appendUsersToCommunity(
     @ReceivedData() appendUsersToCommunityDto: AppendUsersToCommunityDto,
   ) {
-    console.log(appendUsersToCommunityDto);
     await this.communityService.appendUsersToCommunity(appendUsersToCommunityDto);
-    return responseForm(200, { message: '커뮤니티 사용자 추가 완료' });
+    return { message: '커뮤니티 사용자 추가 완료' };
   }
 
   @Delete(':community_id')
   @UseGuards(JwtAccessGuard)
   async deleteCommunity(@ReceivedData() deleteCommunityDto: DeleteCommunityDto) {
     await this.communityService.deleteCommunity(deleteCommunityDto);
-    return responseForm(200, { message: '커뮤니티 삭제 성공' });
+    return { message: '커뮤니티 삭제 성공' };
   }
 
   @Get(':community_id/users')
@@ -41,7 +39,7 @@ export class CommunitiesController {
     @ReceivedData() requestUserAboutCommunityDto: RequestUserAboutCommunityDto,
   ) {
     const result = await this.communityService.getUsersInCommunity(requestUserAboutCommunityDto);
-    return responseForm(200, result);
+    return result;
   }
 
   @Delete(':community_id/me')
@@ -50,13 +48,13 @@ export class CommunitiesController {
     @ReceivedData() requestUserAboutCommunityDto: RequestUserAboutCommunityDto,
   ) {
     await this.communityService.exitUserInCommunity(requestUserAboutCommunityDto);
-    return responseForm(200, { message: '사용자 커뮤니티 탈퇴 성공' });
+    return { message: '사용자 커뮤니티 탈퇴 성공' };
   }
 
   @Patch(':community_id/settings')
   @UseGuards(JwtAccessGuard)
   async modifyCommunitySetting(@ReceivedData() modifyCommunityDto: ModifyCommunityDto) {
     await this.communityService.modifyCommunity(modifyCommunityDto);
-    return responseForm(200, { message: '커뮤니티 정보 수정 완료' });
+    return { message: '커뮤니티 정보 수정 완료' };
   }
 }

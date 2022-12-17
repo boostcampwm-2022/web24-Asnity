@@ -1,5 +1,5 @@
 import type {
-  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
   FC,
   FormEvent,
   FormEventHandler,
@@ -8,15 +8,19 @@ import type {
 
 import { PaperAirplaneIcon, BackspaceIcon } from '@heroicons/react/24/solid';
 import useInput from '@hooks/useInput';
+import { resizeElementByScrollHeight } from '@utils/dom';
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
-interface Props extends ComponentPropsWithoutRef<'textarea'> {
+interface Props extends ComponentPropsWithRef<'textarea'> {
   editMode?: boolean;
   initialValue?: string;
   handleCancelEdit?: () => void;
   handleSubmitChat?: (content: string, e: FormEvent) => void;
+  clear?: boolean;
 }
+
+const maxLength = 300;
 
 const ChatForm: FC<Props> = ({
   editMode = false,
@@ -24,33 +28,37 @@ const ChatForm: FC<Props> = ({
   handleSubmitChat,
   handleCancelEdit,
   className,
+  clear = false,
   ...restProps
 }) => {
   const { roomId } = useParams();
   const [value, onChange, isDirty, setValue] = useInput(initialValue);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const exceededMaxLength = value.length >= maxLength;
+  const isSubmittable = isDirty && !exceededMaxLength;
 
   /**
    * 다른 채널로 이동시, value 상태값이 유지되며 채팅 폼이 미리 입력되어 있는 현상을 방지하기 위해
    * 채널 입장마다 value 상태값을 초기화합니다.
    **/
   useEffect(() => {
-    setValue('');
+    if (clear) {
+      setValue('');
+    }
+    resizeElementByScrollHeight(textareaRef?.current);
   }, [roomId]);
 
   useEffect(() => {
-    if (!textareaRef.current) return undefined;
+    if (!textareaRef?.current) return undefined;
 
     const textarea = textareaRef.current;
 
     const handleChangeInput = () => {
-      if (textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = `${textarea.scrollHeight}px`;
-      }
+      resizeElementByScrollHeight(textarea);
     };
 
+    textarea.focus();
     textarea.addEventListener('input', handleChangeInput);
 
     return () => textarea.removeEventListener('input', handleChangeInput);
@@ -58,7 +66,7 @@ const ChatForm: FC<Props> = ({
 
   const handleSubmitForm: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!value.trim() || !isDirty) return;
+    if (!value.trim() || !isSubmittable) return;
 
     handleSubmitChat?.(value, e);
     setValue(initialValue);
@@ -90,14 +98,17 @@ const ChatForm: FC<Props> = ({
     >
       <textarea
         rows={1}
-        className={`grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
+        className={`max-h-[120px] grow border-0 p-3 w-full resize-none outline-0 border border-placeholder focus:border-indigo rounded-xl p-3`}
         placeholder="내용을 입력해주세요."
+        spellCheck={false}
         {...restProps}
         onKeyDown={handleKeyDown}
-        ref={textareaRef}
+        maxLength={maxLength}
         value={value}
+        ref={textareaRef}
         onChange={onChange}
       />
+
       <div className="relative h-[30px] shrink-0">
         {editMode && (
           <button
@@ -113,7 +124,7 @@ const ChatForm: FC<Props> = ({
         <button
           className="chat-submit-button absolute right-3 h-full [&:hover>svg]:fill-indigo "
           ref={submitButtonRef}
-          disabled={!isDirty}
+          disabled={!isDirty || exceededMaxLength}
         >
           <span className="sr-only">채팅 입력 버튼</span>
           <PaperAirplaneIcon className="w-6 h-6" />

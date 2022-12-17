@@ -1,21 +1,11 @@
+import type { User } from '@apis/user';
 import type { USER_STATUS } from '@constants/user';
 import type { ReactNode, FC } from 'react';
 
+import { ASNITY_DEVELOPER } from '@constants/user';
 import React, { memo } from 'react';
 
-type BadgeType = keyof typeof USER_STATUS;
-
-export interface Props {
-  name: string;
-  size?: 'sm' | 'md';
-  variant?: 'circle' | 'rectangle';
-  profileUrl?: string;
-  className?: string;
-  children?: ReactNode;
-  status?: BadgeType;
-  badge?: boolean;
-  badgePosition?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
-}
+type BadgeType = keyof typeof USER_STATUS | 'NEW';
 
 const ROUNDED = {
   rectangle: 'rounded-2xl',
@@ -49,9 +39,24 @@ const BADGE_COLOR: Record<BadgeType, string> = {
   ONLINE: 'bg-success',
   AFK: 'bg-error',
   OFFLINE: 'bg-label',
+  NEW: 'bg-indigo',
 };
 
+export interface Props {
+  name: string;
+  size?: 'sm' | 'md';
+  variant?: 'circle' | 'rectangle';
+  profileUrl?: string;
+  className?: string;
+  children?: ReactNode;
+  status?: BadgeType;
+  badge?: boolean;
+  badgePosition?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
+  user?: User;
+}
+
 const Avatar: FC<Props> = ({
+  user,
   name,
   profileUrl,
   size = 'sm',
@@ -62,6 +67,13 @@ const Avatar: FC<Props> = ({
   badgePosition = 'bottom-right',
   status = 'OFFLINE',
 }) => {
+  const isSuperUser = user && ASNITY_DEVELOPER[user.id];
+  const _profileUrl = isSuperUser
+    ? ASNITY_DEVELOPER[user.id]
+    : profileUrl === 'url'
+    ? ASNITY_DEVELOPER.default
+    : profileUrl;
+
   return (
     <div className={`relative ${SCALE[size]}`}>
       {badge && (
@@ -74,14 +86,10 @@ const Avatar: FC<Props> = ({
       >
         {children}
         {!children &&
-          (profileUrl ? (
+          (_profileUrl ? (
             <img
               className="block object-cover h-full"
-              src={
-                profileUrl === 'url'
-                  ? 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png'
-                  : profileUrl
-              }
+              src={_profileUrl}
               alt={`${name}의 프로필 이미지`}
             />
           ) : (

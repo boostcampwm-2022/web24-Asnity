@@ -19,7 +19,7 @@ const GetFollowings = rest.get(getFollowingsEndPoint, (req, res, ctx) => {
 });
 
 const toggleFollowingEndPoint = API_URL + endPoint.toggleFollowing(':userId');
-const UpdateFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
+const toggleFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
   const { userId } = req.params;
   const idx = followings.findIndex((user) => user._id === userId);
 
@@ -28,7 +28,6 @@ const UpdateFollowing = rest.post(toggleFollowingEndPoint, (req, res, ctx) => {
   // 팔로잉 목록에 있으면 팔로잉 목록에서 삭제
   else followings.splice(idx, 1);
 
-  console.log(followings);
   return res(
     ctx.delay(),
     ctx.status(200),
@@ -53,6 +52,6 @@ const GetFollowers = rest.get(getFollowersEndPoint, (req, res, ctx) => {
   );
 });
 
-const FriendHandlers = [GetFollowings, UpdateFollowing, GetFollowers];
+const FriendHandlers = [GetFollowings, toggleFollowing, GetFollowers];
 
 export default FriendHandlers;

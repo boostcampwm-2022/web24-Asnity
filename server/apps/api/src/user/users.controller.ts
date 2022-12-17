@@ -1,6 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { responseForm } from '@utils/responseForm';
 
 @Controller('api/users')
 export class UsersController {
@@ -9,6 +8,6 @@ export class UsersController {
   @Get()
   async getUser(@Query('search') id: string) {
     const result = await this.userService.getUser(id);
-    return responseForm(200, { users: result });
+    return { users: result };
   }
 }

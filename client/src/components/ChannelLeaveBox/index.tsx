@@ -3,8 +3,12 @@ import type { FC } from 'react';
 
 import AlertBox from '@components/AlertBox';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
-import { useLeaveChannelMutation, useSetChannelsQuery } from '@hooks/channel';
+import {
+  useLeaveChannelMutation,
+  useSetChannelQueryData,
+} from '@hooks/channel';
 import { useRootStore } from '@stores/rootStore';
+import { useSocketStore } from '@stores/socketStore';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -16,14 +20,15 @@ const ChannelLeaveBox: FC<Props> = ({ channel }) => {
   const navigate = useNavigate();
   const roomId = params.roomId as string;
   const communityId = params.communityId as string;
+  const socket = useSocketStore((state) => state.sockets[communityId]);
 
   const closeCommonModal = useRootStore((state) => state.closeCommonModal);
 
-  const { deleteChannelFromCommunity } = useSetChannelsQuery();
+  const { removeChannelQueryData } = useSetChannelQueryData();
   const leaveChannelMutation = useLeaveChannelMutation({
     onSuccess: () => {
-      console.log(communityId, channel._id);
-      deleteChannelFromCommunity(communityId, channel._id);
+      removeChannelQueryData(communityId, channel._id);
+      socket.leaveChannel(channel._id);
 
       if (roomId === channel._id) navigate(`/communities/${communityId}`);
       closeCommonModal();

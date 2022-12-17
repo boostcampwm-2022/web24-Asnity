@@ -1,20 +1,7 @@
 import ChannelLayer from '@layouts/ChannelLayer';
 import CommunityLayer from '@layouts/CommunityLayer';
-import AccessDenied from '@pages/AccessDenied';
-import AuthorizedLayer from '@pages/AuthorizedLayer';
-import Channel from '@pages/Channel';
-import Community from '@pages/Community';
-import DM from '@pages/DM';
-import DMRoom from '@pages/DMRoom';
-import Friends from '@pages/Friends';
-import Home from '@pages/Home';
-import NotFound from '@pages/NotFound';
-import Root from '@pages/Root';
-import SignIn from '@pages/SignIn';
-import SignUp from '@pages/SignUp';
-import UnAuthorizedLayer from '@pages/UnAuthorizedLayer';
-import UnknownError from '@pages/UnknownError';
-import communitiesLoader from '@routes/communitiesLoader';
+import loadable from '@loadable/component';
+import HomeErrorElement from '@routes/HomeErrorElement';
 import React from 'react';
 import {
   RouterProvider,
@@ -25,18 +12,27 @@ import {
   Outlet,
 } from 'react-router-dom';
 
-import queryClient from './queryClient';
+const AccessDenied = loadable(() => import('@pages/AccessDenied'));
+const AuthorizedLayer = loadable(() => import('@pages/AuthorizedLayer'));
+const Channel = loadable(() => import('@pages/Channel'));
+const Community = loadable(() => import('@pages/Community'));
+const DM = loadable(() => import('@pages/DM'));
+const DMRoom = loadable(() => import('@pages/DMRoom'));
+const Error = loadable(() => import('@pages/Error'));
+const Friends = loadable(() => import('@pages/Friends'));
+const Home = loadable(() => import('@pages/Home'));
+const NotFound = loadable(() => import('@pages/NotFound'));
+const Root = loadable(() => import('@pages/Root'));
+const SignIn = loadable(() => import('@pages/SignIn'));
+const SignUp = loadable(() => import('@pages/SignUp'));
+const UnAuthorizedLayer = loadable(() => import('@pages/UnAuthorizedLayer'));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Root />} />
       <Route element={<AuthorizedLayer />}>
-        <Route
-          element={<Home />}
-          loader={communitiesLoader(queryClient)}
-          errorElement={<Navigate to="/" />}
-        >
+        <Route element={<Home />} errorElement={<HomeErrorElement />}>
           <Route path="dms" element={<DM />}>
             <Route index element={<Friends />} />
             <Route
@@ -70,7 +66,7 @@ const router = createBrowserRouter(
         <Route path="sign-up" element={<SignUp />} />
       </Route>
       <Route path="/access-denied" element={<AccessDenied />} />
-      <Route path="/unknown-error" element={<UnknownError />} />
+      <Route path="/error" element={<Error />} />
       <Route path="*" element={<NotFound />} />
     </Route>,
   ),

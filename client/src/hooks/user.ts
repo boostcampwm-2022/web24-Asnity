@@ -1,12 +1,125 @@
 import type { Channel } from '@apis/channel';
-import type { User, UserUID } from '@apis/user';
+import type {
+  User,
+  UserUID,
+  GetUsersResult,
+  ToggleFollowingResult,
+} from '@apis/user';
+import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
 import { getChannel } from '@apis/channel';
-import { getCommunityUsers } from '@apis/user';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  getCommunityUsers,
+  getUsers,
+  getFollowers,
+  toggleFollowing,
+  getFollowings,
+} from '@apis/user';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
+
+export const useUsersQuery = (
+  filter: string,
+  options?: { suspense?: boolean; enabled?: boolean },
+) => {
+  const key = queryKeyCreator.user.list(filter);
+  const query = useQuery<GetUsersResult['users'], AxiosError>(
+    key,
+    () => getUsers({ search: filter }),
+    {
+      ...options,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  return query;
+};
+
+export const useFollowingsQuery = (
+  filter?: string,
+  options?: { suspense: boolean },
+) => {
+  const key = queryKeyCreator.following.list();
+  const query = useQuery<User[], AxiosError>(key, getFollowings, {
+    ...options,
+    select: (data) =>
+      filter
+        ? data.filter(({ nickname }) =>
+            nickname.toUpperCase().includes(filter.toUpperCase()),
+          )
+        : data,
+  });
+
+  return query;
+};
+
+export type FollowingsMap = Record<User['id'], User>;
+export const useFollowingsMapQuery = () => {
+  const key = queryKeyCreator.following.list();
+  const query = useQuery<User[], AxiosError, FollowingsMap>(
+    key,
+    getFollowings,
+    {
+      select: (followings) =>
+        followings.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+    },
+  );
+
+  return query;
+};
+
+export const useInvalidateFollowingsQuery = () => {
+  const key = queryKeyCreator.following.all();
+
+  const queryClient = useQueryClient();
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries(key),
+    [queryClient, key],
+  );
+
+  return invalidate;
+};
+
+export const useFollowersQuery = (
+  filter?: string,
+  options?: { suspense: boolean },
+) => {
+  const key = queryKeyCreator.follower.list();
+  const query = useQuery<User[], AxiosError>(key, getFollowers, {
+    ...options,
+    select: (data) =>
+      filter
+        ? data.filter(({ nickname }) =>
+            nickname.toUpperCase().includes(filter.toUpperCase()),
+          )
+        : data,
+  });
+
+  return query;
+};
+
+export type FollowersMap = Record<User['id'], User>;
+export const useFollowersMapQuery = () => {
+  const key = queryKeyCreator.follower.list();
+  const query = useQuery<User[], AxiosError, FollowersMap>(key, getFollowers, {
+    select: (followers) =>
+      followers.reduce((acc, cur) => ({ ...acc, [cur._id]: cur }), {}),
+  });
+
+  return query;
+};
+
+export const useToggleFollowingMutation = (
+  options?: UseMutationOptions<ToggleFollowingResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.following.toggleFollowing();
+  const mutation = useMutation(key, toggleFollowing, { ...options });
+
+  return mutation;
+};
 
 export const useCommunityUsersQuery = (
   communityId: string,
@@ -31,7 +144,7 @@ export const useCommunityUsersQuery = (
     },
   );
 
-  return { communityUsersQuery: query };
+  return query;
 };
 
 export const useInvalidateCommunityUsersQuery = (communityId: string) => {
@@ -41,7 +154,7 @@ export const useInvalidateCommunityUsersQuery = (communityId: string) => {
   const invalidateCommunityUsersQuery = () =>
     queryClient.invalidateQueries(key);
 
-  return { invalidateCommunityUsersQuery };
+  return invalidateCommunityUsersQuery;
 };
 
 export type UsersMap = Record<UserUID, User>;
@@ -65,7 +178,7 @@ export const useChannelUsersMapQuery = (channelId: string) => {
     },
   );
 
-  return { channelUsersMapQuery: query };
+  return query;
 };
 
 export type CommunityUsersMap = Record<UserUID, User>;

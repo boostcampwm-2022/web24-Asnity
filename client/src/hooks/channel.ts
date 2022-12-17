@@ -1,4 +1,5 @@
 import type {
+  UpdateLastReadResult,
   Channel,
   CreateChannelRequest,
   CreateChannelResult,
@@ -20,8 +21,10 @@ import {
   leaveChannel,
   createChannel,
   getChannel,
+  updateLastRead,
 } from '@apis/channel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import produce from 'immer';
 import { useCallback } from 'react';
 
 import queryKeyCreator from '@/queryKeyCreator';
@@ -33,19 +36,19 @@ export const useChannelQuery = (channelId: string) => {
     getChannel(channelId),
   );
 
-  return { channelQuery: query };
+  return query;
 };
 
 export const useInvalidateChannelQuery = (channelId: string) => {
   const queryClient = useQueryClient();
   const key = queryKeyCreator.channel.detail(channelId);
 
-  const invalidte = useCallback(
+  const invalidate = useCallback(
     () => queryClient.invalidateQueries(key),
     [queryClient, key],
   );
 
-  return invalidte;
+  return invalidate;
 };
 
 export const usePrefetchChannelQuery = (channelId: string) => {
@@ -59,9 +62,7 @@ export const usePrefetchChannelQuery = (channelId: string) => {
 
   return prefetchQuery;
 };
-/**
- * `Channel`과 같으나 `users`가 `User[]`이 아니라 `Record<User['id'], User>`이다.
- */
+
 export type ChannelWithUsersMap = Omit<Channel, 'users'> & {
   users: UsersMap;
 };
@@ -106,17 +107,13 @@ export const useCreateChannelMutation = (
 
 /**
  * ### invalidate queries 하지 않고, 수동으로 queryClient update 할 때 사용합니다.
- * - addChannelToCommunity: 커뮤니티 아이디와 추가할 채널을 인자로 전달.
+ * - addChannelQueryData: 커뮤니티 아이디와 추가할 채널을 인자로 전달.
  */
-export const useSetChannelsQuery = () => {
+export const useSetChannelQueryData = () => {
   const queryClient = useQueryClient();
-  const key = queryKeyCreator.community.all();
+  const key = queryKeyCreator.community.list();
 
-  // TODO: 네이밍
-  const addChannelToCommunity = (
-    communityId: string,
-    channel: JoinedChannel,
-  ) => {
+  const addChannelQueryData = (communityId: string, channel: JoinedChannel) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
@@ -131,10 +128,7 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  const deleteChannelFromCommunity = (
-    communityId: string,
-    channelId: string,
-  ) => {
+  const removeChannelQueryData = (communityId: string, channelId: string) => {
     queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
       const newCommunities = communities?.map((community) => {
         if (community._id !== communityId) return community;
@@ -150,7 +144,33 @@ export const useSetChannelsQuery = () => {
     });
   };
 
-  return { addChannelToCommunity, deleteChannelFromCommunity };
+  const updateExistUnreadChatInChannelQueryData = (
+    communityId: string,
+    channelId: string,
+    existUnreadChat: boolean,
+  ) => {
+    queryClient.setQueryData<CommunitySummaries>(key, (communities) => {
+      return produce(communities, (draft: CommunitySummaries) => {
+        const community = draft.find(
+          (_community) => _community._id === communityId,
+        );
+
+        const channel = community?.channels.find(
+          (_channel) => _channel._id === channelId,
+        );
+
+        if (!channel) return;
+
+        channel.existUnreadChat = existUnreadChat;
+      });
+    });
+  };
+
+  return {
+    addChannelQueryData,
+    removeChannelQueryData,
+    updateExistUnreadChatInChannelQueryData,
+  };
 };
 
 export const useLeaveChannelMutation = (
@@ -167,6 +187,15 @@ export const useInviteChannelMutation = (
 ) => {
   const key = queryKeyCreator.channel.inviteChannel();
   const mutation = useMutation(key, inviteChannel, { ...options });
+
+  return mutation;
+};
+
+export const useUpdateLastReadMutation = (
+  options?: MutationOptions<UpdateLastReadResult, unknown, unknown>,
+) => {
+  const key = queryKeyCreator.channel.updateLastRead();
+  const mutation = useMutation(key, updateLastRead, { ...options });
 
   return mutation;
 };
