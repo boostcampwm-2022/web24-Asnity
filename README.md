@@ -38,9 +38,9 @@
 
 🖥 [데모 영상](https://www.youtube.com/watch?v=2gI3OlJXAZQ)
 
-📽 [발표 영상](https://youtu.be/vEL2TTPZ9tk)
+📽 [발표 영상](https://www.youtube.com/watch?v=rdnWakXgSuI)
 
-📋 [발표 PPT](https://docs.google.com/presentation/d/1kduK9v3o7nCGQghsplh-WrS9VVjWvp8R/edit?usp=sharing&ouid=115620821189866783380&rtpof=true&sd=true)
+📋 [발표 PPT](https://docs.google.com/presentation/d/18oABdZcFvwW2omlasPmQUEnA16izR_jd/edit#slide=id.p1)
 
 ## Wiki
 
