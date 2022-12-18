@@ -1,1 +1,2 @@
-/server/artillery linguist-vendored=false
+server/artillery/* linguist-vendored
+server/artillery/* linguist-detectable=false
