@@ -35,7 +35,6 @@ COPY /server/tsconfig.json ./server/
 RUN yarn
 
 # 소스 추가
-#RUN cd /..
 COPY /. .
 
 # Port mapping
