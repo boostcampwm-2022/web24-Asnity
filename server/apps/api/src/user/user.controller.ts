@@ -21,7 +21,7 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   async getFollowers(@Req() req: any) {
     const _id = req.user._id;
-    const result = await this.userService.getRelatedUsers(_id, 'followers');
+    const result = await this.userService.getRelatedUsers(_id, RELATION.FOLLOWERS);
     return { followers: result };
   }
 
@@ -29,7 +29,7 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   async getFollowings(@Req() req: any) {
     const _id = req.user._id;
-    const result = await this.userService.getRelatedUsers(_id, 'followings');
+    const result = await this.userService.getRelatedUsers(_id, RELATION.FOLLOWINGS);
     return { followings: result };
   }
 
