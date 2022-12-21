@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 import { UserRepository } from '@repository/user.repository';
 import { FollowerDto, ModifyUserDto } from './dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
+import { checkRelation } from '@user/helper/checkRelation';
 
 @Injectable()
 export class UserService {
@@ -13,16 +14,8 @@ export class UserService {
     if (!user || !otherUser) {
       throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
     }
-
-    const isAlreadyFollow = user.followings.includes(followerDto.followId);
-    const isAlreadyFollowAtOther = otherUser.followers.includes(followerDto.myId);
-    if (!isAlreadyFollow && isAlreadyFollowAtOther) {
-      throw new ConflictException('갱신 이상! (팔로우 안되어있으나, 상대방에겐 내가 팔로우됨)');
-    } else if (isAlreadyFollow && !isAlreadyFollowAtOther) {
-      throw new ConflictException(
-        '갱신 이상! (팔로우 되어있으나, 상대방에겐 내가 팔로우되어있지 않음)',
-      );
-    } else if (!isAlreadyFollow && !isAlreadyFollowAtOther) {
+    const expectedRelation = checkRelation(user.followings, otherUser.followers, followerDto);
+    if (expectedRelation === RELATION.FOLLOW) {
       // 팔로우 되어있지 않은 경우 팔로우 필요
       this.userRepository.appendElementAtArr(
         { _id: followerDto.myId },
@@ -33,7 +26,7 @@ export class UserService {
         { followers: followerDto.myId },
       );
       return { message: '팔로우 신청 완료' };
-    } else if (isAlreadyFollow && isAlreadyFollowAtOther) {
+    } else if (expectedRelation === RELATION.UNFOLLOW) {
       // 팔로우 되어있어 언팔로우 필요
       this.userRepository.deleteElementAtArr(
         { _id: followerDto.myId },

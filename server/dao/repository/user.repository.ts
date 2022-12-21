@@ -78,9 +78,16 @@ export class UserRepository {
   async addArrAtArr(filter, attribute, appendArr) {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
+    this.deleteCache(filter._id);
     if (filter._id) {
       this.redis.del(`user/${filter._id}`);
     }
     return await this.userModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
+  }
+
+  async deleteCache(_id: string) {
+    if (_id) {
+      this.redis.del(`user/${_id}`);
+    }
   }
 }
