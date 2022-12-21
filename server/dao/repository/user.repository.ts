@@ -29,24 +29,22 @@ export class UserRepository {
 
   async findById(_id: string) {
     const result = await this.userModel.findById(_id);
-    this.redis.set(`user/${_id}`, JSON.stringify(result));
+    this.storeCache(_id, result);
     return result;
   }
 
   async findByIdAfterCache(_id: string) {
-    const cache = await this.redis.get(`user/${_id}`);
+    const cache = await this.getCache(_id);
     if (cache) {
       return JSON.parse(cache);
     }
     const result = await this.userModel.findById(_id);
-    await this.redis.set(`user/${_id}`, JSON.stringify(result));
+    await this.storeCache(_id, result);
     return result;
   }
 
   async updateOne(filter, updateField) {
-    if (filter._id) {
-      this.redis.del(`user/${filter._id}`);
-    }
+    this.deleteCache(filter._id);
     await this.userModel.updateOne(filter, updateField);
   }
 
@@ -55,23 +53,17 @@ export class UserRepository {
   }
 
   async updateObject(filter, appendElement) {
-    if (filter._id) {
-      this.redis.del(`user/${filter._id}`);
-    }
+    this.deleteCache(filter._id);
     return await this.userModel.updateOne(filter, { $set: appendElement });
   }
 
   async deleteObject(filter, appendElement) {
-    if (filter._id) {
-      this.redis.del(`user/${filter._id}`);
-    }
+    this.deleteCache(filter._id);
     return await this.userModel.updateOne(filter, { $unset: appendElement }, { new: true });
   }
 
   async deleteElementAtArr(filter, removeElement) {
-    if (filter._id) {
-      this.redis.del(`user/${filter._id}`);
-    }
+    this.deleteCache(filter._id);
     await this.userModel.updateOne(filter, { $pullAll: removeElement });
   }
 
@@ -79,9 +71,6 @@ export class UserRepository {
     const addArr = {};
     addArr[attribute] = { $each: appendArr };
     this.deleteCache(filter._id);
-    if (filter._id) {
-      this.redis.del(`user/${filter._id}`);
-    }
     return await this.userModel.findByIdAndUpdate(filter, { $addToSet: addArr }, { new: true });
   }
 
@@ -89,5 +78,13 @@ export class UserRepository {
     if (_id) {
       this.redis.del(`user/${_id}`);
     }
+  }
+
+  async storeCache(_id: string, result: UserDocument) {
+    await this.redis.set(`user/${_id}`, JSON.stringify(result));
+  }
+
+  async getCache(_id: string) {
+    return await this.redis.get(`user/${_id}`);
   }
 }
