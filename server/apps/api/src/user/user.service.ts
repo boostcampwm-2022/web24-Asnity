@@ -48,15 +48,14 @@ export class UserService {
     return users.map((user) => getUserBasicInfo(user));
   }
 
-  // TODO : feature 수정으로 인해 안쓰는 코드로 유추 재확인
-  async getRelatedUsers(_id: string, option: string) {
+  async getRelatedUsers(_id: string, option: RELATION) {
     const user = await this.userRepository.findById(_id);
     if (!user) {
       throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
     }
 
     const { followings, followers } = user;
-    const userIdList = option == 'followers' ? followers : followings;
+    const userIdList = option == RELATION.FOLLOWERS ? followers : followings;
     // TODO: 배열을 순회하면서 찾지 않고 한번에 db에서 찾도록하는 mongoose 명령 있는지 확인하기
     return await Promise.all(
       userIdList.map(async (userId) => {
@@ -71,7 +70,6 @@ export class UserService {
     if (!user) {
       throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
     }
-    // TODO: 꼭 기다려줘야하는지 생각해보기
     return await this.userRepository.updateOne({ _id }, updateField);
   }
 }
