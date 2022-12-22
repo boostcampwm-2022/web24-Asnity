@@ -16,6 +16,7 @@ import { communityDto1, modifyCommunityDto1 } from '@mock/community.mock';
 import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { importRedisModule } from '@api/modules/Redis.module';
+import { getRedisToken } from '@liaoliaots/nestjs-redis';
 
 describe('Community E2E Test', () => {
   let app, server, userModel, communityModel, mongod, user1;
@@ -29,6 +30,12 @@ describe('Community E2E Test', () => {
         mongoDbServerModule(),
         importWinstonModule(),
         CommunityModule,
+      ],
+      providers: [
+        {
+          provide: getRedisToken('default'),
+          useValue: { get: () => null, set: async () => jest.fn(), del: async () => jest.fn() },
+        },
       ],
     }).compile();
 
