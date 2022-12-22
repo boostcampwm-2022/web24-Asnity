@@ -83,6 +83,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 6379:6379
     steps:
       - name: 체크아웃
         uses: actions/checkout@v2
