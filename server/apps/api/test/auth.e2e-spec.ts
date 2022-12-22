@@ -6,13 +6,27 @@ import { importConfigModule } from '@api/modules/Config.module';
 import { importWinstonModule } from '@api/modules/Winstone.module';
 import { signoutURL, signupURL, signinURL } from '@api/test/urls/urls';
 import { authData } from '@mock/auth.mock';
+import { getRedisToken } from '@liaoliaots/nestjs-redis';
+import { importRedisModule } from '@api/modules/Redis.module';
 
 describe('Auth E2E Test', () => {
   let app, server;
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [importConfigModule(), mongoDbServerModule(), importWinstonModule(), UserModule],
+      imports: [
+        importConfigModule(),
+        importRedisModule(),
+        mongoDbServerModule(),
+        importWinstonModule(),
+        UserModule,
+      ],
+      providers: [
+        {
+          provide: getRedisToken('default'),
+          useValue: { get: () => null, set: async () => jest.fn(), del: async () => jest.fn() },
+        },
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
