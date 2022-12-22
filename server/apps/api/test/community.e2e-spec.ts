@@ -15,6 +15,7 @@ import { Community, CommunitySchema } from '@schemas/community.schema';
 import { communityDto1, modifyCommunityDto1 } from '@mock/community.mock';
 import { ApiInterceptor } from '@custom/interceptor/api.interceptor';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { importRedisModule } from '@api/modules/Redis.module';
 
 describe('Community E2E Test', () => {
   let app, server, userModel, communityModel, mongod, user1;
@@ -24,6 +25,7 @@ describe('Community E2E Test', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
         importConfigModule(),
+        importRedisModule(),
         mongoDbServerModule(),
         importWinstonModule(),
         CommunityModule,
