@@ -14,6 +14,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { userData } from '@mock/auth.mock';
 
 import { importRedisModule } from '@api/modules/Redis.module';
+import { getRedisToken } from '@liaoliaots/nestjs-redis';
 
 describe('User E2E Test', () => {
   let app, server, userModel, mongod, redis, user1;
@@ -28,16 +29,18 @@ describe('User E2E Test', () => {
         importWinstonModule(),
         UserModule,
       ],
+      providers: [
+        {
+          provide: getRedisToken('default'),
+          useValue: { get: () => null, set: async () => jest.fn(), del: async () => jest.fn() },
+        },
+      ],
     }).compile();
 
     mongod = await moduleRef.get(getConnectionToken());
     userModel = mongod.model(User.name, UserSchema);
-    // jest.mock('redis', () => jest.requireActual('redis-mock'));
-    // redis = moduleRef.get<Redis>(getRedisToken('default'));
-
     app = moduleRef.createNestApplication();
     app.useGlobalInterceptors(new ApiInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)));
-    // jest.spyOn(redis, 'get').mockResolvedValue(null);
     await app.init();
   });
 
