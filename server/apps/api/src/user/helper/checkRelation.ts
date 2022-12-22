@@ -1,4 +1,5 @@
 import { ConflictException } from '@nestjs/common';
+import { RELATION } from './Relation';
 
 export const checkRelation = (myFollowings, yourFollowers, followerDto) => {
   const isAlreadyFollow = myFollowings.includes(followerDto.followId);
