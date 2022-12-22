@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { FollowerDto, ModifyUserDto } from './dto';
 import { ObjectIdValidationPipe } from '@custom/pipe/mongodbObjectIdValidation.pipe';
+import { RELATION } from '@user/helper/Relation';
 
 @Controller('api/user')
 export class UserController {

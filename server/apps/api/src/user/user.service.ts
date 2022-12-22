@@ -3,6 +3,7 @@ import { UserRepository } from '@repository/user.repository';
 import { FollowerDto, ModifyUserDto } from './dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { checkRelation } from '@user/helper/checkRelation';
+import { RELATION } from '@user/helper/Relation';
 
 @Injectable()
 export class UserService {

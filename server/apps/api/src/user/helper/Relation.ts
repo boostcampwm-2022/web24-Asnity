@@ -1,4 +1,4 @@
-enum RELATION {
+export enum RELATION {
   FOLLOW,
   UNFOLLOW,
   FOLLOWERS,
