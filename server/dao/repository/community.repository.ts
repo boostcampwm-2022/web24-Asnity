@@ -5,6 +5,7 @@ import { Community, CommunityDocument } from '@schemas/community.schema';
 import { CreateCommunityDto } from '@api/src/community/dto/create-community.dto';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
+import { UserDocument } from '@schemas/user.schema';
 
 @Injectable()
 export class CommunityRepository {
@@ -23,12 +24,12 @@ export class CommunityRepository {
   }
 
   async findByIdAfterCache(_id: string) {
-    const cache = await this.redis.get(`community/${_id}`);
+    const cache = await this.getCache(_id);
     if (cache) {
       return JSON.parse(cache);
     }
     const result = await this.communityModel.findById(_id);
-    await this.redis.set(`community/${_id}`, JSON.stringify(result));
+    await this.storeCache(_id, result);
     return result;
   }
 
@@ -41,7 +42,7 @@ export class CommunityRepository {
       { new: true },
     );
     if (filter._id) {
-      await this.redis.set(`community/${filter._id}`, JSON.stringify(result));
+      await this.storeCache(filter._id, result);
     }
     return result;
   }
@@ -51,24 +52,34 @@ export class CommunityRepository {
   }
 
   async updateOne(filter, updateField) {
+    this.deleteCache(filter._id);
     await this.communityModel.updateOne(filter, updateField);
-    if (filter._id) {
-      await this.redis.del(`community/${filter._id}`);
-    }
   }
 
   async findAndUpdateOne(filter, updateField) {
     const result = await this.communityModel.findOneAndUpdate(filter, updateField, { new: true });
     if (filter._id) {
-      await this.redis.set(`community/${filter._id}`, JSON.stringify(result));
+      await this.storeCache(filter._id, result);
     }
     return result;
   }
 
   async deleteElementAtArr(filter, removeElement) {
-    const result = await this.communityModel.updateOne(filter, { $pullAll: removeElement });
-    if (filter._id) {
-      await this.redis.del(`community/${filter._id}`);
+    this.deleteCache(filter._id);
+    await this.communityModel.updateOne(filter, { $pullAll: removeElement });
+  }
+
+  async deleteCache(_id: string) {
+    if (_id) {
+      this.redis.del(`community/${_id}`);
     }
+  }
+
+  async storeCache(_id: string, result: CommunityDocument) {
+    await this.redis.set(`community/${_id}`, JSON.stringify(result));
+  }
+
+  async getCache(_id: string) {
+    return await this.redis.get(`community/${_id}`);
   }
 }
