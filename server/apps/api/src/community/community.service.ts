@@ -18,6 +18,7 @@ import { ChatListRespository } from '@repository/chat-list.respository';
 import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
 import { ChannelDocument } from '@schemas/channel.schema';
 import { verifyChannelInCommunity } from '@community/helper/verifyChannelInCommunity';
+import { CommunityDocument } from '@schemas/community.schema';
 
 @Injectable()
 export class CommunityService {
@@ -108,7 +109,7 @@ export class CommunityService {
 
   async deleteCommunity(deleteCommunityDto: DeleteCommunityDto) {
     const updateField = { deletedAt: new Date() };
-    let community = await this.communityRepository.findAndUpdateOne(
+    const community = await this.communityRepository.findAndUpdateOne(
       {
         _id: deleteCommunityDto.community_id,
         managerId: deleteCommunityDto.requestUserId,
@@ -116,14 +117,7 @@ export class CommunityService {
       },
       updateField,
     );
-    if (!community) {
-      community = await this.getCommunity(deleteCommunityDto.community_id);
-      if (community.managerId != deleteCommunityDto.requestUserId) {
-        throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
-      } else if (community.deletedAt) {
-        throw new BadRequestException('이미 삭제된 커뮤니티입니다.');
-      }
-    }
+    await this.verifyDeleteCommunity(community, deleteCommunityDto);
     await Promise.all(
       community.users.map((user_id) =>
         this.deleteCommunityAtUserDocument(user_id, community._id.toString()),
@@ -255,6 +249,17 @@ export class CommunityService {
         }),
       );
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
+    }
+  }
+
+  async verifyDeleteCommunity(community: CommunityDocument, { community_id, requestUserId }) {
+    if (!community) {
+      const { managerId, deletedAt } = await this.getCommunity(community_id);
+      if (managerId != requestUserId) {
+        throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
+      } else if (deletedAt) {
+        throw new BadRequestException('이미 삭제된 커뮤니티입니다.');
+      }
     }
   }
 }
