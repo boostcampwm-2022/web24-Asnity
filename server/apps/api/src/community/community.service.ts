@@ -16,7 +16,6 @@ import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
-import { pipe, pipeAsync } from '@utils/pipe';
 import { ChannelDocument } from '@schemas/channel.schema';
 import { verifyChannelInCommunity } from '@community/helper/verifyChannelInCommunity';
 
@@ -62,75 +61,38 @@ export class CommunityService {
   }
 
   async appendUsersToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
-    const communityId = appendUsersToCommunityDto.community_id;
+    const { community_id, requestUserId, users } = appendUsersToCommunityDto;
+    const communityId = community_id;
     const user = await this.userRepository.findById(appendUsersToCommunityDto.requestUserId);
     if (!IsUserInCommunity(user, communityId)) {
       throw new BadRequestException(`커뮤니티에 속하지 않는 사용자는 요청할 수 없습니다.`);
     }
     const community = await this.communityRepository.findById(communityId);
-    const now = new Date();
     let channels = {};
     if (community && 'channels' in community) {
       // public channel 에 추가
-      const getChannels = async () => {
-        return await community.channels.reduce(async (acc, channelId) => {
-          const result = await acc;
-          const channel = await this.channelRepository.findOne({
-            _id: channelId,
-            isPrivate: false,
-          });
-          if (channel) {
-            result[channelId] = now;
-          }
-          return Promise.resolve(result);
-        }, Promise.resolve({}));
-      };
-      channels = await getChannels();
+      channels = await this.getChannels(community);
     }
     const newCommunity = makeCommunityObj(communityId, channels);
-    await Promise.all(
-      // 사용자 document 검증 (올바른 사용자인지, 해당 사용자가 이미 커뮤니티에 참여하고 있는건 아닌지)
-      appendUsersToCommunityDto.users.map(async (user_id) => {
-        const newUsers = await this.userRepository.findById(user_id);
-        if (!newUsers) {
-          throw new BadRequestException(
-            `커뮤니티에 추가를 요청한 사용자 _id(${user_id})가 올바르지 않습니다.`,
-          );
-        } else if (IsUserInCommunity(newUsers, communityId)) {
-          throw new BadRequestException(`이미 커뮤니티에 추가된 사용자 입니다.`);
-        }
-      }),
-    );
+    await this.verifyUsersAlreadyInCommunity(users, communityId);
     await Promise.all(
       // 사용자 document 검증이 끝난 후 update
-      appendUsersToCommunityDto.users.map((user_id) => {
+      users.map((user_id) => {
         this.userRepository.updateObject({ _id: user_id }, newCommunity);
       }),
     );
     await Promise.all(
       // public 채널들에 사용자 추가
       Array.from(Object.keys(channels)).map((channelId) => {
-        this.channelRepository.addArrAtArr(
-          { _id: channelId },
-          'users',
-          appendUsersToCommunityDto.users,
-        );
+        this.channelRepository.addArrAtArr({ _id: channelId }, 'users', users);
       }),
     );
     const updatedCommunity = await this.communityRepository.addArrAtArr(
-      { _id: appendUsersToCommunityDto.community_id },
+      { _id: communityId },
       'users',
-      appendUsersToCommunityDto.users,
+      users,
     );
-    if (!updatedCommunity) {
-      await Promise.all(
-        // 사용자 document에서 다시 삭제
-        appendUsersToCommunityDto.users.map((user_id) => {
-          this.userRepository.deleteObject({ _id: user_id }, newCommunity);
-        }),
-      );
-      throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
-    }
+    await this.verifyUpdatedCommunity(updatedCommunity, newCommunity, users);
   }
 
   async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
@@ -252,5 +214,47 @@ export class CommunityService {
     const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
     const lastChatTime = lastChatList.chat.at(-1).get('createdAt');
     return lastRead.getTime() <= lastChatTime;
+  }
+
+  async getChannels(community) {
+    return await community.channels.reduce(async (acc, channelId) => {
+      const result = await acc;
+      const channel = await this.channelRepository.findOne({
+        _id: channelId,
+        isPrivate: false,
+      });
+      if (channel) {
+        result[channelId] = new Date();
+      }
+      return Promise.resolve(result);
+    }, Promise.resolve({}));
+  }
+
+  async verifyUsersAlreadyInCommunity(users, communityId) {
+    await Promise.all(
+      // 사용자 document 검증 (올바른 사용자인지, 해당 사용자가 이미 커뮤니티에 참여하고 있는건 아닌지)
+      users.map(async (userId) => {
+        const newUsers = await this.userRepository.findById(userId);
+        if (!newUsers) {
+          throw new BadRequestException(
+            `커뮤니티에 추가를 요청한 사용자 _id(${userId})가 올바르지 않습니다.`,
+          );
+        } else if (IsUserInCommunity(newUsers, communityId)) {
+          throw new BadRequestException(`이미 커뮤니티에 추가된 사용자 입니다.`);
+        }
+      }),
+    );
+  }
+
+  async verifyUpdatedCommunity(updatedCommunity, newCommunity, users) {
+    if (!updatedCommunity) {
+      await Promise.all(
+        // 사용자 document에서 다시 삭제
+        users.map((user_id) => {
+          this.userRepository.deleteObject({ _id: user_id }, newCommunity);
+        }),
+      );
+      throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
+    }
   }
 }
