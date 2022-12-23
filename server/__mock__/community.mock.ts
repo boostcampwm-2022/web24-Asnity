@@ -7,6 +7,12 @@ export const communityDto1 = {
   profileUrl: 'test profileUrl',
 } as CreateCommunityDto;
 
+export const communityDto2 = {
+  name: 'asnity commu2',
+  description: 'test description2',
+  profileUrl: 'test profileUrl2',
+} as CreateCommunityDto;
+
 export const modifyCommunityDto1 = {
   name: 'asnity',
   description: 'change description',
