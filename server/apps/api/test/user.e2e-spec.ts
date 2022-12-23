@@ -15,6 +15,8 @@ import { userData } from '@mock/auth.mock';
 
 import { importRedisModule } from '@api/modules/Redis.module';
 import { getRedisToken } from '@liaoliaots/nestjs-redis';
+import { signupUserRequest } from '@api/test/beforeRequest/signupUser.request';
+import { signinUserRequest } from '@api/test/beforeRequest/signinUser.request';
 
 describe('User E2E Test', () => {
   let app, server, userModel, mongod, redis, user1;
@@ -46,19 +48,9 @@ describe('User E2E Test', () => {
 
   beforeEach(async () => {
     server = await app.getHttpServer();
-    await request(server)
-      .post(signupURL)
-      .send({
-        id: initTestUser1.id,
-        password: initTestUser1.password,
-        nickname: initTestUser1.nickname,
-      })
-      .then(async () => {
-        user1 = await userModel.findOne({ id: initTestUser1.id });
-      });
-    accessToken = (
-      await request(server).post(signinURL).send({ id: user1.id, password: initTestUser1.password })
-    ).body.result.accessToken;
+    await signupUserRequest(server, initTestUser1);
+    user1 = await userModel.findOne({ id: initTestUser1.id });
+    accessToken = await signinUserRequest(server, user1.id, initTestUser1.password);
   });
 
   it('should be defined', () => {
