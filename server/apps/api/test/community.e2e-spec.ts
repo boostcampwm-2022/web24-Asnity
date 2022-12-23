@@ -18,6 +18,8 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { importRedisModule } from '@api/modules/Redis.module';
 import { getRedisToken } from '@liaoliaots/nestjs-redis';
 import { createCommunityRequest } from '@api/test/beforeRequest/createCommunity.request';
+import { signupUserRequest } from '@api/test/beforeRequest/signupUser.request';
+import { signinUserRequest } from '@api/test/beforeRequest/signinUser.request';
 
 describe('Community E2E Test', () => {
   let app, server, userModel, communityModel, mongod, user1;
@@ -50,26 +52,16 @@ describe('Community E2E Test', () => {
 
   beforeEach(async () => {
     server = await app.getHttpServer();
-    await request(server)
-      .post(signupURL)
-      .send({
-        id: initTestUser1.id,
-        password: initTestUser1.password,
-        nickname: initTestUser1.nickname,
-      })
-      .then(async () => {
-        user1 = await userModel.findOne({ id: initTestUser1.id });
-      });
-    accessToken = (
-      await request(server).post(signinURL).send({ id: user1.id, password: initTestUser1.password })
-    ).body.result.accessToken;
-    await createCommunityRequest(server, accessToken);
+    await signupUserRequest(server, initTestUser1);
+    user1 = await userModel.findOne({ id: initTestUser1.id });
+    accessToken = await signinUserRequest(server, user1.id, initTestUser1.password);
+    await createCommunityRequest(server, accessToken, communityDto1);
   });
 
   it('should be defined', () => {
     expect(communityModel).toBeDefined();
   });
-  // TODO: url refactoring 검토
+
   describe('Post /api/community ', () => {
     it('커뮤니티 추가', async () => {
       await request(server)
@@ -85,13 +77,18 @@ describe('Community E2E Test', () => {
 
   describe('Get /api/communities', () => {
     it('자신이 속한 커뮤니티들의 정보', async () => {
+      await createCommunityRequest(server, accessToken, communityDto2);
+
       await request(server)
         .get(`/api/communities`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect((res) => {
           expect(res.body.result.communities).toBeDefined();
+          expect(res.body.result.communities.length).toEqual(2);
           expect(res.body.result.communities[0].managerId).toEqual(user1._id.toString());
           expect(res.body.result.communities[0].name).toEqual(communityDto1.name);
+          expect(res.body.result.communities[1].managerId).toEqual(user1._id.toString());
+          expect(res.body.result.communities[1].name).toEqual(communityDto2.name);
         });
     });
   });
@@ -153,22 +150,10 @@ describe('Community E2E Test', () => {
   describe('Delete /api/communities/:id/me ', () => {
     it('커뮤니티 퇴장', async () => {
       let user2;
-      await request(server)
-        .post(signupURL)
-        .send({
-          id: initTestUser2.id,
-          password: initTestUser2.password,
-          nickname: initTestUser2.nickname,
-        })
-        .then(async () => {
-          user2 = await userModel.findOne({ id: initTestUser2.id });
-        });
-      const user2AccessToken = (
-        await request(server)
-          .post(signinURL)
-          .send({ id: user2.id, password: initTestUser2.password })
-      ).body.result.accessToken;
-
+      await signupUserRequest(server, initTestUser2).then(async () => {
+        user2 = await userModel.findOne({ id: initTestUser2.id });
+      });
+      const user2AccessToken = await signinUserRequest(server, user2.id, initTestUser2.password);
       const community = await communityModel.findOne({ name: communityDto1.name });
       await request(server)
         .post(`/api/communities/${community._id.toString()}/users`)
