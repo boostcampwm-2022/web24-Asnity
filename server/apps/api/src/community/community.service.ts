@@ -17,7 +17,6 @@ import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
 import { ChannelDocument } from '@schemas/channel.schema';
-import { verifyChannelInCommunity } from '@community/helper/verifyChannelInCommunity';
 import { CommunityDocument } from '@schemas/community.schema';
 
 @Injectable()
@@ -38,7 +37,7 @@ export class CommunityService {
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
         const community = await this.communityRepository.findByIdAfterCache(_id);
-        verifyChannelInCommunity(community, channels);
+        this.verifyChannelInCommunity(community, channels);
         const channelsInfo = await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
             return await this.getChannelInfo(channelId, channels.get(channelId));
@@ -97,13 +96,11 @@ export class CommunityService {
   }
 
   async modifyCommunity(modifyCommunityDto: ModifyCommunityDto) {
-    // TODO : refactoring을 findAndUpdate로 해서 매니저 id, deletedAt인지 바로 검증이랑 동시에 하도록..
     const community = await this.getCommunity(modifyCommunityDto.community_id);
     if (community.managerId != modifyCommunityDto.requestUserId) {
       throw new BadRequestException('사용자의 커뮤니티 수정 권한이 없습니다.');
     }
     const { community_id, ...updateField } = modifyCommunityDto;
-    // TODO: 꼭 기다려줘야하는지 생각해보기
     return await this.communityRepository.updateOne({ _id: community_id }, updateField);
   }
 
@@ -148,13 +145,13 @@ export class CommunityService {
     const community = await this.getCommunity(requestUserAboutCommunityDto.community_id, {
       users: { $elemMatch: { $eq: requestUserAboutCommunityDto.requestUserId } },
     });
-    const result = await Promise.all(
+    const users = await Promise.all(
       community.users.map(async (_id) => {
         const user = await this.userRepository.findByIdAfterCache(_id);
         return getUserBasicInfo(user);
       }),
     );
-    return { users: result };
+    return { users };
   }
 
   async exitUserInCommunity(requestUserAboutCommunityDto: RequestUserAboutCommunityDto) {
@@ -222,6 +219,17 @@ export class CommunityService {
       }
       return Promise.resolve(result);
     }, Promise.resolve({}));
+  }
+
+  verifyChannelInCommunity(community, channels) {
+    if (!community) {
+      throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
+    }
+    Array.from(channels.keys()).forEach((channelId: string) => {
+      if (!community.channels.includes(channelId)) {
+        throw new BadRequestException('커뮤니티에 없는 비정상적인 채널이 존재합니다.');
+      }
+    });
   }
 
   async verifyUsersAlreadyInCommunity(users, communityId) {
