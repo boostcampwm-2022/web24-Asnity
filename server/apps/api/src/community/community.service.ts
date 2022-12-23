@@ -16,6 +16,9 @@ import { RequestUserAboutCommunityDto } from '@community/dto/request-user-about-
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
 import { ChatListRespository } from '@repository/chat-list.respository';
 import { sortedByCreateTime } from '@community/helper/sortedByCreateTime';
+import { pipe, pipeAsync } from '@utils/pipe';
+import { ChannelDocument } from '@schemas/channel.schema';
+import { verifyChannelInCommunity } from '@community/helper/verifyChannelInCommunity';
 
 @Injectable()
 export class CommunityService {
@@ -27,44 +30,22 @@ export class CommunityService {
   ) {}
 
   async getCommunities(requestUserId: string) {
-    const communitiesInfo = [];
     const user = await this.userRepository.findById(requestUserId);
     if (user.communities === undefined || Object.keys(user.communities).length == 0) {
-      return { communities: communitiesInfo };
+      return { communities: [] };
     }
-    await Promise.all(
+    const communitiesInfo = await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
         const community = await this.communityRepository.findByIdAfterCache(_id);
-        if (!community) {
-          throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
-        }
-        const result = Array.from(channels.keys()).filter(
-          (channel_id: string) => !community.channels.includes(channel_id),
-        );
-        if (result.length > 0) {
-          console.log(result);
-          throw new BadRequestException('커뮤니티에 없는 비정상적인 채널이 존재합니다.');
-        }
-        const channelsInfo = [];
-        await Promise.all(
+        verifyChannelInCommunity(community, channels);
+        const channelsInfo = await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
-            const channel = (await this.channelRepository.findById(channelId)) as any;
-            if (!channel || channel.deletedAt) {
-              throw new BadRequestException('존재하지 않는 채널입니다.');
-            }
-            const channelInfo = getChannelBasicInfo(channel);
-            // 안읽은 채팅 있는 지 확인
-            const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
-            const lastChatTime = lastChatList.chat.at(-1).get('createdAt');
-
-            channelInfo['existUnreadChat'] = channels.get(channelId).getTime() <= lastChatTime;
-            channelsInfo.push(channelInfo);
+            return await this.getChannelInfo(channelId, channels.get(channelId));
           }),
         );
         channelsInfo.sort(sortedByCreateTime);
-        const communityInfo = getCommunityBasicInfo(community, channelsInfo);
-        communitiesInfo.push(communityInfo);
+        return getCommunityBasicInfo(community, channelsInfo);
       }),
     );
     communitiesInfo.sort(sortedByCreateTime);
@@ -251,5 +232,25 @@ export class CommunityService {
         this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUserId] }),
       ),
     );
+  }
+
+  async getChannelInfo(_id: string, lastRead) {
+    const channel = await this.channelRepository.findOne({
+      _id,
+      deletedAt: { $exists: false },
+    });
+    if (!channel || channel.deletedAt) {
+      throw new BadRequestException('존재하지 않는 채널입니다.');
+    }
+    const channelInfo = getChannelBasicInfo(channel);
+    channelInfo['existUnreadChat'] = await this.checkUnreadChat(lastRead, channel);
+    return channelInfo;
+  }
+
+  async checkUnreadChat(lastRead: Date, channel: ChannelDocument) {
+    // 안읽은 채팅 있는 지 확인
+    const lastChatList = await this.chatListRepository.findById(channel.chatLists.at(-1));
+    const lastChatTime = lastChatList.chat.at(-1).get('createdAt');
+    return lastRead.getTime() <= lastChatTime;
   }
 }
