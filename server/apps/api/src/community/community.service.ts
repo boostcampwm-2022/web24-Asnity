@@ -116,8 +116,8 @@ export class CommunityService {
     );
     await this.verifyDeleteCommunity(community, deleteCommunityDto);
     await Promise.all(
-      community.users.map((user_id) =>
-        this.deleteCommunityAtUserDocument(user_id, community._id.toString()),
+      community.users.map((userId) =>
+        this.deleteCommunityAtUserDocument(userId, community._id.toString()),
       ),
     );
   }
@@ -132,9 +132,9 @@ export class CommunityService {
     return community;
   }
 
-  deleteCommunityAtUserDocument(user_id: string, community_id: string) {
+  deleteCommunityAtUserDocument(userId: string, community_id: string) {
     return this.userRepository.deleteObject(
-      { _id: user_id },
+      { _id: userId },
       {
         [`communities.${community_id}`]: 1,
       },
@@ -181,8 +181,8 @@ export class CommunityService {
       return;
     }
     await Promise.all(
-      Array.from(user.communities.get(community_id).channels.keys()).map((channel_id) =>
-        this.channelRepository.deleteElementAtArr({ _id: channel_id }, { users: [requestUserId] }),
+      Array.from(user.communities.get(community_id).channels.keys()).map((channelId) =>
+        this.channelRepository.deleteElementAtArr({ _id: channelId }, { users: [requestUserId] }),
       ),
     );
   }
@@ -252,8 +252,8 @@ export class CommunityService {
     if (!updatedCommunity) {
       await Promise.all(
         // 사용자 document에서 다시 삭제
-        users.map((user_id) => {
-          this.userRepository.deleteObject({ _id: user_id }, newCommunity);
+        users.map((_id) => {
+          this.userRepository.deleteObject({ _id }, newCommunity);
         }),
       );
       throw new BadRequestException('해당하는 커뮤니티의 _id가 올바르지 않습니다.');
