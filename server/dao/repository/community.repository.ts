@@ -69,7 +69,7 @@ export class CommunityRepository {
     await this.communityModel.updateOne(filter, { $pullAll: removeElement });
   }
 
-  async deleteCache(_id: string) {
+  deleteCache(_id: string) {
     if (_id) {
       this.redis.del(`community/${_id}`);
     }
