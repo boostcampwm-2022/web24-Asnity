@@ -4,7 +4,6 @@ const config: Config = {
   roots: ['<rootDir>'],
   testPathIgnorePatterns: ['<rootDir>/node_modules'],
   testEnvironment: 'jsdom',
-  collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}'],
   coverageDirectory: 'coverage',
   setupFilesAfterEnv: ['<rootDir>/src/setupTest.ts'],
