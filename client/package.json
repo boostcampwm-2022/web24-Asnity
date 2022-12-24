@@ -10,7 +10,8 @@
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.ts --progress",
     "analysis": "cross-env NODE_ENV=production webpack --config ./config/webpack.analysis.ts --progress",
     "test": "jest --maxWorkers=50%",
-    "test:watch": "jest --watch --maxWorkers=25%"
+    "test:watch": "jest --watch --maxWorkers=25%",
+    "test:cover": "jest --watch --coverage"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
@@ -42,7 +43,6 @@
     "@faker-js/faker": "^7.6.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.9",
     "@tanstack/react-query-devtools": "^4.16.1",
-    "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
