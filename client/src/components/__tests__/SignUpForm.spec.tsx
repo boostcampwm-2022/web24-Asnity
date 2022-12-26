@@ -1,14 +1,10 @@
+import SignUpForm from '@components/Form/SignUpForm';
 import userEvent from '@testing-library/user-event';
 import { render } from '@utils/testUtils';
 import React from 'react';
 
-import SignUpForm from './SignUpForm';
-
 const renderSignUpPage = () => {
-  const handleSubmitValidSignUpForm = jest.fn((data) => {
-    console.log(data);
-    return Promise.resolve(data);
-  });
+  const handleSubmitValidSignUpForm = jest.fn();
   const result = render(
     <SignUpForm handleSubmitValidSignUpForm={handleSubmitValidSignUpForm} />,
   );
