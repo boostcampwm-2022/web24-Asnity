@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { render } from '@utils/testUtils';
 import React from 'react';
 
-const renderSignUpPage = () => {
+const renderSignUpForm = () => {
   const handleSubmitValidSignUpForm = jest.fn();
   const result = render(
     <SignUpForm handleSubmitValidSignUpForm={handleSubmitValidSignUpForm} />,
@@ -43,7 +43,7 @@ const renderSignUpPage = () => {
 describe('SignUpForm 컴포넌트', () => {
   it('id, nickname, password, passwordCheck input 필드가 렌더링된다.', () => {
     const { idField, nicknameField, passwordField, passwordCheckField } =
-      renderSignUpPage();
+      renderSignUpForm();
 
     expect(idField()).toBeInTheDocument();
     expect(nicknameField()).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe('SignUpForm 컴포넌트', () => {
       changeNicknameField,
       changePasswordField,
       changePasswordCheckField,
-    } = renderSignUpPage();
+    } = renderSignUpForm();
 
     const data = {
       id: 'asd@asd.com',
@@ -85,7 +85,7 @@ describe('SignUpForm 컴포넌트', () => {
       changeNicknameField,
       changePasswordField,
       changePasswordCheckField,
-    } = renderSignUpPage();
+    } = renderSignUpForm();
 
     const data = {
       id: 'asd@asd.',
