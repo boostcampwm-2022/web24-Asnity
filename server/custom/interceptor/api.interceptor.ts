@@ -30,7 +30,7 @@ export class ApiInterceptor implements NestInterceptor {
       catchError((error) => {
         this.logger.error(error.response ?? error);
         if (process.env.NODE_ENV == 'prod') {
-          Sentry.captureException(error);
+          // Sentry.captureException(error);
           const webhook = new IncomingWebhook(process.env.ERROR_SLACK_WEBHOOK);
           webhook.send({
             attachments: [
