@@ -1,19 +1,17 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAccessGuard } from '@api/src/auth/guard';
 import { FollowerDto, ModifyUserDto } from './dto';
-import { ObjectIdValidationPipe } from '@custom/pipe/mongodbObjectIdValidation.pipe';
 import { RELATION } from '@user/helper/Relation';
+import { ReceivedData } from '@custom/decorator/ReceivedData.decorator';
 
 @Controller('api/user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('following/:id')
+  @Post('following/:followId')
   @UseGuards(JwtAccessGuard)
-  async addFollowing(@Param('id', ObjectIdValidationPipe) id: string, @Req() req: any) {
-    const myId = req.user._id;
-    const addFollowingDto: FollowerDto = { myId, followId: id };
+  async addFollowing(@ReceivedData() addFollowingDto: FollowerDto) {
     const result = await this.userService.toggleFollowing(addFollowingDto);
     return result;
   }
@@ -36,9 +34,8 @@ export class UserController {
 
   @Patch('settings')
   @UseGuards(JwtAccessGuard)
-  async modifyUserSetting(@Body() modifyUserDto: ModifyUserDto, @Req() req: any) {
-    const _id = req.user._id;
-    await this.userService.modifyUser({ ...modifyUserDto, _id });
+  async modifyUserSetting(@ReceivedData() modifyUserDto: ModifyUserDto) {
+    await this.userService.modifyUser(modifyUserDto);
     return { message: '사용자 정보 변경 완료' };
   }
 }
