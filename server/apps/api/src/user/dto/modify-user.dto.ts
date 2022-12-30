@@ -1,20 +1,10 @@
-import {
-  IsEmail,
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-  Min,
-  MinLength,
-} from 'class-validator';
-import { PROVIDER, STATUS } from '@utils/def';
-import { Prop } from '@nestjs/mongoose';
+import { IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { STATUS } from '@utils/def';
 
 export class ModifyUserDto {
-  @IsOptional()
-  @IsString()
-  _id: string;
+  @IsNotEmpty()
+  @IsMongoId()
+  requestUserId: string;
 
   @IsOptional()
   @IsString()
