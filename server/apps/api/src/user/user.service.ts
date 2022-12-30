@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from '@repository/user.repository';
 import { FollowerDto, ModifyUserDto } from './dto';
 import { getUserBasicInfo } from '@user/helper/getUserBasicInfo';
@@ -10,7 +10,7 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async toggleFollowing(followerDto: FollowerDto) {
-    const user = await this.userRepository.findById(followerDto.myId);
+    const user = await this.userRepository.findById(followerDto.requestUserId);
     const otherUser = await this.userRepository.findById(followerDto.followId);
     if (!user || !otherUser) {
       throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
@@ -19,29 +19,29 @@ export class UserService {
     if (expectedRelation === RELATION.FOLLOW) {
       // 팔로우 되어있지 않은 경우 팔로우 필요
       this.userRepository.appendElementAtArr(
-        { _id: followerDto.myId },
+        { _id: followerDto.requestUserId },
         { followings: followerDto.followId },
       );
       this.userRepository.appendElementAtArr(
         { _id: followerDto.followId },
-        { followers: followerDto.myId },
+        { followers: followerDto.requestUserId },
       );
       return { message: '팔로우 신청 완료' };
     } else if (expectedRelation === RELATION.UNFOLLOW) {
       // 팔로우 되어있어 언팔로우 필요
       this.userRepository.deleteElementAtArr(
-        { _id: followerDto.myId },
+        { _id: followerDto.requestUserId },
         { followings: [followerDto.followId] },
       );
       this.userRepository.deleteElementAtArr(
         { _id: followerDto.followId },
-        { followers: [followerDto.myId] },
+        { followers: [followerDto.requestUserId] },
       );
       return { message: '언팔로우 완료' };
     }
   }
 
-  async getUser(id: string) {
+  async getUsers(id: string) {
     const users = await this.userRepository.findUser([
       { id: { $regex: id } },
       { nickname: { $regex: id } },
@@ -66,11 +66,11 @@ export class UserService {
   }
 
   async modifyUser(modifyUserDto: ModifyUserDto) {
-    const { _id, ...updateField } = modifyUserDto;
-    const user = await this.userRepository.findById(_id);
+    const { requestUserId, ...updateField } = modifyUserDto;
+    const user = await this.userRepository.findById(requestUserId);
     if (!user) {
       throw new BadRequestException('요청한 사용자는 없는 사용자입니다.');
     }
-    return await this.userRepository.updateOne({ _id }, updateField);
+    return await this.userRepository.updateOne({ _id: requestUserId }, updateField);
   }
 }
