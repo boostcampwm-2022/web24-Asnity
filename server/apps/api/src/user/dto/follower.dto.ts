@@ -1,9 +1,11 @@
-import { IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class FollowerDto {
-  @IsString()
-  myId: string;
+  @IsNotEmpty()
+  @IsMongoId()
+  requestUserId: string;
 
-  @IsString()
+  @IsNotEmpty()
+  @IsMongoId()
   followId: string;
 }
