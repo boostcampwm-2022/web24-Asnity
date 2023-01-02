@@ -50,7 +50,7 @@ jobs:
 #          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }}
 #        if: always()
   build_socket:
-    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') ) }}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny')) }}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
