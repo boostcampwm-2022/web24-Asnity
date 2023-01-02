@@ -36,7 +36,7 @@ export class CommunityService {
     const communitiesInfo = await Promise.all(
       Array.from(user.communities.values()).map(async (userCommunity) => {
         const { _id, channels } = userCommunity as communityInUser;
-        const community = await this.communityRepository.findByIdAfterCache(_id);
+        const community = await this.communityRepository.findById(_id);
         this.verifyChannelInCommunity(community, channels);
         const channelsInfo = await Promise.all(
           Array.from(channels.keys()).map(async (channelId) => {
@@ -63,7 +63,7 @@ export class CommunityService {
   async appendUsersToCommunity(appendUsersToCommunityDto: AppendUsersToCommunityDto) {
     const { community_id, requestUserId, users } = appendUsersToCommunityDto;
     const communityId = community_id;
-    const user = await this.userRepository.findById(appendUsersToCommunityDto.requestUserId);
+    const user = await this.userRepository.findById(requestUserId);
     if (!IsUserInCommunity(user, communityId)) {
       throw new BadRequestException(`커뮤니티에 속하지 않는 사용자는 요청할 수 없습니다.`);
     }
