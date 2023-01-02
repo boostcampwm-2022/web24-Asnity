@@ -5,7 +5,7 @@ on:
     branches: [ "main", "dev","dev-be" ]
     paths: 'server/**'
   pull_request:
-    branches: [ "main", "dev","dev-be" ]
+    branches: [ "main", "dev","dev-be","dev-ny" ]
     paths: 'server/**'
     types:
       - closed
