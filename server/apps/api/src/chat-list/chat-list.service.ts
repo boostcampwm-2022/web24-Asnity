@@ -114,7 +114,7 @@ export class ChatListService {
       }
     }
 
-    return L >= unreadChatList.length ? NOT_EXIST_UNREAD_CHAT : L;
+    return L >= unreadChatList.length ? NOT_EXIST_UNREAD_CHAT : unreadChatList[L].id;
   }
 
   async modifyMessage(modifyMessageDto: ModifyMessageDto) {
