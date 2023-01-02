@@ -22,10 +22,7 @@ export class ChatListRespository {
   async findByIdAfterCache(_id: string) {
     const cache = await this.getCache(_id);
     if (cache) {
-      console.log('find by id hit cache ', _id);
       return JSON.parse(cache);
-    } else {
-      console.log('find by id miss cache ', _id);
     }
     return await this.chatListModel.findById(_id);
   }
@@ -67,11 +64,8 @@ export class ChatListRespository {
     const cache = await this.getCache(_id);
     if (!cache) {
       this.findById(_id).then((data) => {
-        console.log('다음 채팅을 찾아 캐시에 저장합니다 ', _id);
         this.storeCache(_id, data);
       });
-    } else {
-      console.log('캐시에 이미 있어 미리저장하지 않습니다. ', _id);
     }
   }
 }
