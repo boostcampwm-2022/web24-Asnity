@@ -14,6 +14,8 @@ export class UserService {
     const otherUser = await this.userRepository.findById(followerDto.followId);
     if (!user || !otherUser) {
       throw new BadRequestException('해당하는 사용자의 _id가 올바르지 않습니다.');
+    } else if (followerDto.requestUserId === followerDto.followId) {
+      throw new BadRequestException('나 자신은 영원한 인생의 친구입니다.');
     }
     const expectedRelation = checkRelation(user.followings, otherUser.followers, followerDto);
     if (expectedRelation === RELATION.FOLLOW) {
