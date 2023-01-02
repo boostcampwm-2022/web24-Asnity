@@ -66,17 +66,29 @@ export class ChatListService {
 
     // 요청받은 chatList idx로 chatList 정보 찾기
     const chatListId = channel.chatLists[chatListIdx];
-    const chatList = await this.chatListRespository.findById(chatListId);
-
-    const chat = JSON.parse(JSON.stringify(chatList)).chat.filter((message) => {
+    const chatList = await this.chatListRespository.findByIdAfterCache(chatListId);
+    const chat = chatList['chat'].filter((message) => {
       return !message.deletedAt;
     });
 
     // chatListIdx === -1 : 채팅 처음 로딩 시
-    if (Number(prev ?? next) === -1)
-      return { prev: chatListIdx - 1 < 0 ? undefined : chatListIdx - 1, chat };
-    if (prev) return { prev: +prev - 1 < 0 ? undefined : +prev - 1, chat };
-    if (next) return { next: +next + 1 >= channel.chatLists.length ? undefined : +next + 1, chat };
+    const result = { chat };
+    let nextExpectedCurser;
+    if (Number(prev ?? next) === -1) {
+      nextExpectedCurser = chatListIdx - 1 < 0 ? undefined : chatListIdx - 1;
+      result['prev'] = nextExpectedCurser;
+    } else if (prev) {
+      nextExpectedCurser = +prev - 1 < 0 ? undefined : +prev - 1;
+      result['prev'] = nextExpectedCurser;
+    } else if (next) {
+      nextExpectedCurser = +next + 1 >= channel.chatLists.length ? undefined : +next + 1;
+      result['next'] = nextExpectedCurser;
+    }
+
+    if (nextExpectedCurser != undefined) {
+      this.chatListRespository.saveNextExpectedChats(channel.chatLists[nextExpectedCurser]);
+    }
+    return result;
   }
 
   async getUnreadMessagePoint(getUnreadMessagePointDto: GetUnreadMessagePointDto) {
