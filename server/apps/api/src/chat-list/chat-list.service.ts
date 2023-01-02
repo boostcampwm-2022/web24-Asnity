@@ -113,10 +113,8 @@ export class ChatListService {
         R = M - 1;
       }
     }
-    if (new Date(unreadChatList[M].createdAt) < lastRead) {
-      return NOT_EXIST_UNREAD_CHAT;
-    }
-    return unreadChatList[M].id;
+
+    return L >= unreadChatList.length ? NOT_EXIST_UNREAD_CHAT : L;
   }
 
   async modifyMessage(modifyMessageDto: ModifyMessageDto) {
