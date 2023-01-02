@@ -12,7 +12,7 @@ on:
 
 jobs:
   build_api:
-    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') ) }}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny')) }}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -120,7 +120,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAIL_WEBHOOK_URL }}
         if: failure()
   nCloudDeploy:
-    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') ) }}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny') ) }}
     needs: [build_api, build_socket]
     runs-on: ubuntu-latest
     steps:
