@@ -169,20 +169,21 @@ const Channel = () => {
       </header>
       <div className="flex h-full">
         <div className="flex flex-col relative flex-1 min-w-[768px] max-w-[960px] h-full pb-4">
-          {unreadChatIdQuery.data !== undefined && unreadChatIdQuery.data > -1 && (
-            <div className="flex justify-between items-center w-full h-8 bg-indigo font-medium text-offWhite rounded-b-md text-s14 px-3">
-              <div>위에 읽지 않은 메시지가 있어요</div>
-              <button
-                type="button"
-                className="flex items-center gap-1"
-                onClick={handleMarkAsRead}
-              >
-                <div>읽음으로 표시하기</div>
-                <span className="sr-only">읽음으로 표시하기</span>
-                <CheckCircleIcon className="w-5 h-5" />
-              </button>
-            </div>
-          )}
+          {unreadChatIdQuery.data !== undefined &&
+            unreadChatIdQuery.data > -1 && (
+              <div className="flex justify-between items-center w-full h-8 bg-indigo font-medium text-offWhite rounded-b-md text-s14 px-3">
+                <div>위에 읽지 않은 메시지가 있어요</div>
+                <button
+                  type="button"
+                  className="flex items-center gap-1"
+                  onClick={handleMarkAsRead}
+                >
+                  <div>읽음으로 표시하기</div>
+                  <span className="sr-only">읽음으로 표시하기</span>
+                  <CheckCircleIcon className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           {chatsInfiniteQuery.isFetchingPreviousPage && (
             <div className="flex justify-center items-center font-ipSans text-s14 py-3">
               지난 메시지 불러오는 중
