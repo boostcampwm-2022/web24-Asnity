@@ -34,7 +34,7 @@
 
 ## 프로젝스 소개 자료
 
-📎 [배포 링크](http://www.asnity.site) : http://www.asnity.site
+📎 [배포 링크](https://www.asnity.site) : https://www.asnity.site
 
 🖥 [데모 영상](https://www.youtube.com/watch?v=2gI3OlJXAZQ)
 
