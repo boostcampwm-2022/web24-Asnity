@@ -1,38 +1,15 @@
-import type { SignUpRequest } from '@apis/auth';
+import type { SignUpFormFields } from '@components/Form/SignUpFormTypes';
 
-import AuthInput from '@components/AuthInput';
-import Button from '@components/Button';
-import ErrorMessage from '@components/ErrorMessage';
+import SignUpForm from '@components/Form/SignUpForm';
 import Logo from '@components/Logo';
-import SuccessMessage from '@components/SuccessMessage';
 import TextButton from '@components/TextButton';
-import REGEX from '@constants/regex';
 import defaultErrorHandler from '@errors/defaultErrorHandler';
 import { useSignUpMutation } from '@hooks/auth';
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-interface SignUpFormFields extends SignUpRequest {
-  passwordCheck: string;
-}
-
-const signUpFormDefaultValues = {
-  id: '',
-  nickname: '',
-  password: '',
-  passwordCheck: '',
-};
-
 const SignUp = () => {
-  const { control, handleSubmit, watch } = useForm<SignUpFormFields>({
-    mode: 'all',
-    defaultValues: signUpFormDefaultValues,
-  });
-
-  const password = watch('password');
-
   const navigate = useNavigate();
 
   const signUpMutation = useSignUpMutation({
@@ -45,7 +22,7 @@ const SignUp = () => {
     },
   });
 
-  const handleSubmitSignUpForm = (fields: SignUpFormFields) => {
+  const handleSubmitValidSignUpForm = (fields: SignUpFormFields) => {
     signUpMutation.mutate(fields);
   };
 
@@ -60,151 +37,19 @@ const SignUp = () => {
         <h1 className="font-mont text-[40px] mb-5 capitalize">asnity</h1>
       </div>
 
-      <form
-        className="flex flex-col justify-start items-center"
-        onSubmit={handleSubmit(handleSubmitSignUpForm)}
+      <SignUpForm
+        handleSubmitValidSignUpForm={handleSubmitValidSignUpForm}
+        disableSubmitButton={signUpMutation.isLoading}
+      />
+
+      <TextButton
+        size="sm"
+        className="text-body"
+        type="button"
+        onClick={handleNavigateSignInPage}
       >
-        <Controller
-          name="id"
-          control={control}
-          rules={{
-            pattern: {
-              value: REGEX.EMAIL,
-              message: '아이디는 이메일 형식으로 입력해야 합니다!',
-            },
-            required: '필수 요소입니다!',
-          }}
-          render={({ field, formState: { errors } }) => {
-            return (
-              <div className="mb-5">
-                <AuthInput {...field} type="text" placeholder="아이디" />
-                <div className="pl-6">
-                  {errors?.id ? (
-                    <ErrorMessage>{errors.id.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>올바른 이메일 형식입니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
-            );
-          }}
-        />
-
-        <Controller
-          name="nickname"
-          control={control}
-          rules={{
-            validate: {
-              notIncludesWhitespace: (value) =>
-                !value.includes(' ') || '공백은 포함될 수 없습니다!',
-              nicknameLength: (value) =>
-                (value.length >= 2 && value.length <= 8) ||
-                '닉네임은 2자 이상, 8자 이하만 가능합니다!',
-            },
-          }}
-          render={({ field, formState: { errors } }) => {
-            return (
-              <div className="mb-5">
-                <AuthInput {...field} type="text" placeholder="닉네임" />
-                <div className="pl-6">
-                  {errors?.nickname ? (
-                    <ErrorMessage>{errors.nickname.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>사용 가능한 닉네임입니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
-            );
-          }}
-        />
-
-        <Controller
-          name="password"
-          control={control}
-          rules={{
-            validate: (value) =>
-              value.length >= 8 || '비밀번호는 8자리 이상이어야 합니다!',
-          }}
-          render={({ field, formState: { errors } }) => {
-            return (
-              <div className="mb-5">
-                <AuthInput {...field} type="password" placeholder="비밀번호" />
-                {
-                  <div className="pl-6">
-                    {errors?.password ? (
-                      <ErrorMessage>{errors?.password.message}</ErrorMessage>
-                    ) : (
-                      field.value && (
-                        <SuccessMessage>
-                          사용 가능한 비밀번호입니다!
-                        </SuccessMessage>
-                      )
-                    )}
-                  </div>
-                }
-              </div>
-            );
-          }}
-        />
-
-        <Controller
-          name="passwordCheck"
-          control={control}
-          rules={{
-            validate: {
-              equalToPassword: (value) =>
-                value === password || '비밀번호와 일치하지 않습니다!',
-            },
-          }}
-          render={({ field, formState: { errors } }) => {
-            return (
-              <div className="mb-5">
-                <AuthInput
-                  {...field}
-                  type="password"
-                  placeholder="비밀번호 확인"
-                />
-                <div className="pl-6">
-                  {errors.passwordCheck ? (
-                    <ErrorMessage>{errors?.passwordCheck.message}</ErrorMessage>
-                  ) : (
-                    field.value && (
-                      <SuccessMessage>비밀번호가 일치합니다!</SuccessMessage>
-                    )
-                  )}
-                </div>
-              </div>
-            );
-          }}
-        />
-
-        <div className="mb-5">
-          <Button
-            color="primary"
-            size="md"
-            type="submit"
-            minWidth={340}
-            disabled={signUpMutation.isLoading}
-          >
-            회원가입
-          </Button>
-        </div>
-
-        <div>
-          <TextButton
-            size="sm"
-            className="text-body"
-            type="button"
-            onClick={handleNavigateSignInPage}
-          >
-            로그인 페이지로
-          </TextButton>
-        </div>
-      </form>
+        로그인 페이지로
+      </TextButton>
     </main>
   );
 };

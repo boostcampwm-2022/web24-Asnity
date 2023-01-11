@@ -16,7 +16,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
   placeholder?: string;
 }
 
-const AuthInput: FC<Props> = forwardRef(
+const LabelInput: FC<Props> = forwardRef(
   (
     {
       type = 'text',
@@ -53,7 +53,8 @@ const AuthInput: FC<Props> = forwardRef(
           type={type}
           value={value}
           onChange={onChange}
-          className={`block w-[100%] h-[56px] text-s16 transition-all px-6 py-2 bg-inputBackground rounded-2xl focus:bg-offWhite ${moveInputValueBottom}`}
+          className={`block w-[100%] h-[56px] text-s16 transition-all px-6 py-2 bg-inputBackground rounded-2xl focus:bg-offWhite [&::placeholder]:opacity-0 ${moveInputValueBottom}`}
+          placeholder={placeholder}
           {...restProps}
           ref={ref}
         />
@@ -67,6 +68,6 @@ const AuthInput: FC<Props> = forwardRef(
   },
 );
 
-AuthInput.displayName = 'AuthInput';
+LabelInput.displayName = 'LabelInput';
 
-export default AuthInput;
+export default LabelInput;

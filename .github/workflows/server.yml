@@ -5,14 +5,14 @@ on:
     branches: [ "main", "dev","dev-be" ]
     paths: 'server/**'
   pull_request:
-    branches: [ "main", "dev","dev-be" ]
+    branches: [ "main", "dev","dev-be","dev-ny" ]
     paths: 'server/**'
     types:
       - closed
 
 jobs:
   build_api:
-    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny')) }}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -40,17 +40,17 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/asnity-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Slack Merge bot 실행
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          author_name: Backend dev PR merge!
-          fields: repo,commit,message,author
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }}
-        if: always()
+#      - name: Slack Merge bot 실행
+#        uses: 8398a7/action-slack@v3
+#        with:
+#          status: ${{ job.status }}
+#          author_name: Backend dev PR merge!
+#          fields: repo,commit,message,author
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ASUMI_URL }}
+#        if: always()
   build_socket:
-    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny')) }}
     runs-on: ubuntu-latest
     steps:
       - name: 체크아웃
@@ -75,6 +75,16 @@ jobs:
           cache-to: type=gha,mode=max
   Test:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
     steps:
       - name: 체크아웃
         uses: actions/checkout@v2
@@ -110,7 +120,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAIL_WEBHOOK_URL }}
         if: failure()
   nCloudDeploy:
-    if: ${{ github.event.pull_request.merged == true  && contains(github.ref, 'dev-be')}}
+    if: ${{ github.event.pull_request.merged == true  && ( contains(github.ref, 'dev-be') || contains(github.ref, 'main') || contains(github.ref, 'dev-ny') ) }}
     needs: [build_api, build_socket]
     runs-on: ubuntu-latest
     steps:

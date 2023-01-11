@@ -1,0 +1,6 @@
+export enum RELATION {
+  FOLLOW,
+  UNFOLLOW,
+  FOLLOWERS,
+  FOLLOWINGS,
+}

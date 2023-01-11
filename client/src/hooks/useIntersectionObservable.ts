@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback } from 'react';
 
 /**
  * @param onIntersection 관찰되는 요소가 화면에 보이면 실행되는 콜백 함수
@@ -16,28 +16,22 @@ const useIntersectionObservable = (
 
   const ref = useCallback(
     (node: HTMLElement | null) => {
-      if (!node) return; // 얼리 리턴으로 변경
+      if (!node) return;
 
-      if (!observer.current) {
-        observer.current = new IntersectionObserver((entries, _observer) => {
-          // observer.current === _observer (동일한 값입니다.)
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              onIntersection(entry, _observer);
-            }
-          });
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries, _observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            onIntersection(entry, _observer);
+          }
         });
-      }
+      });
 
       observer.current.observe(node);
     },
     [onIntersection], // 이 값이 없으면, onIntersection내부에서 사용되는 isFetching 등의 값이 메모된 값으로 고정됩니다.
   );
-
-  useEffect(() => {
-    // 클린업.
-    return () => observer.current?.disconnect();
-  }, []);
 
   return ref;
 };
