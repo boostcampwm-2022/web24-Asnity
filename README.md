@@ -34,7 +34,7 @@
 
 ## 프로젝스 소개 자료
 
-📎 [배포 링크](http://www.asnity.site) : http://www.asnity.site
+📎 [배포 링크](https://www.asnity.site) : https://www.asnity.site
 
 🖥 [데모 영상](https://www.youtube.com/watch?v=2gI3OlJXAZQ)
 
@@ -49,7 +49,7 @@
 - [Architecture](https://github.com/boostcampwm-2022/web24-Asnity/wiki/Architecture)
 - [Skill Spec](https://github.com/boostcampwm-2022/web24-Asnity/wiki/Skill-Spec)
 - [Database ERD](https://github.com/boostcampwm-2022/web24-Asnity/wiki/DB-Diagram)
-- [Backlog](https://lake-duke-f63.notion.site/25c4c9e46d464ea1a82a68c8399ceaf0?v=ea1b4f77e71f4d17b2be0ebdc9c03702)
+- [Backlog](https://grand-beanie-e57.notion.site/a37995c602a64522984e2a52997da07a?v=12952487085d4427b526ae727b015ec1)
 
 
 
