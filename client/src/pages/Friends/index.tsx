@@ -40,29 +40,31 @@ const Friends = () => {
   );
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
-        <ul className="flex gap-[45px]">
-          {tabData.map(({ name, tab: _tab }) => (
-            <li
-              key={_tab}
-              className={`${
-                tab === _tab ? 'text-indigo' : 'text-placeholder'
-              } font-bold text-s20`}
-            >
-              <button className="w-[100%]" onClick={() => setTab(_tab)}>
-                {name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </header>
-      <div className="flex h-full">
-        <div className="flex-1 min-w-[720px] max-w-[960px] h-[100%]">
-          {TabPanel[tab]}
+    <main className="flex flex-col flex-1">
+      <div className="w-full h-full flex flex-col">
+        <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
+          <ul className="flex gap-[45px]">
+            {tabData.map(({ name, tab: _tab }) => (
+              <li
+                key={_tab}
+                className={`${
+                  tab === _tab ? 'text-indigo' : 'text-placeholder'
+                } font-bold text-s20`}
+              >
+                <button className="w-[100%]" onClick={() => setTab(_tab)}>
+                  {name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </header>
+        <div className="flex h-full">
+          <div className="flex-1 min-w-[720px] max-w-[960px] h-[100%]">
+            {TabPanel[tab]}
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
