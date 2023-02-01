@@ -1,66 +1,54 @@
+import type { TabKeys } from '@pages/Friends/static';
 import type { ReactNode } from 'react';
 
 import Followers from '@layouts/Followers';
 import Followings from '@layouts/Followings';
 import UserSearch from '@layouts/UserSearch';
+import { TAB_KEY, tabs } from '@pages/Friends/static';
+import cn from 'classnames';
 import React, { useState } from 'react';
 
-const TAB = {
-  FOLLOWINGS: 'followings',
-  FOLLOWERS: 'followers',
-  USER_SEARCH: 'user-search',
-} as const;
-
-const tabData = [
-  {
-    name: '팔로잉',
-    tab: 'followings',
-  },
-  {
-    name: '팔로워',
-    tab: 'followers',
-  },
-  {
-    name: '사용자 검색',
-    tab: 'user-search',
-  },
-] as const;
-
-const TabPanel: Record<string, ReactNode> = {
-  [TAB.FOLLOWINGS]: <Followings />,
-  [TAB.FOLLOWERS]: <Followers />,
-  [TAB.USER_SEARCH]: <UserSearch />,
+const TabComponent: Record<string, ReactNode> = {
+  [TAB_KEY.FOLLOWINGS]: <Followings />,
+  [TAB_KEY.FOLLOWERS]: <Followers />,
+  [TAB_KEY.USER_SEARCH]: <UserSearch />,
 };
 
-const DEFAULT_TAB = TAB.FOLLOWINGS;
+const DEFAULT_TAB_KEY = TAB_KEY.FOLLOWINGS;
 
 const Friends = () => {
-  const [tab, setTab] = useState<'followings' | 'followers' | 'user-search'>(
-    DEFAULT_TAB,
-  );
+  const [currentTab, setCurrentTab] = useState<TabKeys>(DEFAULT_TAB_KEY);
+  const currentTabComponent = TabComponent[currentTab];
+
+  const handleClickTab = (key: TabKeys) => () => setCurrentTab(key);
+  const tabClassnames = (isActive: boolean) =>
+    cn(
+      {
+        'text-indigo': isActive,
+        'text-placeholder': !isActive,
+      },
+      'font-bold',
+      'text-s20',
+    );
 
   return (
     <main className="flex flex-col flex-1">
       <div className="w-full h-full flex flex-col">
-        <header className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
+        <nav className="flex items-center pl-[56px] w-full border-b border-line shrink-0 basis-[90px]">
+          <h2 className="sr-only">탭 목록</h2>
           <ul className="flex gap-[45px]">
-            {tabData.map(({ name, tab: _tab }) => (
-              <li
-                key={_tab}
-                className={`${
-                  tab === _tab ? 'text-indigo' : 'text-placeholder'
-                } font-bold text-s20`}
-              >
-                <button className="w-[100%]" onClick={() => setTab(_tab)}>
-                  {name}
+            {tabs.map(({ tabName, key }) => (
+              <li key={key} className={tabClassnames(key === currentTab)}>
+                <button className="w-full" onClick={handleClickTab(key)}>
+                  {tabName}
                 </button>
               </li>
             ))}
           </ul>
-        </header>
+        </nav>
         <div className="flex h-full">
-          <div className="flex-1 min-w-[720px] max-w-[960px] h-[100%]">
-            {TabPanel[tab]}
+          <div className="flex-1 min-w-[720px] max-w-[960px] h-full">
+            {currentTabComponent}
           </div>
         </div>
       </div>
