@@ -4,7 +4,7 @@ import MyPanel from '@components/MyPanel';
 import Spinner from '@components/Spinner';
 import { useMyInfoQuery } from '@hooks/auth';
 import CommunityNav from '@layouts/CommunityNav';
-import DmNav from '@layouts/DmNav';
+import DmNav from '@layouts/FriendsNav';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const Sidebar = () => {
       onContextMenu={handleRightClickSidebar}
     >
       <div className="flex-1">
-        {pathname.startsWith('/dms') ? <DmNav /> : <CommunityNav />}
+        {pathname.startsWith('/friends') ? <DmNav /> : <CommunityNav />}
       </div>
       <div className="flex justify-between items-center w-full bg-inputBackground border-t border-line">
         {myInfoQuery.isLoading ? (
