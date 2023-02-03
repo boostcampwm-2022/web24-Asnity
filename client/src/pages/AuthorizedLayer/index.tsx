@@ -12,21 +12,21 @@ import { Outlet, useNavigate } from 'react-router-dom';
  */
 const AuthorizedLayer = () => {
   const user = useMyInfoQueryData();
-
   const accessToken = useTokenStore((state) => state.accessToken);
   const navigate = useNavigate();
 
+  const onInvalidTokenError = () =>
+    navigate('/sign-in', { state: { alreadyTriedReissueToken: true } });
+  const onUnknownError = () =>
+    navigate('/error', {
+      state: {
+        message: '로그인중 오류가 발생했습니다. 잠시 뒤에 다시 시도해주세요.',
+      },
+    });
+
   const reissueTokenMutation = useReissueTokenMutation(
-    () => {
-      navigate('/sign-in', { state: { alreadyTriedReissueToken: true } });
-    },
-    () => {
-      navigate('/error', {
-        state: {
-          summary: '로그인중 오류가 발생했습니다. 잠시 뒤에 다시 시도해주세요.',
-        },
-      });
-    },
+    onInvalidTokenError,
+    onUnknownError,
   );
 
   useEffect(() => {
