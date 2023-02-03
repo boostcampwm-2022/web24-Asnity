@@ -14,7 +14,7 @@ const Root = () => {
   const user = useMyInfoQueryData();
   const accessToken = useTokenStore((state) => state.accessToken);
 
-  if (user || accessToken) return <Navigate to="/dms" replace />;
+  if (user || accessToken) return <Navigate to="/friends" replace />;
   return <Navigate to="/sign-in" replace />;
 };
 

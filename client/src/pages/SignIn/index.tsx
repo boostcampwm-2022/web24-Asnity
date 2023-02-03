@@ -17,7 +17,7 @@ const SignIn = () => {
   const signInMutation = useSignInMutation({
     onSuccess: (data) => {
       setAccessToken(data.accessToken);
-      navigate('/dms');
+      navigate('/friends');
     },
     onError: (error) => {
       defaultErrorHandler(error);
