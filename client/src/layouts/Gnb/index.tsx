@@ -15,19 +15,22 @@ import cn from 'classnames';
 import React, { memo, useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import shallow from 'zustand/shallow';
 
 const Gnb = () => {
   const { pathname } = useLocation();
   const params = useParams();
-  const openContextMenuModal = useRootStore(
-    (state) => state.openContextMenuModal,
+  const { openContextMenuModal, openCommonModal } = useRootStore(
+    (state) => ({
+      openContextMenuModal: state.openContextMenuModal,
+      openCommonModal: state.openCommonModal,
+    }),
+    shallow,
   );
-
-  const openCommonModal = useRootStore((state) => state.openCommonModal);
 
   const communitiesQuery = useCommunitiesQuery();
 
-  const communityItemListPadding = cn({
+  const communityItemPaddingBeforeLoading = cn({
     'pb-[30vh]': !communitiesQuery.isLoading,
   });
 
@@ -80,10 +83,10 @@ const Gnb = () => {
       <div className="flex flex-col justify-start items-center w-full h-full pt-[16px]">
         <div className="w-full">
           <GnbItemContainer
-            isActive={pathname === '/dms'}
-            tooltip="Asnity 홈으로"
+            isActive={pathname === '/friends'}
+            tooltip="Friends"
           >
-            <Link to="/dms">
+            <Link to="/friends">
               <Avatar
                 name="Asnity"
                 size="sm"
@@ -98,7 +101,7 @@ const Gnb = () => {
 
         <Scrollbars autoHide autoHideTimeout={200}>
           <ul
-            className={`inline-flex flex-col w-full h-auto shrink-0 mb-10 min-h-full ${communityItemListPadding}`}
+            className={`inline-flex flex-col w-full h-auto shrink-0 mb-10 min-h-full ${communityItemPaddingBeforeLoading}`}
           >
             {communitiesQuery.isLoading ? (
               <Spinner
