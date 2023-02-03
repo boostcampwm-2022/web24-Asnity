@@ -1,7 +1,7 @@
 import FullScreenSpinner from '@components/FullScreenSpinner';
 import { useMyInfoQueryData, useReissueTokenMutation } from '@hooks/auth';
 import { useTokenStore } from '@stores/tokenStore';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 
 /**
@@ -12,25 +12,16 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
 const UnAuthorizedLayer = () => {
   const user = useMyInfoQueryData();
   const location = useLocation();
-
   const accessToken = useTokenStore((state) => state.accessToken);
-  const [isTryingReissueToken, setIsTryingReissueToken] = useState(true);
-
-  const handleReissueTokenError = () => setIsTryingReissueToken(false);
-
-  const reissueTokenMutation = useReissueTokenMutation(
-    handleReissueTokenError,
-    handleReissueTokenError,
-  );
+  const reissueTokenMutation = useReissueTokenMutation();
 
   useEffect(() => {
-    if (user) return;
     reissueTokenMutation.mutate();
   }, []);
 
   if (user || accessToken) return <Navigate to="/" replace />;
   if (location.state?.alreadyTriedReissueToken) return <Outlet />;
-  if (isTryingReissueToken) return <FullScreenSpinner />;
+  if (reissueTokenMutation.isLoading) return <FullScreenSpinner />;
   return <Outlet />;
 };
 
