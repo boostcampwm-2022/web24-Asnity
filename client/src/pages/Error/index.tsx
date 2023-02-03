@@ -3,20 +3,20 @@ import type { FC } from 'react';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-interface Fallback {
+interface NavigateLink {
   name: string;
   url: string;
 }
 
 interface Props {
   title?: string;
-  summary?: string;
-  fallbacks?: Fallback[];
+  message?: string;
+  navigateLinks?: NavigateLink[];
 }
 
 const initialDisplayTitle = 'ERROR';
-const initialDisplaySummary = '알 수 없는 에러가 발생했습니다.';
-const initialDisplayFallbacks = [
+const initialDisplayMessage = '알 수 없는 에러가 발생했습니다.';
+const initialDisplayNavigateLinks = [
   {
     name: '홈으로 되돌아가기',
     url: '/',
@@ -25,26 +25,26 @@ const initialDisplayFallbacks = [
 
 const Error: FC<Props> = ({
   title = initialDisplayTitle,
-  summary = initialDisplaySummary,
-  fallbacks = initialDisplayFallbacks,
+  message = initialDisplayMessage,
+  navigateLinks = initialDisplayNavigateLinks,
 }) => {
   const location = useLocation();
   const locationState = location?.state;
 
   let displayTitle = title;
-  let displaySummary = summary;
-  let displayFallbacks = fallbacks;
+  let displayMessage = message;
+  let displayNavigateLinks = navigateLinks;
 
   if (locationState) {
     const {
       title: _title,
-      summary: _summary,
-      fallbacks: _fallbacks,
+      message: _message,
+      navigateLinks: _navigateLinks,
     } = locationState;
 
     displayTitle = _title ?? displayTitle;
-    displaySummary = _summary ?? displaySummary;
-    displayFallbacks = _fallbacks ?? displayFallbacks;
+    displayMessage = _message ?? displayMessage;
+    displayNavigateLinks = _navigateLinks ?? displayNavigateLinks;
   }
 
   return (
@@ -56,16 +56,16 @@ const Error: FC<Props> = ({
               <h2 className="font-bold text-[60px] tracking-tighter">
                 {displayTitle}
               </h2>
-              <div className="text-[30px] text-label">{displaySummary}</div>
+              <div className="text-[30px] text-label">{displayMessage}</div>
             </div>
             <div className="flex gap-2">
-              {displayFallbacks.map((fallback, idx) => (
+              {displayNavigateLinks.map((navigateLink, idx) => (
                 <Link
                   key={idx}
-                  to={fallback.url}
+                  to={navigateLink.url}
                   className="block underline bg-offWhite rounded-lg p-1 hover:text-secondary"
                 >
-                  <div className="font-bold">{fallback.name}</div>
+                  <div className="font-bold">{navigateLink.name}</div>
                 </Link>
               ))}
             </div>
