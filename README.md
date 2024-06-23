@@ -22,7 +22,7 @@
 <a href="https://github.com/soomanbaek">
         <img src="https://user-images.githubusercontent.com/79135734/201245174-45d9b748-451e-4ee3-b947-e8a234a732c7.png" width="100px;" alt="백수만"/>
 <br /><sub><b>백수만</b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/mjsdo"><img src="https://avatars.githubusercontent.com/u/79135734?v=4" width="100px;" alt="송민종"/><br /><sub><b>송민종</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/mjsdo"><img src="https://avatars.githubusercontent.com/u/79135734?v=4" width="100px;" alt=""/><br /><sub><b></b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/leegwae"><img src="https://avatars.githubusercontent.com/u/57662010?v=4" width="100px;" alt="이준영"/><br /><sub><b>이준영</b></sub></a><br /></td>
     </tr>
   </tbody>
